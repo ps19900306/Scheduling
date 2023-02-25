@@ -61,7 +61,7 @@ class NwqAccessibilityService : AccessibilityService() {
                             screenshotResult.colorSpace
                         )
 
-                        Log.d(TAG, "进行一次截图 width: ${bitmap?.width}  height: ${bitmap?.height} ");
+                        Log.d(TAG, "进行一 次截图 width: ${bitmap?.width}  height: ${bitmap?.height} ");
                         bitmap?.recycle()
                         ClickUtils.click(this@NwqAccessibilityService, 540F, 1200F)
                     }
