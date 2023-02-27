@@ -3,18 +3,19 @@ package com.nwq.function.scheduling.core_code.contract
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
+import android.os.Build
 import android.view.Display
-import com.nwq.function.scheduling.core_code.click.ClickUtils
+import androidx.annotation.RequiresApi
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+@RequiresApi(Build.VERSION_CODES.R)
 class AccessibilityHelper(val acService: AccessibilityService, val context: Context) {
 
     var screenBitmap: Bitmap? = null
 
     //这里跟新截图信息
-    suspend fun updataScreen(): Bitmap? = suspendCoroutine {
+    suspend fun takeScreen(): Bitmap? = suspendCoroutine {
         screenBitmap?.recycle()
         screenBitmap = null
         acService.takeScreenshot(Display.DEFAULT_DISPLAY,

@@ -35,7 +35,7 @@ object ClickUtils {
                     path, task.delayTime + timeStemp, task.duration
                 )
             )
-            timeStemp = timeStemp + task.delayTime + task.duration
+            timeStemp += task.delayTime + task.duration
         }
         val gesture = builder.build()
         aService.dispatchGesture(
