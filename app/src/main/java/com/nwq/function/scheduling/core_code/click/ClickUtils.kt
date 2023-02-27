@@ -3,6 +3,8 @@ package com.nwq.function.scheduling.core_code.click
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 /**
@@ -12,23 +14,43 @@ Function description:
  */
 
 object ClickUtils {
-    fun click(accessibilityService: AccessibilityService, x: Float, y: Float) {
 
+
+    suspend fun optClickTasks(
+        aService: AccessibilityService, vararg clickTask: ClickTask
+    ): Boolean = suspendCoroutine {
         val builder = GestureDescription.Builder()
-        val path = Path()
-        path.moveTo(x, y)
-        path.lineTo(x+100,y+100)
-        builder.addStroke(GestureDescription.StrokeDescription(path, 2000, 500))
-        builder.addStroke(GestureDescription.StrokeDescription(path, 5000, 500))
+        var timeStemp = 0L
+        clickTask.forEach { task ->
+            val path = Path()
+            task.coordinates.forEachIndexed { i, d ->
+                if (i == 0) {
+                    path.moveTo(d.x, d.y)
+                } else {
+                    path.lineTo(d.x, d.y)
+                }
+            }
+            builder.addStroke(
+                GestureDescription.StrokeDescription(
+                    path, task.delayTime + timeStemp, task.duration
+                )
+            )
+            timeStemp = timeStemp + task.delayTime + task.duration
+        }
         val gesture = builder.build()
-        accessibilityService.dispatchGesture(gesture, object : AccessibilityService.GestureResultCallback() {
-            override fun onCancelled(gestureDescription: GestureDescription) {
-                super.onCancelled(gestureDescription)
-            }
+        aService.dispatchGesture(
+            gesture, object : AccessibilityService.GestureResultCallback() {
+                override fun onCancelled(gestureDescription: GestureDescription) {
+                    super.onCancelled(gestureDescription)
+                    it.resume(false)
+                }
 
-            override fun onCompleted(gestureDescription: GestureDescription) {
-                super.onCompleted(gestureDescription)
-            }
-        }, null)
+                override fun onCompleted(gestureDescription: GestureDescription) {
+                    super.onCompleted(gestureDescription)
+                    it.resume(true)
+                }
+            }, null
+        )
     }
+
 }
