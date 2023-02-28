@@ -46,6 +46,7 @@ class NwqAccessibilityService : AccessibilityService() {
     }
 
     private fun registerReceiver() {
+
         registerReceiver(communicationBroadcast, IntentFilter.create("schedule.cmd", "cmd/int"))
     }
 

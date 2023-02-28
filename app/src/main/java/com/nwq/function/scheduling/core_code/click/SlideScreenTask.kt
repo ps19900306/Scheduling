@@ -19,6 +19,7 @@ data class SlideScreenTask(
     val delayTime: Long = 0,
     var duration: Long = 0
 ) {
+
     fun convertToClick(): ClickTask {
         val coordinates = mutableListOf<Coordinate>()
         var directionVaryType: Int = 0
@@ -102,16 +103,16 @@ data class SlideScreenTask(
                 var tempY = lastY + (diffY) * percentageTotal
                 when (directionVaryType) {
                     DirectionVaryType.INCREASE_X -> {
-                        tempX += diffX * Math.random() * percentage * diffX
+                        tempX += diffX * Math.random() * percentage * 0.5
                     }
                     DirectionVaryType.REDUCE_X -> {
-                        tempX -= diffX * Math.random() * percentage * diffX
+                        tempX -= diffX * Math.random() * percentage * 0.5
                     }
                     DirectionVaryType.INCREASE_Y -> {
-                        tempY += diffY * Math.random() * percentage * diffY
+                        tempY += diffY * Math.random() * percentage * 0.5
                     }
                     DirectionVaryType.REDUCE_Y -> {
-                        tempY -= diffY * Math.random() * percentage * diffY
+                        tempY -= diffY * Math.random() * percentage * 0.5
                     }
                 }
                 coordinates.add(Coordinate(tempX.toFloat(), tempY.toFloat()))
