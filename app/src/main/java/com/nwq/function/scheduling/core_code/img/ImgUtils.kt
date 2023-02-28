@@ -2,17 +2,23 @@ package com.nwq.function.scheduling.core_code.img
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
 
 
-@RequiresApi(Build.VERSION_CODES.Q)
 object ImgUtils {
 
+    //通过颜色去找颜色最接近的点
+    fun findPointByColor(
+        data: FindPointTask,
+        bitmap: Bitmap
+    ) {
+
+    }
+
+
     //多点多规则颜色判断
-    suspend fun performPointsColorVerification(
+    fun performPointsColorVerification(
         data: List<PointColorVerification>,
         bitmap: Bitmap,
         toleranceErrorNumber: Int = 0,//能够容忍几个点颜色不一致
@@ -28,8 +34,9 @@ object ImgUtils {
         return true
     }
 
+
     //单点单规则判断
-    suspend fun performPointColorVerification(
+    fun performPointColorVerification(
         data: PointColorVerification,
         bitmap: Bitmap
     ): Boolean {
@@ -62,7 +69,7 @@ object ImgUtils {
     /**
      * 单点颜色判断 相似度
      */
-    suspend fun judgeColorLike(
+    fun judgeColorLike(
         coordinate: Coordinate,
         bitmap: Bitmap,
         colorRule: String,
@@ -81,7 +88,7 @@ object ImgUtils {
     /**
      * 单点颜色判断 规则约束
      */
-    suspend fun judgeColorRule(
+    fun judgeColorRule(
         coordinate: Coordinate,
         bitmap: Bitmap,
         colorRule: ColorIdentificationRule
@@ -98,7 +105,7 @@ object ImgUtils {
     /**
      * 区块找颜色 找到颜色则返回true
      */
-    suspend fun findColorRule(
+    fun findColorRule(
         pixelsInfo: PixelsInfo,
         bitmap: Bitmap,
         colorRule: ColorIdentificationRule
@@ -121,7 +128,7 @@ object ImgUtils {
     /**
      * 区块找颜色 找到颜色则返回true
      */
-    suspend fun findColorLike(
+    fun findColorLike(
         pixelsInfo: PixelsInfo,
         bitmap: Bitmap,
         colorRule: String,
@@ -156,7 +163,7 @@ object ImgUtils {
 
     /******  下面的都是私有方法 ******************/
     //判断颜色的相似度,越相似值越小 最大是100
-    private suspend fun judgeColorSqrt(
+    private fun judgeColorSqrt(
         imgRed: Int,
         imgBlue: Int,
         imgGreen: Int,
@@ -169,7 +176,7 @@ object ImgUtils {
         return (diff * 100).toInt()
     }
 
-    private suspend fun judgeColorSqrt(
+    private fun judgeColorSqrt(
         imgRed: Int,
         imgBlue: Int,
         imgGreen: Int,
@@ -185,7 +192,7 @@ object ImgUtils {
     }
 
     //判断颜色的相似度,越相似值越小 最大是100
-    private suspend fun judgeColorSqrt(baseColor: Color, imgColor: Color): Int {
+    private fun judgeColorSqrt(baseColor: Color, imgColor: Color): Int {
         val red = (imgColor.red() - baseColor.red()) / 255
         val blue = (imgColor.blue() - baseColor.blue()) / 255
         val green = (imgColor.green() - baseColor.green()) / 255

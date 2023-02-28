@@ -31,7 +31,7 @@ abstract class TravelController(val helper: AccessibilityHelper)
 
 
 
-    abstract fun generalControlMethod()
+   abstract suspend fun generalControlMethod()
 
     suspend fun pressBackBtn(){
         helper.pressBackBtn()

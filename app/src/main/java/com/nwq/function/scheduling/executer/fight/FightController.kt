@@ -14,10 +14,8 @@ Function description:
 class FightController(helper: AccessibilityHelper) : TravelController(helper) {
 
 
-    override fun generalControlMethod() {
-        GlobalScope.launch {
+    override suspend fun generalControlMethod() {
 
-        }
     }
 
 }
