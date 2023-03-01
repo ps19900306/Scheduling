@@ -7,11 +7,16 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.view.Display
 import androidx.annotation.RequiresApi
+import com.nwq.function.scheduling.core_code.Coordinate
+import com.nwq.function.scheduling.core_code.click.ClickTask
+import com.nwq.function.scheduling.core_code.click.ClickUtils
+import com.nwq.function.scheduling.core_code.click.DirectionType
+import com.nwq.function.scheduling.core_code.click.SlideScreenTask
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 
-class AccessibilityHelper(val acService: AccessibilityService, val context: Context) {
+class AccessibilityHelper(val acService: AccessibilityService) {
 
     var screenBitmap: Bitmap? = null
 
@@ -21,7 +26,7 @@ class AccessibilityHelper(val acService: AccessibilityService, val context: Cont
         screenBitmap?.recycle()
         screenBitmap = null
         acService.takeScreenshot(Display.DEFAULT_DISPLAY,
-            context.mainExecutor,
+            acService.mainExecutor,
             object : AccessibilityService.TakeScreenshotCallback {
                 override fun onSuccess(screenshotResult: AccessibilityService.ScreenshotResult) {
                     val bitmap = Bitmap.wrapHardwareBuffer(
@@ -37,11 +42,26 @@ class AccessibilityHelper(val acService: AccessibilityService, val context: Cont
             })
     }
 
-    fun pressBackBtn(){
+    fun pressBackBtn() {
         acService.performGlobalAction(GLOBAL_ACTION_BACK)
     }
 
-    fun pressHomeBtn(){
+    fun pressHomeBtn() {
         acService.performGlobalAction(GLOBAL_ACTION_HOME)
+    }
+
+    fun saveScreen() {
+        acService.performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
+    }
+
+    suspend fun click(x: Float, y: Float, delayTime: Long = 0) {
+        val coordinate = Coordinate(x, y)
+        val task = ClickTask(listOf(coordinate),delayTime, ((Math.random() + 0.5) * 300).toLong())
+        ClickUtils.optClickTasks(acService, task)
+    }
+
+    suspend fun slide(x: Float, y: Float, with: Int, height: Int, @DirectionType direction: Int, delayTime: Long = 0) {
+        val task = SlideScreenTask(x,y,with,height,direction,delayTime)
+        ClickUtils.optSlideTask(acService, task)
     }
 }

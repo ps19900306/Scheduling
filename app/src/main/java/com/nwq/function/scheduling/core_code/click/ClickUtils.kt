@@ -3,6 +3,7 @@ package com.nwq.function.scheduling.core_code.click
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
+import com.nwq.function.scheduling.utils.log.L
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -15,6 +16,10 @@ Function description:
 
 object ClickUtils {
 
+
+    suspend fun optSlideTask(aService: AccessibilityService, slideScreenTask: SlideScreenTask) {
+        optClickTasks(aService, slideScreenTask.convertToClick())
+    }
 
     suspend fun optClickTasks(
         aService: AccessibilityService, vararg clickTask: ClickTask
@@ -42,11 +47,13 @@ object ClickUtils {
             gesture, object : AccessibilityService.GestureResultCallback() {
                 override fun onCancelled(gestureDescription: GestureDescription) {
                     super.onCancelled(gestureDescription)
+                    L.i("click onCancelled", "onCompleted", "ClickUtils", "nwq", "2023/3/1");
                     it.resume(false)
                 }
 
                 override fun onCompleted(gestureDescription: GestureDescription) {
                     super.onCompleted(gestureDescription)
+                    L.i("click onCompleted", "onCompleted", "ClickUtils", "nwq", "2023/3/1");
                     it.resume(true)
                 }
             }, null

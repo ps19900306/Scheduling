@@ -18,6 +18,18 @@ object ImgUtils {
         return findPointByColor(data.toPixelsInfo(), bitmap, colorRule, tolerance)
     }
 
+    //通过颜色去找颜色最接近的点
+    fun findPointByColor(
+        data: FindPointByColorTask,
+        bitmap: Bitmap,
+        baseRed: Int,
+        baseBlue: Int,
+        baseGreen: Int,
+        tolerance: Int = 0
+    ): Coordinate {
+        return findPointByColor(data.toPixelsInfo(), bitmap, baseRed,baseBlue,baseGreen, tolerance)
+    }
+
     //多点多规则颜色判断
     fun performPointsColorVerification(
         data: List<PointColorVerification>,
@@ -164,17 +176,28 @@ object ImgUtils {
     /**
      * 区块找颜色 找到颜色则返回true
      */
-    fun findPointByColor(
+    private fun findPointByColor(
         pixelsInfo: PixelsInfo,
         bitmap: Bitmap,
         colorRule: String,
         tolerance: Int = 0
     ): Coordinate {
-        val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
         val baseColor = Color.parseColor(colorRule)
         val baseRed = Color.red(baseColor)
         val baseBlue = Color.blue(baseColor)
         val baseGreen = Color.green(baseColor)
+        return findPointByColor(pixelsInfo, bitmap, baseRed, baseBlue, baseGreen, tolerance)
+    }
+
+    private fun findPointByColor(
+        pixelsInfo: PixelsInfo,
+        bitmap: Bitmap,
+        baseRed: Int,
+        baseBlue: Int,
+        baseGreen: Int,
+        tolerance: Int = 0
+    ): Coordinate {
+        val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
         bitmap.getPixels(
             pixels,
             pixelsInfo.offset,

@@ -11,8 +11,8 @@ Function description:
  */
 
 data class SlideScreenTask(
-    val startX: Int,
-    val startY: Int,
+    val startX: Float,
+    val startY: Float,
     val with: Int,
     val height: Int,
     @DirectionType val direction: Int,

@@ -12,7 +12,10 @@ import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.click.ClickUtils
+import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
+import com.nwq.function.scheduling.utils.log.L
 
 
 /**
@@ -27,10 +30,16 @@ class NwqAccessibilityService : AccessibilityService() {
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-
+                startOpt()
+                L.d("", "onReceive", "NwqAccessibilityService", "nwq", "2023/3/1");
             }
         }
     }
+
+    fun startOpt(){
+        ClickTestController(AccessibilityHelper(this@NwqAccessibilityService)).startOperation()
+    }
+
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         // 获取包名
@@ -43,17 +52,18 @@ class NwqAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         registerReceiver()
         ContextUtil.context = this
+        L.d("", "onServiceConnected", "NwqAccessibilityService", "nwq", "2023/3/1");
     }
 
     private fun registerReceiver() {
-
+        L.i("registerReceiver", "registerReceiver", "NwqAccessibilityService", "nwq", "2023/3/1");
         registerReceiver(communicationBroadcast, IntentFilter.create("schedule.cmd", "cmd/int"))
     }
 
 
     override fun onInterrupt() {
         unregisterReceiver(communicationBroadcast)
-        Log.d(TAG, "onAccessibilityEvent: onInterrupt");
+        L.d("", "onInterrupt", "NwqAccessibilityService", "nwq", "2023/3/1");
     }
 
 
