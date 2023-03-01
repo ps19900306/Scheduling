@@ -17,7 +17,7 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
 
 
     override suspend fun generalControlMethod() {
-        testSlide()
+        testGetColor()
         L.d("", "generalControlMethod", "ClickTestController", "nwq", "2023/3/1");
     }
 
@@ -25,6 +25,18 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
 
     }
 
+
+    suspend fun testGetColor(){
+        delay(3000)
+        for (i in 0 until 100){
+            helper.takeScreen()
+            val x= (Math.random()*getBitmapWith()).toFloat()
+            val y= (Math.random()*getBitmapHeight()).toFloat()
+            val color = getColor(x.toInt(), y.toInt())
+            L.i("x:$x y:$y color:${color?.toArgb().toString()}", "testGetColor", "ClickTestController", "nwq", "2023/3/1");
+            delay(500)
+        }
+    }
 
     suspend fun testClick(){
         for (i in 0 until 10){
