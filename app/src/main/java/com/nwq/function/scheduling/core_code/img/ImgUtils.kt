@@ -10,12 +10,13 @@ object ImgUtils {
 
     //通过颜色去找颜色最接近的点
     fun findPointByColor(
-        data: FindPointTask,
-        bitmap: Bitmap
-    ) {
-
+        data: FindPointByColorTask,
+        bitmap: Bitmap,
+        colorRule: String,
+        tolerance: Int = 0
+    ): Coordinate {
+        return findPointByColor(data.toPixelsInfo(), bitmap, colorRule, tolerance)
     }
-
 
     //多点多规则颜色判断
     fun performPointsColorVerification(
@@ -158,6 +159,66 @@ object ImgUtils {
                 baseGreen
             ) <= tolerance
         } != null
+    }
+
+    /**
+     * 区块找颜色 找到颜色则返回true
+     */
+    fun findPointByColor(
+        pixelsInfo: PixelsInfo,
+        bitmap: Bitmap,
+        colorRule: String,
+        tolerance: Int = 0
+    ): Coordinate {
+        val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
+        val baseColor = Color.parseColor(colorRule)
+        val baseRed = Color.red(baseColor)
+        val baseBlue = Color.blue(baseColor)
+        val baseGreen = Color.green(baseColor)
+        bitmap.getPixels(
+            pixels,
+            pixelsInfo.offset,
+            pixelsInfo.stride,
+            pixelsInfo.startX,
+            pixelsInfo.startY,
+            pixelsInfo.width,
+            pixelsInfo.height
+        )
+        var lastIndex = -1
+        var lastDeviationValue = 100
+        pixels.forEachIndexed { i, it ->
+            val deviationValue = judgeColorSqrt(
+                Color.red(it),
+                Color.blue(it),
+                Color.green(it),
+                baseRed,
+                baseBlue,
+                baseGreen
+            )
+            if (deviationValue <= tolerance && deviationValue < lastDeviationValue) {
+                lastDeviationValue = deviationValue
+                lastIndex = i
+            }
+        }
+        return if (lastIndex > 0) {
+            if (pixelsInfo.width > 1 && pixelsInfo.height > 1) {
+                val x = pixelsInfo.startX + lastIndex % pixelsInfo.width
+                val y = pixelsInfo.startX + lastIndex / pixelsInfo.width
+                Coordinate(x.toFloat(), y.toFloat())
+            } else if (pixelsInfo.width > 1 && pixelsInfo.height == 1) {
+                val x = pixelsInfo.startX + lastIndex
+                val y = pixelsInfo.startY
+                Coordinate(x.toFloat(), y.toFloat())
+            } else if (pixelsInfo.width == 1 && pixelsInfo.height > 1) {
+                val x = pixelsInfo.startX
+                val y = pixelsInfo.startY + lastIndex
+                Coordinate(x.toFloat(), y.toFloat())
+            } else {
+                Coordinate(pixelsInfo.startX.toFloat(), pixelsInfo.startY.toFloat())
+            }
+        } else {
+            Coordinate(pixelsInfo.startX.toFloat(), pixelsInfo.startY.toFloat())
+        }
     }
 
 
