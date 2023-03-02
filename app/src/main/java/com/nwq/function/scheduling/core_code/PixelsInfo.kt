@@ -11,7 +11,7 @@ data class PixelsInfo(
     val startY: Int,
     val width: Int,
     val height: Int,
-    val stride: Int,
+    val stride: Int = width,
     val offset: Int = 0
 ) {
     companion object {

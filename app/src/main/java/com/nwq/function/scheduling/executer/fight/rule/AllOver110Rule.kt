@@ -8,7 +8,7 @@ create time: 2023/3/2 10:15
 Function description:
  */
 
-class AllOver110Rule : ColorIdentificationRule {
+object AllOver110Rule : ColorIdentificationRule {
     override fun verificationRule(red: Int, blue: Int, green: Int): Boolean {
         return red > 110 && blue > 110 && green > 110
     }

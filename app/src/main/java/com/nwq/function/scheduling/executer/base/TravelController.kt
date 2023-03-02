@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.base
 
 import android.graphics.Color
+import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.log.L
@@ -73,6 +74,10 @@ abstract class TravelController(val helper: AccessibilityHelper) {
 
     fun getBitmapHeight(): Int {
         return helper.screenBitmap?.height ?: 0
+    }
+
+    suspend fun click(area: Area) {
+        helper.click(area.coordinate)
     }
 
     suspend fun click(x: Float, y: Float, delayTime: Long = 0) {

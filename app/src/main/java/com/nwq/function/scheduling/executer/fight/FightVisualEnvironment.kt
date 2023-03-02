@@ -1,8 +1,12 @@
 package com.nwq.function.scheduling.executer.fight
 
+import com.nwq.function.scheduling.core_code.Coordinate
+import com.nwq.function.scheduling.core_code.PixelsInfo
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.ImgUtils
+import com.nwq.function.scheduling.core_code.img.TwoPointTask
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
+import com.nwq.function.scheduling.executer.fight.rule.AllGreater10Comparison
 import com.nwq.function.scheduling.executer.fight.rule.AllOver110Rule
 import com.nwq.function.scheduling.executer.fight.rule.AllLess50Rule
 
@@ -19,26 +23,85 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //是否有全部锁定按钮
     fun hasGroupLock(): Boolean {
         val list = listOf(
-            verificationTask(1439f, 687f, AllOver110Rule()),
-            verificationTask(1439f, 675f, AllOver110Rule()),
-            verificationTask(1439f, 689f, AllOver110Rule()),
-            verificationTask(1437f, 672f, AllLess50Rule()),
-            verificationTask(1443f, 682f, AllLess50Rule()),
-            verificationTask(1437f, 692f, AllLess50Rule()),
+            verificationTask(1439f, 687f, AllOver110Rule),
+            verificationTask(1439f, 675f, AllOver110Rule),
+            verificationTask(1439f, 689f, AllOver110Rule),
+            verificationTask(1437f, 672f, AllLess50Rule),
+            verificationTask(1443f, 682f, AllLess50Rule),
+            verificationTask(1437f, 692f, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }
 
-    fun hasTarget(index: Int) {
+    //是否已经进入
+    fun hasIntoGame(): Boolean {
+        return false
+    }
 
+    fun getTagNumber(): Int {
+        for (i in 8 downTo 0) {
+            if (hasTarget(i))
+                return i
+        }
+        return -1
+    }
+
+    fun getUnTagNumber(): Int {
+        for (i in 8 downTo 0) {
+            if (hasUnTarget(i))
+                return i
+        }
+        return -1
     }
 
 
-    fun getTagNumber() {
-
+     fun isInSpaceStation(): Boolean {
+        return ImgUtils.findColorLike(PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ae9328", 5)
+                || ImgUtils.findColorLike(
+            PixelsInfo(2022, 333, 110, 56),
+            screenBitmap,
+            "#ae9328",
+            5
+        )
     }
 
+    //下面是私有方法
+    private fun hasTarget(index: Int): Boolean {
+        var a1 = Coordinate((2233 - (index * 121)).toFloat(), 91F)
+        var a = Coordinate((2229 - (index * 121)).toFloat(), 89F)
+        val task1 = TwoPointTask(a1, a, AllGreater10Comparison)
+
+        a1 = Coordinate((2198 - (index * 121)).toFloat(), 38F)
+        a = Coordinate((2198 - (index * 121)).toFloat(), 42F)
+        val task2 = TwoPointTask(a1, a, AllGreater10Comparison)
+
+        a1 = Coordinate((2159 - (index * 121)).toFloat(), 81F)
+        a = Coordinate((2164 - (index * 121)).toFloat(), 81F)
+        val task3 = TwoPointTask(a1, a, AllGreater10Comparison)
+
+        return ImgUtils.performTwoPointTask(
+            listOf(task1, task2, task3), screenBitmap, 0
+        )
+    }
+
+    private fun hasUnTarget(index: Int): Boolean {
+        var a1 = Coordinate((2246 - (index * 121)).toFloat(), 85F)
+        var a = Coordinate((2250 - (index * 121)).toFloat(), 85F)
+        val task1 = TwoPointTask(a1, a, AllGreater10Comparison)
+
+        a1 = Coordinate((2196 - (index * 121)).toFloat(), 29F)
+        a = Coordinate((2196 - (index * 121)).toFloat(), 24F)
+        val task2 = TwoPointTask(a1, a, AllGreater10Comparison)
+
+        a1 = Coordinate((2148 - (index * 121)).toFloat(), 80F)
+        a = Coordinate((2143 - (index * 121)).toFloat(), 80F)
+        val task3 = TwoPointTask(a1, a, AllGreater10Comparison)
+
+        return ImgUtils.performTwoPointTask(
+            listOf(task1, task2, task3), screenBitmap, 0
+        )
+    }
 
 }

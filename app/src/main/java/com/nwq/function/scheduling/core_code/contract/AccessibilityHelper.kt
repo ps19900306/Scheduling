@@ -3,10 +3,7 @@ package com.nwq.function.scheduling.core_code.contract
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityService.*
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.os.Build
-import android.os.Environment
 import android.view.Display
 import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.Coordinate
@@ -15,7 +12,6 @@ import com.nwq.function.scheduling.core_code.click.ClickUtils
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.click.SlideScreenTask
 import com.nwq.function.scheduling.utils.log.L
-import java.time.Duration
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -62,6 +58,14 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     fun saveScreen() {
         acService.performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
     }
+
+    suspend fun click(
+        coordinate: Coordinate,
+        duration: Long = ((Math.random() + 0.5) * 300).toLong()
+    ) {
+        ClickUtils.optClickTasks(acService, ClickTask(listOf(coordinate), 0, duration))
+    }
+
 
     suspend fun click(x: Float, y: Float, duration: Long = ((Math.random() + 0.5) * 300).toLong()) {
         click(x, y, duration, 0)

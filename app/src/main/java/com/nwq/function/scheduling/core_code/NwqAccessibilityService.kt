@@ -16,6 +16,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.log.L
+import com.nwq.function.scheduling.utils.sp.SP
 
 
 /**
@@ -36,7 +37,7 @@ class NwqAccessibilityService : AccessibilityService() {
         }
     }
 
-    fun startOpt(){
+    fun startOpt() {
         ClickTestController(AccessibilityHelper(this@NwqAccessibilityService)).startOperation()
     }
 
@@ -50,9 +51,10 @@ class NwqAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        L.d("", "onServiceConnected", "NwqAccessibilityService", "nwq", "2023/3/1");
         registerReceiver()
         ContextUtil.context = this
-        L.d("", "onServiceConnected", "NwqAccessibilityService", "nwq", "2023/3/1");
+        SP.init(this, TAG)
     }
 
     private fun registerReceiver() {
