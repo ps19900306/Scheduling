@@ -27,8 +27,51 @@ object ImgUtils {
         baseGreen: Int,
         tolerance: Int = 0
     ): Coordinate {
-        return findPointByColor(data.toPixelsInfo(), bitmap, baseRed,baseBlue,baseGreen, tolerance)
+        return findPointByColor(
+            data.toPixelsInfo(),
+            bitmap,
+            baseRed,
+            baseBlue,
+            baseGreen,
+            tolerance
+        )
     }
+
+    //多点多规则颜色判断
+    fun performTwoPointTask(
+        data: List<TwoPointTask>,
+        bitmap: Bitmap,
+        toleranceErrorNumber: Int = 0,//能够容忍几个点颜色不一致
+    ): Boolean {
+        var nowErrorCount = 0
+        data.forEach {
+            if (!performTwoPointTask(it, bitmap)) {
+                nowErrorCount++
+            }
+            if (nowErrorCount > toleranceErrorNumber)
+                return false
+        }
+        return true
+    }
+
+
+    //多点多规则颜色判断
+    fun performTwoPointTask(
+        data: TwoPointTask,
+        bitmap: Bitmap,
+    ): Boolean {
+        val pixel = bitmap.getPixel(data.coordinate1.x.toInt(), data.coordinate1.y.toInt())
+        val pixel1 = bitmap.getPixel(data.coordinate2.x.toInt(), data.coordinate2.y.toInt())
+        return data.twoPointComparison.verificationRule(
+            Color.red(pixel),
+            Color.blue(pixel),
+            Color.green(pixel),
+            Color.red(pixel1),
+            Color.blue(pixel1),
+            Color.green(pixel1),
+        )
+    }
+
 
     //多点多规则颜色判断
     fun performPointsColorVerification(
