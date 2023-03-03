@@ -27,7 +27,13 @@ abstract class TravelController(val helper: AccessibilityHelper) {
         get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.8).toLong()
 
     protected val doubleClickInterval
-        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.6 + 2).toLong()
+        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.6 + 1.8).toLong()
+
+    protected val tripleClickInterval
+        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.8 + 2.6).toLong()
+
+    protected val quadrupleClickInterval
+        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 3.4).toLong()
 
     protected val screenBitmap
         get() = helper.screenBitmap!!
@@ -56,6 +62,14 @@ abstract class TravelController(val helper: AccessibilityHelper) {
     }
 
     //如果截图失败则等待二秒后继续截图
+    suspend fun takeScreen(delayTime: Long) {
+        if (delayTime > 0) {
+            delay(delayTime)
+        }
+        takeScreen()
+    }
+
+    //如果截图失败则等待二秒后继续截图
     suspend fun takeScreen() {
         val bitmap = helper.takeScreen()
         if (bitmap == null) {
@@ -78,6 +92,12 @@ abstract class TravelController(val helper: AccessibilityHelper) {
 
     suspend fun click(area: Area) {
         helper.click(area.coordinate)
+    }
+
+    suspend fun click(area: Area, delayTime: Long = 0) {
+        area.coordinate.let {
+            helper.click(x = it.x, y = it.y, delayTime = delayTime)
+        }
     }
 
     suspend fun click(x: Float, y: Float, delayTime: Long = 0) {

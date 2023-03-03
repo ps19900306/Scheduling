@@ -42,13 +42,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private var nowStep = START_GAME
     var runSwitch = true
     var intoGameStep = LOADING
-    var cancelTask = false
+    var needCancel = false
     var needBackStation = false
     var mNumberOfTasksReceived = 51
     private val visual by lazy {
         FightVisualEnvironment(helper)
     }
-
+    private val constant by lazy {
+        FightConstant()
+    }
 
     /*******************************************************************
      *                        下面都是方法
@@ -71,8 +73,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         pressHomeBtn()
         delay(2000)
         helper.click(
-            (82 + (VisualConstant.APP_LOCATION_X - 1) * 254).toFloat(),
-            (185 + (VisualConstant.APP_LOCATION_Y - 1) * 291).toFloat(), 154, 153
+            (82 + (constant.APP_LOCATION_X - 1) * 254).toFloat(),
+            (185 + (constant.APP_LOCATION_Y - 1) * 291).toFloat(), 154, 153
         )
         delay(doubleClickInterval * 2)
         takeScreen()
@@ -103,16 +105,47 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     suspend fun pickUpTask() {
         if (mNumberOfTasksReceived <= 0) {
-            exitController()
+            exit()
             return
         }
+
         mNumberOfTasksReceived--
         var inSpaceStation = visual.isInSpaceStation()
-        L.i("准备接取任务  inSpaceStation: $inSpaceStation ", "pickUpTask", "FightController", "nwq", "2023/3/2");
+        L.i(
+            "准备接取任务  inSpaceStation: $inSpaceStation ",
+            "pickUpTask",
+            "FightController",
+            "nwq",
+            "2023/3/2"
+        );
+        click(constant.MenuArea)
+        click(constant.FightTaskMenuArea, doubleClickInterval)
+        takeScreen(tripleClickInterval)
+        if (visual.hasReceivedTask()) {
+            if (needCancel) {
+                cancelTask()
+            }
+        }
+
+    }
+
+    suspend fun cancelTask() {
+        click(constant.openTaskArea,normalClickInterval)
+        click(constant.cancelTaskArea,doubleClickInterval)
+        takeScreen(doubleClickInterval)
+        ensureCloseDetermine()
+    }
+
+    suspend fun ensureCloseDetermine(): Boolean {
+        if (visual.isShowDetermine()) {
+            click(constant.dialogDetermineArea)
+            return true
+        }
+        return false
     }
 
 
-    suspend fun exitController() {
+    suspend fun exit() {
 
     }
 

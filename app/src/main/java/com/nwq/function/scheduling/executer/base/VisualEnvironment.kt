@@ -27,6 +27,16 @@ abstract class VisualEnvironment(val helper: AccessibilityHelper) {
     }
 
     fun verificationTask(
+        x: Int,
+        y: Int,
+        rule: ColorIdentificationRule,
+        range: Int = 0,
+    ): PointColorVerification {
+        return PointColorVerification.CoordinateRule(Coordinate(x.toFloat(), y.toFloat()), rule, range)
+    }
+
+
+    fun verificationTask(
         x: Float,
         y: Float,
         colorRule: String,
@@ -34,5 +44,15 @@ abstract class VisualEnvironment(val helper: AccessibilityHelper) {
         range: Int = 0,
     ): PointColorVerification {
         return PointColorVerification.CoordinateColor(Coordinate(x, y), colorRule, tolerance, range)
+    }
+
+    fun verificationTask(
+        x: Int,
+        y: Int,
+        colorRule: String,
+        tolerance: Int = 5,
+        range: Int = 0,
+    ): PointColorVerification {
+        return PointColorVerification.CoordinateColor(Coordinate(x.toFloat(), y.toFloat()), colorRule, tolerance, range)
     }
 }

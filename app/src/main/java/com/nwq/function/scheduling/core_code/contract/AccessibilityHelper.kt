@@ -81,7 +81,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         click(newX, newY, duration, 0)
     }
 
-    suspend fun click(x: Float, y: Float, duration: Long, delayTime: Long) {
+    suspend fun click(x: Float, y: Float, duration: Long = ((Math.random() + 0.5) * 300).toLong(), delayTime: Long) {
         val coordinate = Coordinate(x, y)
         val task = ClickTask(listOf(coordinate), delayTime, duration)
         ClickUtils.optClickTasks(acService, task)

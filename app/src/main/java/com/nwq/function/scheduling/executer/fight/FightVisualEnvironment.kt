@@ -9,6 +9,7 @@ import com.nwq.function.scheduling.executer.base.VisualEnvironment
 import com.nwq.function.scheduling.executer.fight.rule.AllGreater10Comparison
 import com.nwq.function.scheduling.executer.fight.rule.AllOver110Rule
 import com.nwq.function.scheduling.executer.fight.rule.AllLess50Rule
+import com.nwq.function.scheduling.executer.fight.rule.AllOver200Rule
 
 /**
 create by: 86136
@@ -56,8 +57,8 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         return -1
     }
 
-
-     fun isInSpaceStation(): Boolean {
+    //是否已经进入空间站 TODO 需要优化取点过多
+    fun isInSpaceStation(): Boolean {
         return ImgUtils.findColorLike(PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ae9328", 5)
                 || ImgUtils.findColorLike(
             PixelsInfo(2022, 333, 110, 56),
@@ -67,7 +68,35 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
-    //下面是私有方法
+
+    //是否已经 TODO 需要优化取点过多
+    fun hasReceivedTask(): Boolean {
+        val list = listOf(
+            verificationTask(1424, 787, AllOver200Rule),
+            verificationTask(1492, 785, AllOver200Rule),
+            verificationTask(1628, 789, AllOver200Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isShowDetermine(): Boolean {
+        val list = listOf(
+            verificationTask(2118, 780, "#ff2d5a55"),
+            verificationTask(2013, 843, "#ff33615d"),
+            verificationTask(2215, 849, "#ff315f5a"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    /**
+     * 下面是私有方法
+     */
+    //有已经锁定的目标
     private fun hasTarget(index: Int): Boolean {
         var a1 = Coordinate((2233 - (index * 121)).toFloat(), 91F)
         var a = Coordinate((2229 - (index * 121)).toFloat(), 89F)
@@ -86,6 +115,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
+    //有未锁定的目标
     private fun hasUnTarget(index: Int): Boolean {
         var a1 = Coordinate((2246 - (index * 121)).toFloat(), 85F)
         var a = Coordinate((2250 - (index * 121)).toFloat(), 85F)
@@ -103,5 +133,6 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             listOf(task1, task2, task3), screenBitmap, 0
         )
     }
+
 
 }
