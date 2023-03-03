@@ -126,12 +126,20 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 cancelTask()
             }
         }
+        click(constant.newTaskListArea, doubleClickInterval)
+        if (needRefreshTask()) {
+            click(constant.refreshTaskListArea, doubleClickInterval)
+        }
 
     }
 
+    private fun needRefreshTask(): Boolean {
+        return true
+    }
+
     suspend fun cancelTask() {
-        click(constant.openTaskArea,normalClickInterval)
-        click(constant.cancelTaskArea,doubleClickInterval)
+        click(constant.openTaskArea, normalClickInterval)
+        click(constant.cancelTaskArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
     }

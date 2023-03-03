@@ -13,4 +13,14 @@ class FightConstant {
     var cancelTaskArea=Area(1740, 201, 212, 67)
 
     var dialogDetermineArea=Area(2000, 770, 250, 90)
+
+    var newTaskListArea=Area(1257, 753, 555, 83)
+
+    var refreshTaskListArea=Area(1319, 185, 220, 70)
+
+    var pickTaskArea=Area(570, 668, 444, 25)
+
+    var openTaskRightArea=Area(2085, 326, 303, 120)
+
+    var openTaskDetermineArea=Area(1607, 869, 331, 87)
 }
