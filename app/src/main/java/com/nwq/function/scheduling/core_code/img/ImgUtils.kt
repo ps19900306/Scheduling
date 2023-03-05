@@ -72,6 +72,16 @@ object ImgUtils {
         )
     }
 
+    //多个点找一个颜色 如果一个符合则返回True
+    fun performPointsColorVerificationV2(
+        data: List<PointColorVerification>,
+        bitmap: Bitmap
+    ): Boolean {
+        return data.find {
+            performPointColorVerification(it, bitmap)
+        } != null
+    }
+
 
     //多点多规则颜色判断
     fun performPointsColorVerification(

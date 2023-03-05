@@ -6,10 +6,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.TwoPointTask
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
-import com.nwq.function.scheduling.executer.fight.rule.AllGreater10Comparison
-import com.nwq.function.scheduling.executer.fight.rule.AllOver110Rule
-import com.nwq.function.scheduling.executer.fight.rule.AllLess50Rule
-import com.nwq.function.scheduling.executer.fight.rule.AllOver200Rule
+import com.nwq.function.scheduling.executer.fight.rule.*
 
 /**
 create by: 86136
@@ -19,7 +16,6 @@ Function description:
  */
 
 class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(helper) {
-
 
     //是否有全部锁定按钮
     fun hasGroupLock(): Boolean {
@@ -43,28 +39,24 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun getTagNumber(): Int {
         for (i in 8 downTo 0) {
-            if (hasTarget(i))
-                return i
+            if (hasTarget(i)) return i
         }
         return -1
     }
 
     fun getUnTagNumber(): Int {
         for (i in 8 downTo 0) {
-            if (hasUnTarget(i))
-                return i
+            if (hasUnTarget(i)) return i
         }
         return -1
     }
 
     //是否已经进入空间站 TODO 需要优化取点过多
     fun isInSpaceStation(): Boolean {
-        return ImgUtils.findColorLike(PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ae9328", 5)
-                || ImgUtils.findColorLike(
-            PixelsInfo(2022, 333, 110, 56),
-            screenBitmap,
-            "#ae9328",
-            5
+        return ImgUtils.findColorLike(
+            PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ae9328", 5
+        ) || ImgUtils.findColorLike(
+            PixelsInfo(2022, 333, 110, 56), screenBitmap, "#ae9328", 5
         )
     }
 
@@ -86,6 +78,180 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             verificationTask(2118, 780, "#ff2d5a55"),
             verificationTask(2013, 843, "#ff33615d"),
             verificationTask(2215, 849, "#ff315f5a"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        ) || isClosePositionMenuGray()
+    }
+
+
+    fun isOpenBigMenu(): Boolean {
+        val list = listOf(
+            verificationTask(172, 48, "#ffe3ebea"),
+            verificationTask(172, 55, "#ff337064"),
+            verificationTask(166, 60, "#ffe3ebe9"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    fun isHighTask(): Boolean {
+        val list = listOf(
+            verificationTask(628, 333, AllOver110Rule),
+            verificationTask(628, 341, AllLess50Rule),
+            verificationTask(628, 349, AllOver110Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isHighTaskRight(): Boolean {
+        val list = listOf(
+            verificationTask(2142, 2142, AllOver110Rule),
+            verificationTask(2142, 390, AllLess50Rule),
+            verificationTask(2142, 399, AllOver110Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    //确保存在眼睛菜单
+    fun hasEyesMenu(): Boolean {
+        if (isCloseEyesMenu() || isOpenEyesMenu()) {
+            return true
+        } else { //这个就是说不存在菜单则以此判断为不再太空
+            return false
+        }
+    }
+
+    fun isCloseEyesMenu(): Boolean {
+        val list = listOf(
+            verificationTask(2221, 605, "#ffa2a2a2"),
+            verificationTask(2248, 605, "#ff9f9f9f"),
+            verificationTask(2234, 605, "#ff9f9f9f"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 1
+        )
+    }
+
+
+
+
+    fun judeIsOpenBottom(indx: Int): Boolean {
+        val list = listOf(
+            verificationTask(1688 + indx * 109, 949, isOpenRule),
+            verificationTask(1689 + indx * 109, 950, isOpenRule),
+            verificationTask(1690 + indx * 109, 950, isOpenRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 1
+        )
+    }
+
+    fun judeIsOpenTop(indx: Int): Boolean {
+        val list = listOf(
+            verificationTask(1688 + indx * 109, 836, isOpenRule),
+            verificationTask(1690 + indx * 109, 836, isOpenRule),
+            verificationTask(1692 + indx * 109, 836, isOpenRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 1
+        )
+    }
+
+    fun isOpenEyesMenu(): Boolean {
+        val list = listOf(
+            verificationTask(1843, 605, "#ffa2a2a2"),
+            verificationTask(1856, 605, "#ff9f9f9f"),
+            verificationTask(1869, 605, "#ff9f9f9f"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 1
+        )
+    }
+
+    //判断菜单是否是打开的
+    fun isOpenPostionMenuGray(): Boolean {
+        val list = listOf(
+            verificationTask(491, 301, "#ff37383a"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    //判断菜单是否是关闭
+    fun isClosePositionMenu(): Boolean {
+        val list = listOf(
+            verificationTask(136, 301, "#ff9ca0a5"),
+        )
+        val list1 = listOf(
+            verificationTask(491, 301, "#ffd6d7d7"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        ) && !ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
+
+
+    //判断菜单是否是关闭 此时弹出了确定框
+    fun isClosePositionMenuGray(): Boolean {
+        val list = listOf(
+            verificationTask(136, 301, "#ff37383a"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    fun hasLeftDialogue(): Boolean {
+        val list = listOf(
+            verificationTask(906, 531, DialogueColorRule),
+            verificationTask(928, 531, DialogueColorRule),
+            verificationTask(951, 531, DialogueColorRule),
+        )
+        return ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap
+        )
+    }
+
+    fun hasRightDialogue(): Boolean {
+        val list = listOf(
+            verificationTask(2011, 469, DialogueColorRule),
+            verificationTask(2033, 469, DialogueColorRule),
+            verificationTask(2058, 469, DialogueColorRule),
+        )
+        return ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap
+        )
+    }
+
+    //判断所有的任务是否已经完成
+    fun isCompleteAllTask(): Boolean {
+        val list = listOf(
+            verificationTask(1025, 220, RedRule),
+            verificationTask(1075, 220, RedRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    //判断所有的任务是否可以刷新
+    fun canRefresh(): Boolean {
+        val list = listOf(
+            verificationTask(1348, 233, AllOver110Rule),
+            verificationTask(1346, 210, AllOver110Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0

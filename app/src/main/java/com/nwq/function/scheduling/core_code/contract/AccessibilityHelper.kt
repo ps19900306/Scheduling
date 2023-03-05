@@ -19,7 +19,8 @@ import kotlin.coroutines.suspendCoroutine
 class AccessibilityHelper(val acService: AccessibilityService) {
 
     var screenBitmap: Bitmap? = null
-
+    val defultClickDuration
+    get() = ((Math.random()*0.5 + 0.5) * 300).toLong()
     //这里跟新截图信息
     @RequiresApi(Build.VERSION_CODES.R)
     suspend fun takeScreen(): Bitmap? = suspendCoroutine {
@@ -61,7 +62,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
 
     suspend fun click(
         coordinate: Coordinate,
-        duration: Long = ((Math.random() + 0.5) * 300).toLong()
+        duration: Long = defultClickDuration
     ) {
         ClickUtils.optClickTasks(acService, ClickTask(listOf(coordinate), 0, duration))
     }
@@ -72,7 +73,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     }
 
     suspend fun click(x: Float, y: Float, with: Int, height: Int) {
-        click(x, y, with, height, ((Math.random() + 0.5) * 300).toLong())
+        click(x, y, with, height, defultClickDuration)
     }
 
     suspend fun click(x: Float, y: Float, with: Int, height: Int, duration: Long) {
@@ -81,7 +82,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         click(newX, newY, duration, 0)
     }
 
-    suspend fun click(x: Float, y: Float, duration: Long = ((Math.random() + 0.5) * 300).toLong(), delayTime: Long) {
+    suspend fun click(x: Float, y: Float, duration: Long = defultClickDuration, delayTime: Long) {
         val coordinate = Coordinate(x, y)
         val task = ClickTask(listOf(coordinate), delayTime, duration)
         ClickUtils.optClickTasks(acService, task)
