@@ -141,8 +141,6 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
 
-
-
     fun judeIsOpenBottom(indx: Int): Boolean {
         val list = listOf(
             verificationTask(1688 + indx * 109, 949, isOpenRule),
@@ -235,6 +233,45 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             list, screenBitmap
         )
     }
+
+    fun shieldTooLow(): Boolean {
+        val list = listOf(
+            verificationTask(1126, 995, RedRule),
+            verificationTask(1232, 855, RedRule),
+        )
+        return ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap
+        )
+    }
+
+    fun shieldFull(): Boolean {
+        val list = listOf(
+            verificationTask(1250, 864, AllOver170Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun armorTooLow(): Boolean {
+        val list = listOf(
+            verificationTask(1139, 993, RedRule),
+            verificationTask(1224, 864, RedRule),
+        )
+        return ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap
+        )
+    }
+
+    fun armorFull(): Boolean {
+        val list = listOf(
+            verificationTask(1244, 874, AllOver170Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
 
     //判断所有的任务是否已经完成
     fun isCompleteAllTask(): Boolean {

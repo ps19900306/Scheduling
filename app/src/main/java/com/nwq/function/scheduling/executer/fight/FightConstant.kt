@@ -42,4 +42,12 @@ class FightConstant {
 
     var lockTargetGroupArea= Area(1395, 639, 92, 94)
 
+
+    fun getTopEquipArea(index:Int):Area{
+        return Area(640 + 109 * index, 832, 95, 96)
+    }
+
+    fun getBottomEquipArea(index:Int):Area{
+        return Area(1640 + 109 * index, 947, 96, 94)
+    }
 }

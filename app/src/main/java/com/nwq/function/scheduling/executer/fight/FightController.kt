@@ -42,6 +42,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val STATUS_DETERMINATION = 1000000//这个是进行状态判定
     private val receiveAdvancedTasks = false //是否接受高级任务
 
+    val UNKNOWN_STATE = 0
+    val OFF_STATE = 1
+    val ON_STATE = 2
+    var maintenanceStatus = UNKNOWN_STATE
+    var maintenanceTimeStartStamp = 0L
+    var MAINTENANCE_INTERVAL = 30000L //维修间隔
 
     /**
      * 这个是控制变量
@@ -58,6 +64,30 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val constant by lazy {
         FightConstant()
     }
+
+    //后面这里由外部读取数据进行初始化
+    private val wholeBattleOpenList by lazy {
+        listOf(2 + BotOfst, TopOfst + 2)
+    }
+    private val roundBattleOpenList by lazy {
+        listOf(5 + BotOfst, 6 + BotOfst)
+    }
+    private val timeOnOpenList1 by lazy {
+        listOf(TopOfst + 5, TopOfst + 6)
+    }
+    private val timeOnOpenList2 by lazy {
+        listOf<Int>()
+    }
+    private val timeOnOpenList3 by lazy {
+        listOf<Int>(1 + BotOfst, 4 + BotOfst)
+    }
+    private val catchFoodList by lazy {
+        listOf<Int>(1 + BotOfst, 4 + BotOfst)
+    }
+    private val maintenanceDevicePosition = TopOfst + 1
+    private val weaponPosition = BotOfst + 3
+    var isShieldResistance = false//是否护盾抗
+
 
     /*******************************************************************
      *                        下面都是方法
@@ -78,6 +108,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 BATTLE_NAVIGATION_MONITORING -> {
                     SPRepo.lastPickUpTaskTimeSp = System.currentTimeMillis()
                     startNavigationMonitoring()
+                }
+                COMBAT_MONITORING -> {
+                    combatMonitoring()
                 }
                 ABNORMAL_STATE -> {
 
@@ -238,6 +271,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     var targetReduceTime = 0L //这个是上次目标减少的时间
     var targetCount = 0
     var hasNewLock = false
+    var useUnlock = true //是否使用右上角的未锁定数进行锁定
     suspend fun combatMonitoring() {
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
             nowStep = ABNORMAL_STATE
@@ -253,22 +287,122 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 takeScreen(doubleClickInterval)
                 targetCount = visual.getTagNumber()
                 if (targetCount > 1) {//锁定成功了
-                    mEnterCombatStatus = true
                     System.currentTimeMillis().let {
                         roundStartTime = it
                         targetReduceTime = it
                     }
+                    mEnterCombatStatus = true
                     hasNewLock = true
-
+                    openTheWholeBattle()
+                    useUnlock = true
+                } else if (visual.getTagNumber() > 3) {
+                    System.currentTimeMillis().let {
+                        roundStartTime = it
+                        targetReduceTime = it
+                    }
+                    openTheWholeBattle()
+                    mEnterCombatStatus = true
+                    useUnlock = true
+                } else {
+                    //没有锁定上继续导航
+                    useUnlock = false
                 }
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {
                 nowStep = ABNORMAL_STATE
             }
         } else {
+            if (canLockTarget()) {//可以进行锁定
+                click(constant.lockTargetGroupArea, normalClickInterval)
+                takeScreen(doubleClickInterval)
+                val nowTargetCount = visual.getTagNumber()
+                System.currentTimeMillis().let {
+                    roundStartTime = it
+                    targetReduceTime = it
+                }
+                if (targetCount <= 1 && nowTargetCount >= 1) {
+                    hasNewLock = true
+                    openTheWholeBattle()
+                    targetCount = nowTargetCount
+                } else if (targetCount >= 4 && hasNewLock) {
+                    openDecelerationNet()
+                    hasNewLock = false
+                } else {//这里要做异常处理了
 
+                }
+            } else {//状态监控
+                val needCheckOpenList = mutableListOf<Int>()
+                val needCheckCloseList = mutableListOf<Int>()
+                val nowTargetCount = visual.getTagNumber()
+                if (nowTargetCount > 0) {
+                    if (nowTargetCount < targetCount) {
+                        targetReduceTime = System.currentTimeMillis()
+                        if (hasNewLock) {
+                            hasNewLock = false
+                            needCheckOpenList.addAll(catchFoodList)
+                        }
+                    } else if (nowTargetCount == targetCount && System.currentTimeMillis() - targetReduceTime > 60 * 1000L) {
+                        needCheckOpenList.addAll(catchFoodList)
+                    }
+                    needCheckOpenList.addAll(wholeBattleOpenList)
+                    needCheckOpenList.addAll(roundBattleOpenList)
+                    needCheckOpenList.add(weaponPosition)
+                    bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
+                } else {
+
+                }
+            }
         }
     }
 
+    suspend fun bloodVolumeMonitoring(
+        needCheckOpenList: MutableList<Int>,
+        needCheckCloseList: MutableList<Int>
+    ) {
+        if (System.currentTimeMillis() - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
+            return
+        }
+        if (isShieldResistance) {
+            if (visual.shieldTooLow()) {
+                needCheckOpenList.add(maintenanceDevicePosition)
+            } else if (visual.shieldFull()) {
+                needCheckCloseList.add(maintenanceDevicePosition)
+            } else {
+
+            }
+        } else {
+            if (visual.armorTooLow()) {
+                needCheckOpenList.add(maintenanceDevicePosition)
+            } else if (visual.armorFull()) {
+                needCheckCloseList.add(maintenanceDevicePosition)
+            } else {
+
+            }
+        }
+    }
+
+
+    //战斗开始时候需要开启的
+    suspend fun openDecelerationNet() {
+        clickEquipArray(openCheckEquipTimes(2, catchFoodList))
+    }
+
+    //战斗开始时候需要开启的
+    suspend fun openTheWholeBattle() {
+        clickEquipArray(openCheckEquipTimes(2, wholeBattleOpenList, roundBattleOpenList))
+    }
+
+    suspend fun openCheckEquipTimes(times: Int, vararg data: List<Int>): List<Int> {
+        var list = listOf<Int>()
+        for (i in 0 until times) {
+            val result = checkEquipStatusClose(wholeBattleOpenList, roundBattleOpenList)
+            list = if (i == 0) {
+                result
+            } else {
+                list.filter { result.contains(it) }
+            }
+        }
+        return list
+    }
 
     //pickUp 是否是接取任务
     suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
@@ -304,7 +438,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
     private fun needRefreshTask(): Boolean {
-        return System.currentTimeMillis() - lastRefreshTimeSp > constant.REFRESH_INTERVAL
+        return System.currentTimeMillis() - lastRefreshTimeSp > constant.REFRESH_INTERVAL && visual.canRefresh()
     }
 
 
@@ -312,10 +446,10 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         return visual.hasGroupLock() || (visual.isClosePositionMenu() && visual.getTagNumber() > 2 && visual.getTagNumber() < 2)
     }
 
-    suspend private fun canLockTargetDelay(): Boolean {
+    private suspend fun canLockTargetDelay(): Boolean {
         return if (visual.hasGroupLock()) {
             true
-        } else if (visual.isClosePositionMenu() && visual.getTagNumber() > 2 && visual.getTagNumber() < 2) {
+        } else if (useUnlock && visual.isClosePositionMenu() && visual.getTagNumber() > 2 && visual.getTagNumber() < 2) {
             delay(10 * 1000)
             true
         } else {
@@ -352,62 +486,53 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         }
     }
 
-    //战斗开始时候需要开启的
-    fun openTheWholeBattle() {
-//        openArrayJudeFirst(wholeBattleOpen)
-//        if (mNeedPickUpBox) {
-//            openBottom(5)
-//        }
+    //获取是关闭的状态
+    fun checkEquipStatusClose(vararg data: List<Int>): List<Int> {
+        val unOpenList = mutableListOf<Int>()
+        data.forEach {
+            it.forEach { index ->
+                if (!judeIsOpen(index)) {
+                    unOpenList.add(index)
+                }
+            }
+        }
+        return unOpenList
     }
 
-//    fun openArrayJudeOne(list: List<Int>?) {
-//        if (list.isNullOrEmpty()) {
-//            return
-//        }
-//        list.find { data ->
-//            if (data < TopOfst) {
-//                judeTimes(data)) {//已经开启所以
-//
-//            } else {
-//                if (judeTopTimes(data - TopOfst - 1)) {//已经开启所以
-//                    return
-//                }
-//            }
-//        }
-//
-//        var data = arry[0];
-//        if (data < TopOfst) {
-//            if (judeTimes(data)) {//已经开启所以
-//                return
-//            }
-//        } else {
-//            if (judeTopTimes(data - TopOfst - 1)) {//已经开启所以
-//                return
-//            }
-//        }
-//        for (let i = 0, len = arry.length; i < len; i++) {
-//            data = arry[i]
-//            if (data < TopOfst && (!mNeedPickUpBox || data != 5)) {
-//                openBottom(data)
-//            } else {
-//                openTop(data - TopOfst - 1)
-//            }
-//        }
-//    }
+    //获取是开启的状态
+    fun checkEquipStatusOpen(vararg data: List<Int>): List<Int> {
+        val unOpenList = mutableListOf<Int>()
+        data.forEach {
+            it.forEach { index ->
+                if (judeIsOpen(index)) {
+                    unOpenList.add(index)
+                }
+            }
+        }
+        return unOpenList
+    }
 
-//    suspend fun judeTimes(): Boolean {
-//        takeScreen(normalClickInterval) {
-//
-//        }
-//        var flag1 = judeIsOpen(captureScreen(), indx)
-//        if (flag1) {
-//            return flag1
-//        }
-//        sleep(clickInterval())
-//        flag1 = judeIsOpen(captureScreen(), indx)
-//        return flag1
-//    }
+    suspend fun clickEquipArray(list: List<Int>) {
+        list.forEach {
+            clickEquip(it)
+        }
+    }
 
+    private suspend fun clickEquip(index: Int) {
+        if (index < TopOfst) {
+            click(constant.getBottomEquipArea(index), fastClickInterval)
+        } else {
+            click(constant.getTopEquipArea(index - TopOfst - 1), fastClickInterval)
+        }
+    }
+
+    fun judeIsOpen(index: Int): Boolean {
+        return if (index < TopOfst) {
+            visual.judeIsOpenBottom(index)
+        } else {
+            visual.judeIsOpenTop(index - TopOfst - 1)
+        }
+    }
 
     suspend fun exit() {
         runSwitch = false
