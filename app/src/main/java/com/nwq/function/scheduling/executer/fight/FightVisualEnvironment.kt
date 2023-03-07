@@ -338,4 +338,30 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
 
+    fun judeNowAttackPosition(index: Int): Boolean {
+        val list = listOf(
+            verificationTask(2245 - (index * 130), 113, NowAttackRule1),
+            verificationTask(2246 - (index * 130), 111, NowAttackRule1),
+            verificationTask(2241 - (index * 130), 117, NowAttackRule2),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun judeIsSmall(index: Int): Boolean {
+        val list = listOf(
+            verificationTask((1950 + 260 - 130 * index), 95, RedRule),
+            verificationTask((1940 + 260 - 130 * index), 95, RedRule),
+            verificationTask((1945 + 260 - 130 * index), 101, RedRule),
+            verificationTask((1945 + 260 - 130 * index), 103, NotRedRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+
+
 }

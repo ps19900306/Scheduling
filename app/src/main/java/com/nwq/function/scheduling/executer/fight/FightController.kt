@@ -2,6 +2,7 @@ package com.nwq.function.scheduling.executer.fight
 
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
+import com.nwq.function.scheduling.executer.base.VisualEnvironment
 import com.nwq.function.scheduling.utils.log.L
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepo.lastRefreshTimeSp
@@ -332,6 +333,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             } else {//状态监控
                 val needCheckOpenList = mutableListOf<Int>()
                 val needCheckCloseList = mutableListOf<Int>()
+                val optList = mutableListOf<Int>()
                 val nowTargetCount = visual.getTagNumber()
                 if (nowTargetCount > 0) {
                     if (nowTargetCount < targetCount) {
@@ -346,8 +348,11 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
+
                     bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
+                    clickEquipArray(checkEquipTimes(2, needCheckOpenList, needCheckCloseList))
                 } else {
+
 
                 }
             }
@@ -391,10 +396,36 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         clickEquipArray(openCheckEquipTimes(2, wholeBattleOpenList, roundBattleOpenList))
     }
 
+
+    suspend fun checkEquipTimes(times: Int, closeData: List<Int>, openData: List<Int>): List<Int> {
+        var list = mutableListOf<Int>()
+        var list2 = mutableListOf<Int>()
+        for (i in 0 until times) {
+            takeScreen(normalClickInterval)
+            val result = checkEquipStatusClose(closeData)
+            list = if (i == 0) {
+                result
+            } else {
+                list.filter { result.contains(it) }.toMutableList()
+            }
+
+            val result2 = checkEquipStatusOpen(openData)
+            list2 = if (i == 0) {
+                result
+            } else {
+                list2.filter { result.contains(it) }.toMutableList()
+            }
+        }
+        list.addAll(list2)
+        return list
+    }
+
+
     suspend fun openCheckEquipTimes(times: Int, vararg data: List<Int>): List<Int> {
         var list = listOf<Int>()
         for (i in 0 until times) {
-            val result = checkEquipStatusClose(wholeBattleOpenList, roundBattleOpenList)
+            takeScreen(normalClickInterval)
+            val result = checkEquipStatusClose(*data)
             list = if (i == 0) {
                 result
             } else {
@@ -487,7 +518,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
     //获取是关闭的状态
-    fun checkEquipStatusClose(vararg data: List<Int>): List<Int> {
+    private fun checkEquipStatusClose(vararg data: List<Int>): MutableList<Int> {
         val unOpenList = mutableListOf<Int>()
         data.forEach {
             it.forEach { index ->
@@ -499,8 +530,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         return unOpenList
     }
 
+
     //获取是开启的状态
-    fun checkEquipStatusOpen(vararg data: List<Int>): List<Int> {
+    private fun checkEquipStatusOpen(vararg data: List<Int>): MutableList<Int> {
         val unOpenList = mutableListOf<Int>()
         data.forEach {
             it.forEach { index ->
@@ -512,17 +544,17 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         return unOpenList
     }
 
-    suspend fun clickEquipArray(list: List<Int>) {
+    suspend fun clickEquipArray(list: List<Int>, delay: Long = fastClickInterval) {
         list.forEach {
-            clickEquip(it)
+            clickEquip(it, delay)
         }
     }
 
-    private suspend fun clickEquip(index: Int) {
+    private suspend fun clickEquip(index: Int, delay: Long) {
         if (index < TopOfst) {
-            click(constant.getBottomEquipArea(index), fastClickInterval)
+            click(constant.getBottomEquipArea(index), delay)
         } else {
-            click(constant.getTopEquipArea(index - TopOfst - 1), fastClickInterval)
+            click(constant.getTopEquipArea(index - TopOfst - 1), delay)
         }
     }
 
@@ -533,6 +565,28 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             visual.judeIsOpenTop(index - TopOfst - 1)
         }
     }
+
+    fun isAttackSmallShip(): Boolean {
+        var position = getNowAttackPosition()
+        if (position > 0) {
+            var result = visual.judeIsSmall(position - 1)
+            // log("正在攻击目标" + position + "是否是小船" + result)
+            return result
+        } else {
+            return false
+        }
+    }
+
+    fun getNowAttackPosition(): Int {
+        var index = targetCount
+        var flag = false
+        do {
+            index--
+            flag = !visual.judeNowAttackPosition(index)
+        } while (!flag && index >= 0)
+        return index + 1
+    }
+
 
     suspend fun exit() {
         runSwitch = false
