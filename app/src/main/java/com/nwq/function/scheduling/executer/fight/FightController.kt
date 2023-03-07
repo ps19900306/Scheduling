@@ -82,11 +82,26 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val timeOnOpenList3 by lazy {
         listOf<Int>(1 + BotOfst, 4 + BotOfst)
     }
+
+    // 默认是电池的
+    var CombatStamp_1 = 0L
+    val BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
+
+    // 默认是武器的
+    var CombatStamp_2 = 0L
+    val BASIC_COMBAT_INTERVAL_2 = 170 * 1000L
+
+    // 默认是转速的
+    var CombatStamp_3 = 0L
+    val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
+    val Equipment_Interval = 30 * 1000L
+
     private val catchFoodList by lazy {
         listOf<Int>(1 + BotOfst, 4 + BotOfst)
     }
     private val maintenanceDevicePosition = TopOfst + 1
     private val weaponPosition = BotOfst + 3
+    private val cellPosition = BotOfst + 5
     var isShieldResistance = false//是否护盾抗
 
 
@@ -336,32 +351,97 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 val optList = mutableListOf<Int>()
                 val nowTargetCount = visual.getTagNumber()
                 if (nowTargetCount > 0) {
-                    if (nowTargetCount < targetCount) {
+                    if (catchFoodList.size == 0) {
+
+                    } else if (nowTargetCount < targetCount) {
                         targetReduceTime = System.currentTimeMillis()
                         if (hasNewLock) {
                             hasNewLock = false
                             needCheckOpenList.addAll(catchFoodList)
                         }
-                    } else if (nowTargetCount == targetCount && System.currentTimeMillis() - targetReduceTime > 60 * 1000L) {
+                    } else if (System.currentTimeMillis() - targetReduceTime > 60 * 1000L && nowTargetCount == targetCount || isAttackSmallShip()) {
+                        targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
                     }
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
 
+                    checkTimingOnList(needCheckOpenList)
+
                     bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
                     clickEquipArray(checkEquipTimes(2, needCheckOpenList, needCheckCloseList))
                 } else {
-
-
+                    needCheckOpenList.addAll(wholeBattleOpenList)
+                    needCheckOpenList.addAll(roundBattleOpenList)
+                    needCheckOpenList.add(weaponPosition)
+                    val closeList = checkEquipTimes(3, needCheckOpenList, null)
+                    if (closeList.contains(weaponPosition) && closeList.contains(cellPosition)) {//这里表示已经关闭的
+                        if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
+                            //这里要做异常处理了 这里表示战斗结束了
+                        }
+                    } else {
+                        clickEquipArray(closeList)
+                    }
                 }
             }
         }
     }
 
+    fun checkTimingOnList(needCheckOpenList: MutableList<Int>) {
+        if (targetCount <= 1) {
+            return
+        }
+        var nowTime = System.currentTimeMillis()
+        if (checkTimeOn(
+                timeOnOpenList3, nowTime, CombatStamp_3, BASIC_COMBAT_INTERVAL_3, needCheckOpenList
+            )
+        ) {
+            CombatStamp_3 = nowTime
+        }
+        if (checkTimeOn(
+                timeOnOpenList2, nowTime, CombatStamp_2, BASIC_COMBAT_INTERVAL_2, needCheckOpenList
+            )
+        ) {
+            CombatStamp_2 = nowTime
+        }
+        if (checkTimeOn(
+                timeOnOpenList1, nowTime, CombatStamp_1, BASIC_COMBAT_INTERVAL_1, needCheckOpenList
+            )
+        ) {
+            CombatStamp_1 = nowTime
+        }
+    }
+
+
+    fun checkTimeOn(
+        list: List<Int>,
+        nowtime: Long,
+        lastTime: Long,
+        combatInterval: Long,
+        needCheckOpenList: MutableList<Int>
+    ): Boolean {
+        // log("openArrayV2")
+        var flag = false
+        if (list.isNullOrEmpty()) { //true
+            return flag
+        }
+        val intervalTime = nowtime - lastTime
+        list.forEachIndexed { i, d ->
+            if (i == 0) {
+                if (intervalTime > combatInterval) {
+                    needCheckOpenList.add(0, d)
+                    flag = true
+                }
+            } else if (intervalTime in (i * Equipment_Interval)..(i + 1 * Equipment_Interval)) {
+                needCheckOpenList.add(0, d)
+            }
+        }
+        return flag
+    }
+
     suspend fun bloodVolumeMonitoring(
-        needCheckOpenList: MutableList<Int>,
-        needCheckCloseList: MutableList<Int>
+        needCheckOpenList: MutableList<Int>, needCheckCloseList: MutableList<Int>
     ) {
         if (System.currentTimeMillis() - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
             return
@@ -397,23 +477,28 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
 
-    suspend fun checkEquipTimes(times: Int, closeData: List<Int>, openData: List<Int>): List<Int> {
+    suspend fun checkEquipTimes(
+        times: Int, closeData: List<Int>?, openData: List<Int>?
+    ): List<Int> {
         var list = mutableListOf<Int>()
         var list2 = mutableListOf<Int>()
         for (i in 0 until times) {
             takeScreen(normalClickInterval)
-            val result = checkEquipStatusClose(closeData)
-            list = if (i == 0) {
-                result
-            } else {
-                list.filter { result.contains(it) }.toMutableList()
+            closeData?.let {
+                val result = checkEquipStatusClose(closeData)
+                list = if (i == 0) {
+                    result
+                } else {
+                    list.filter { result.contains(it) }.toMutableList()
+                }
             }
-
-            val result2 = checkEquipStatusOpen(openData)
-            list2 = if (i == 0) {
-                result
-            } else {
-                list2.filter { result.contains(it) }.toMutableList()
+            openData?.let {
+                val result2 = checkEquipStatusOpen(openData)
+                list2 = if (i == 0) {
+                    result2
+                } else {
+                    list2.filter { result2.contains(it) }.toMutableList()
+                }
             }
         }
         list.addAll(list2)
