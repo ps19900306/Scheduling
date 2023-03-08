@@ -10,7 +10,7 @@ class FightConstant {
     var NAVIGATING_EXCEPTION = 40 * 60 * 1000L
     var INTO_BATTLE_EXCEPTION = 5 * 60 * 1000L
     var MAX_BATTLE_TIME = 30 * 60 * 1000L
-
+    var WAREHOUSE_INDEX = 0 //基地坐标
 
     var MenuArea = Area(84, 3, 198, 120)
     var FightTaskMenuArea = Area(84, 3, 198, 120)
@@ -40,14 +40,21 @@ class FightConstant {
     var pickUpTask1Area = Area(570, 668, 444, 25)
     var pickUpTask2Area = Area(1031, 666, 444, 25)
 
-    var lockTargetGroupArea= Area(1395, 639, 92, 94)
+    var lockTargetGroupArea = Area(1395, 639, 92, 94)
 
+    var eraseWarningArea = Area(102, 262, 64, 70)
 
-    fun getTopEquipArea(index:Int):Area{
+    var defaultCoordinateMenuArea = Area(472, 226, 65, 65)
+
+    fun getTopEquipArea(index: Int): Area {
         return Area(640 + 109 * index, 832, 95, 96)
     }
 
-    fun getBottomEquipArea(index:Int):Area{
+    fun getBottomEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 947, 96, 94)
+    }
+
+    fun getAddressArea(index: Int): Area {
+        return Area(431, 425 + (index * 75), 75, 59)
     }
 }

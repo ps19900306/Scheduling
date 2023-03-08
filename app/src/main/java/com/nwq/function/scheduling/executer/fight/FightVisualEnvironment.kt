@@ -184,6 +184,52 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
+    //是不是默认的坐标菜单
+    fun isDefaultCoordinateMenu(): Boolean {
+        val list = listOf(
+            verificationTask(128, 358, "#ff326e64"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    //判断菜单是否是关闭 此时弹出了确定框
+    fun isClosePositionMenuGray(): Boolean {
+        val list = listOf(
+            verificationTask(136, 301, "#ff37383a"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    //是否有位置菜单
+    fun hasPositionMenu(): Boolean {
+        val list = listOf(
+            verificationTask(136, 301, "#ff9ca0a5"),
+            verificationTask(491, 301, "#ffd6d7d7"),
+        )
+        return !ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap,
+        )
+    }
+
+    //判断菜单是否是打开的
+    fun isOpenPositionMenu(): Boolean {
+        val list = listOf(
+            verificationTask(136, 301, "#ff9ca0a5"),
+        )
+        val list1 = listOf(
+            verificationTask(491, 301, "#ffd6d7d7"),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        ) && ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
 
     //判断菜单是否是关闭
     fun isClosePositionMenu(): Boolean {
@@ -197,17 +243,6 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             list, screenBitmap, 0
         ) && !ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
-        )
-    }
-
-
-    //判断菜单是否是关闭 此时弹出了确定框
-    fun isClosePositionMenuGray(): Boolean {
-        val list = listOf(
-            verificationTask(136, 301, "#ff37383a"),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
         )
     }
 
@@ -360,8 +395,6 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             list, screenBitmap, 0
         )
     }
-
-
 
 
 }

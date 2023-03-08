@@ -16,6 +16,7 @@ import com.nwq.function.scheduling.utils.sp.SpConstant.ROLE2_WHOLE_BATTLE_OPEN
 object SPRepo {
     var lastRefreshTimeSp by SP(LAST_REFRESH_TIME, 0L)
     var lastPickUpTaskTimeSp by SP(LAST_PICKUP_TASK_TIME, 0L)
+    var lastBackSpaceStation by SP(LAST_PICKUP_TASK_TIME, 0L)
 
     var role1WholeBattleOpenby by SP(ROLE1_WHOLE_BATTLE_OPEN, "")
     var role1RoundBattleOpen  by SP(ROLE1_ROUND_BATTLE_OPEN, "")

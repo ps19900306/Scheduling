@@ -25,9 +25,11 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val START_GAME = 0  //开始游戏
     private val INTO_GAME = 1 //进入游戏
     private val PICK_UP_TASK = 2 //接取任务
-    private val BATTLE_NAVIGATION_MONITORING = 3//战斗飞行导航监控
-    private val COMBAT_MONITORING = 4 //战斗监控阶段
-    private val MONITORING_RETURN_STATUS = 5//返回空间站监听
+    private val START_BATTLE_NAVIGATION_MONITORING = 4//战斗飞行导航监控
+    private val BATTLE_NAVIGATION_MONITORING = 5//战斗飞行导航监控
+    private val COMBAT_MONITORING = 6 //战斗监控阶段
+    private val START_MONITORING_RETURN_STATUS = 8//返回空间站监听
+    private val MONITORING_RETURN_STATUS = 7//返回空间站监听
     private val ABNORMAL_STATE = 1000 //异常状态
 
     private val TopOfst = SpConstant.TopOfst//顶部的偏移量
@@ -121,15 +123,25 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 PICK_UP_TASK -> {
                     pickUpTask()
                 }
-                BATTLE_NAVIGATION_MONITORING -> {
+                START_BATTLE_NAVIGATION_MONITORING -> {
                     SPRepo.lastPickUpTaskTimeSp = System.currentTimeMillis()
+                    nowStep = BATTLE_NAVIGATION_MONITORING
+                }
+                BATTLE_NAVIGATION_MONITORING -> {
                     startNavigationMonitoring()
                 }
                 COMBAT_MONITORING -> {
                     combatMonitoring()
                 }
+                START_MONITORING_RETURN_STATUS -> {
+                    SPRepo.lastBackSpaceStation = System.currentTimeMillis()
+                    nowStep = MONITORING_RETURN_STATUS
+                }
+                MONITORING_RETURN_STATUS -> {
+                    monitoringReturnStatus()
+                }
                 ABNORMAL_STATE -> {
-
+                    abnormalStateRepair()
                 }
             }
         }
@@ -176,7 +188,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             exit()
             return
         }
-
         mNumberOfTasksReceived--
         var inSpaceStation = visual.isInSpaceStation()
         L.i(
@@ -255,18 +266,18 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             ensureCloseDetermine()
             takeScreen(doubleClickInterval)
             ensureCloseDetermine()
-            nowStep = BATTLE_NAVIGATION_MONITORING
+            nowStep = START_BATTLE_NAVIGATION_MONITORING
         } else {
             takeScreen(doubleClickInterval)
             ensureCloseDetermine()
             takeScreen(doubleClickInterval)
             ensureCloseDetermine()
-            nowStep = BATTLE_NAVIGATION_MONITORING
+            nowStep = START_BATTLE_NAVIGATION_MONITORING
         }
     }
 
     suspend fun startNavigationMonitoring() {
-        takeScreen(doubleClickInterval)
+        takeScreen(quadrupleClickInterval)
         if (visual.isShowDetermine()) {
             click(constant.dialogDetermineArea)
         } else if (canLockTarget()) {
@@ -293,7 +304,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             nowStep = ABNORMAL_STATE
             return
         }
-        takeScreen(doubleClickInterval)
+        takeScreen(quadrupleClickInterval)
         if (ensureCloseDetermine()) {
             return
         }
@@ -311,19 +322,11 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     hasNewLock = true
                     openTheWholeBattle()
                     useUnlock = true
-                } else if (visual.getTagNumber() > 3) {
-                    System.currentTimeMillis().let {
-                        roundStartTime = it
-                        targetReduceTime = it
-                    }
-                    openTheWholeBattle()
-                    mEnterCombatStatus = true
-                    useUnlock = true
                 } else {
                     //没有锁定上继续导航
                     useUnlock = false
                 }
-            } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {
+            } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
                 nowStep = ABNORMAL_STATE
             }
         } else {
@@ -342,17 +345,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 } else if (targetCount >= 4 && hasNewLock) {
                     openDecelerationNet()
                     hasNewLock = false
-                } else {//这里要做异常处理了
+                } else {//这里要做异常处理了 先不做处理
 
                 }
             } else {//状态监控
                 val needCheckOpenList = mutableListOf<Int>()
                 val needCheckCloseList = mutableListOf<Int>()
-                val optList = mutableListOf<Int>()
                 val nowTargetCount = visual.getTagNumber()
                 if (nowTargetCount > 0) {
-                    if (catchFoodList.size == 0) {
-
+                    if (catchFoodList.isNullOrEmpty()) {//这里就需要判断是否需要开启网子
                     } else if (nowTargetCount < targetCount) {
                         targetReduceTime = System.currentTimeMillis()
                         if (hasNewLock) {
@@ -363,13 +364,18 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                         targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
                     }
+                    //这里是为了一块检测
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
 
+                    //打开定时开启的
                     checkTimingOnList(needCheckOpenList)
 
+                    //这个是判断是否需要开关维修
                     bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
+
+                    //这里是判断点击
                     clickEquipArray(checkEquipTimes(2, needCheckOpenList, needCheckCloseList))
                 } else {
                     needCheckOpenList.addAll(wholeBattleOpenList)
@@ -379,6 +385,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     if (closeList.contains(weaponPosition) && closeList.contains(cellPosition)) {//这里表示已经关闭的
                         if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
                             //这里要做异常处理了 这里表示战斗结束了
+                            if (clickTheDialogueClose(false)) {
+                                nowStep = PICK_UP_TASK
+                            }
                         }
                     } else {
                         clickEquipArray(closeList)
@@ -387,6 +396,29 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             }
         }
     }
+
+    //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
+    suspend fun monitoringReturnStatus() {
+        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME) {
+            nowStep = ABNORMAL_STATE
+            return
+        }
+        takeScreen(quadrupleClickInterval)
+        if (visual.getTagNumber() > 4 || visual.hasGroupLock()) {
+            nowStep = COMBAT_MONITORING
+        } else if (visual.isInSpaceStation()) {
+            if (needBackStation) {
+                (System.currentTimeMillis() + constant.REFRESH_INTERVAL - lastRefreshTimeSp).let {
+                    if (it > 0) {
+                        delay(it)
+                    }
+                }
+            }
+            needBackStation = false
+            nowStep = PICK_UP_TASK
+        }
+    }
+
 
     fun checkTimingOnList(needCheckOpenList: MutableList<Int>) {
         if (targetCount <= 1) {
@@ -677,4 +709,34 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         runSwitch = false
     }
 
+    suspend fun ensureOpenPositionMenu() {
+        var flag = 3
+        while (!visual.hasPositionMenu() && flag > 0) {
+            click(constant.eraseWarningArea)
+            takeScreen(doubleClickInterval)
+        }
+        if (visual.isClosePositionMenu()) {
+            click(constant.eraseWarningArea)
+        } else if (!visual.isDefaultCoordinateMenu()) {
+            click(constant.defaultCoordinateMenuArea)
+        }
+    }
+
+
+    suspend fun abnormalStateRepair() {
+        theOutCheck()
+        needCancel = true
+        needBackStation = true
+        clickJumpCollectionAddress(constant.WAREHOUSE_INDEX, false)
+        nowStep = MONITORING_RETURN_STATUS
+    }
+
+    //determine 是否需要点击确定按钮，一般出舱是需要的
+    suspend fun clickJumpCollectionAddress(index: Int, determine: Boolean) {
+        ensureOpenPositionMenu()
+        click(constant.getAddressArea(index), normalClickInterval)
+        if (determine) {
+            click(constant.dialogDetermineArea, normalClickInterval)
+        }
+    }
 }
