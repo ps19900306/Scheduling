@@ -7,7 +7,9 @@ import com.nwq.function.scheduling.utils.log.L
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepo.lastRefreshTimeSp
 import com.nwq.function.scheduling.utils.sp.SpConstant
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
 create by: 86136
@@ -51,6 +53,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     var maintenanceStatus = UNKNOWN_STATE
     var maintenanceTimeStartStamp = 0L
     var MAINTENANCE_INTERVAL = 30000L //维修间隔
+    var DEFAULT_DESTROY_INTERVAL = 60 * 1000 //能够容忍的最大击毁间隔
+    var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
 
     /**
      * 这个是控制变量
@@ -85,7 +89,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         listOf<Int>(1 + BotOfst, 4 + BotOfst)
     }
 
-    // 默认是电池的
+    // 默认是武器的
     var CombatStamp_1 = 0L
     val BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
 
@@ -147,20 +151,23 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         }
     }
 
-    suspend fun startGame() {
-        pressHomeBtn()
-        delay(2000)
-        helper.click(
-            (82 + (constant.APP_LOCATION_X - 1) * 254).toFloat(),
-            (185 + (constant.APP_LOCATION_Y - 1) * 291).toFloat(),
-            154,
-            153
-        )
-        delay(doubleClickInterval * 2)
-        takeScreen()
-        if (visual.hasIntoGame()) {
-            nowStep = STATUS_DETERMINATION
+    fun startGame() {
+        GlobalScope.launch {
+            pressHomeBtn()
+            delay(2000)
+            helper.click(
+                (82 + (constant.APP_LOCATION_X - 1) * 254).toFloat(),
+                (185 + (constant.APP_LOCATION_Y - 1) * 291).toFloat(),
+                154,
+                153
+            )
+            delay(doubleClickInterval * 2)
+            generalControlMethod()
         }
+//        takeScreen()
+//        if (visual.hasIntoGame()) {
+//            nowStep = STATUS_DETERMINATION
+//        }
     }
 
     suspend fun intoGame() {
@@ -216,7 +223,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 }
             }
         }
-
+        needCancel = false
         //打开新闻公告板
         click(constant.newTaskListArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
@@ -339,6 +346,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     targetReduceTime = it
                 }
                 if (targetCount <= 1 && nowTargetCount >= 1) {
+                    DESTROY_INTERVAL += DEFAULT_DESTROY_INTERVAL
                     hasNewLock = true
                     openTheWholeBattle()
                     targetCount = nowTargetCount
@@ -359,10 +367,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                         if (hasNewLock) {
                             hasNewLock = false
                             needCheckOpenList.addAll(catchFoodList)
+                            DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
                         }
-                    } else if (System.currentTimeMillis() - targetReduceTime > 60 * 1000L && nowTargetCount == targetCount || isAttackSmallShip()) {
+                    } else if (System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount || isAttackSmallShip()) {
                         targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
+                        DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
                     }
                     //这里是为了一块检测
                     needCheckOpenList.addAll(wholeBattleOpenList)
@@ -386,7 +396,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                         if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
                             //这里要做异常处理了 这里表示战斗结束了
                             if (clickTheDialogueClose(false)) {
-                                nowStep = PICK_UP_TASK
+                                closeTheWholeBattle()
+                                if (needBackStation) {
+                                    nowStep = ABNORMAL_STATE
+                                } else {
+                                    nowStep = PICK_UP_TASK
+                                }
                             }
                         }
                     } else {
@@ -606,6 +621,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
     suspend fun cancelTask() {
+        L.i("", "cancelTask", "FightController", "nwq", "2023/3/8");
         click(constant.openTaskArea, normalClickInterval)
         click(constant.cancelTaskArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
@@ -622,6 +638,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
 
     suspend fun theOutCheck() {
+        L.i("", "theOutCheck", "FightController", "nwq", "2023/3/8");
         takeScreen(doubleClickInterval)
         var flag = visual.isInSpaceStation() || visual.hasEyesMenu()
         if (!flag) {
@@ -706,6 +723,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
 
     suspend fun exit() {
+        theOutCheck()
+        clickJumpCollectionAddress(constant.WAREHOUSE_INDEX, false)
         runSwitch = false
     }
 
@@ -738,5 +757,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         if (determine) {
             click(constant.dialogDetermineArea, normalClickInterval)
         }
+    }
+
+    //战斗开始时候需要开启的
+    fun closeTheWholeBattle() {
+        mEnterCombatStatus = false
+        useUnlock = true
+        DESTROY_INTERVAL = 50 * 1000
     }
 }

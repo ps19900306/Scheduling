@@ -13,6 +13,7 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.click.ClickUtils
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.executer.fight.FightController
 import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.log.L
@@ -38,7 +39,8 @@ class NwqAccessibilityService : AccessibilityService() {
     }
 
     fun startOpt() {
-        ClickTestController(AccessibilityHelper(this@NwqAccessibilityService)).startOperation()
+        FightController(AccessibilityHelper(this@NwqAccessibilityService)).startGame()
+        //ClickTestController(AccessibilityHelper(this@NwqAccessibilityService)).startOperation()
     }
 
 
