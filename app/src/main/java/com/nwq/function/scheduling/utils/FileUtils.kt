@@ -27,6 +27,7 @@ object FileUtils {
     var LastImageName = ""
     private val TextFileDir =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+    private var fileWriter: FileWriter? = null
 
 
     fun saveBitmapAndroid(context: Context, name: String, b: Bitmap): String? {
@@ -74,17 +75,29 @@ object FileUtils {
         }
     }
 
+
     fun getFileWrite(): FileWriter? {
+        if (fileWriter != null)
+            return fileWriter
         return try {
             val file = File(TextFileDir, "${FileDir}.text")
             if (!file.exists())
                 file.mkdirs()
-            val writer = FileWriter(file)
-            writer
+            fileWriter = FileWriter(file)
+            fileWriter
         } catch (e: Exception) {
             Timber.d("$e getFileWrite FileUtils NWQ_ 2023/3/9");
             null
         }
     }
 
+    fun closeFileWriter() {
+        try {
+            fileWriter?.close()
+            fileWriter = null
+        } catch (e: Exception) {
+            Timber.d("$e getFileWrite FileUtils NWQ_ 2023/3/9");
+            null
+        }
+    }
 }
