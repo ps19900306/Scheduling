@@ -59,7 +59,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     /**
      * 这个是控制变量
      */
-    private var nowStep = START_GAME
+    private var nowStep = PICK_UP_TASK
     var runSwitch = true
     var intoGameStep = LOADING
     var needCancel = false
@@ -195,32 +195,37 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             exit()
             return
         }
+        takeScreen(2000)
         mNumberOfTasksReceived--
-        var inSpaceStation = visual.isInSpaceStation()
+        var inSpaceStation = false // visual.isInSpaceStation()
         L.i(
-            "准备接取任务  inSpaceStation: $inSpaceStation ",
+            "准备接取任务  inSpaceStation: $inSpaceStation",
             "pickUpTask",
             "FightController",
             "nwq",
             "2023/3/2"
         );
-        click(constant.MenuArea)
-        click(constant.FightTaskMenuArea, doubleClickInterval)
+        click(constant.getTopMenuArea(2))
         takeScreen(tripleClickInterval)
         if (visual.hasReceivedTask()) {
+            L.i(
+                "hasReceivedTask",
+                "pickUpTask",
+                "FightController",
+                "nwq",
+                "2023/3/2"
+            );
             if (needCancel) {
                 cancelTask()
                 delay(normalClickInterval)
             } else {
                 click(constant.optTaskArea)
+                clickTheDialogueClose(true)
                 takeScreen(doubleClickInterval)
-                if (visual.hasReceivedTask()) {
-                    clickTheDialogueClose(true)
-                    takeScreen(doubleClickInterval)
-                    ensureCloseDetermine()
-                    theOutCheck()
-                    return
-                }
+                ensureCloseDetermine()
+                theOutCheck()
+                nowStep = START_BATTLE_NAVIGATION_MONITORING
+                return
             }
         }
         needCancel = false
@@ -251,6 +256,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             click(constant.openTaskRightArea)
             click(constant.cancelTaskArea)
             theOutCheck()
+            needCancel=true
             return
         }
 
@@ -391,7 +397,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
-                    val closeList = checkEquipTimes(3, needCheckOpenList, null)
+                    val closeList = checkEquipTimes(2, needCheckOpenList, null)
                     if (closeList.contains(weaponPosition) && closeList.contains(cellPosition)) {//这里表示已经关闭的
                         if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
                             //这里要做异常处理了 这里表示战斗结束了
@@ -404,6 +410,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                                 }
                             }
                         }
+
                     } else {
                         clickEquipArray(closeList)
                     }
@@ -589,7 +596,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     hasClickConversation = false
                     click(constant.dialogCancleArea)
                 } else {
-                    click(constant.dialogCancleArea)
+                    click(constant.dialogDetermineArea)
                     hasClickConversation = true
                 }
                 flag--

@@ -15,6 +15,7 @@ class FightConstant {
     var MenuArea = Area(84, 3, 198, 120)
     var FightTaskMenuArea = Area(84, 3, 198, 120)
 
+
     var openTaskArea = Area(1057, 687, 621, 131)
     var optTaskArea = Area(1912, 542, 110, 115)
     var cancelTaskArea = Area(1740, 201, 212, 67)
@@ -56,5 +57,9 @@ class FightConstant {
 
     fun getAddressArea(index: Int): Area {
         return Area(431, 425 + (index * 75), 75, 59)
+    }
+
+    fun getTopMenuArea(index: Int): Area {
+        return Area(102 + (index - 1) * 117, 140, 70, 70)
     }
 }

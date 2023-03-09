@@ -54,23 +54,37 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //是否已经进入空间站 TODO 需要优化取点过多
     fun isInSpaceStation(): Boolean {
         return ImgUtils.findColorLike(
-            PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ae9328", 5
+            PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ffae9328", 0
         ) || ImgUtils.findColorLike(
-            PixelsInfo(2022, 333, 110, 56), screenBitmap, "#ae9328", 5
+            PixelsInfo(2022, 333, 110, 56), screenBitmap, "#ffae9328", 0
         )
     }
 
 
-    //是否已经 TODO 需要优化取点过多
     fun hasReceivedTask(): Boolean {
         val list = listOf(
             verificationTask(1424, 787, AllOver200Rule),
             verificationTask(1492, 785, AllOver200Rule),
             verificationTask(1628, 789, AllOver200Rule),
         )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
+        val list2 = listOf(
+            verificationTask(1476, 791, AllOver200Rule),
+            verificationTask(1496, 800, AllOver200Rule),
+            verificationTask(1538, 806, AllOver200Rule),
         )
+        if (ImgUtils.performPointsColorVerification(
+                list, screenBitmap, 0
+            )
+        ) {
+            return false
+        } else if (ImgUtils.performPointsColorVerification(
+                list2, screenBitmap, 0
+            )
+        ) {
+            return false
+        } else {
+            return true
+        }
     }
 
     fun isShowDetermine(): Boolean {
@@ -110,7 +124,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isHighTaskRight(): Boolean {
         val list = listOf(
-            verificationTask(2142, 2142, AllOver110Rule),
+            verificationTask(2142, 381, AllOver110Rule),
             verificationTask(2142, 390, AllLess50Rule),
             verificationTask(2142, 399, AllOver110Rule),
         )

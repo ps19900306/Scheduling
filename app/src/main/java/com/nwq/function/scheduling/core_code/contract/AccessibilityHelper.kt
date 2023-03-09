@@ -11,6 +11,7 @@ import com.nwq.function.scheduling.core_code.click.ClickTask
 import com.nwq.function.scheduling.core_code.click.ClickUtils
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.click.SlideScreenTask
+import com.nwq.function.scheduling.utils.FileUtils
 import com.nwq.function.scheduling.utils.log.L
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -34,8 +35,9 @@ class AccessibilityHelper(val acService: AccessibilityService) {
                     val bitmap = Bitmap.wrapHardwareBuffer(
                         screenshotResult.hardwareBuffer, screenshotResult.colorSpace
                     )
-                    screenBitmap = bitmap?.copy(Bitmap.Config.RGB_565, true)
+                    screenBitmap = bitmap?.copy(Bitmap.Config.RGBA_F16, true)
                     bitmap?.recycle()
+                    //screenBitmap?.let { it1 -> FileUtils.saveImage29(it1,acService) }
                     L.i("setScreenBitmap", "takeScreen", "AccessibilityHelper", "nwq", "2023/3/1");
                     it.resume(screenBitmap)
                 }
