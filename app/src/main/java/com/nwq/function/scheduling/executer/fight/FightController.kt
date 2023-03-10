@@ -663,7 +663,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         val unOpenList = mutableListOf<Int>()
         data.forEach {
             it.forEach { index ->
-                if (!judeIsOpen(index)) {
+                if (!judgeIsOpen(index)) {
                     unOpenList.add(index)
                 }
             }
@@ -677,7 +677,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         val unOpenList = mutableListOf<Int>()
         data.forEach {
             it.forEach { index ->
-                if (judeIsOpen(index)) {
+                if (judgeIsOpen(index)) {
                     unOpenList.add(index)
                 }
             }
@@ -699,18 +699,18 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         }
     }
 
-    fun judeIsOpen(index: Int): Boolean {
+    fun judgeIsOpen(index: Int): Boolean {
         return if (index < TopOfst) {
-            visual.judeIsOpenBottom(index)
+            visual.judgeIsOpenBottom(index)
         } else {
-            visual.judeIsOpenTop(index - TopOfst - 1)
+            visual.judgeIsOpenTop(index - TopOfst - 1)
         }
     }
 
     fun isAttackSmallShip(): Boolean {
         var position = getNowAttackPosition()
         if (position > 0) {
-            var result = visual.judeIsSmall(position - 1)
+            var result = visual.judgeIsSmall(position - 1)
             // log("正在攻击目标" + position + "是否是小船" + result)
             return result
         } else {
@@ -723,7 +723,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         var flag = false
         do {
             index--
-            flag = !visual.judeNowAttackPosition(index)
+            flag = !visual.judgeNowAttackPosition(index)
         } while (!flag && index >= 0)
         return index + 1
     }

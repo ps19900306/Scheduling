@@ -155,7 +155,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
 
-    fun judeIsOpenBottom(indx: Int): Boolean {
+    fun judgeIsOpenBottom(indx: Int): Boolean {
         val list = listOf(
             verificationTask(1688 + indx * 109, 949, isOpenRule),
             verificationTask(1689 + indx * 109, 950, isOpenRule),
@@ -166,7 +166,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
-    fun judeIsOpenTop(indx: Int): Boolean {
+    fun judgeIsOpenTop(indx: Int): Boolean {
         val list = listOf(
             verificationTask(1688 + indx * 109, 836, isOpenRule),
             verificationTask(1690 + indx * 109, 836, isOpenRule),
@@ -387,7 +387,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
 
-    fun judeNowAttackPosition(index: Int): Boolean {
+    fun judgeNowAttackPosition(index: Int): Boolean {
         val list = listOf(
             verificationTask(2245 - (index * 130), 113, NowAttackRule1),
             verificationTask(2246 - (index * 130), 111, NowAttackRule1),
@@ -398,7 +398,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
-    fun judeIsSmall(index: Int): Boolean {
+    fun judgeIsSmall(index: Int): Boolean {
         val list = listOf(
             verificationTask((1950 + 260 - 130 * index), 95, RedRule),
             verificationTask((1940 + 260 - 130 * index), 95, RedRule),

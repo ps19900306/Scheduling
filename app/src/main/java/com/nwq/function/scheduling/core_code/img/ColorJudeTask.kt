@@ -1,6 +1,6 @@
 package com.nwq.function.scheduling.core_code.img
 
-sealed class ColorJudeTask {
+sealed class ColorJudgeTask {
 
 
 //    data class Success(val path: String) : TransferResult()
