@@ -3,6 +3,7 @@ package com.nwq.function.scheduling.executer.fight
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
+import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.log.L
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepo.lastRefreshTimeSp
@@ -87,7 +88,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         listOf<Int>()
     }
     private val timeOnOpenList3 by lazy {
-        listOf<Int>(1 + BotOfst, 4 + BotOfst)
+        listOf<Int>(4 + TopOfst)
     }
 
     // 默认是武器的
@@ -101,6 +102,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     // 默认是转速的
     var CombatStamp_3 = 0L
     val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
+
     val Equipment_Interval = 30 * 1000L
 
     private val catchFoodList by lazy {
@@ -366,6 +368,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
                 }
             } else {//状态监控
+                Timber.d("状态监控 combatMonitoring FightController NWQ_ 2023/3/10");
                 val needCheckOpenList = mutableListOf<Int>()
                 val needCheckCloseList = mutableListOf<Int>()
                 val nowTargetCount = visual.getTagNumber()
@@ -478,7 +481,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         combatInterval: Long,
         needCheckOpenList: MutableList<Int>
     ): Boolean {
-        // log("openArrayV2")
         var flag = false
         if (list.isNullOrEmpty()) { //true
             return flag
@@ -696,6 +698,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
     suspend fun clickEquipArray(list: List<Int>, delay: Long = fastClickInterval) {
+        Timber.d("${JsonUtil.objectToString(list)} 点击数组有 FightController NWQ_ 2023/3/10");
         list.forEach {
             clickEquip(it, delay)
         }
