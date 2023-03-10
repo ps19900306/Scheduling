@@ -145,9 +145,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isCloseEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(2221, 605, "#ffa2a2a2",15),
-            verificationTask(2248, 605, "#ff9f9f9f",15),
-            verificationTask(2234, 605, "#ff9f9f9f",15),
+            verificationTask(2221, 605, "#ffa2a2a2", 15),
+            verificationTask(2248, 605, "#ff9f9f9f", 15),
+            verificationTask(2234, 605, "#ff9f9f9f", 15),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
@@ -179,9 +179,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isOpenEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(1843, 605, "#ffa2a2a2",15),
-            verificationTask(1856, 605, "#ff9f9f9f",15),
-            verificationTask(1869, 605, "#ff9f9f9f",15),
+            verificationTask(1843, 605, "#ffa2a2a2", 15),
+            verificationTask(1856, 605, "#ff9f9f9f", 15),
+            verificationTask(1869, 605, "#ff9f9f9f", 15),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
@@ -350,16 +350,16 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
      */
     //有已经锁定的目标
     private fun hasTarget(index: Int): Boolean {
-        var a1 = Coordinate((2233 - (index * 121)).toFloat(), 91F)
-        var a = Coordinate((2229 - (index * 121)).toFloat(), 89F)
+        var a1 = Coordinate(2205 - (index * 130), 41)
+        var a = Coordinate(2205 - (index * 130), 46)
         val task1 = TwoPointTask(a1, a, AllGreater10Comparison)
 
-        a1 = Coordinate((2198 - (index * 121)).toFloat(), 38F)
-        a = Coordinate((2198 - (index * 121)).toFloat(), 42F)
+        a1 = Coordinate(2169 - (index * 130), 76)
+        a = Coordinate(2164 - (index * 130), 76)
         val task2 = TwoPointTask(a1, a, AllGreater10Comparison)
 
-        a1 = Coordinate((2159 - (index * 121)).toFloat(), 81F)
-        a = Coordinate((2164 - (index * 121)).toFloat(), 81F)
+        a1 = Coordinate(2241 - (index * 130), 77)
+        a = Coordinate(2245 - (index * 130), 77)
         val task3 = TwoPointTask(a1, a, AllGreater10Comparison)
 
         return ImgUtils.performTwoPointTask(
