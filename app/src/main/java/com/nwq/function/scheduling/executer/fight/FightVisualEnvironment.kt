@@ -155,25 +155,25 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
 
-    fun judgeIsOpenBottom(indx: Int): Boolean {
+    fun judgeIsOpenBottom(index: Int): Boolean {
         val list = listOf(
-            verificationTask(1688 + indx * 109, 949, isOpenRule),
-            verificationTask(1689 + indx * 109, 950, isOpenRule),
-            verificationTask(1690 + indx * 109, 950, isOpenRule),
+            verificationTask(1688 + index * 109, 949, isOpenRule),
+            verificationTask(1689 + index * 109, 950, isOpenRule),
+            verificationTask(1690 + index * 109, 950, isOpenRule),
         )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 1
+        return ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap
         )
     }
 
-    fun judgeIsOpenTop(indx: Int): Boolean {
+    fun judgeIsOpenTop(index: Int): Boolean {
         val list = listOf(
-            verificationTask(1688 + indx * 109, 836, isOpenRule),
-            verificationTask(1690 + indx * 109, 836, isOpenRule),
-            verificationTask(1692 + indx * 109, 836, isOpenRule),
+            verificationTask(1688 + index * 109, 835, isOpenRule),
+            verificationTask(1690 + index * 109, 836, isOpenRule),
+            verificationTask(1692 + index * 109, 836, isOpenRule),
         )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 1
+        return ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap
         )
     }
 
