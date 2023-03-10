@@ -369,20 +369,41 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     //有未锁定的目标
     private fun hasUnTarget(index: Int): Boolean {
-        var a1 = Coordinate((2246 - (index * 121)).toFloat(), 85F)
-        var a = Coordinate((2250 - (index * 121)).toFloat(), 85F)
-        val task1 = TwoPointTask(a1, a, AllGreater10Comparison)
+        val list1 = listOf(
+            verificationTask(2204 - 130 * index, 71, RedRule),
+            verificationTask(2194 - 130 * index, 80, RedRule),
+            verificationTask(2214 - 130 * index, 80, RedRule),
+            verificationTask(2205 - 130 * index, 76, RedRule),
+        )
 
-        a1 = Coordinate((2196 - (index * 121)).toFloat(), 29F)
-        a = Coordinate((2196 - (index * 121)).toFloat(), 24F)
-        val task2 = TwoPointTask(a1, a, AllGreater10Comparison)
+        val list2 = listOf(
+            verificationTask((2075 + 130 - 130 * index), 64, RedRule),
+            verificationTask((2065 + 130 - 130 * index), 73, RedRule),
+            verificationTask((2084 + 130 - 130 * index), 86, RedRule),
+            verificationTask((2205 - 130 * index), 76, RedRule),
+        )
 
-        a1 = Coordinate((2148 - (index * 121)).toFloat(), 80F)
-        a = Coordinate((2143 - (index * 121)).toFloat(), 80F)
-        val task3 = TwoPointTask(a1, a, AllGreater10Comparison)
+        val list3 = listOf(
+            verificationTask((1945 + 130 * 2 - 130 * index), 67, RedRule),
+            verificationTask((1935 + 130 * 2 - 130 * index), 97, RedRule),
+            verificationTask((1955 + 130 * 2 - 130 * index), 79, RedRule),
+            verificationTask((2205 - 130 * index), 76, RedRule),
+        )
 
-        return ImgUtils.performTwoPointTask(
-            listOf(task1, task2, task3), screenBitmap, 0
+        val list4 = listOf(
+            verificationTask((1815 + 130 * 3 - 130 * index), 65, RedRule),
+            verificationTask((1805 + 130 * 3 - 130 * index), 77, RedRule),
+            verificationTask((1826 + 130 * 3 - 130 * index), 77, RedRule),
+            verificationTask((2205 - 130 * index), 76, RedRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        ) || ImgUtils.performPointsColorVerification(
+            list2, screenBitmap, 0
+        ) || ImgUtils.performPointsColorVerification(
+            list3, screenBitmap, 0
+        ) || ImgUtils.performPointsColorVerification(
+            list4, screenBitmap, 0
         )
     }
 
