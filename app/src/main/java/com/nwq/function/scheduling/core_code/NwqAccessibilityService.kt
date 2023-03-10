@@ -18,6 +18,7 @@ import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.log.L
 import com.nwq.function.scheduling.utils.sp.SP
+import timber.log.Timber
 
 
 /**
@@ -54,9 +55,11 @@ class NwqAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         L.d("", "onServiceConnected", "NwqAccessibilityService", "nwq", "2023/3/1");
+
         registerReceiver()
         ContextUtil.context = this
         SP.init(this,"nwq_schedule")
+        Timber.plant(Timber.DebugTree())
     }
 
     private fun registerReceiver() {

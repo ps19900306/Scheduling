@@ -10,6 +10,7 @@ import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -30,8 +31,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val START_BATTLE_NAVIGATION_MONITORING = 4//战斗飞行导航监控
     private val BATTLE_NAVIGATION_MONITORING = 5//战斗飞行导航监控
     private val COMBAT_MONITORING = 6 //战斗监控阶段
-    private val START_MONITORING_RETURN_STATUS = 8//返回空间站监听
-    private val MONITORING_RETURN_STATUS = 7//返回空间站监听
+    private val START_MONITORING_RETURN_STATUS = 7//返回空间站监听
+    private val MONITORING_RETURN_STATUS = 8//返回空间站监听
     private val ABNORMAL_STATE = 1000 //异常状态
 
     private val TopOfst = SpConstant.TopOfst//顶部的偏移量
@@ -117,6 +118,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
      */
     override suspend fun generalControlMethod() {
         while (runSwitch) {
+            Timber.d("nowStep:$nowStep generalControlMethod FightController NWQ_ 2023/3/10");
             when (nowStep) {
                 START_GAME -> {
                     startGame()
@@ -128,6 +130,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     pickUpTask()
                 }
                 START_BATTLE_NAVIGATION_MONITORING -> {
+                    Timber.d("开始导航 generalControlMethod FightController NWQ_ 2023/3/10");
                     SPRepo.lastPickUpTaskTimeSp = System.currentTimeMillis()
                     nowStep = BATTLE_NAVIGATION_MONITORING
                 }
@@ -197,7 +200,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         }
         takeScreen(2000)
         mNumberOfTasksReceived--
-        var inSpaceStation = false // visual.isInSpaceStation()
+        var inSpaceStation = visual.isInSpaceStation()
         L.i(
             "准备接取任务  inSpaceStation: $inSpaceStation",
             "pickUpTask",
@@ -218,6 +221,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             if (needCancel) {
                 cancelTask()
                 delay(normalClickInterval)
+                return
             } else {
                 click(constant.optTaskArea)
                 clickTheDialogueClose(true)
@@ -256,7 +260,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             click(constant.openTaskRightArea)
             click(constant.cancelTaskArea)
             theOutCheck()
-            needCancel=true
+            needCancel = true
             return
         }
 
@@ -265,13 +269,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
         //到这里就结束了
         if (!clickTheDialogueClose(true)) {
-            L.i(
-                "接任务出现问题 needCancel:$needCancel ",
-                "pickUpTask",
-                "FightController",
-                "nwq",
-                "2023/3/2"
-            );
+            Timber.d("接任务出现问题 needCancel:$needCancel  pickUpTask FightController NWQ_ 2023/3/10");
             theOutCheck()
         } else if (inSpaceStation) {
             click(constant.dialogDetermineArea, normalClickInterval)
@@ -292,13 +290,17 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     suspend fun startNavigationMonitoring() {
         takeScreen(quadrupleClickInterval)
         if (visual.isShowDetermine()) {
+            Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
             click(constant.dialogDetermineArea)
-        } else if (canLockTarget()) {
+        } else if (visual.hasGroupLock()) {
+            Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
             if (System.currentTimeMillis() - SPRepo.lastPickUpTaskTimeSp > constant.NAVIGATING_TOO_LONG) {
                 needBackStation = true
             }
             nowStep = COMBAT_MONITORING
+            battleStartTime = System.currentTimeMillis()
         } else if (System.currentTimeMillis() - SPRepo.lastPickUpTaskTimeSp > constant.NAVIGATING_EXCEPTION) {
+            Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
             needBackStation = true
             needCancel = true
             nowStep = ABNORMAL_STATE
@@ -315,8 +317,10 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     suspend fun combatMonitoring() {
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
             nowStep = ABNORMAL_STATE
+            Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
             return
         }
+        Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
         takeScreen(quadrupleClickInterval)
         if (ensureCloseDetermine()) {
             return
@@ -327,6 +331,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 takeScreen(doubleClickInterval)
                 targetCount = visual.getTagNumber()
                 if (targetCount > 1) {//锁定成功了
+                    Timber.d("锁定成功了 combatMonitoring FightController NWQ_ 2023/3/10");
                     System.currentTimeMillis().let {
                         roundStartTime = it
                         targetReduceTime = it
@@ -336,14 +341,17 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     openTheWholeBattle()
                     useUnlock = true
                 } else {
+                    Timber.d("没有锁定上继续导航 combatMonitoring FightController NWQ_ 2023/3/10");
                     //没有锁定上继续导航
                     useUnlock = false
                 }
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
+                Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
                 nowStep = ABNORMAL_STATE
             }
         } else {
             if (canLockTarget()) {//可以进行锁定
+                Timber.d("可以进行锁定 combatMonitoring FightController NWQ_ 2023/3/10");
                 click(constant.lockTargetGroupArea, normalClickInterval)
                 takeScreen(doubleClickInterval)
                 val nowTargetCount = visual.getTagNumber()
@@ -579,19 +587,23 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         var hasClickConversation = false
         var rightClickTimes = 0
         var flag = 10
+        Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0) {
             takeScreen(normalClickInterval)
             if (visual.hasLeftDialogue()) {
+                Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
                 click(constant.leftDialogueArea, fastClickInterval)
                 hasClickConversation = true
                 flag = 10
             } else if (visual.hasRightDialogue()) {
+                Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.rightDialogueArea)
                 rightClickTimes++
                 flag = 10
             } else if (visual.isShowDetermine()) {
-                if (rightClickTimes > 3 && pickUp && !receiveAdvancedTasks) {
+                Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
+                if (pickUp && rightClickTimes > 3 && !receiveAdvancedTasks) {
                     needCancel = true
                     hasClickConversation = false
                     click(constant.dialogCancleArea)
@@ -599,8 +611,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     click(constant.dialogDetermineArea)
                     hasClickConversation = true
                 }
-                flag--
+                flag = 0
             } else {
+                Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
                 flag--
             }
         }
@@ -646,16 +659,18 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     suspend fun theOutCheck() {
         L.i("", "theOutCheck", "FightController", "nwq", "2023/3/8");
-        takeScreen(doubleClickInterval)
-        var flag = visual.isInSpaceStation() || visual.hasEyesMenu()
-        if (!flag) {
+        var count = 3
+        var flag = true
+        do {
+            takeScreen(doubleClickInterval)
+            count--
+            var flag = visual.isInSpaceStation() || visual.hasEyesMenu()
             if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else {
                 ensureCloseDetermine()
             }
-            theOutCheck()
-        }
+        } while (!flag && count > 0)
     }
 
     //获取是关闭的状态
@@ -750,6 +765,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
 
     suspend fun abnormalStateRepair() {
+        Timber.d("abnormalStateRepair FightController NWQ_ 2023/3/10");
         theOutCheck()
         needCancel = true
         needBackStation = true

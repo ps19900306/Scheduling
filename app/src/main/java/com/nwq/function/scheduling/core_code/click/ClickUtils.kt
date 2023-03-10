@@ -47,13 +47,11 @@ object ClickUtils {
             gesture, object : AccessibilityService.GestureResultCallback() {
                 override fun onCancelled(gestureDescription: GestureDescription) {
                     super.onCancelled(gestureDescription)
-                    L.i("click onCancelled", "onCompleted", "ClickUtils", "nwq", "2023/3/1");
                     it.resume(false)
                 }
 
                 override fun onCompleted(gestureDescription: GestureDescription) {
                     super.onCompleted(gestureDescription)
-                    L.i("click onCompleted", "onCompleted", "ClickUtils", "nwq", "2023/3/1");
                     it.resume(true)
                 }
             }, null

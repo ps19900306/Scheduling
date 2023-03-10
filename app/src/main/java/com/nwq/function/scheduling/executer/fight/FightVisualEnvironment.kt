@@ -20,12 +20,12 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //是否有全部锁定按钮
     fun hasGroupLock(): Boolean {
         val list = listOf(
-            verificationTask(1439f, 687f, AllOver110Rule),
-            verificationTask(1439f, 675f, AllOver110Rule),
-            verificationTask(1439f, 689f, AllOver110Rule),
-            verificationTask(1437f, 672f, AllLess50Rule),
-            verificationTask(1443f, 682f, AllLess50Rule),
-            verificationTask(1437f, 692f, AllLess50Rule),
+            verificationTask(1439, 687, AllOver110Rule),
+            verificationTask(1439, 675, AllOver110Rule),
+            verificationTask(1439, 689, AllOver110Rule),
+            verificationTask(1437, 672, AllLess50Rule),
+            verificationTask(1443, 682, AllLess50Rule),
+            verificationTask(1437, 692, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -54,9 +54,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //是否已经进入空间站 TODO 需要优化取点过多
     fun isInSpaceStation(): Boolean {
         return ImgUtils.findColorLike(
-            PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ffae9328", 0
+            PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ffae9328", 15
         ) || ImgUtils.findColorLike(
-            PixelsInfo(2022, 333, 110, 56), screenBitmap, "#ffae9328", 0
+            PixelsInfo(2022, 333, 110, 56), screenBitmap, "#ffae9328", 15
         )
     }
 
@@ -145,9 +145,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isCloseEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(2221, 605, "#ffa2a2a2"),
-            verificationTask(2248, 605, "#ff9f9f9f"),
-            verificationTask(2234, 605, "#ff9f9f9f"),
+            verificationTask(2221, 605, "#ffa2a2a2",15),
+            verificationTask(2248, 605, "#ff9f9f9f",15),
+            verificationTask(2234, 605, "#ff9f9f9f",15),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
@@ -179,9 +179,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isOpenEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(1843, 605, "#ffa2a2a2"),
-            verificationTask(1856, 605, "#ff9f9f9f"),
-            verificationTask(1869, 605, "#ff9f9f9f"),
+            verificationTask(1843, 605, "#ffa2a2a2",15),
+            verificationTask(1856, 605, "#ff9f9f9f",15),
+            verificationTask(1869, 605, "#ff9f9f9f",15),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
