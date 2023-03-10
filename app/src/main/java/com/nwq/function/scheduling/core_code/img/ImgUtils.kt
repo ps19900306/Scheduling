@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
+import com.nwq.function.scheduling.utils.log.L
 
 
 object ImgUtils {
@@ -141,9 +142,9 @@ object ImgUtils {
         colorRule: String,
         tolerance: Int = 0
     ): Boolean {
-        val color = bitmap.getColor(coordinate.x.toInt(), coordinate.y.toInt())
+        val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
         val baseColor = Color.parseColor(colorRule)
-        return judgeColorSqrt(
+        return judgeColorSqrtV1(
             Color.red(baseColor),
             Color.blue(baseColor),
             Color.green(baseColor),
@@ -159,11 +160,18 @@ object ImgUtils {
         bitmap: Bitmap,
         colorRule: ColorIdentificationRule
     ): Boolean {
-        val color = bitmap.getColor(coordinate.x.toInt(), coordinate.y.toInt())
+        val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
+        L.i(
+            "red: ${Color.red(color)}, blue: ${Color.blue(color)}, green: ${Color.green(color)}",
+            "verificationRule",
+            "AllOver200Rule",
+            "nwq",
+            "2023/3/2"
+        );
         return colorRule.verificationRule(
-            color.red().toInt(),
-            color.blue().toInt(),
-            color.green().toInt()
+            Color.red(color),
+            Color.blue(color),
+            Color.green(color)
         )
     }
 
@@ -300,15 +308,15 @@ object ImgUtils {
 
     /******  下面的都是私有方法 ******************/
     //判断颜色的相似度,越相似值越小 最大是100
-    private fun judgeColorSqrt(
+    private fun judgeColorSqrtV1(
         imgRed: Int,
         imgBlue: Int,
         imgGreen: Int,
-        imgColor: Color
+        imgColor: Int
     ): Int {
-        val red = (imgColor.red() - imgRed) / 255
-        val blue = (imgColor.blue() - imgBlue) / 255
-        val green = (imgColor.green() - imgGreen) / 255
+        val red = (Color.red(imgColor) - imgRed) / 255
+        val blue = (Color.blue(imgColor) - imgBlue) / 255
+        val green = (Color.green(imgColor) - imgGreen) / 255
         val diff = kotlin.math.sqrt((red * red + blue * blue + green * green).toDouble())
         return (diff * 100).toInt()
     }

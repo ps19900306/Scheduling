@@ -56,6 +56,7 @@ class NwqAccessibilityService : AccessibilityService() {
         L.d("", "onServiceConnected", "NwqAccessibilityService", "nwq", "2023/3/1");
         registerReceiver()
         ContextUtil.context = this
+        SP.init(this,"nwq_schedule")
     }
 
     private fun registerReceiver() {
