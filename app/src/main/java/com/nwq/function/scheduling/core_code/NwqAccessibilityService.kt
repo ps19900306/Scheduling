@@ -44,7 +44,8 @@ class NwqAccessibilityService : AccessibilityService() {
 
     fun startOpt() {
         list.getOrNull(0)?.let {
-            it.close()
+            list.forEach { it.close() }
+            list.clear()
         } ?: let {
             val fight = FightController(AccessibilityHelper(this@NwqAccessibilityService))
             fight.startGame()

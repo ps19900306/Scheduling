@@ -48,7 +48,7 @@ class FightConstant {
     var defaultCoordinateMenuArea = Area(472, 226, 65, 65)
 
     fun getTopEquipArea(index: Int): Area {
-        return Area(640 + 109 * index, 832, 95, 96)
+        return Area(1640 + 109 * index, 832, 95, 96)
     }
 
     fun getBottomEquipArea(index: Int): Area {
