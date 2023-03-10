@@ -170,11 +170,7 @@ object ImgUtils {
             "nwq",
             "2023/3/2"
         );
-        return colorRule.verificationRule(
-            Color.red(color),
-            Color.blue(color),
-            Color.green(color)
-        )
+        return colorRule.optInt(color)
     }
 
 
@@ -197,7 +193,7 @@ object ImgUtils {
             pixelsInfo.height
         )
         return pixels.find {
-            colorRule.verificationRule(Color.red(it), Color.red(it), Color.red(it))
+            colorRule.optInt(it)
         } != null
     }
 

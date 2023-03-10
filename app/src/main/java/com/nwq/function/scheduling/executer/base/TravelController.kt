@@ -1,5 +1,6 @@
 package com.nwq.function.scheduling.executer.base
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.click.DirectionType
@@ -71,11 +72,13 @@ abstract class TravelController(val helper: AccessibilityHelper) {
 
     //如果截图失败则等待二秒后继续截图
     suspend fun takeScreen() {
-        val bitmap = helper.takeScreen()
-        if (bitmap == null) {
-            delay(2000)
-            takeScreen()
-        }
+        var bitmap: Bitmap? = null
+        do {
+            bitmap = helper.takeScreen()
+            if (bitmap == null) {
+                delay(2000)
+            }
+        } while (bitmap == null)
     }
 
     suspend fun getColor(x: Int, y: Int): Color? {

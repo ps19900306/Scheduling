@@ -211,20 +211,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         click(constant.getTopMenuArea(2))
         takeScreen(tripleClickInterval)
         if (visual.hasReceivedTask()) {
-            L.i(
-                "hasReceivedTask",
-                "pickUpTask",
-                "FightController",
-                "nwq",
-                "2023/3/2"
-            );
+            Timber.d("已经存在任务 pickUpTask FightController NWQ_ 2023/3/10");
             if (needCancel) {
                 cancelTask()
+                Timber.d("需要取消已经存在的任务 pickUpTask FightController NWQ_ 2023/3/10");
                 delay(normalClickInterval)
                 return
             } else {
                 click(constant.optTaskArea)
-                clickTheDialogueClose(true)
+                clickTheDialogueClose(false)
                 takeScreen(doubleClickInterval)
                 ensureCloseDetermine()
                 theOutCheck()
@@ -641,7 +636,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
     suspend fun cancelTask() {
-        L.i("", "cancelTask", "FightController", "nwq", "2023/3/8");
+        Timber.d("取消任务 cancelTask FightController NWQ_ 2023/3/10");
         click(constant.openTaskArea, normalClickInterval)
         click(constant.cancelTaskArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
