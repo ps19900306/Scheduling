@@ -2,9 +2,12 @@ package com.nwq.function.scheduling.core_code.img
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import androidx.annotation.ColorInt
+import androidx.core.graphics.red
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
 import com.nwq.function.scheduling.utils.log.L
+import kotlin.math.abs
 
 
 object ImgUtils {
@@ -144,12 +147,11 @@ object ImgUtils {
     ): Boolean {
         val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
         val baseColor = Color.parseColor(colorRule)
-        return judgeColorSqrtV1(
-            Color.red(baseColor),
-            Color.blue(baseColor),
-            Color.green(baseColor),
-            color
-        ) <= tolerance
+        return checkColor(
+            baseColor,
+            color,
+            tolerance
+        )
     }
 
     /**
@@ -210,9 +212,6 @@ object ImgUtils {
     ): Boolean {
         val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
         val baseColor = Color.parseColor(colorRule)
-        val baseRed = Color.red(baseColor)
-        val baseBlue = Color.blue(baseColor)
-        val baseGreen = Color.green(baseColor)
         bitmap.getPixels(
             pixels,
             pixelsInfo.offset,
@@ -223,14 +222,11 @@ object ImgUtils {
             pixelsInfo.height
         )
         return pixels.find {
-            judgeColorSqrt(
-                Color.red(it),
-                Color.blue(it),
-                Color.green(it),
-                baseRed,
-                baseBlue,
-                baseGreen
-            ) <= tolerance
+            checkColor(
+                it,
+                baseColor,
+                tolerance
+            )
         } != null
     }
 
@@ -307,18 +303,19 @@ object ImgUtils {
 
 
     /******  下面的都是私有方法 ******************/
-    //判断颜色的相似度,越相似值越小 最大是100
-    private fun judgeColorSqrtV1(
-        imgRed: Int,
-        imgBlue: Int,
-        imgGreen: Int,
-        imgColor: Int
-    ): Int {
-        val red = (Color.red(imgColor) - imgRed) / 255
-        val blue = (Color.blue(imgColor) - imgBlue) / 255
-        val green = (Color.green(imgColor) - imgGreen) / 255
-        val diff = kotlin.math.sqrt((red * red + blue * blue + green * green).toDouble())
-        return (diff * 100).toInt()
+    private fun checkColor(pixelsInt: Int, ColorInt: Int, tolerance: Int): Boolean {
+        return abs(pixelsInt.red - ColorInt.red) < tolerance &&
+                abs(pixelsInt.red - ColorInt.red) < tolerance &&
+                abs(pixelsInt.red - ColorInt.red) < tolerance
+    }
+
+    private fun checkColor(
+        pixelsInt: Int, imgRed: Int, imgBlue: Int,
+        imgGreen: Int, tolerance: Int
+    ): Boolean {
+        return abs(pixelsInt.red - imgRed) < tolerance &&
+                abs(pixelsInt.red - imgBlue) < tolerance &&
+                abs(pixelsInt.red - imgGreen) < tolerance
     }
 
     private fun judgeColorSqrt(
@@ -329,21 +326,7 @@ object ImgUtils {
         baseBlue: Int,
         baseGreen: Int,
     ): Int {
-        val red = (baseRed - imgRed) / 255
-        val blue = (baseBlue - imgBlue) / 255
-        val green = (baseGreen - imgGreen) / 255
-        val diff = kotlin.math.sqrt((red * red + blue * blue + green * green).toDouble())
-        return (diff * 100).toInt()
+        return abs(baseRed - imgRed) + abs(baseBlue - imgBlue) + abs(baseGreen - imgGreen)
     }
-
-    //判断颜色的相似度,越相似值越小 最大是100
-    private fun judgeColorSqrt(baseColor: Color, imgColor: Color): Int {
-        val red = (imgColor.red() - baseColor.red()) / 255
-        val blue = (imgColor.blue() - baseColor.blue()) / 255
-        val green = (imgColor.green() - baseColor.green()) / 255
-        val diff = kotlin.math.sqrt((red * red + blue * blue + green * green).toDouble())
-        return diff.toInt()
-    }
-
 
 }
