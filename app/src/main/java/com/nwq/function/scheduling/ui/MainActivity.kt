@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.core.net.toUri
 import com.nwq.function.scheduling.R
+import com.nwq.function.scheduling.databinding.ActivityMainBinding
 import timber.log.Timber
 
 

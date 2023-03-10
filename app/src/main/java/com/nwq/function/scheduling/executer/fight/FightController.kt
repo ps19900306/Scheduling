@@ -416,7 +416,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                                 }
                             }
                         }
-
                     } else {
                         clickEquipArray(closeList)
                     }
@@ -450,6 +449,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     fun checkTimingOnList(needCheckOpenList: MutableList<Int>) {
         if (targetCount <= 1) {
+            Timber.d("目标是 checkTimingOnList FightController NWQ_ 2023/3/10");
             return
         }
         var nowTime = System.currentTimeMillis()
