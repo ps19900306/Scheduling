@@ -492,7 +492,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     needCheckOpenList.add(0, d)
                     flag = true
                 }
-            } else if (intervalTime in (i * Equipment_Interval)..(i + 1 * Equipment_Interval)) {
+            } else if (intervalTime in (i * Equipment_Interval)..((i + 1) * Equipment_Interval)) {
                 needCheckOpenList.add(0, d)
             }
         }
