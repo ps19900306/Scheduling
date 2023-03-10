@@ -13,6 +13,7 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.click.ClickUtils
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.fight.FightController
 import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
@@ -30,6 +31,7 @@ Function description:
 class NwqAccessibilityService : AccessibilityService() {
 
     private val TAG = "NwqAccessibilityService"
+    private val list = mutableListOf<TravelController>()
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -39,8 +41,17 @@ class NwqAccessibilityService : AccessibilityService() {
         }
     }
 
+
     fun startOpt() {
-        FightController(AccessibilityHelper(this@NwqAccessibilityService)).startGame()
+        list.getOrNull(0)?.let {
+            it.close()
+        } ?: let {
+            val fight = FightController(AccessibilityHelper(this@NwqAccessibilityService))
+            fight.startGame()
+            list.add(fight)
+        }
+
+
         //ClickTestController(AccessibilityHelper(this@NwqAccessibilityService)).startOperation()
     }
 
@@ -58,7 +69,7 @@ class NwqAccessibilityService : AccessibilityService() {
 
         registerReceiver()
         ContextUtil.context = this
-        SP.init(this,"nwq_schedule")
+        SP.init(this, "nwq_schedule")
         Timber.plant(Timber.DebugTree())
     }
 

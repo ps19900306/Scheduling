@@ -20,7 +20,7 @@ Function description:
 abstract class TravelController(val helper: AccessibilityHelper) {
 
     private val STANDARD_CLICK_INTERVAL = 2000
-
+    var runSwitch = true
     protected val fastClickInterval
         get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.2 + 0.5).toLong()
 
@@ -39,6 +39,9 @@ abstract class TravelController(val helper: AccessibilityHelper) {
     protected val screenBitmap
         get() = helper.screenBitmap!!
 
+    fun close() {
+        runSwitch = false
+    }
 
     fun startOperation() {
         GlobalScope.launch {

@@ -62,7 +62,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
      * 这个是控制变量
      */
     private var nowStep = PICK_UP_TASK
-    var runSwitch = true
+
     var intoGameStep = LOADING
     var needCancel = false
     var needBackStation = false
