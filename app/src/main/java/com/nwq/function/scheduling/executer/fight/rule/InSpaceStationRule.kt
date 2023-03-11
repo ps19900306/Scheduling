@@ -9,7 +9,7 @@ Function description:
  */
 
 object InSpaceStationRule : ColorIdentificationRule {
-    override fun verificationRule(red: Int, blue: Int, green: Int): Boolean {
-        return checkColor(arrayOf(160, 35, 137), red, blue, green)
+    override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
+        return checkColor(arrayOf(160, 35, 137), red, green, blue)
     }
 }

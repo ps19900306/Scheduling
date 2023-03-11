@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="内容"
+        android:text="是否盾抗"
         app:layout_constraintBottom_toBottomOf="@+id/resistanceModeTitleTv"
         app:layout_constraintStart_toEndOf="@+id/resistanceModeTitleTv"
         app:layout_constraintTop_toTopOf="@+id/resistanceModeTitleTv" />
@@ -33,8 +33,8 @@
         android:layout_marginStart="10dp"
         android:text="是否是盾抗"
         app:layout_constraintBottom_toBottomOf="@+id/resistanceModeContentTv"
-        app:layout_constraintTop_toTopOf="@+id/resistanceModeContentTv"
-        app:layout_constraintStart_toEndOf="@+id/resistanceModeContentTv" />
+        app:layout_constraintStart_toEndOf="@+id/resistanceModeContentTv"
+        app:layout_constraintTop_toTopOf="@+id/resistanceModeContentTv" />
 
     <TextView
         android:id="@+id/pickupTitleTv"
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="内容"
+        android:text="是否拾取"
         app:layout_constraintBottom_toBottomOf="@+id/pickupTitleTv"
         app:layout_constraintStart_toEndOf="@+id/pickupTitleTv"
         app:layout_constraintTop_toTopOf="@+id/pickupTitleTv" />
@@ -63,7 +63,173 @@
         android:layout_marginStart="10dp"
         android:text="是否拾取箱子"
         app:layout_constraintBottom_toBottomOf="@+id/pickupContentTv"
-        app:layout_constraintTop_toTopOf="@+id/pickupContentTv"
-        app:layout_constraintStart_toEndOf="@+id/pickupContentTv" />
+        app:layout_constraintStart_toEndOf="@+id/pickupContentTv"
+        app:layout_constraintTop_toTopOf="@+id/pickupContentTv" />
+
+    <TextView
+        android:id="@+id/baseLocationTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="基地位置"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pickupTitleTv" />
+
+    <EditText
+        android:id="@+id/baseLocationEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:minWidth="100dp"
+        android:hint="基地坐标位置"
+        app:layout_constraintBottom_toBottomOf="@+id/baseLocationTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/baseLocationTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/baseLocationTitleTv" />
+
+    <Button
+        android:id="@+id/baseLocationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/baseLocationEdit"
+        app:layout_constraintStart_toEndOf="@+id/baseLocationEdit"
+        app:layout_constraintTop_toTopOf="@+id/baseLocationEdit" />
+
+    <CheckBox
+        android:id="@+id/baseLocationCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="是否拾取箱子"
+        app:layout_constraintBottom_toBottomOf="@+id/pickupContentTv"
+        app:layout_constraintStart_toEndOf="@+id/pickupContentTv"
+        app:layout_constraintTop_toTopOf="@+id/pickupContentTv" />
+
+    <TextView
+        android:id="@+id/list1TitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="ListOn1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/baseLocationTitleTv" />
+
+    <EditText
+        android:id="@+id/list1Edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="List1"
+        android:minWidth="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/list1TitleTv"
+        app:layout_constraintStart_toEndOf="@+id/list1TitleTv"
+        app:layout_constraintTop_toTopOf="@+id/list1TitleTv" />
+
+    <Button
+        android:id="@+id/list1Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/list1Edit"
+        app:layout_constraintStart_toEndOf="@+id/list1Edit"
+        app:layout_constraintTop_toTopOf="@+id/list1Edit" />
+
+    <Button
+        android:id="@+id/list1ClearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="清除"
+        app:layout_constraintBottom_toBottomOf="@+id/list1Btn"
+        app:layout_constraintStart_toEndOf="@+id/list1Btn"
+        app:layout_constraintTop_toTopOf="@+id/list1Btn" />
+
+
+    <TextView
+        android:id="@+id/list2TitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="ListOn1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/list1TitleTv" />
+
+    <EditText
+        android:id="@+id/list2Edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="List1"
+        android:minWidth="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/list2TitleTv"
+        app:layout_constraintStart_toEndOf="@+id/list2TitleTv"
+        app:layout_constraintTop_toTopOf="@+id/list2TitleTv" />
+
+    <Button
+        android:id="@+id/list2Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/list2Edit"
+        app:layout_constraintStart_toEndOf="@+id/list2Edit"
+        app:layout_constraintTop_toTopOf="@+id/list2Edit" />
+
+    <Button
+        android:id="@+id/list2ClearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="清除"
+        app:layout_constraintBottom_toBottomOf="@+id/list2Btn"
+        app:layout_constraintStart_toEndOf="@+id/list2Btn"
+        app:layout_constraintTop_toTopOf="@+id/list2Btn" />
+
+    <TextView
+        android:id="@+id/list3TitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="ListOn1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/list2TitleTv" />
+
+    <EditText
+        android:id="@+id/list3Edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="List1"
+        android:minWidth="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/list3TitleTv"
+        app:layout_constraintStart_toEndOf="@+id/list3TitleTv"
+        app:layout_constraintTop_toTopOf="@+id/list3TitleTv" />
+
+    <Button
+        android:id="@+id/list3Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/list3Edit"
+        app:layout_constraintStart_toEndOf="@+id/list3Edit"
+        app:layout_constraintTop_toTopOf="@+id/list3Edit" />
+
+    <Button
+        android:id="@+id/list3ClearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="清除"
+        app:layout_constraintBottom_toBottomOf="@+id/list3Btn"
+        app:layout_constraintStart_toEndOf="@+id/list3Btn"
+        app:layout_constraintTop_toTopOf="@+id/list3Btn" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

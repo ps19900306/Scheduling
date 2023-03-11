@@ -5,4 +5,6 @@ object Constant {
     const val DISTANCE_UNIT = 100
     const val DISTANCE_TIME_UNIT = 10
     const val DURATION_TIME_UNIT = 300
+
+    const val CMD = "cmd"
 }

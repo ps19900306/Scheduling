@@ -13,7 +13,7 @@ interface ColorIdentificationRule {
 
     fun verificationRule(red: Int, green: Int, blue: Int): Boolean
 
-    fun checkColor(rule: Array<Int>, red: Int, blue: Int, green: Int, range: Int = 10): Boolean {
+    fun checkColor(rule: Array<Int>, red: Int, green: Int, blue: Int, range: Int = 10): Boolean {
         return red in (rule[0] - range)..(rule[0] + range) && blue in (rule[1] - range)..(rule[1] + range)
         green in (rule[2] - range)..(rule[2] + range)
     }

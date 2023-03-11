@@ -1,16 +1,24 @@
 package com.nwq.function.scheduling.executer.fight
 
 import com.nwq.function.scheduling.core_code.Area
+import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SpConstant
 
 class FightConstant {
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
-    var APP_LOCATION_X = 1 //APP位于当前页的第一列
+    val APP_LOCATION_X
+        get() = {
+            if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+                1
+            } else {
+                2
+            }
+        }
     var REFRESH_INTERVAL = 31 * 60 * 1000L
     var NAVIGATING_TOO_LONG = 15 * 60 * 1000L
     var NAVIGATING_EXCEPTION = 40 * 60 * 1000L
     var INTO_BATTLE_EXCEPTION = 5 * 60 * 1000L
     var MAX_BATTLE_TIME = 30 * 60 * 1000L
-    var WAREHOUSE_INDEX = 0 //基地坐标
 
     var MenuArea = Area(84, 3, 198, 120)
     var FightTaskMenuArea = Area(84, 3, 198, 120)

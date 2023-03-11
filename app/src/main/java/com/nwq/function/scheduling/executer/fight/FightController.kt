@@ -5,6 +5,7 @@ import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.log.L
+import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepo.lastRefreshTimeSp
 import com.nwq.function.scheduling.utils.sp.SpConstant
@@ -39,6 +40,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val TopOfst = SpConstant.TopOfst//顶部的偏移量
     private val BotOfst = SpConstant.BotOfst//底部的便宜量
 
+    val prefixRole by lazy { SPRepo.role }
+
     //下面是进入游戏的的一些判断条件
     private val LOADING = 11;
     private val ANNOUNCEMENT = 12;
@@ -57,7 +60,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     var MAINTENANCE_INTERVAL = 30000L //维修间隔
     var DEFAULT_DESTROY_INTERVAL = 60 * 1000 //能够容忍的最大击毁间隔
     var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
-
+    val  warehouseIndex by lazy {
+        SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
+    }
     /**
      * 这个是控制变量
      */
@@ -73,22 +78,33 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val constant by lazy {
         FightConstant()
     }
+    val isPickupBox by lazy {
+        SP.getValue(prefixRole + SpConstant.IS_PICKUP_BOX, false)
+    }
 
     //后面这里由外部读取数据进行初始化
     private val wholeBattleOpenList by lazy {
         listOf(2 + BotOfst, TopOfst + 2)
     }
     private val roundBattleOpenList by lazy {
-        listOf(5 + BotOfst, 6 + BotOfst)
+        if (isPickupBox) {
+            listOf(5 + BotOfst)
+        } else {
+            listOf(5 + BotOfst, 6 + BotOfst)
+        }
+
     }
     private val timeOnOpenList1 by lazy {
-        listOf(TopOfst + 5, TopOfst + 6)
+        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
+        JsonUtil.anyToJsonObject(listStr) ?: listOf(TopOfst + 5, TopOfst + 6)
     }
     private val timeOnOpenList2 by lazy {
-        listOf<Int>()
+        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST2, "")
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
     }
     private val timeOnOpenList3 by lazy {
-        listOf<Int>(4 + TopOfst)
+        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
     }
 
     // 默认是武器的
@@ -111,7 +127,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val maintenanceDevicePosition = TopOfst + 1
     private val weaponPosition = BotOfst + 3
     private val cellPosition = BotOfst + 5
-    var isShieldResistance = false//是否护盾抗
+    val isShieldResistance by lazy {
+        SP.getValue(prefixRole + SpConstant.CRESISTANCE_MODE, false)
+    }//是否护盾抗
 
 
     /*******************************************************************
@@ -744,7 +762,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     suspend fun exit() {
         theOutCheck()
-        clickJumpCollectionAddress(constant.WAREHOUSE_INDEX, false)
+        clickJumpCollectionAddress(warehouseIndex, false)
         runSwitch = false
     }
 
@@ -767,7 +785,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         theOutCheck()
         needCancel = true
         needBackStation = true
-        clickJumpCollectionAddress(constant.WAREHOUSE_INDEX, false)
+        clickJumpCollectionAddress(warehouseIndex, false)
         nowStep = MONITORING_RETURN_STATUS
     }
 

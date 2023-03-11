@@ -66,14 +66,9 @@ object ImgUtils {
     ): Boolean {
         val pixel = bitmap.getPixel(data.coordinate1.x.toInt(), data.coordinate1.y.toInt())
         val pixel1 = bitmap.getPixel(data.coordinate2.x.toInt(), data.coordinate2.y.toInt())
-        return data.twoPointComparison.verificationRule(
-            Color.red(pixel),
-            Color.blue(pixel),
-            Color.green(pixel),
-            Color.red(pixel1),
-            Color.blue(pixel1),
-            Color.green(pixel1),
-        )
+        return data.twoPointComparison.optInt(
+            pixel,
+            pixel1)
     }
 
     //多个点找一个颜色 如果一个符合则返回True

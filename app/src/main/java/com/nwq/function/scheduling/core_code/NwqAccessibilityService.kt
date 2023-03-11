@@ -35,25 +35,30 @@ class NwqAccessibilityService : AccessibilityService() {
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                startOpt()
-                L.d("", "onReceive", "NwqAccessibilityService", "nwq", "2023/3/1");
+                intent?.let { dealEvent(it) }
             }
         }
     }
 
 
-    fun startOpt() {
-        list.getOrNull(0)?.let {
-            list.forEach { it.close() }
-            list.clear()
-        } ?: let {
-            val fight = FightController(AccessibilityHelper(this@NwqAccessibilityService))
-            fight.startGame()
-            list.add(fight)
-        }
+    fun dealEvent(intent: Intent){
+       val cmd= intent.getIntExtra(Constant.CMD,CmdType.START)
+       when(cmd){
+           CmdType.START->{
+               list.forEach { it.close() }
+               list.clear()
+               val fight = FightController(AccessibilityHelper(this@NwqAccessibilityService))
+               fight.startGame()
+               list.add(fight)
+           }
+           CmdType.CLOSE->{
+               list.forEach { it.close() }
+               list.clear()
+           }
+           CmdType.CHECK_COLOR->{
 
-
-        //ClickTestController(AccessibilityHelper(this@NwqAccessibilityService)).startOperation()
+           }
+       }
     }
 
 
@@ -70,7 +75,7 @@ class NwqAccessibilityService : AccessibilityService() {
 
         registerReceiver()
         ContextUtil.context = this
-        SP.init(this, "nwq_schedule")
+       // SP.init(this, "nwq_schedule")
         Timber.plant(Timber.DebugTree())
     }
 
