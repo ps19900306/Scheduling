@@ -15,8 +15,10 @@ object SpConstant {
     const val PREFIX_ROLE1="role1"
     const val PREFIX_ROLE2="role2"
     const val CRESISTANCE_MODE ="cresistance_mode"
-    const val BASE_LOCATION ="base_location"
     const val IS_PICKUP_BOX ="is_pickup_box"
+    const val IS_CATCH_FOOD ="is_catch_food"
+    const val BASE_LOCATION ="base_location"
+
     const val TIME_ON_LIST1 ="time_on_list1"
     const val TIME_ON_LIST2 ="time_on_list2"
     const val TIME_ON_LIST3 ="time_on_list3"

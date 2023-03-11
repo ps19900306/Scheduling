@@ -7,13 +7,12 @@ import com.nwq.function.scheduling.utils.sp.SpConstant
 class FightConstant {
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
     val APP_LOCATION_X
-        get() = {
-            if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
-                1
-            } else {
-                2
-            }
+        get() = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+            1
+        } else {
+            2
         }
+
     var REFRESH_INTERVAL = 31 * 60 * 1000L
     var NAVIGATING_TOO_LONG = 15 * 60 * 1000L
     var NAVIGATING_EXCEPTION = 40 * 60 * 1000L

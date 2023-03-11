@@ -60,9 +60,10 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     var MAINTENANCE_INTERVAL = 30000L //维修间隔
     var DEFAULT_DESTROY_INTERVAL = 60 * 1000 //能够容忍的最大击毁间隔
     var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
-    val  warehouseIndex by lazy {
+    val warehouseIndex by lazy {
         SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
     }
+
     /**
      * 这个是控制变量
      */
@@ -87,12 +88,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         listOf(2 + BotOfst, TopOfst + 2)
     }
     private val roundBattleOpenList by lazy {
-        if (isPickupBox) {
-            listOf(5 + BotOfst)
+       val list= if (isPickupBox) {
+            mutableListOf(5 + BotOfst)
         } else {
-            listOf(5 + BotOfst, 6 + BotOfst)
+            mutableListOf(5 + BotOfst, 6 + BotOfst)
         }
-
+        if(!isCatchFoodSp){
+            list.add(0, BotOfst+4)
+        }
+        list
     }
     private val timeOnOpenList1 by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
@@ -120,9 +124,10 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
 
     val Equipment_Interval = 30 * 1000L
-
+    var isCatchFoodSp by SP(prefixRole + SpConstant.IS_CATCH_FOOD, true)
     private val catchFoodList by lazy {
-        listOf<Int>(1 + BotOfst, 4 + BotOfst)
+        if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
+        else listOf<Int>()
     }
     private val maintenanceDevicePosition = TopOfst + 1
     private val weaponPosition = BotOfst + 3
@@ -379,7 +384,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     hasNewLock = true
                     openTheWholeBattle()
                     targetCount = nowTargetCount
-                } else if (targetCount >= 4 && hasNewLock) {
+                } else if (targetCount >= 4 && (hasNewLock ||nowTargetCount>targetCount)) {
+                    targetCount = nowTargetCount
                     openDecelerationNet()
                     hasNewLock = false
                 } else {//这里要做异常处理了 先不做处理
@@ -399,7 +405,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                             needCheckOpenList.addAll(catchFoodList)
                             DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
                         }
-                    } else if (System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount || isAttackSmallShip()) {
+                    } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount) || isAttackSmallShip()) {
                         targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
                         DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
@@ -742,7 +748,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         var position = getNowAttackPosition()
         if (position > 0) {
             var result = visual.judgeIsSmall(position - 1)
-            // log("正在攻击目标" + position + "是否是小船" + result)
             return result
         } else {
             return false

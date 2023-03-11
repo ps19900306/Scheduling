@@ -30,6 +30,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
     val prefixRole by lazy { SPRepo.role }
     var resistanceModeSP by SP(prefixRole + SpConstant.CRESISTANCE_MODE, false)
     var isPickupBoxSP by SP(prefixRole + SpConstant.IS_PICKUP_BOX, false)
+    var isCatchFoodSp by SP(prefixRole + SpConstant.IS_CATCH_FOOD, true)
     var baseLocationSP by SP(prefixRole + SpConstant.BASE_LOCATION, 0)
     var timeOnList1SP by SP(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
     var timeOnList2SP by SP(prefixRole + SpConstant.TIME_ON_LIST2, "")
@@ -59,6 +60,9 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         }
         bind.pickupCheckTv.setOnCheckedChangeListener { buttonView, isChecked ->
             isPickupBoxSP = isChecked
+        }
+        bind.pickupCheckTv.setOnCheckedChangeListener { buttonView, isChecked ->
+            isCatchFoodSp = isChecked
         }
         //111
         bind.list1Btn.singleClick {
@@ -111,7 +115,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
     fun initData() {
         bind.resistanceModeCheckTv.isChecked = resistanceModeSP
         bind.pickupCheckTv.isChecked = isPickupBoxSP
-        bind.baseLocationEdit
+        bind.catchFoodCheckBox.isChecked = isCatchFoodSp
         bind.baseLocationEdit.setText("$baseLocationSP")
         bind.list1TitleTv.text = timeOnList1SP
         bind.list2TitleTv.text  = timeOnList2SP

@@ -231,5 +231,15 @@
         app:layout_constraintStart_toEndOf="@+id/list3Btn"
         app:layout_constraintTop_toTopOf="@+id/list3Btn" />
 
+    <CheckBox
+        android:id="@+id/catchFoodCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="是否开启网子"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/list3TitleTv"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
