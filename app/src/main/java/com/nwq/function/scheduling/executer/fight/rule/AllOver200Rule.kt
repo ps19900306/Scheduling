@@ -10,7 +10,7 @@ Function description:
  */
 
 object AllOver200Rule : ColorIdentificationRule {
-    override fun verificationRule(red: Int, blue: Int, green: Int): Boolean {
+    override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
         return red > 200 && blue > 200 && green > 200
     }
 }

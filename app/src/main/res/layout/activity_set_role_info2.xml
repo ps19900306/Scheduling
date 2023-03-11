@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SetRoleInfoActivity2">
+
+    <TextView
+        android:id="@+id/resistanceModeTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="抗性方式"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/resistanceModeContentTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="内容"
+        app:layout_constraintBottom_toBottomOf="@+id/resistanceModeTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/resistanceModeTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/resistanceModeTitleTv" />
+
+    <CheckBox
+        android:id="@+id/resistanceModeCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="是否是盾抗"
+        app:layout_constraintBottom_toBottomOf="@+id/resistanceModeContentTv"
+        app:layout_constraintTop_toTopOf="@+id/resistanceModeContentTv"
+        app:layout_constraintStart_toEndOf="@+id/resistanceModeContentTv" />
+
+    <TextView
+        android:id="@+id/pickupTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="拾取箱子"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resistanceModeTitleTv" />
+
+    <TextView
+        android:id="@+id/pickupContentTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="内容"
+        app:layout_constraintBottom_toBottomOf="@+id/pickupTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/pickupTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/pickupTitleTv" />
+
+    <CheckBox
+        android:id="@+id/pickupCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="是否拾取箱子"
+        app:layout_constraintBottom_toBottomOf="@+id/pickupContentTv"
+        app:layout_constraintTop_toTopOf="@+id/pickupContentTv"
+        app:layout_constraintStart_toEndOf="@+id/pickupContentTv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

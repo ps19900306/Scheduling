@@ -3,7 +3,7 @@ package com.nwq.function.scheduling.executer.fight.rule
 import com.nwq.function.scheduling.core_code.img.ColorIdentificationRule
 
 object DialogueColorRule : ColorIdentificationRule {
-    override fun verificationRule(red: Int, blue: Int, green: Int): Boolean {
+    override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
         return if (green > 140) {
             if (green > red * 2.3 && green > blue + 18) {
                 true

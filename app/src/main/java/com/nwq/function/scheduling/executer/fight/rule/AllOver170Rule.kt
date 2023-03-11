@@ -9,7 +9,7 @@ Function description:
  */
 
 object AllOver170Rule : ColorIdentificationRule {
-    override fun verificationRule(red: Int, blue: Int, green: Int): Boolean {
+    override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
         return red > 170 && blue > 170 && green > 170
     }
 }

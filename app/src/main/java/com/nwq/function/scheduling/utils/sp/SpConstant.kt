@@ -11,6 +11,11 @@ object SpConstant {
     const val ROUND_START_TIME = "round_start_time"
     const val TARGET_REDUCE_TIME = "target_reduce_time"
 
+    const val PREFIX_ROLE1="role1"
+    const val PREFIX_ROLE2="role2"
+
+
+
     const val ROLE1_WHOLE_BATTLE_OPEN = "role1_whole_Battle_Open"
     const val ROLE1_ROUND_BATTLE_OPEN = "role1_Round_Battle_Open"
     const val ROLE1_TIME_ON_LIST1 = "role1_time_On_List1"

@@ -9,7 +9,7 @@ Function description:
  */
 
 object NotRedRule : ColorIdentificationRule {
-    override fun verificationRule(red: Int, blue: Int, green: Int): Boolean {
+    override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
         return !(red > 100 && red - blue > 60 && red - blue > 50)
     }
 }

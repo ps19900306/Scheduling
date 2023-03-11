@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Scheduling"
         tools:targetApi="31">
         <activity
+            android:name=".SetRoleInfoActivity2"
+            android:exported="false" />
+        <activity
             android:name=".GetColorActivity"
             android:exported="false" />
         <activity

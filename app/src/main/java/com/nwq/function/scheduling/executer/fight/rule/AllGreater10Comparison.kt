@@ -11,14 +11,8 @@ Function description:
 
 object AllGreater10Comparison : TwoPointComparison {
 
-
     override fun verificationRule(
-        red: Int,
-        blue: Int,
-        green: Int,
-        red2: Int,
-        blue2: Int,
-        green2: Int
+        red: Int, green: Int, blue: Int, red2: Int, green2: Int, blue2: Int
     ): Boolean {
         return (red - red2 > 10) && (blue - blue2 > 10) && (green - green2 > 10)
     }

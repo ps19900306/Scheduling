@@ -53,10 +53,13 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     //是否已经进入空间站 TODO 需要优化取点过多
     fun isInSpaceStation(): Boolean {
-        return ImgUtils.findColorLike(
-            PixelsInfo(2182, 312, 81, 40), screenBitmap, "#ffae9328", 15
-        ) || ImgUtils.findColorLike(
-            PixelsInfo(2022, 333, 110, 56), screenBitmap, "#ffae9328", 15
+        val list = listOf(
+            verificationTask(2038, 360, InSpaceStationRule),
+            verificationTask(2066, 360, InSpaceStationRule),
+            verificationTask(2054, 360, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 1
         )
     }
 
@@ -145,9 +148,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isCloseEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(2221, 605, "#ffa2a2a2", 15),
-            verificationTask(2248, 605, "#ff9f9f9f", 15),
-            verificationTask(2234, 605, "#ff9f9f9f", 15),
+            verificationTask(2227, 605, AllLess50Rule),
+            verificationTask(2218, 605, AllOver150Rule),
+            verificationTask(2234, 605, AllOver150Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
@@ -179,9 +182,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isOpenEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(1843, 605, "#ffa2a2a2", 15),
-            verificationTask(1856, 605, "#ff9f9f9f", 15),
-            verificationTask(1869, 605, "#ff9f9f9f", 15),
+            verificationTask(1841, 606, AllOver150Rule),
+            verificationTask(1870, 606, AllOver150Rule),
+            verificationTask(1862, 606, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
@@ -189,7 +192,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
     //判断菜单是否是打开的
-    fun isOpenPostionMenuGray(): Boolean {
+    fun isOpenPositionMenuGray(): Boolean {
         val list = listOf(
             verificationTask(491, 301, "#ff37383a"),
         )
@@ -201,7 +204,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //是不是默认的坐标菜单
     fun isDefaultCoordinateMenu(): Boolean {
         val list = listOf(
-            verificationTask(128, 358, "#ff326e64"),
+            verificationTask(136, 375, AllOver200Rule),
+            verificationTask(110, 378, AllLess70Rule),
+            verificationTask(269, 382, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -221,42 +226,30 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     //是否有位置菜单
     fun hasPositionMenu(): Boolean {
-        val list = listOf(
-            verificationTask(136, 301, "#ff9ca0a5"),
-            verificationTask(491, 301, "#ffd6d7d7"),
-        )
-        return !ImgUtils.performPointsColorVerificationV2(
-            list, screenBitmap,
-        )
+        return isOpenPositionMenu() || isClosePositionMenu()
     }
 
     //判断菜单是否是打开的
     fun isOpenPositionMenu(): Boolean {
         val list = listOf(
-            verificationTask(136, 301, "#ff9ca0a5"),
+            verificationTask(490, 305, AllOver150Rule),
+            verificationTask(490, 291, AllLess70Rule),
+            verificationTask(490, 320, AllLess70Rule),
         )
-        val list1 = listOf(
-            verificationTask(491, 301, "#ffd6d7d7"),
-        )
-        return !ImgUtils.performPointsColorVerification(
+        return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
-        ) && ImgUtils.performPointsColorVerification(
-            list1, screenBitmap, 0
         )
     }
 
     //判断菜单是否是关闭
     fun isClosePositionMenu(): Boolean {
         val list = listOf(
-            verificationTask(136, 301, "#ff9ca0a5"),
-        )
-        val list1 = listOf(
-            verificationTask(491, 301, "#ffd6d7d7"),
+            verificationTask(135, 305, AllOver150Rule),
+            verificationTask(135, 291, AllLess70Rule),
+            verificationTask(135, 320, AllLess70Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
-        ) && !ImgUtils.performPointsColorVerification(
-            list1, screenBitmap, 0
         )
     }
 

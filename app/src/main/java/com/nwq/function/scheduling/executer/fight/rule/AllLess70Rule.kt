@@ -8,8 +8,8 @@ create time: 2023/3/2 10:17
 Function description:
  */
 
-object AllLess50Rule: ColorIdentificationRule {
+object AllLess70Rule : ColorIdentificationRule {
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        return red < 50 && blue < 50 && green < 50
+        return red < 70 && blue < 70 && green < 70
     }
 }

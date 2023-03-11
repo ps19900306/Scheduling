@@ -221,7 +221,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 return
             } else {
                 click(constant.optTaskArea)
-                clickTheDialogueClose(false)
+                clickTheDialogueClose(true)
                 takeScreen(doubleClickInterval)
                 ensureCloseDetermine()
                 theOutCheck()
@@ -583,7 +583,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
         var hasClickConversation = false
         var rightClickTimes = 0
-        var flag = 10
+        var flag = if (pickUp) 10 else 3
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0) {
             takeScreen(normalClickInterval)
@@ -600,7 +600,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 flag = 10
             } else if (visual.isShowDetermine()) {
                 Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
-                if (pickUp && rightClickTimes > 3 && !receiveAdvancedTasks) {
+                if (pickUp && rightClickTimes >= 2 && !receiveAdvancedTasks) {
                     needCancel = true
                     hasClickConversation = false
                     click(constant.dialogCancleArea)
@@ -610,7 +610,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 }
                 flag = 0
             } else {
-                Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
+                Timber.d("Nothing clickTheDialogueClose NWQ_ 2023/3/10");
                 flag--
             }
         }

@@ -9,7 +9,7 @@ Function description:
  */
 
 object NowAttackRule1 : ColorIdentificationRule {
-    override fun verificationRule(red: Int, blue: Int, green: Int): Boolean {
+    override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
         return red in 161..184 &&
                 blue in 161..184 &&
                 green in 161..184
