@@ -76,7 +76,7 @@ class NwqAccessibilityService : AccessibilityService() {
         registerReceiver()
         ContextUtil.context = this
        // SP.init(this, "nwq_schedule")
-        Timber.plant(Timber.DebugTree())
+       // Timber.plant(Timber.DebugTree())
     }
 
     private fun registerReceiver() {
