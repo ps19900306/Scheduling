@@ -73,6 +73,11 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         bind.catchFoodCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
             isCatchFoodSp = isChecked
         }
+        bind.baseLocationBtn.singleClick {
+            bind.baseLocationEdit.text.toString().toIntOrNull()?.let {
+                baseLocationSP=it
+            }
+        }
         //111
         bind.list1Btn.singleClick {
             bind.list1Edit.text.toString().toIntOrNull()?.let {

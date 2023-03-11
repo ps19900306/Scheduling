@@ -159,7 +159,7 @@ object ImgUtils {
     ): Boolean {
         val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
         L.i(
-            "red: ${Color.red(color)}, blue: ${Color.blue(color)}, green: ${Color.green(color)}",
+            "x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}, blue: ${Color.blue(color)}, green: ${Color.green(color)}",
             "verificationRule",
             "AllOver200Rule",
             "nwq",

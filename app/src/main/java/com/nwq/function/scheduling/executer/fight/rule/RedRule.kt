@@ -10,6 +10,6 @@ Function description:
 
 object RedRule : ColorIdentificationRule {
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        return red > 100 && red - blue > 60 && red - blue > 50
+        return red > 100 && red - green > 60 && red - blue > 50
     }
 }

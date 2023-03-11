@@ -86,11 +86,11 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     //后面这里由外部读取数据进行初始化
     private val wholeBattleOpenList by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(BotOfst + 2, TopOfst + 2)
     }
     private val roundBattleOpenList by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(BotOfst + 5, BotOfst + 6)
     }
     private val timeOnOpenList1 by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
@@ -359,6 +359,16 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     //没有锁定上继续导航
                     useUnlock = false
                 }
+            } else if (visual.getTagNumber() > 0) {
+                Timber.d("存在锁定目标 combatMonitoring FightController NWQ_ 2023/3/10");
+                System.currentTimeMillis().let {
+                    roundStartTime = it
+                    targetReduceTime = it
+                }
+                mEnterCombatStatus = true
+                hasNewLock = true
+                openTheWholeBattle()
+                useUnlock = true
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
                 Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
                 nowStep = ABNORMAL_STATE
@@ -373,10 +383,10 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     roundStartTime = it
                     targetReduceTime = it
                 }
-                if (targetCount <= 1 && nowTargetCount >= 1) {
-                    DESTROY_INTERVAL += DEFAULT_DESTROY_INTERVAL
+                if (targetCount <= 1 && nowTargetCount >3) {
                     hasNewLock = true
                     openTheWholeBattle()
+                    DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL
                     targetCount = nowTargetCount
                 } else if (targetCount >= 4 && (hasNewLock || nowTargetCount > targetCount)) {
                     targetCount = nowTargetCount
@@ -399,6 +409,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                             needCheckOpenList.addAll(catchFoodList)
                             DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
                         }
+                        targetCount=nowTargetCount
                     } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount) || isAttackSmallShip()) {
                         targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
@@ -601,7 +612,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
         var hasClickConversation = false
         var rightClickTimes = 0
-        var flag = if (pickUp) 10 else 3
+        var flag = if (pickUp) 5 else 3
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0) {
             takeScreen(normalClickInterval)
@@ -632,6 +643,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 flag--
             }
         }
+
         return hasClickConversation
     }
 
@@ -717,6 +729,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     suspend fun clickEquipArray(list: List<Int>) {
         Timber.d("${JsonUtil.objectToString(list)} 点击数组有 FightController NWQ_ 2023/3/10");
+        if (list.isNullOrEmpty()) {
+            return
+        }
         click(list.map { index ->
             if (index < TopOfst) {
                 constant.getBottomEquipArea(index)
@@ -743,9 +758,11 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
     fun isAttackSmallShip(): Boolean {
+        if (targetCount <= 0) return false
         var position = getNowAttackPosition()
         if (position > 0) {
             var result = visual.judgeIsSmall(position - 1)
+            Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
             return result
         } else {
             return false
@@ -758,7 +775,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         do {
             index--
             flag = !visual.judgeNowAttackPosition(index)
-        } while (!flag && index >= 0)
+        } while (!flag && index > 0)
         return index + 1
     }
 

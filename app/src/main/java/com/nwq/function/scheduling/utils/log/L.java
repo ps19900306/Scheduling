@@ -47,7 +47,7 @@ public class L {
      */
     public static void i(String content, String methodName, String className, String userName, String dateString) {
        // if (isOutputRequired(userName, dateString))
-       //     i(className, FILTER_FLAG + methodName + ": " + content);
+          i(className, FILTER_FLAG + methodName + ": " + content);
     }
 
     /**
@@ -98,7 +98,7 @@ public class L {
 
     @Deprecated
     public static void i(String Tag, String content) {
-//        ConsoleLog.i(Tag, content);
+          ConsoleLog.i(Tag, content);
 //        if ((Type & ConsoleType) == ConsoleType) {
 //            ConsoleLog.i(Tag, content);
 //        }

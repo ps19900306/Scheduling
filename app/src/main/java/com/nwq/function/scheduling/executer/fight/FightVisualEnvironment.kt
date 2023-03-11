@@ -7,6 +7,7 @@ import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.TwoPointTask
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
 import com.nwq.function.scheduling.executer.fight.rule.*
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -38,10 +39,16 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
     fun getTagNumber(): Int {
-        for (i in 8 downTo 0) {
-            if (hasTarget(i)) return i
+        var number = -1
+        for (i in 7 downTo 0) {
+            if (hasTarget(i)) {
+                number = i + 1
+                Timber.d("$number getTagNumber FightVisualEnvironment NWQ_ 2023/3/11");
+                return number
+            }
         }
-        return -1
+        Timber.d("$number getTagNumber FightVisualEnvironment NWQ_ 2023/3/11");
+        return number
     }
 
     fun getUnTagNumber(): Int {
@@ -343,20 +350,20 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
      */
     //有已经锁定的目标
     private fun hasTarget(index: Int): Boolean {
-        var a1 = Coordinate(2205 - (index * 130), 41)
-        var a = Coordinate(2205 - (index * 130), 46)
-        val task1 = TwoPointTask(a1, a, AllGreater10Comparison)
-
-        a1 = Coordinate(2169 - (index * 130), 76)
-        a = Coordinate(2164 - (index * 130), 76)
-        val task2 = TwoPointTask(a1, a, AllGreater10Comparison)
-
-        a1 = Coordinate(2241 - (index * 130), 77)
-        a = Coordinate(2245 - (index * 130), 77)
-        val task3 = TwoPointTask(a1, a, AllGreater10Comparison)
-
-        return ImgUtils.performTwoPointTask(
-            listOf(task1, task2, task3), screenBitmap, 0
+        val list1 = listOf(
+            verificationTask(2166 - 130 * index, 114, AllOver150Rule),
+            verificationTask(2172 - 130 * index, 107, AllOver150Rule),
+            verificationTask(2232 - 130 * index, 101, AllOver150Rule),
+        )
+        val list2 = listOf(
+            verificationTask(2170 - 130 * index, 113, AllLess50Rule),
+            verificationTask(2176 - 130 * index, 106, AllLess50Rule),
+            verificationTask(2233 - 130 * index, 106, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 1
+        ) && ImgUtils.performPointsColorVerification(
+            list2, screenBitmap, 1
         )
     }
 
@@ -403,9 +410,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun judgeNowAttackPosition(index: Int): Boolean {
         val list = listOf(
-            verificationTask(2245 - (index * 130), 113, NowAttackRule1),
-            verificationTask(2246 - (index * 130), 111, NowAttackRule1),
-            verificationTask(2241 - (index * 130), 117, NowAttackRule2),
+            verificationTask(2165 - (index * 130), 114, NowAttackRule1),
+            verificationTask(2170 - (index * 130), 116, AllLess50Rule),
+            verificationTask(2243 - (index * 130), 112, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -414,10 +421,9 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun judgeIsSmall(index: Int): Boolean {
         val list = listOf(
-            verificationTask((1950 + 260 - 130 * index), 95, RedRule),
-            verificationTask((1940 + 260 - 130 * index), 95, RedRule),
-            verificationTask((1945 + 260 - 130 * index), 101, RedRule),
-            verificationTask((1945 + 260 - 130 * index), 103, NotRedRule),
+            verificationTask((1950 + 260 - 130 * index), 95, RedRule, 1),
+            verificationTask((1940 + 260 - 130 * index), 95, RedRule, 1),
+            verificationTask((1945 + 260 - 130 * index), 101, RedRule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0

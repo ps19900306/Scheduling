@@ -82,6 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:hint="基地坐标位置"
+        android:inputType="number"
         android:minWidth="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/baseLocationTitleTv"
         app:layout_constraintStart_toEndOf="@+id/baseLocationTitleTv"
@@ -108,6 +109,7 @@
         app:layout_constraintTop_toBottomOf="@+id/baseLocationTitleTv" />
 
     <EditText
+        android:inputType="number"
         android:id="@+id/list1Edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -150,6 +152,7 @@
         app:layout_constraintTop_toBottomOf="@+id/list1TitleTv" />
 
     <EditText
+        android:inputType="number"
         android:id="@+id/list2Edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -191,6 +194,7 @@
         app:layout_constraintTop_toBottomOf="@+id/list2TitleTv" />
 
     <EditText
+        android:inputType="number"
         android:id="@+id/list3Edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -232,6 +236,7 @@
         app:layout_constraintTop_toBottomOf="@+id/list3TitleTv" />
 
     <EditText
+        android:inputType="number"
         android:id="@+id/wholeBattleEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -274,15 +279,16 @@
         app:layout_constraintTop_toBottomOf="@+id/wholeBattleTitleTv" />
 
     <EditText
+        android:inputType="number"
         android:id="@+id/roundBattleEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:hint="一个回合"
         android:minWidth="100dp"
-        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleTitleTv"
-        app:layout_constraintStart_toEndOf="@+id/wholeBattleTitleTv"
-        app:layout_constraintTop_toTopOf="@+id/wholeBattleTitleTv" />
+        app:layout_constraintBottom_toBottomOf="@+id/roundBattleTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/roundBattleTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/roundBattleTitleTv" />
 
     <Button
         android:id="@+id/roundBattleBtn"
@@ -290,9 +296,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="确定"
-        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleEdit"
-        app:layout_constraintStart_toEndOf="@+id/wholeBattleEdit"
-        app:layout_constraintTop_toTopOf="@+id/wholeBattleEdit" />
+        app:layout_constraintBottom_toBottomOf="@+id/roundBattleEdit"
+        app:layout_constraintStart_toEndOf="@+id/roundBattleEdit"
+        app:layout_constraintTop_toTopOf="@+id/roundBattleEdit" />
 
     <Button
         android:id="@+id/roundBattleClearBtn"
@@ -300,9 +306,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="清除"
-        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleBtn"
-        app:layout_constraintStart_toEndOf="@+id/wholeBattleBtn"
-        app:layout_constraintTop_toTopOf="@+id/wholeBattleBtn" />
+        app:layout_constraintBottom_toBottomOf="@+id/roundBattleBtn"
+        app:layout_constraintStart_toEndOf="@+id/roundBattleBtn"
+        app:layout_constraintTop_toTopOf="@+id/roundBattleBtn" />
 
     <CheckBox
         android:id="@+id/catchFoodCheckBox"
