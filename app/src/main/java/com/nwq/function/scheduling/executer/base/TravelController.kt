@@ -22,19 +22,19 @@ abstract class TravelController(val helper: AccessibilityHelper) {
     private val STANDARD_CLICK_INTERVAL = 2000
     var runSwitch = true
     protected val fastClickInterval
-        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.2 + 0.5).toLong()
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.2 + 0.5)).toLong()
 
     protected val normalClickInterval
-        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.8).toLong()
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.8)).toLong()
 
     protected val doubleClickInterval
-        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.6 + 1.8).toLong()
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.6 + 1.8)).toLong()
 
     protected val tripleClickInterval
-        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 0.8 + 2.6).toLong()
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.8 + 2.6)).toLong()
 
     protected val quadrupleClickInterval
-        get() = STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 3.4).toLong()
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 3.4)).toLong()
 
     protected val screenBitmap
         get() = helper.screenBitmap!!
@@ -105,6 +105,11 @@ abstract class TravelController(val helper: AccessibilityHelper) {
             helper.click(x = it.x, y = it.y, delayTime = delayTime)
         }
     }
+
+    suspend fun click(area: List<Area>) {
+        helper.click(area)
+    }
+
 
     suspend fun click(x: Float, y: Float, delayTime: Long = 0) {
         helper.click(x, y, delayTime)

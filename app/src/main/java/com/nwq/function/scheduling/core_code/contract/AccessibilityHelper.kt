@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.view.Display
 import androidx.annotation.RequiresApi
+import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.click.ClickTask
 import com.nwq.function.scheduling.core_code.click.ClickUtils
@@ -21,7 +22,9 @@ class AccessibilityHelper(val acService: AccessibilityService) {
 
     var screenBitmap: Bitmap? = null
     val defultClickDuration
-    get() = ((Math.random()*0.5 + 0.5) * 300).toLong()
+        get() = ((Math.random() * 0.5 + 0.5) * 300).toLong()
+     val defultClickDurationMeath
+         get() = {((Math.random() * 0.5 + 0.5) * 300).toLong()}
     //这里跟新截图信息
     @RequiresApi(Build.VERSION_CODES.R)
     suspend fun takeScreen(): Bitmap? = suspendCoroutine {
@@ -63,8 +66,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     }
 
     suspend fun click(
-        coordinate: Coordinate,
-        duration: Long = defultClickDuration
+        coordinate: Coordinate, duration: Long = defultClickDuration
     ) {
         ClickUtils.optClickTasks(acService, ClickTask(listOf(coordinate), 0, duration))
     }
@@ -90,6 +92,13 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         ClickUtils.optClickTasks(acService, task)
     }
 
+    suspend fun click(area: List<Area>, delayTime: () -> Long =defultClickDurationMeath) {
+        val list = area.map {
+            ClickTask(listOf(it.coordinate), delayTime.invoke(), defultClickDuration)
+        }
+        ClickUtils.optClickTasks(acService, *list.toTypedArray())
+    }
+
 
     suspend fun slide(
         x: Float,
@@ -102,12 +111,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     }
 
     suspend fun slide(
-        x: Float,
-        y: Float,
-        endX: Float,
-        endY: Float,
-        duration: Long,
-        delayTime: Long = 0
+        x: Float, y: Float, endX: Float, endY: Float, duration: Long, delayTime: Long = 0
     ) {
         val coordinate = Coordinate(x, y)
         val coordinate1 = Coordinate(endX, endY)

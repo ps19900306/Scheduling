@@ -11,17 +11,20 @@ object SpConstant {
     const val BATTLE_START_TIME = "battle_start_time"
     const val ROUND_START_TIME = "round_start_time"
     const val TARGET_REDUCE_TIME = "target_reduce_time"
-    const val ROLE="role"
-    const val PREFIX_ROLE1="role1"
-    const val PREFIX_ROLE2="role2"
-    const val CRESISTANCE_MODE ="cresistance_mode"
-    const val IS_PICKUP_BOX ="is_pickup_box"
-    const val IS_CATCH_FOOD ="is_catch_food"
-    const val BASE_LOCATION ="base_location"
 
-    const val TIME_ON_LIST1 ="time_on_list1"
-    const val TIME_ON_LIST2 ="time_on_list2"
-    const val TIME_ON_LIST3 ="time_on_list3"
+    const val ROLE = "role"
+    const val PREFIX_ROLE1 = "role1"
+    const val PREFIX_ROLE2 = "role2"
+    const val CRESISTANCE_MODE = "cresistance_mode"
+    const val IS_PICKUP_BOX = "is_pickup_box"
+    const val IS_CATCH_FOOD = "is_catch_food"
+    const val BASE_LOCATION = "base_location"
+
+    const val TIME_ON_LIST1 = "time_on_list1"
+    const val TIME_ON_LIST2 = "time_on_list2"
+    const val TIME_ON_LIST3 = "time_on_list3"
+    const val WHOLE_BATTLE_LIST = "whole_battle_list"
+    const val ROUND_BATTLE_LIST = "round_battle_list"
 
 
 }

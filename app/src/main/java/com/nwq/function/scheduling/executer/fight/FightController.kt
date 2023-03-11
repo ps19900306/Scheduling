@@ -85,18 +85,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     //后面这里由外部读取数据进行初始化
     private val wholeBattleOpenList by lazy {
-        listOf(2 + BotOfst, TopOfst + 2)
+        val listStr = SP.getValue(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
     }
     private val roundBattleOpenList by lazy {
-       val list= if (isPickupBox) {
-            mutableListOf(5 + BotOfst)
-        } else {
-            mutableListOf(5 + BotOfst, 6 + BotOfst)
-        }
-        if(!isCatchFoodSp){
-            list.add(0, BotOfst+4)
-        }
-        list
+        val listStr = SP.getValue(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
     }
     private val timeOnOpenList1 by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
@@ -384,7 +378,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     hasNewLock = true
                     openTheWholeBattle()
                     targetCount = nowTargetCount
-                } else if (targetCount >= 4 && (hasNewLock ||nowTargetCount>targetCount)) {
+                } else if (targetCount >= 4 && (hasNewLock || nowTargetCount > targetCount)) {
                     targetCount = nowTargetCount
                     openDecelerationNet()
                     hasNewLock = false
@@ -721,11 +715,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         return unOpenList
     }
 
-    suspend fun clickEquipArray(list: List<Int>, delay: Long = fastClickInterval) {
+    suspend fun clickEquipArray(list: List<Int>) {
         Timber.d("${JsonUtil.objectToString(list)} 点击数组有 FightController NWQ_ 2023/3/10");
-        list.forEach {
-            clickEquip(it, delay)
-        }
+        click(list.map { index ->
+            if (index < TopOfst) {
+                constant.getBottomEquipArea(index)
+            } else {
+                constant.getTopEquipArea(index - TopOfst - 1)
+            }
+        })
     }
 
     private suspend fun clickEquip(index: Int, delay: Long) {

@@ -81,8 +81,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:minWidth="100dp"
         android:hint="基地坐标位置"
+        android:minWidth="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/baseLocationTitleTv"
         app:layout_constraintStart_toEndOf="@+id/baseLocationTitleTv"
         app:layout_constraintTop_toTopOf="@+id/baseLocationTitleTv" />
@@ -96,16 +96,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/baseLocationEdit"
         app:layout_constraintStart_toEndOf="@+id/baseLocationEdit"
         app:layout_constraintTop_toTopOf="@+id/baseLocationEdit" />
-
-    <CheckBox
-        android:id="@+id/baseLocationCheckTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="是否拾取箱子"
-        app:layout_constraintBottom_toBottomOf="@+id/pickupContentTv"
-        app:layout_constraintStart_toEndOf="@+id/pickupContentTv"
-        app:layout_constraintTop_toTopOf="@+id/pickupContentTv" />
 
     <TextView
         android:id="@+id/list1TitleTv"
@@ -231,6 +221,89 @@
         app:layout_constraintStart_toEndOf="@+id/list3Btn"
         app:layout_constraintTop_toTopOf="@+id/list3Btn" />
 
+    <TextView
+        android:id="@+id/wholeBattleTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="ListOn1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/list3TitleTv" />
+
+    <EditText
+        android:id="@+id/wholeBattleEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="整个战斗"
+        android:minWidth="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/wholeBattleTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/wholeBattleTitleTv" />
+
+    <Button
+        android:id="@+id/wholeBattleBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleEdit"
+        app:layout_constraintStart_toEndOf="@+id/wholeBattleEdit"
+        app:layout_constraintTop_toTopOf="@+id/wholeBattleEdit" />
+
+    <Button
+        android:id="@+id/wholeBattleClearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="清除"
+        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleBtn"
+        app:layout_constraintStart_toEndOf="@+id/wholeBattleBtn"
+        app:layout_constraintTop_toTopOf="@+id/wholeBattleBtn" />
+
+
+    <TextView
+        android:id="@+id/roundBattleTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="ListOn1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wholeBattleTitleTv" />
+
+    <EditText
+        android:id="@+id/roundBattleEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="一个回合"
+        android:minWidth="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/wholeBattleTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/wholeBattleTitleTv" />
+
+    <Button
+        android:id="@+id/roundBattleBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleEdit"
+        app:layout_constraintStart_toEndOf="@+id/wholeBattleEdit"
+        app:layout_constraintTop_toTopOf="@+id/wholeBattleEdit" />
+
+    <Button
+        android:id="@+id/roundBattleClearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="清除"
+        app:layout_constraintBottom_toBottomOf="@+id/wholeBattleBtn"
+        app:layout_constraintStart_toEndOf="@+id/wholeBattleBtn"
+        app:layout_constraintTop_toTopOf="@+id/wholeBattleBtn" />
+
     <CheckBox
         android:id="@+id/catchFoodCheckBox"
         android:layout_width="wrap_content"
@@ -239,7 +312,6 @@
         android:layout_marginTop="32dp"
         android:text="是否开启网子"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list3TitleTv"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/roundBattleTitleTv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
