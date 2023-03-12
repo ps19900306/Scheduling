@@ -242,10 +242,10 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             verificationTask(490, 320, AllLess70Rule),
             verificationTask(127, 305, AllOver150Rule,1),
             verificationTask(139, 305, AllOver150Rule,1),
-            verificationTask(1393, 305, AllLess70Rule,1),
+            verificationTask(134, 305, AllLess70Rule,1),
         )
         return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 1
+            list, screenBitmap, 0
         )
     }
 
