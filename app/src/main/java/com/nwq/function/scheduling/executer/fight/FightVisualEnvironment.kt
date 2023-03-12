@@ -416,14 +416,13 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun judgeIsSmall(index: Int): Boolean {
         val list = listOf(
-            verificationTask((2200 - 130 * index), 100, RedRule, 1),
-            verificationTask((2208 - 130 * index), 100, RedRule, 1),
-            verificationTask((2079 - 130 * index), 94, RedRule, 1),
-            verificationTask((2070 - 130 * index), 94, RedRule, 1),
-            verificationTask((2075 - 130 * index), 97, NotRedRule, 1),
+            verificationTask((2200 - 130 * index), 100, RedRule ),
+            verificationTask((2208 - 130 * index), 100, RedRule ),
+            verificationTask((2079 - 130 * index), 94, RedRule ),
+            verificationTask((2070 - 130 * index), 94, RedRule ),
         )
         return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 1
+            list, screenBitmap, 0
         )
     }
 

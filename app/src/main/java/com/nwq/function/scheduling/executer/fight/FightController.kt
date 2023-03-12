@@ -216,6 +216,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             exit()
             return
         }
+        clickTheDialogueClose(false)
         takeScreen(2000)
         mNumberOfTasksReceived--
         var inSpaceStation = visual.isInSpaceStation()
@@ -231,12 +232,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 return
             } else {
                 click(constant.optTaskArea)
-                clickTheDialogueClose(true)
                 takeScreen(doubleClickInterval)
-                ensureCloseDetermine()
-                theOutCheck()
-                nowStep = START_BATTLE_NAVIGATION_MONITORING
-                return
+                if (visual.hasReceivedTask()) {
+                    clickTheDialogueClose(true)
+                    takeScreen(doubleClickInterval)
+                    ensureCloseDetermine()
+                    theOutCheck()
+                    nowStep = START_BATTLE_NAVIGATION_MONITORING
+                    return
+                }//有可能任务红了就继续走
             }
         }
         needCancel = false
@@ -603,7 +607,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
         var hasClickConversation = false
         var rightClickTimes = 0
-        var flag = if (pickUp) 5 else 3
+        var flag = 3
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0) {
             takeScreen(normalClickInterval)
@@ -612,15 +616,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 click(constant.leftDialogueArea)
                 click(constant.leftDialogueArea, fastClickInterval)
                 hasClickConversation = true
-                flag = 10
+                flag = 3
             } else if (visual.hasRightDialogue()) {
                 Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.rightDialogueArea)
                 rightClickTimes++
-                flag = 10
+                flag = 3
             } else if (visual.isShowDetermine()) {
                 Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
-                if (pickUp && rightClickTimes >= 2 && !receiveAdvancedTasks) {
+                if (pickUp && rightClickTimes >= 1 && !receiveAdvancedTasks) {
                     needCancel = true
                     hasClickConversation = false
                     click(constant.dialogCancleArea)
@@ -662,6 +666,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         Timber.d("取消任务 cancelTask FightController NWQ_ 2023/3/10");
         click(constant.openTaskArea, normalClickInterval)
         click(constant.cancelTaskArea, doubleClickInterval)
+        click(constant.dialogDetermineArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
     }
