@@ -21,19 +21,15 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //是否有全部锁定按钮
     fun hasGroupLock(): Boolean {
         val list = listOf(
-            TwoPointTask(1439,687,1437,672,HasLockComparison),
-            TwoPointTask(1439,675,1443,682,HasLockComparison),
-            TwoPointTask(1439,689,1437,692,HasLockComparison),
+            TwoPointTask(1439, 687, 1437, 672, HasLockComparison),
+            TwoPointTask(1439, 675, 1443, 682, HasLockComparison),
+            TwoPointTask(1439, 689, 1437, 692, HasLockComparison),
         )
         return ImgUtils.performTwoPointTask(
             list, screenBitmap, 0
         )
     }
 
-    //是否已经进入
-    fun hasIntoGame(): Boolean {
-        return false
-    }
 
     fun getTagNumber(): Int {
         var number = -1
@@ -416,10 +412,10 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun judgeIsSmall(index: Int): Boolean {
         val list = listOf(
-            verificationTask((2200 - 130 * index), 100, RedRule ),
-            verificationTask((2208 - 130 * index), 100, RedRule ),
-            verificationTask((2079 - 130 * index), 94, RedRule ),
-            verificationTask((2070 - 130 * index), 94, RedRule ),
+            verificationTask((2200 - 130 * index), 100, RedRule),
+            verificationTask((2208 - 130 * index), 100, RedRule),
+            verificationTask((2079 - 130 * index), 94, RedRule),
+            verificationTask((2070 - 130 * index), 94, RedRule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -427,4 +423,20 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
 
+    //这里是进入游戏的
+    fun hasIntoGame(): Boolean {
+        return hasPositionMenu() && (hasEyesMenu() || isInSpaceStation())
+    }
+
+    fun isLoad(): Boolean {
+        val list = listOf(
+            verificationTask(506, 511, isLoadRule),
+            verificationTask(615, 628, isLoadRule),
+            verificationTask( 959, 452, isLoadRule),
+            verificationTask(1795, 440, isLoadRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
 }

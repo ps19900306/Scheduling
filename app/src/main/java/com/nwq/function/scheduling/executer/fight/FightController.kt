@@ -278,6 +278,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         //到这里就结束了
         if (!clickTheDialogueClose(true)) {
             Timber.d("接任务出现问题 needCancel:$needCancel  pickUpTask FightController NWQ_ 2023/3/10");
+            needCancel = true
             theOutCheck()
         } else if (inSpaceStation) {
             click(constant.dialogDetermineArea, normalClickInterval)
@@ -399,7 +400,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 if (nowTargetCount > 0) {
                     if (catchFoodList.isNullOrEmpty()) {//这里就需要判断是否需要开启网子
                     } else if (nowTargetCount > targetCount && hasNewLock == true) {
-                        targetCount =nowTargetCount
+                        targetCount = nowTargetCount
                     } else if (nowTargetCount < targetCount) {
                         targetReduceTime = System.currentTimeMillis()
                         if (hasNewLock) {
@@ -409,7 +410,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                             needCheckOpenList.addAll(catchFoodList)
                         }
                         targetCount = nowTargetCount
-                    } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount) || isAttackSmallShip()) {
+                    } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount) || isAttackSmallShip()) {
                         targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
                         needCheckOpenList.addAll(catchFoodList)
                     }
@@ -756,14 +757,24 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         }
     }
 
+
+    var judgeSmallShipTargetCount = 0
+    var lastJudgeIsSmallShip = 0L
+
     fun isAttackSmallShip(): Boolean {
+        judgeSmallShipTargetCount = targetCount
         if (targetCount <= 0) return false
         var position = getNowAttackPosition()
         if (position > 0) {
             var result = visual.judgeIsSmall(position)
+            lastJudgeIsSmallShip = System.currentTimeMillis()
             Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
             return result
         } else {
+            if (System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
+                lastJudgeIsSmallShip = System.currentTimeMillis()
+                return true
+            }
             return false
         }
     }
