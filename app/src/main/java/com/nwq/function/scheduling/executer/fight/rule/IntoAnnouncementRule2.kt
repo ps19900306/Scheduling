@@ -2,14 +2,8 @@ package com.nwq.function.scheduling.executer.fight.rule
 
 import com.nwq.function.scheduling.core_code.img.ColorIdentificationRule
 
-/**
-create by: 86136
-create time: 2023/3/2 10:17
-Function description:
- */
-
-object InSpaceStationRule : ColorIdentificationRule {
+object IntoAnnouncementRule2 : ColorIdentificationRule {
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        return checkColor(listOf(160, 137, 35), red, green, blue)
+        return checkColor(listOf(83, 85, 82), red, green, blue)
     }
 }

@@ -157,7 +157,7 @@ object ImgUtils {
         colorRule: ColorIdentificationRule
     ): Boolean {
         val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
-        Timber.d("x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}, blue: ${Color.blue(color)}, green: ${Color.green(color)}  judgeColorRule ImgUtils NWQ_ 2023/3/12");
+        Timber.d("x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}  , green: ${Color.green(color)}  , blue: ${Color.blue(color)} judgeColorRule ImgUtils NWQ_ 2023/3/12");
         return colorRule.optInt(color)
     }
 

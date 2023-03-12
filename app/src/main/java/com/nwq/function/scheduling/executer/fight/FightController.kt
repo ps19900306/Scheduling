@@ -40,12 +40,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     val prefixRole by lazy { SPRepo.role }
 
-    //下面是进入游戏的的一些判断条件
-    private val LOADING = 11;
-    private val ANNOUNCEMENT = 12;
-    private val START_GAME_MENU = 13
-    private val SELECT_ROLE = 14
-    private val BIG_MENU = 15
 
     private val STATUS_DETERMINATION = 1000000//这个是进行状态判定
     private val receiveAdvancedTasks = false //是否接受高级任务
@@ -62,13 +56,10 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
     }
 
-
     /**
      * 这个是控制变量
      */
-    private var nowStep = PICK_UP_TASK
-
-    var intoGameStep = LOADING
+    private var nowStep = INTO_GAME
     var needCancel = false
     var needBackStation = false
     var mNumberOfTasksReceived = 51
@@ -134,6 +125,22 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
      *                        下面都是方法
      * *****************************************************************
      */
+    fun startGame() {
+        GlobalScope.launch {
+            pressHomeBtn()
+            delay(2000)
+            helper.click(
+                (82 + (constant.APP_LOCATION_X - 1) * 254).toFloat(),
+                (185 + (constant.APP_LOCATION_Y - 1) * 291).toFloat(),
+                154,
+                153
+            )
+            delay(doubleClickInterval * 2)
+            generalControlMethod()
+        }
+    }
+
+
     override suspend fun generalControlMethod() {
         while (runSwitch) {
             Timber.d("nowStep:$nowStep generalControlMethod FightController NWQ_ 2023/3/10");
@@ -172,44 +179,26 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         }
     }
 
-    fun startGame() {
-        GlobalScope.launch {
-            pressHomeBtn()
-            delay(2000)
-            helper.click(
-                (82 + (constant.APP_LOCATION_X - 1) * 254).toFloat(),
-                (185 + (constant.APP_LOCATION_Y - 1) * 291).toFloat(),
-                154,
-                153
-            )
-            delay(doubleClickInterval * 2)
-            generalControlMethod()
-        }
-//        takeScreen()
-//        if (visual.hasIntoGame()) {
-//            nowStep = STATUS_DETERMINATION
-//        }
-    }
 
     suspend fun intoGame() {
-        when (intoGameStep) {
-            LOADING -> {
-
+        var flag = true
+        do {
+            takeScreen(doubleClickInterval)
+            if (visual.showAnnouncement()) {
+                click(constant.closeAnnouncementArea)
+            } else if (visual.readStartGame()) {
+                click(constant.startGameArea)
+            } else if (visual.selectRole()) {
+                click(constant.selectRoleArea)
+            } else if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+            } else if (visual.hasIntoGame()) {
+                flag = false
+                nowStep=PICK_UP_TASK
             }
-            ANNOUNCEMENT -> {
-
-            }
-            START_GAME_MENU -> {
-
-            }
-            SELECT_ROLE -> {
-
-            }
-            BIG_MENU -> {
-
-            }
-        }
+        } while (flag)
     }
+
 
     suspend fun pickUpTask() {
         if (mNumberOfTasksReceived <= 0) {
@@ -771,7 +760,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
             return result
         } else {
-            if (judgeSmallShipTargetCount== targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
+            if (judgeSmallShipTargetCount == targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
                 lastJudgeIsSmallShip = System.currentTimeMillis()
                 return true
             }

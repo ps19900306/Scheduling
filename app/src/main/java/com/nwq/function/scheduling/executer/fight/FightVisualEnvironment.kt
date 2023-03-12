@@ -59,7 +59,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         val list = listOf(
             verificationTask(2038, 360, InSpaceStationRule),
             verificationTask(2066, 360, InSpaceStationRule),
-            verificationTask(2054, 360, AllLess50Rule),
+            verificationTask(2054, 360, InSpaceStationRule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
@@ -102,18 +102,6 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         ) || isClosePositionMenuGray()
-    }
-
-
-    fun isOpenBigMenu(): Boolean {
-        val list = listOf(
-            verificationTask(172, 48, "#ffe3ebea"),
-            verificationTask(172, 55, "#ff337064"),
-            verificationTask(166, 60, "#ffe3ebe9"),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
-        )
     }
 
 
@@ -425,18 +413,61 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     //这里是进入游戏的
     fun hasIntoGame(): Boolean {
-        return hasPositionMenu() && (hasEyesMenu() || isInSpaceStation())
+        val flag1 = hasPositionMenu()
+        val flag2 = hasEyesMenu()
+        val flag3 = isInSpaceStation()
+     //   Timber.d("hasPositionMenu:$flag1 hasPositionMenu:$flag2  isInSpaceStation:$flag3   hasIntoGame FightVisualEnvironment NWQ_ 2023/3/12");
+        return flag1 && (flag2 || flag3)
     }
 
-    fun isLoad(): Boolean {
+
+    fun showAnnouncement(): Boolean {
         val list = listOf(
-            verificationTask(506, 511, isLoadRule),
-            verificationTask(615, 628, isLoadRule),
-            verificationTask( 959, 452, isLoadRule),
-            verificationTask(1795, 440, isLoadRule),
+            verificationTask(2196, 986, IntoAnnouncementRule1),
+            verificationTask(2188, 971, IntoAnnouncementRule2),
+            verificationTask(2188, 1018, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }
+
+    fun readStartGame(): Boolean {
+        val list = listOf(
+            verificationTask(2196, 986, ReadStartGameRule1),
+            verificationTask(2188, 971, AllOver200Rule),
+            verificationTask(2188, 1018, AllLess70Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun selectRole(): Boolean {
+        val list = listOf(
+            verificationTask(535, 605, SelectRoleRule),
+            verificationTask(546, 604, SelectRoleRule),
+            verificationTask(540, 598, SelectRoleRule),
+            verificationTask(549, 611, SelectRoleRule),
+            verificationTask(541, 605, AllLess70Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isOpenBigMenu(): Boolean {
+        val list = listOf(
+            verificationTask(173, 48, AllOver200Rule),
+            verificationTask(173, 55, IsOpenBigMenuRule),
+            verificationTask(173, 61, AllOver200Rule),
+            verificationTask(173, 68, IsOpenBigMenuRule),
+            verificationTask(173, 74, AllOver200Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
 }

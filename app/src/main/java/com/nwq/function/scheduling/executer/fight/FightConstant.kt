@@ -43,7 +43,7 @@ class FightConstant {
     var leftDialogueArea = Area(335, 373, 617, 185)
     var rightDialogueArea = Area(1521, 305, 557, 177)
 
-    var closeBigMenuArea = Area(2186, 22, 75, 76)
+
 
     var pickUpTask1Area = Area(570, 668, 444, 25)
     var pickUpTask2Area = Area(1031, 666, 444, 25)
@@ -53,6 +53,11 @@ class FightConstant {
     var eraseWarningArea = Area(102, 261, 64, 70)
 
     var defaultCoordinateMenuArea = Area(457, 264, 65, 65)
+
+    var closeAnnouncementArea = Area(1919, 96, 55, 55)
+    var startGameArea = Area(1051, 790, 299, 88)
+    var selectRoleArea = Area(587, 173, 210, 296)
+    var closeBigMenuArea = Area(2186, 22, 75, 76)
 
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
