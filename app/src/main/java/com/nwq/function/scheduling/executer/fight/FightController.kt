@@ -352,6 +352,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     }
                     mEnterCombatStatus = true
                     hasNewLock = true
+                    DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL+ 30 * 1000
                     openTheWholeBattle()
                     useUnlock = true
                 } else {
@@ -367,6 +368,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 }
                 mEnterCombatStatus = true
                 hasNewLock = true
+                DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL+ 30 * 1000
                 openTheWholeBattle()
                 useUnlock = true
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
@@ -386,7 +388,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 if (targetCount <= 1 && nowTargetCount > 3) {
                     hasNewLock = true
                     openTheWholeBattle()
-                    DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL
+                    DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL+ 30 * 1000
                     targetCount = nowTargetCount
                 } else if (targetCount >= 4 && (hasNewLock || nowTargetCount > targetCount)) {
                     targetCount = nowTargetCount
@@ -455,7 +457,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     suspend fun monitoringReturnStatus() {
-        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME) {
+        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME*2) {
             nowStep = ABNORMAL_STATE
             return
         }
@@ -805,7 +807,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         needCancel = true
         needBackStation = true
         clickJumpCollectionAddress(warehouseIndex, false)
-        nowStep = MONITORING_RETURN_STATUS
+        nowStep = START_MONITORING_RETURN_STATUS
     }
 
     //determine 是否需要点击确定按钮，一般出舱是需要的

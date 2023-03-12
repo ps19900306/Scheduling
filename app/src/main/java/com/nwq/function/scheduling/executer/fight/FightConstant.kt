@@ -50,9 +50,9 @@ class FightConstant {
 
     var lockTargetGroupArea = Area(1395, 639, 92, 94)
 
-    var eraseWarningArea = Area(102, 262, 64, 70)
+    var eraseWarningArea = Area(102, 261, 64, 70)
 
-    var defaultCoordinateMenuArea = Area(472, 226, 65, 65)
+    var defaultCoordinateMenuArea = Area(457, 264, 65, 65)
 
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
