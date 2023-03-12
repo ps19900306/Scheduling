@@ -771,7 +771,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
             return result
         } else {
-            if (System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
+            if (judgeSmallShipTargetCount== targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
                 lastJudgeIsSmallShip = System.currentTimeMillis()
                 return true
             }
