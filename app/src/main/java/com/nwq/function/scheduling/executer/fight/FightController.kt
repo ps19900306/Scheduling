@@ -62,6 +62,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
     }
 
+
     /**
      * 这个是控制变量
      */
@@ -359,6 +360,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 useUnlock = true
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
                 Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
+                useUnlock = false
                 nowStep = ABNORMAL_STATE
             }
         } else {
@@ -375,12 +377,14 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     hasNewLock = true
                     openTheWholeBattle()
                     targetCount = nowTargetCount
+                    useUnlock = true
                 } else if (targetCount >= 3 && (hasNewLock || nowTargetCount > targetCount)) {
                     targetCount = nowTargetCount
                     openDecelerationNet()
                     hasNewLock = false
+                    useUnlock = true
                 } else {//这里要做异常处理了 先不做处理
-
+                    useUnlock = false
                 }
             } else {//状态监控
                 Timber.d("状态监控 combatMonitoring FightController NWQ_ 2023/3/10");
@@ -394,12 +398,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                         if (hasNewLock) {
                             hasNewLock = false
                             needCheckOpenList.addAll(catchFoodList)
-                        }else if(isAttackSmallShip()){
+                        } else if (isAttackSmallShip()) {
                             needCheckOpenList.addAll(catchFoodList)
                         }
                         targetCount = nowTargetCount
                     } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount) || isAttackSmallShip()) {
-                        targetReduceTime = System.currentTimeMillis() -  DESTROY_INTERVAL/2
+                        targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
                         needCheckOpenList.addAll(catchFoodList)
                     }
                     //这里是为了一块检测
@@ -442,7 +446,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     suspend fun monitoringReturnStatus() {
-        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME*2) {
+        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
             nowStep = ABNORMAL_STATE
             return
         }
@@ -640,7 +644,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
 
     private fun canLockTarget(): Boolean {
-        return visual.hasGroupLock() || (visual.isClosePositionMenu() && visual.getUnTagNumber() > 3 && visual.getTagNumber() < 2)
+        return visual.hasGroupLock() || (useUnlock && visual.isClosePositionMenu() && visual.getUnTagNumber() > 3 && visual.getTagNumber() < 2)
     }
 
     private suspend fun canLockTargetDelay(): Boolean {
