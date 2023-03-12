@@ -140,7 +140,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
             bind.wholeBattleTitleTv.text = ""
         }
         //round
-        bind.roundBattleTitleTv.singleClick {
+        bind.roundBattleBtn.singleClick {
             bind.roundBattleEdit.text.toString().toIntOrNull()?.let {
                 if (!roundList.contains(it)) {
                     roundList.add(it)
