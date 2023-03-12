@@ -24,7 +24,7 @@ class FightConstant {
 
 
     var openTaskArea = Area(1195, 524, 661, 125)
-    var optTaskArea = Area(1745, 206, 201, 56)
+    var optTaskArea = Area(1912, 542, 110, 115)//(1912, 542, 110, 115)
     var cancelTaskArea = Area(1740, 201, 212, 67)
 
     var dialogDetermineArea = Area(2000, 770, 250, 90)//这个是右小角弹出窗口的确定按钮
