@@ -426,7 +426,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             verificationTask((2075 - 130 * index), 97, NotRedRule, 1),
         )
         return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
+            list, screenBitmap, 1
         )
     }
 

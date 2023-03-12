@@ -56,7 +56,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     var maintenanceStatus = UNKNOWN_STATE
     var maintenanceTimeStartStamp = 0L
     var MAINTENANCE_INTERVAL = 30000L //维修间隔
-    var DEFAULT_DESTROY_INTERVAL = 60 * 1000 //能够容忍的最大击毁间隔
+    var DEFAULT_DESTROY_INTERVAL = 80 * 1000 //能够容忍的最大击毁间隔
     var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
     val warehouseIndex by lazy {
         SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
@@ -340,7 +340,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     }
                     mEnterCombatStatus = true
                     hasNewLock = true
-                    DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL+ 30 * 1000
                     openTheWholeBattle()
                     useUnlock = true
                 } else {
@@ -356,7 +355,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 }
                 mEnterCombatStatus = true
                 hasNewLock = true
-                DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL+ 30 * 1000
                 openTheWholeBattle()
                 useUnlock = true
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
@@ -376,9 +374,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 if (targetCount <= 1 && nowTargetCount > 3) {
                     hasNewLock = true
                     openTheWholeBattle()
-                    DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL+ 30 * 1000
                     targetCount = nowTargetCount
-                } else if (targetCount >= 4 && (hasNewLock || nowTargetCount > targetCount)) {
+                } else if (targetCount >= 3 && (hasNewLock || nowTargetCount > targetCount)) {
                     targetCount = nowTargetCount
                     openDecelerationNet()
                     hasNewLock = false
@@ -397,13 +394,13 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                         if (hasNewLock) {
                             hasNewLock = false
                             needCheckOpenList.addAll(catchFoodList)
-                            DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
+                        }else if(isAttackSmallShip()){
+                            needCheckOpenList.addAll(catchFoodList)
                         }
                         targetCount = nowTargetCount
                     } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount) || isAttackSmallShip()) {
-                        targetReduceTime = System.currentTimeMillis()
+                        targetReduceTime = System.currentTimeMillis() -  DESTROY_INTERVAL/2
                         needCheckOpenList.addAll(catchFoodList)
-                        DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
                     }
                     //这里是为了一块检测
                     needCheckOpenList.addAll(wholeBattleOpenList)
@@ -650,7 +647,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         return if (visual.hasGroupLock()) {
             true
         } else if (useUnlock && visual.isClosePositionMenu() && visual.getUnTagNumber() > 3 && visual.getTagNumber() < 2) {
-            delay(10 * 1000)
+            delay(5 * 1000)
             true
         } else {
             false
