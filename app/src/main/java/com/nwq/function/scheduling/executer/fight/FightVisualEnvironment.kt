@@ -182,6 +182,10 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
+
+
+
+
     //判断菜单是否是打开的
     fun isOpenPositionMenuGray(): Boolean {
         val list = listOf(
@@ -231,6 +235,21 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             list, screenBitmap, 0
         )
     }
+    fun isSailing(): Boolean {
+        val list = listOf(
+            verificationTask(490, 305, AllOver150Rule),
+            verificationTask(490, 291, AllLess70Rule),
+            verificationTask(490, 320, AllLess70Rule),
+            verificationTask(127, 305, AllOver150Rule,1),
+            verificationTask(139, 305, AllOver150Rule,1),
+            verificationTask(1393, 305, AllLess70Rule,1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 1
+        )
+    }
+
+
 
     //判断菜单是否是关闭
     fun isClosePositionMenu(): Boolean {

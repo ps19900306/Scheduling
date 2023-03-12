@@ -194,7 +194,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
                 flag = false
-                nowStep=PICK_UP_TASK
+                nowStep = PICK_UP_TASK
             }
         } while (flag)
     }
@@ -424,14 +424,16 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     if (closeList.contains(weaponPosition) && closeList.contains(cellPosition)) {//这里表示已经关闭的
                         if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
                             //这里要做异常处理了 这里表示战斗结束了
-                            if (clickTheDialogueClose(false)) {
-                                closeTheWholeBattle()
-                                if (needBackStation) {
-                                    nowStep = ABNORMAL_STATE
-                                } else {
-                                    nowStep = PICK_UP_TASK
-                                }
+                            clickTheDialogueClose(false)
+                            closeTheWholeBattle()
+                            if (needBackStation) {
+                                nowStep = ABNORMAL_STATE
+                            } else {
+                                nowStep = PICK_UP_TASK
                             }
+                        } else if (targetReduceTime - System.currentTimeMillis() > 60 * 1000L) {//防止卡住
+                            closeTheWholeBattle()
+                            nowStep = PICK_UP_TASK
                         }
                     } else {
                         clickEquipArray(closeList)
@@ -443,11 +445,15 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     suspend fun monitoringReturnStatus() {
+        takeScreen(quadrupleClickInterval * 2)
         if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
-            nowStep = ABNORMAL_STATE
+            if (visual.isSailing()) {
+                SPRepo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
+            } else {
+                nowStep = ABNORMAL_STATE
+            }
             return
         }
-        takeScreen(quadrupleClickInterval)
         if (visual.getTagNumber() > 4 || visual.hasGroupLock()) {
             nowStep = COMBAT_MONITORING
         } else if (visual.isInSpaceStation()) {
@@ -459,6 +465,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 }
             }
             needBackStation = false
+            nowStep = PICK_UP_TASK
+        }else if(needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()){
             nowStep = PICK_UP_TASK
         }
     }
@@ -617,7 +625,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 flag = 2
             } else if (visual.isShowDetermine()) {
                 Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
-                if (pickUp && rightClickTimes >= 1 && !receiveAdvancedTasks) {
+                if (needCancel || (rightClickTimes >= 1 && !receiveAdvancedTasks)) {
                     needCancel = true
                     hasClickConversation = false
                     click(constant.dialogCancleArea)
