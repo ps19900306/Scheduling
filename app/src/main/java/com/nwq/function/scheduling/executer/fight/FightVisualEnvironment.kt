@@ -21,14 +21,11 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //是否有全部锁定按钮
     fun hasGroupLock(): Boolean {
         val list = listOf(
-            verificationTask(1439, 687, AllOver110Rule),
-            verificationTask(1439, 675, AllOver110Rule),
-            verificationTask(1439, 689, AllOver110Rule),
-            verificationTask(1437, 672, AllLess50Rule),
-            verificationTask(1443, 682, AllLess50Rule),
-            verificationTask(1437, 692, AllLess50Rule),
+            TwoPointTask(1439,687,1437,672,HasLockComparison),
+            TwoPointTask(1439,675,1443,682,HasLockComparison),
+            TwoPointTask(1439,689,1437,692,HasLockComparison),
         )
-        return ImgUtils.performPointsColorVerification(
+        return ImgUtils.performTwoPointTask(
             list, screenBitmap, 0
         )
     }

@@ -12,5 +12,10 @@ data class TwoPointTask(
     val coordinate1: Coordinate,
     val coordinate2: Coordinate,
     val twoPointComparison: TwoPointComparison,
-)
+) {
+    constructor(x: Int, y: Int, x1: Int, y1: Int, twoPointComparison: TwoPointComparison) : this(
+        Coordinate(x, y), Coordinate(x1, y1), twoPointComparison
+    )
+
+}
 
