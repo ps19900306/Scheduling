@@ -383,7 +383,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     roundStartTime = it
                     targetReduceTime = it
                 }
-                if (targetCount <= 1 && nowTargetCount >3) {
+                if (targetCount <= 1 && nowTargetCount > 3) {
                     hasNewLock = true
                     openTheWholeBattle()
                     DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL
@@ -409,7 +409,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                             needCheckOpenList.addAll(catchFoodList)
                             DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL + 80 * 1000
                         }
-                        targetCount=nowTargetCount
+                        targetCount = nowTargetCount
                     } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount == targetCount) || isAttackSmallShip()) {
                         targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
@@ -653,13 +653,13 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
 
     private fun canLockTarget(): Boolean {
-        return visual.hasGroupLock() || (visual.isClosePositionMenu() && visual.getTagNumber() > 2 && visual.getTagNumber() < 2)
+        return visual.hasGroupLock() || (visual.isClosePositionMenu() && visual.getUnTagNumber() > 3 && visual.getTagNumber() < 2)
     }
 
     private suspend fun canLockTargetDelay(): Boolean {
         return if (visual.hasGroupLock()) {
             true
-        } else if (useUnlock && visual.isClosePositionMenu() && visual.getTagNumber() > 2 && visual.getTagNumber() < 2) {
+        } else if (useUnlock && visual.isClosePositionMenu() && visual.getUnTagNumber() > 3 && visual.getTagNumber() < 2) {
             delay(10 * 1000)
             true
         } else {
@@ -761,7 +761,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         if (targetCount <= 0) return false
         var position = getNowAttackPosition()
         if (position > 0) {
-            var result = visual.judgeIsSmall(position - 1)
+            var result = visual.judgeIsSmall(position)
             Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
             return result
         } else {
@@ -770,13 +770,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     }
 
     fun getNowAttackPosition(): Int {
-        var index = targetCount
-        var flag = false
-        do {
-            index--
-            flag = !visual.judgeNowAttackPosition(index)
-        } while (!flag && index > 0)
-        return index + 1
+        for (index in targetCount - 1 downTo 0) {
+            if (visual.judgeNowAttackPosition(index)) {
+                return index
+            }
+        }
+        return -1
     }
 
 
