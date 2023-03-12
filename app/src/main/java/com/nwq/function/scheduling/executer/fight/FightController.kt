@@ -2,9 +2,7 @@ package com.nwq.function.scheduling.executer.fight
 
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
-import com.nwq.function.scheduling.executer.base.VisualEnvironment
 import com.nwq.function.scheduling.utils.JsonUtil
-import com.nwq.function.scheduling.utils.log.L
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepo.lastRefreshTimeSp
@@ -220,13 +218,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         takeScreen(2000)
         mNumberOfTasksReceived--
         var inSpaceStation = visual.isInSpaceStation()
-        L.i(
-            "准备接取任务  inSpaceStation: $inSpaceStation",
-            "pickUpTask",
-            "FightController",
-            "nwq",
-            "2023/3/2"
-        );
+        Timber.d("准备接取任务  inSpaceStation: $inSpaceStation pickUpTask FightController NWQ_ 2023/3/12");
         click(constant.getTopMenuArea(2))
         takeScreen(tripleClickInterval)
         if (visual.hasReceivedTask()) {
@@ -256,9 +248,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             takeScreen(doubleClickInterval)
         }
         if (!receiveAdvancedTasks && visual.isHighTask()) {
-            L.i(
-                "发现高级任务 ", "pickUpTask", "FightController", "nwq", "2023/3/2"
-            );
+            Timber.d("发现高级任务  pickUpTask FightController NWQ_ 2023/3/12");
             click(constant.pickUpTask2Area)
         } else {
             click(constant.pickUpTask1Area)
@@ -268,9 +258,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         takeScreen(doubleClickInterval)
         if (!receiveAdvancedTasks && visual.isHighTaskRight())//如果右边是高级任务也进行取消
         {
-            L.i(
-                "发现高级任务右侧 ", "pickUpTask", "FightController", "nwq", "2023/3/2"
-            );
+            Timber.d("发现高级任务右侧  pickUpTask FightController NWQ_ 2023/3/12");
             click(constant.openTaskRightArea)
             click(constant.cancelTaskArea)
             theOutCheck()
@@ -687,7 +675,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
 
     suspend fun theOutCheck() {
-        L.i("", "theOutCheck", "FightController", "nwq", "2023/3/8");
+        Timber.d("  theOutCheck FightController NWQ_ 2023/3/12");
         var count = 3
         var flag = true
         do {

@@ -5,10 +5,10 @@ import android.graphics.Color
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
-import com.nwq.function.scheduling.utils.log.L
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -45,7 +45,7 @@ abstract class TravelController(val helper: AccessibilityHelper) {
 
     fun startOperation() {
         GlobalScope.launch {
-            L.d("", "startOperation", "TravelController", "nwq", "2023/3/1");
+            Timber.d("  startOperation TravelController NWQ_ 2023/3/12");
             helper.takeScreen()
             generalControlMethod()
         }

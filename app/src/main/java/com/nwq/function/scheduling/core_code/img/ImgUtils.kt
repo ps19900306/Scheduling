@@ -2,11 +2,10 @@ package com.nwq.function.scheduling.core_code.img
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import androidx.annotation.ColorInt
 import androidx.core.graphics.red
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
-import com.nwq.function.scheduling.utils.log.L
+import timber.log.Timber
 import kotlin.math.abs
 
 
@@ -158,13 +157,7 @@ object ImgUtils {
         colorRule: ColorIdentificationRule
     ): Boolean {
         val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
-        L.i(
-            "x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}, blue: ${Color.blue(color)}, green: ${Color.green(color)}",
-            "verificationRule",
-            "AllOver200Rule",
-            "nwq",
-            "2023/3/2"
-        );
+        Timber.d("x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}, blue: ${Color.blue(color)}, green: ${Color.green(color)}  judgeColorRule ImgUtils NWQ_ 2023/3/12");
         return colorRule.optInt(color)
     }
 

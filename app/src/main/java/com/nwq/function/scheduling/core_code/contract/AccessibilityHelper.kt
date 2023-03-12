@@ -12,8 +12,7 @@ import com.nwq.function.scheduling.core_code.click.ClickTask
 import com.nwq.function.scheduling.core_code.click.ClickUtils
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.click.SlideScreenTask
-import com.nwq.function.scheduling.utils.FileUtils
-import com.nwq.function.scheduling.utils.log.L
+import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -30,7 +29,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     suspend fun takeScreen(): Bitmap? = suspendCoroutine {
         screenBitmap?.recycle()
         screenBitmap = null
-        L.i("recycle", "takeScreen", "AccessibilityHelper", "nwq", "2023/3/1");
+        Timber.d("recycle takeScreen AccessibilityHelper NWQ_ 2023/3/12");
         acService.takeScreenshot(Display.DEFAULT_DISPLAY,
             acService.mainExecutor,
             object : AccessibilityService.TakeScreenshotCallback {
@@ -41,12 +40,12 @@ class AccessibilityHelper(val acService: AccessibilityService) {
                     screenBitmap = bitmap?.copy(Bitmap.Config.RGBA_F16, true)
                     bitmap?.recycle()
                     //screenBitmap?.let { it1 -> FileUtils.saveImage29(it1,acService) }
-                    L.i("setScreenBitmap", "takeScreen", "AccessibilityHelper", "nwq", "2023/3/1");
+                    Timber.d("setScreenBitmap onSuccess AccessibilityHelper NWQ_ 2023/3/12");
                     it.resume(screenBitmap)
                 }
 
                 override fun onFailure(i: Int) {
-                    L.i("", "onFailure", "AccessibilityHelper", "nwq", "2023/3/1");
+                    Timber.d("  onFailure AccessibilityHelper NWQ_ 2023/3/12");
                     it.resume(null)
                 }
             })

@@ -2,6 +2,7 @@ package com.nwq.function.scheduling
 
 import android.app.Application
 import com.nwq.function.scheduling.utils.sp.SP
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -14,5 +15,6 @@ class App:Application(){
     override fun onCreate() {
         super.onCreate()
         SP.init(this,"nwq_schedule")
+        //Timber.plant(Timber.DebugTree())
     }
 }

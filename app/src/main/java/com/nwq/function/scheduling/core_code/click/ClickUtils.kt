@@ -3,7 +3,6 @@ package com.nwq.function.scheduling.core_code.click
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
-import com.nwq.function.scheduling.utils.log.L
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
