@@ -227,6 +227,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             Timber.d("已经存在任务 pickUpTask FightController NWQ_ 2023/3/10");
             if (needCancel) {
                 cancelTask()
+                needCancel = false
                 Timber.d("需要取消已经存在的任务 pickUpTask FightController NWQ_ 2023/3/10");
                 delay(normalClickInterval)
                 return
@@ -397,6 +398,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 val nowTargetCount = visual.getTagNumber()
                 if (nowTargetCount > 0) {
                     if (catchFoodList.isNullOrEmpty()) {//这里就需要判断是否需要开启网子
+                    } else if (nowTargetCount > targetCount && hasNewLock == true) {
+                        targetCount =nowTargetCount
                     } else if (nowTargetCount < targetCount) {
                         targetReduceTime = System.currentTimeMillis()
                         if (hasNewLock) {
@@ -607,7 +610,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
         var hasClickConversation = false
         var rightClickTimes = 0
-        var flag = 3
+        var flag = 2
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0) {
             takeScreen(normalClickInterval)
@@ -616,12 +619,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 click(constant.leftDialogueArea)
                 click(constant.leftDialogueArea, fastClickInterval)
                 hasClickConversation = true
-                flag = 3
+                flag = 2
             } else if (visual.hasRightDialogue()) {
                 Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.rightDialogueArea)
                 rightClickTimes++
-                flag = 3
+                flag = 2
             } else if (visual.isShowDetermine()) {
                 Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
                 if (pickUp && rightClickTimes >= 1 && !receiveAdvancedTasks) {
