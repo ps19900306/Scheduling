@@ -859,7 +859,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
             Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
             return result
         } else {
-            if (!hasOpenCatch && judgeSmallShipTargetCount == targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
+            if (!hasOpenCatch && !hasNewLock && judgeSmallShipTargetCount == targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
                 lastJudgeIsSmallShip = System.currentTimeMillis()
                 Timber.d("无法识别船 认定位小船  isAttackSmallShip FightController NWQ_ 2023/3/11");
                 return true
