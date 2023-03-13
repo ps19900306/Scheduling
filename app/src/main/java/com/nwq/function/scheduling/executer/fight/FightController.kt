@@ -380,6 +380,14 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 } else if (targetCount >= 3 && (hasNewLock || nowTargetCount > targetCount)) {
                     targetCount = nowTargetCount
                     openDecelerationNet()
+                    if (checkEquipTimes(
+                            2,
+                            listOf(),
+                            catchFoodList
+                        ).isNotEmpty()
+                    ) {
+                        hasOpenCatch = true
+                    }
                     hasNewLock = false
                     useUnlock = true
                 } else {//这里要做异常处理了 先不做处理
@@ -409,7 +417,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                             needCheckOpenList.addAll(catchFoodList)
                         }
                     } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount) || isAttackSmallShip()) {
-                        targetReduceTime = System.currentTimeMillis()-DESTROY_INTERVAL/2
+                        targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
                         needCheckOpenList.addAll(catchFoodList)
                     }
                     //这里是为了一块检测
