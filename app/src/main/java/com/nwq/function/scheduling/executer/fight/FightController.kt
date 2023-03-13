@@ -223,7 +223,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
             nowStep = EXIT_OPT
             return
         }
-        clickTheDialogueClose(false)
         takeScreen(2000)
         mNumberOfTasksReceived--
         var inSpaceStation = visual.isInSpaceStation()
@@ -231,24 +230,28 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         click(constant.getTopMenuArea(2))
         takeScreen(tripleClickInterval)
         if (visual.hasReceivedTask()) {
-            Timber.d("已经存在任务 pickUpTask FightController NWQ_ 2023/3/10");
-            if (needCancel) {
-                cancelTask()
-                needCancel = false
-                Timber.d("需要取消已经存在的任务 pickUpTask FightController NWQ_ 2023/3/10");
-                delay(normalClickInterval)
-                return
-            } else {
-                click(constant.optTaskArea)
-                takeScreen(doubleClickInterval)
-                if (visual.hasReceivedTask()) {
-                    clickTheDialogueClose(true)
-                    takeScreen(doubleClickInterval)
-                    ensureCloseDetermine()
-                    theOutCheck()
-                    nowStep = START_BATTLE_NAVIGATION_MONITORING
+            clickTheDialogueClose(false)
+            takeScreen(doubleClickInterval)
+            if (visual.hasReceivedTask()) {
+                Timber.d("已经存在任务 pickUpTask FightController NWQ_ 2023/3/10");
+                if (needCancel) {
+                    cancelTask()
+                    needCancel = false
+                    Timber.d("需要取消已经存在的任务 pickUpTask FightController NWQ_ 2023/3/10");
+                    delay(normalClickInterval)
                     return
-                }//有可能任务红了就继续走
+                } else {
+                    click(constant.optTaskArea)
+                    takeScreen(doubleClickInterval)
+                    if (visual.hasReceivedTask()) {
+                        clickTheDialogueClose(true)
+                        takeScreen(doubleClickInterval)
+                        ensureCloseDetermine()
+                        theOutCheck()
+                        nowStep = START_BATTLE_NAVIGATION_MONITORING
+                        return
+                    }//有可能任务红了就继续走
+                }
             }
         }
         needCancel = false
@@ -427,9 +430,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
                     targetCount = nowTargetCount
                     openDecelerationNet()
                     if (checkEquipTimes(
-                            2,
-                            listOf(),
-                            catchFoodList
+                            2, listOf(), catchFoodList
                         ).isNotEmpty()
                     ) {
                         hasOpenCatch = true
@@ -493,9 +494,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
 
 
                     if (!hasOpenCatch && needCheckOpenList.contains(0) && checkEquipTimes(
-                            2,
-                            listOf(),
-                            catchFoodList
+                            2, listOf(), catchFoodList
                         ).isNotEmpty()
                     ) {
                         Timber.d("hasOpenCatch:$hasOpenCatch combatMonitoring FightController NWQ_ 2023/3/13");
@@ -644,10 +643,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         if (isPickupBox) {
             clickEquipArray(
                 openCheckEquipTimes(
-                    2,
-                    wholeBattleOpenList,
-                    roundBattleOpenList,
-                    listOf(pickUpPosition)
+                    2, wholeBattleOpenList, roundBattleOpenList, listOf(pickUpPosition)
                 )
             )
         } else {
