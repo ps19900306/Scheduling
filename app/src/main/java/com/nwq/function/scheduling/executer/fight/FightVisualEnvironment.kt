@@ -497,5 +497,17 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
+    fun warehouseIsFull():Boolean{
+        val list = listOf(
+            verificationTask(141, 144, WarehouseIsFullRule1),
+            verificationTask(143, 144, WarehouseIsFullRule1),
+            verificationTask(136, 148, WarehouseIsFullRule2),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
 
 }

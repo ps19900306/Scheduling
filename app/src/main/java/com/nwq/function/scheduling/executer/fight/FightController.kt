@@ -118,6 +118,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
     private val maintenanceDevicePosition = TopOfst + 1
     private val weaponPosition = BotOfst + 3
     private val cellPosition = BotOfst + 5
+    private val pickUpPosition = BotOfst + 6
     val isShieldResistance by lazy {
         SP.getValue(prefixRole + SpConstant.CRESISTANCE_MODE, false)
     }//是否护盾抗
@@ -453,6 +454,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
+                    if (isPickupBox)//这里为了校验开关清空
+                        needCheckOpenList.add(pickUpPosition)
+
 
                     //打开定时开启的
                     checkTimingOnList(needCheckOpenList)
@@ -461,7 +465,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
                     bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
 
                     //这里是判断点击
-                    clickEquipArray(checkEquipTimes(2, needCheckOpenList, needCheckCloseList))
+                    val list = checkEquipTimes(2, needCheckOpenList, needCheckCloseList)
+                    if (isPickupBox) {
+                        if (list.contains(pickUpPosition)) {
+                            if (visual.warehouseIsFull()) {
+                                needBackStation = true
+                            }
+                            list.remove(pickUpPosition)
+                        }
+                    }
+                    clickEquipArray(list)
+
 
                     if (!hasOpenCatch && needCheckOpenList.contains(0) && checkEquipTimes(
                             2,
@@ -514,17 +528,20 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         if (visual.getTagNumber() > 4 || visual.hasGroupLock()) {
             nowStep = COMBAT_MONITORING
         } else if (visual.isInSpaceStation()) {
-            if (needBackStation) {
+            if (needBackStation && needCancel) {
                 (System.currentTimeMillis() + constant.REFRESH_INTERVAL - lastRefreshTimeSp).let {
                     if (it > 0) {
                         delay(it)
                     }
                 }
             }
+            if (isPickupBox) {
+                unloadingCargo()
+            }
             needBackStation = false
             nowStep = PICK_UP_TASK
         } else if (needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()) {
-            nowStep = PICK_UP_TASK
+            clickTheDialogueClose(true)
         } else if (visual.isOpenBigMenu()) {
             click(constant.closeBigMenuArea)
         }
@@ -616,13 +633,25 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
 
     //战斗开始时候需要开启的
     suspend fun openTheWholeBattle() {
-        clickEquipArray(openCheckEquipTimes(2, wholeBattleOpenList, roundBattleOpenList))
+        if (isPickupBox) {
+            clickEquipArray(
+                openCheckEquipTimes(
+                    2,
+                    wholeBattleOpenList,
+                    roundBattleOpenList,
+                    listOf(pickUpPosition)
+                )
+            )
+        } else {
+            clickEquipArray(openCheckEquipTimes(2, wholeBattleOpenList, roundBattleOpenList))
+        }
+
     }
 
 
     suspend fun checkEquipTimes(
         times: Int, closeData: List<Int>?, openData: List<Int>?
-    ): List<Int> {
+    ): MutableList<Int> {
         var list = mutableListOf<Int>()
         var list2 = mutableListOf<Int>()
         for (i in 0 until times) {
@@ -686,6 +715,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
                 Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
                 if (needCancel || (rightClickTimes >= 1 && !receiveAdvancedTasks)) {
                     needCancel = true
+                    needBackStation = true
                     hasClickConversation = false
                     click(constant.dialogCancleArea)
                 } else {
