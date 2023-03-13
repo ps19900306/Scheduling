@@ -16,6 +16,7 @@ Function description:
 object ClickUtils {
 
 
+
     suspend fun optSlideTask(aService: AccessibilityService, slideScreenTask: SlideScreenTask) {
         optClickTasks(aService, slideScreenTask.convertToClick())
     }

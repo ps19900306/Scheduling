@@ -312,6 +312,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     var targetCount = 0
     var hasNewLock = false
     var useUnlock = true //是否使用右上角的未锁定数进行锁定
+    var hasOpenCatch = false
     suspend fun combatMonitoring() {
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
             nowStep = ABNORMAL_STATE
@@ -336,6 +337,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     }
                     mEnterCombatStatus = true
                     hasNewLock = true
+                    hasOpenCatch = false
                     openTheWholeBattle()
                     useUnlock = true
                 } else {
@@ -351,6 +353,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 }
                 mEnterCombatStatus = true
                 hasNewLock = true
+                hasOpenCatch = false
                 openTheWholeBattle()
                 useUnlock = true
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
@@ -370,6 +373,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 }
                 if (targetCount <= 1 && nowTargetCount > 3) {
                     hasNewLock = true
+                    hasOpenCatch = false
                     openTheWholeBattle()
                     targetCount = nowTargetCount
                     useUnlock = true
@@ -399,8 +403,13 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                             needCheckOpenList.addAll(catchFoodList)
                         }
                         targetCount = nowTargetCount
+                    } else if (hasOpenCatch) {
+                        if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 4 && nowTargetCount >= targetCount)) {
+                            targetReduceTime = System.currentTimeMillis()
+                            needCheckOpenList.addAll(catchFoodList)
+                        }
                     } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount) || isAttackSmallShip()) {
-                        targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
+                        targetReduceTime = System.currentTimeMillis()-DESTROY_INTERVAL/2
                         needCheckOpenList.addAll(catchFoodList)
                     }
                     //这里是为了一块检测
@@ -416,6 +425,17 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
                     //这里是判断点击
                     clickEquipArray(checkEquipTimes(2, needCheckOpenList, needCheckCloseList))
+
+                    if (!hasOpenCatch && needCheckOpenList.contains(0) && checkEquipTimes(
+                            2,
+                            listOf(),
+                            catchFoodList
+                        ).isNotEmpty()
+                    ) {
+                        Timber.d("hasOpenCatch:$hasOpenCatch combatMonitoring FightController NWQ_ 2023/3/13");
+                        hasOpenCatch = true
+                    }
+
                 } else {
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
@@ -764,19 +784,22 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     var lastJudgeIsSmallShip = 0L
 
     fun isAttackSmallShip(): Boolean {
-        judgeSmallShipTargetCount = targetCount
         if (targetCount <= 0) return false
         var position = getNowAttackPosition()
         if (position > 0) {
+            judgeSmallShipTargetCount = targetCount
             var result = visual.judgeIsSmall(position)
             lastJudgeIsSmallShip = System.currentTimeMillis()
             Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
             return result
         } else {
-            if (judgeSmallShipTargetCount == targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
+            if (!hasOpenCatch && judgeSmallShipTargetCount == targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
                 lastJudgeIsSmallShip = System.currentTimeMillis()
+                Timber.d("无法识别船 认定位小船  isAttackSmallShip FightController NWQ_ 2023/3/11");
                 return true
             }
+            lastJudgeIsSmallShip = System.currentTimeMillis()
+            judgeSmallShipTargetCount = targetCount
             return false
         }
     }
