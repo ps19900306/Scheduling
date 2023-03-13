@@ -356,8 +356,8 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         val list1 = listOf(
             verificationTask(2170 - 130 * index, 80, AllOver150Rule),
             verificationTask(2241 - 130 * index, 80, AllOver150Rule),
-            verificationTask(2175 - 130 * index, 80, AllLess50Rule),
-            verificationTask(2235 - 130 * index, 80, AllLess50Rule),
+            verificationTask(2175 - 130 * index, 80, AllLess70Rule),
+            verificationTask(2235 - 130 * index, 80, AllLess70Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0

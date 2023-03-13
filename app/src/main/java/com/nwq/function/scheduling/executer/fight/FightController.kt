@@ -687,14 +687,17 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         Timber.d("  theOutCheck FightController NWQ_ 2023/3/12");
         var flag = true
         while (flag) {
+            takeScreen(doubleClickInterval)
             if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
                 flag = false
             } else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {
                 flag = false
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
             } else {
-                ensureCloseDetermine()
+                click(constant.closeBigMenuArea)
             }
         }
     }
