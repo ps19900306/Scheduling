@@ -20,7 +20,7 @@ Function description:
 弹出的活动窗口需要处理
  */
 
-class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
+class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
 
     /**
      * 这个是状态常规量
@@ -37,11 +37,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
     private val ABNORMAL_STATE = 1000 //异常状态
     private val EXIT_OPT = 10000 //异常状态
 
-    private val TopOfst = SpConstant.TopOfst//顶部的偏移量
-    private val BotOfst = SpConstant.BotOfst//底部的便宜量
-
-    val prefixRole by lazy { SPRepo.role }
-
 
     private val STATUS_DETERMINATION = 1000000//这个是进行状态判定
     private val receiveAdvancedTasks = false //是否接受高级任务
@@ -50,8 +45,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
     val OFF_STATE = 1
     val ON_STATE = 2
     var maintenanceStatus = UNKNOWN_STATE
-    var maintenanceTimeStartStamp = 0L
-    var MAINTENANCE_INTERVAL = 30000L //维修间隔
+
     var DEFAULT_DESTROY_INTERVAL = 80 * 1000 //能够容忍的最大击毁间隔
     var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
     val warehouseIndex by lazy {
@@ -67,12 +61,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
     var needBackStation = false
     var mNumberOfTasksReceived by SP(SPRepo.role + SpConstant.NUMBER_OF_TASKS_RECEIVED, 50)
 
-    private val visual by lazy {
-        FightVisualEnvironment(helper)
-    }
-    private val constant by lazy {
-        FightConstant()
-    }
+
     val isPickupBox by lazy {
         SP.getValue(prefixRole + SpConstant.IS_PICKUP_BOX, false)
     }
@@ -117,13 +106,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
         else listOf<Int>()
     }
-    private val maintenanceDevicePosition = TopOfst + 1
-    private val weaponPosition = BotOfst + 3
-    private val cellPosition = BotOfst + 5
-    private val pickUpPosition = BotOfst + 6
-    val isShieldResistance by lazy {
-          SP.getValue(prefixRole + SpConstant.CRESISTANCE_MODE, false)
-    }//是否护盾抗
+
+
 
 
     /*******************************************************************
@@ -603,37 +587,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
                     needCheckOpenList.add(0, d)
                     flag = true
                 }
-            } else if (intervalTime in (i * Equipment_Interval)..((i + 1) * Equipment_Interval)) {
+            } else if (i * Equipment_Interval < intervalTime && intervalTime < (i + 1) * Equipment_Interval) {
                 needCheckOpenList.add(0, d)
             }
         }
         return flag
     }
 
-    suspend fun bloodVolumeMonitoring(
-        needCheckOpenList: MutableList<Int>, needCheckCloseList: MutableList<Int>
-    ) {
-        if (System.currentTimeMillis() - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
-            return
-        }
-        if (isShieldResistance) {
-            if (visual.shieldTooLow()) {
-                needCheckOpenList.add(maintenanceDevicePosition)
-            } else if (visual.shieldFull()) {
-                needCheckCloseList.add(maintenanceDevicePosition)
-            } else {
 
-            }
-        } else {
-            if (visual.armorTooLow()) {
-                needCheckOpenList.add(maintenanceDevicePosition)
-            } else if (visual.armorFull()) {
-                needCheckCloseList.add(maintenanceDevicePosition)
-            } else {
-
-            }
-        }
-    }
 
 
     //战斗开始时候需要开启的
@@ -655,49 +616,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
 
     }
 
-
-    suspend fun checkEquipTimes(
-        times: Int, closeData: List<Int>?, openData: List<Int>?
-    ): MutableList<Int> {
-        var list = mutableListOf<Int>()
-        var list2 = mutableListOf<Int>()
-        for (i in 0 until times) {
-            takeScreen(normalClickInterval)
-            closeData?.let {
-                val result = checkEquipStatusClose(closeData)
-                list = if (i == 0) {
-                    result
-                } else {
-                    list.filter { result.contains(it) }.toMutableList()
-                }
-            }
-            openData?.let {
-                val result2 = checkEquipStatusOpen(openData)
-                list2 = if (i == 0) {
-                    result2
-                } else {
-                    list2.filter { result2.contains(it) }.toMutableList()
-                }
-            }
-        }
-        list.addAll(list2)
-        return list
-    }
-
-
-    suspend fun openCheckEquipTimes(times: Int, vararg data: List<Int>): List<Int> {
-        var list = listOf<Int>()
-        for (i in 0 until times) {
-            takeScreen(normalClickInterval)
-            val result = checkEquipStatusClose(*data)
-            list = if (i == 0) {
-                result
-            } else {
-                list.filter { result.contains(it) }
-            }
-        }
-        return list
-    }
 
     //pickUp 是否是接取任务
     suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
@@ -768,91 +686,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         ensureCloseDetermine()
     }
 
-    suspend fun ensureCloseDetermine(): Boolean {
-        if (visual.isShowDetermine()) {
-            click(constant.dialogDetermineArea)
-            return true
-        }
-        return false
-    }
-
-
-    suspend fun theOutCheck() {
-        Timber.d("  theOutCheck FightController NWQ_ 2023/3/12");
-        var flag = true
-        while (flag) {
-            takeScreen(doubleClickInterval)
-            if (visual.isOpenBigMenu()) {
-                click(constant.closeBigMenuArea)
-            } else if (visual.hasIntoGame()) {
-                flag = false
-            } else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {
-                flag = false
-            } else if (visual.isShowDetermine()) {
-                click(constant.dialogDetermineArea)
-            } else {
-                click(constant.closeBigMenuArea)
-            }
-        }
-    }
-
-    //获取是关闭的状态
-    private fun checkEquipStatusClose(vararg data: List<Int>): MutableList<Int> {
-        val unOpenList = mutableListOf<Int>()
-        data.forEach {
-            it.forEach { index ->
-                if (!judgeIsOpen(index)) {
-                    unOpenList.add(index)
-                }
-            }
-        }
-        return unOpenList
-    }
-
-
-    //获取是开启的状态
-    private fun checkEquipStatusOpen(vararg data: List<Int>): MutableList<Int> {
-        val unOpenList = mutableListOf<Int>()
-        data.forEach {
-            it.forEach { index ->
-                if (judgeIsOpen(index)) {
-                    unOpenList.add(index)
-                }
-            }
-        }
-        return unOpenList
-    }
-
-    suspend fun clickEquipArray(list: List<Int>) {
-        Timber.d("${JsonUtil.objectToString(list)} 点击数组有 FightController NWQ_ 2023/3/10");
-        if (list.isNullOrEmpty()) {
-            return
-        }
-        click(list.map { index ->
-            if (index < TopOfst) {
-                constant.getBottomEquipArea(index)
-            } else {
-                constant.getTopEquipArea(index - TopOfst - 1)
-            }
-        })
-    }
-
-    private suspend fun clickEquip(index: Int, delay: Long) {
-        if (index < TopOfst) {
-            click(constant.getBottomEquipArea(index), delay)
-        } else {
-            click(constant.getTopEquipArea(index - TopOfst - 1), delay)
-        }
-    }
-
-    fun judgeIsOpen(index: Int): Boolean {
-        return if (index < TopOfst) {
-            visual.judgeIsOpenBottom(index)
-        } else {
-            visual.judgeIsOpenTop(index - TopOfst - 1)
-        }
-    }
-
 
     var judgeSmallShipTargetCount = 0
     var lastJudgeIsSmallShip = 0L
@@ -887,21 +720,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         return -1
     }
 
-
-    suspend fun ensureOpenPositionMenu() {
-        var flag = 3
-        while (!visual.hasPositionMenu() && flag > 0) {
-            click(constant.eraseWarningArea)
-            takeScreen(doubleClickInterval)
-        }
-        if (visual.isClosePositionMenu()) {
-            click(constant.eraseWarningArea)
-        } else if (!visual.isDefaultCoordinateMenu()) {
-            click(constant.defaultCoordinateMenuArea)
-        }
-    }
-
-
     suspend fun abnormalStateRepair() {
         Timber.d("abnormalStateRepair FightController NWQ_ 2023/3/10");
         theOutCheck()
@@ -912,13 +730,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
     }
 
     //determine 是否需要点击确定按钮，一般出舱是需要的
-    suspend fun clickJumpCollectionAddress(index: Int, determine: Boolean) {
-        ensureOpenPositionMenu()
-        click(constant.getAddressArea(index), normalClickInterval)
-        if (determine) {
-            click(constant.dialogDetermineArea, normalClickInterval)
-        }
-    }
+
 
     //战斗开始时候需要开启的
     fun closeTheWholeBattle() {
@@ -927,19 +739,5 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         DESTROY_INTERVAL = 50 * 1000
     }
 
-    //卸载货物
-    suspend fun unloadingCargo() {
-        click(constant.getTopMenuArea(1))
-        click(constant.generalWarehouseArea, quadrupleClickInterval)
-        takeScreen(quadrupleClickInterval)
-        if (visual.isEmptyWarehouse()) {
-            theOutCheck()
-        } else {
-            click(constant.warehouseSelectAllArea, quadrupleClickInterval)
-            click(constant.warehouseMoveArea, quadrupleClickInterval)
-            click(constant.warehouseAllArea, quadrupleClickInterval)
-            theOutCheck()
-        }
-    }
 
 }
