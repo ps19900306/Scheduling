@@ -122,7 +122,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
     private val cellPosition = BotOfst + 5
     private val pickUpPosition = BotOfst + 6
     val isShieldResistance by lazy {
-        SP.getValue(prefixRole + SpConstant.CRESISTANCE_MODE, false)
+          SP.getValue(prefixRole + SpConstant.CRESISTANCE_MODE, false)
     }//是否护盾抗
 
 

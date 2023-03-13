@@ -15,6 +15,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         SP.init(this, "nwq_schedule")
-        Timber.plant(Timber.DebugTree())
+        //Timber.plant(Timber.DebugTree())
     }
 }

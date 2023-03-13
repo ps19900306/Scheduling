@@ -59,7 +59,7 @@ class NwqAccessibilityService : AccessibilityService() {
             SPRepo.role = nextRole
             var lastTime1 = SP.getValue(nextRole + SpConstant.LAST_COMPLETE_TIME, 0L)
             if (TimeUtils.isNewTaskDay(lastTime1)) {
-                startOpt()
+                startOpt(true)
             }
         }
         true
