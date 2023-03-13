@@ -144,7 +144,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
 
     suspend fun exitGame() {
         theOutCheck()
-        clickJumpCollectionAddress(warehouseIndex, false)
+        //clickJumpCollectionAddress(warehouseIndex, false) 退出游戏导航也没有用
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
         click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
