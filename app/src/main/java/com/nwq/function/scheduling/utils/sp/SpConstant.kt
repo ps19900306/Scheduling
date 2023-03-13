@@ -4,6 +4,7 @@ object SpConstant {
 
     const val LAST_REFRESH_TIME = "last_refresh_time"
     const val LAST_PICKUP_TASK_TIME = "last_pickup_task_time"
+    const val NUMBER_OF_TASKS_RECEIVED="number_of_tasks_received"
 
     const val TopOfst = 6//顶部的偏移量
     const val BotOfst = -1//底部的便宜量

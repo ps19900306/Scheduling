@@ -65,7 +65,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
     var needCancel = false
     var neeForceRefresh = false
     var needBackStation = false
-    var mNumberOfTasksReceived = 51
+    var mNumberOfTasksReceived by SP(SPRepo.role + SpConstant.NUMBER_OF_TASKS_RECEIVED, 50)
+
     private val visual by lazy {
         FightVisualEnvironment(helper)
     }
@@ -224,7 +225,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
             return
         }
         takeScreen(2000)
-        mNumberOfTasksReceived--
+
         var inSpaceStation = visual.isInSpaceStation()
         Timber.d("准备接取任务  inSpaceStation: $inSpaceStation pickUpTask FightController NWQ_ 2023/3/12");
         click(constant.getTopMenuArea(2))
@@ -284,8 +285,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
 
         if (!receiveAdvancedTasks && visual.isHighTask()) {
             Timber.d("发现高级任务  pickUpTask FightController NWQ_ 2023/3/12");
+            mNumberOfTasksReceived--
             click(constant.pickUpTask2Area)
         } else {
+            mNumberOfTasksReceived--
             click(constant.pickUpTask1Area)
         }
         takeScreen(doubleClickInterval)

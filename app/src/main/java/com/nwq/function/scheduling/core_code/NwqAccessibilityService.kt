@@ -10,6 +10,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.fight.FightController
 import com.nwq.function.scheduling.utils.ContextUtil
+import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
@@ -46,6 +47,9 @@ class NwqAccessibilityService : AccessibilityService() {
         val nowRole = SPRepo.role
         var lastTime by SP(nowRole + SpConstant.LAST_COMPLETE_TIME, 0L)
         lastTime = System.currentTimeMillis()
+        var count by SP(nowRole + SpConstant.NUMBER_OF_TASKS_RECEIVED, 0)
+        count = 0
+        Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
         if (SPRepo.continueToTheNext) {
             val nextRole = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
                 SpConstant.PREFIX_ROLE2
@@ -54,13 +58,7 @@ class NwqAccessibilityService : AccessibilityService() {
             }
             SPRepo.role = nextRole
             var lastTime1 = SP.getValue(nextRole + SpConstant.LAST_COMPLETE_TIME, 0L)
-            val date = Date(lastTime1)
-            val toyday = Date(System.currentTimeMillis())
-            if (toyday.hours >= 8) {
-                if (date.day < toyday.day || date.hours < 8) {
-                    startOpt()
-                }
-            } else if (date.day + 1 < toyday.day || (date.day < toyday.day && date.hours < 8)) {
+            if (TimeUtils.isNewTaskDay(lastTime1)) {
                 startOpt()
             }
         }
@@ -69,11 +67,19 @@ class NwqAccessibilityService : AccessibilityService() {
 
 
     private fun startOpt(outGame: Boolean = false) {
+        var count by SP(SPRepo.role + SpConstant.NUMBER_OF_TASKS_RECEIVED, 0)
+        var lastTime = SP.getValue(SPRepo.role + SpConstant.LAST_COMPLETE_TIME, 0L)
+        if (count == 0 && TimeUtils.isNewTaskDay(lastTime)) {
+            Timber.d("刷新任务数 ${SPRepo.role} startOpt NwqAccessibilityService NWQ_ 2023/3/13");
+            count = 50
+        }
+
         list.forEach { it.close() }
         list.clear()
         if (outGame) {
-            if ((helper.screenBitmap?.width ?: 0) > (helper.screenBitmap?.height ?: 0))
-                helper.pressHomeBtn()
+            if ((helper.screenBitmap?.width ?: 0) > (helper.screenBitmap?.height
+                    ?: 0)
+            ) helper.pressHomeBtn()
         } else {
             helper.pressHomeBtn()
         }
