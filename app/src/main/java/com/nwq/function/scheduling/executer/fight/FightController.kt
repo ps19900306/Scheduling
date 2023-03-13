@@ -466,9 +466,9 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             }
             needBackStation = false
             nowStep = PICK_UP_TASK
-        }else if(needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()){
+        } else if (needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()) {
             nowStep = PICK_UP_TASK
-        }else if(visual.isOpenBigMenu()){
+        } else if (visual.isOpenBigMenu()) {
             click(constant.closeBigMenuArea)
         }
     }
@@ -685,18 +685,18 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     suspend fun theOutCheck() {
         Timber.d("  theOutCheck FightController NWQ_ 2023/3/12");
-        var count = 3
         var flag = true
-        do {
-            takeScreen(doubleClickInterval)
-            count--
-            var flag = visual.isInSpaceStation() || visual.hasEyesMenu()
+        while (flag) {
             if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
+            } else if (visual.hasIntoGame()) {
+                flag = false
+            } else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {
+                flag = false
             } else {
                 ensureCloseDetermine()
             }
-        } while (!flag && count > 0)
+        }
     }
 
     //获取是关闭的状态
