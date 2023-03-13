@@ -468,6 +468,8 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             nowStep = PICK_UP_TASK
         }else if(needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()){
             nowStep = PICK_UP_TASK
+        }else if(visual.isOpenBigMenu()){
+            click(constant.closeBigMenuArea)
         }
     }
 
