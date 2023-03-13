@@ -44,7 +44,6 @@ class FightConstant {
     var rightDialogueArea = Area(1521, 305, 557, 177)
 
 
-
     var pickUpTask1Area = Area(570, 668, 444, 25)
     var pickUpTask2Area = Area(1031, 666, 444, 25)
 
@@ -58,6 +57,14 @@ class FightConstant {
     var startGameArea = Area(1051, 790, 299, 88)
     var selectRoleArea = Area(587, 173, 210, 296)
     var closeBigMenuArea = Area(2186, 22, 75, 76)
+
+    var generalWarehouseArea = Area(122, 735, 405, 93)
+    var mineralWarehouseArea = Area(219, 896, 273, 50)
+
+    var warehouseSelectAllArea = Area(1714, 913, 170, 130)
+    var warehouseMoveArea = Area(160, 180, 270, 63)
+    var warehouseAllArea = Area(630, 200, 370, 70) //物品机库
+
 
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)

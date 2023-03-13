@@ -30,6 +30,18 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
+    //用于判断仓库是否是空的
+    fun isEmptyWarehouse(): Boolean {
+        val list = listOf(
+            TwoPointTask(1423, 491, 1428, 491, AllGreater15Comparison),
+            TwoPointTask(1424, 568, 1429, 568, AllGreater15Comparison),
+            TwoPointTask(1425, 546, 1430, 546, AllGreater15Comparison),
+        )
+        return ImgUtils.performTwoPointTask(
+            list, screenBitmap, 1
+        )
+    }
+
 
     fun getTagNumber(): Int {
         var number = -1
@@ -183,9 +195,6 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     }
 
 
-
-
-
     //判断菜单是否是打开的
     fun isOpenPositionMenuGray(): Boolean {
         val list = listOf(
@@ -235,20 +244,20 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             list, screenBitmap, 0
         )
     }
+
     fun isSailing(): Boolean {
         val list = listOf(
             verificationTask(490, 305, AllOver150Rule),
             verificationTask(490, 291, AllLess70Rule),
             verificationTask(490, 320, AllLess70Rule),
-            verificationTask(127, 305, AllOver150Rule,1),
-            verificationTask(139, 305, AllOver150Rule,1),
-            verificationTask(134, 305, AllLess70Rule,1),
+            verificationTask(127, 305, AllOver150Rule, 1),
+            verificationTask(139, 305, AllOver150Rule, 1),
+            verificationTask(134, 305, AllLess70Rule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }
-
 
 
     //判断菜单是否是关闭
@@ -328,8 +337,8 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //判断所有的任务是否已经完成
     fun isCompleteAllTask(): Boolean {
         val list = listOf(
-            verificationTask(1025, 220, RedRule,1),
-            verificationTask(1075, 220, RedRule,1),
+            verificationTask(1025, 220, RedRule, 1),
+            verificationTask(1075, 220, RedRule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -435,7 +444,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         val flag1 = hasPositionMenu()
         val flag2 = hasEyesMenu()
         val flag3 = isInSpaceStation()
-     //   Timber.d("hasPositionMenu:$flag1 hasPositionMenu:$flag2  isInSpaceStation:$flag3   hasIntoGame FightVisualEnvironment NWQ_ 2023/3/12");
+        //   Timber.d("hasPositionMenu:$flag1 hasPositionMenu:$flag2  isInSpaceStation:$flag3   hasIntoGame FightVisualEnvironment NWQ_ 2023/3/12");
         return flag1 && (flag2 || flag3)
     }
 

@@ -889,4 +889,20 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         useUnlock = true
         DESTROY_INTERVAL = 50 * 1000
     }
+
+    //卸载货物
+    suspend fun unloadingCargo() {
+        click(constant.getTopMenuArea(1))
+        click(constant.generalWarehouseArea, quadrupleClickInterval)
+        takeScreen(quadrupleClickInterval)
+        if (visual.isEmptyWarehouse()) {
+            theOutCheck()
+        } else {
+            click(constant.warehouseSelectAllArea, quadrupleClickInterval)
+            click(constant.warehouseMoveArea, quadrupleClickInterval)
+            click(constant.warehouseAllArea, quadrupleClickInterval)
+            theOutCheck()
+        }
+    }
+
 }
