@@ -63,6 +63,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
      */
     private var nowStep = INTO_GAME
     var needCancel = false
+    var neeForceRefresh = false
     var needBackStation = false
     var mNumberOfTasksReceived = 51
     private val visual by lazy {
@@ -260,11 +261,25 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
             return
         }
 
-        if (needRefreshTask()) {
+
+        if (neeForceRefresh) {
+            if (visual.canRefresh()) {
+                click(constant.refreshTaskListArea, doubleClickInterval)
+                lastRefreshTimeSp = System.currentTimeMillis()
+                takeScreen(doubleClickInterval)
+            } else {
+                (System.currentTimeMillis() + constant.REFRESH_INTERVAL - lastRefreshTimeSp).let {
+                    if (it > 0) {
+                        delay(it)
+                    }
+                }
+            }
+        } else if (needRefreshTask()) {
             click(constant.refreshTaskListArea, doubleClickInterval)
             lastRefreshTimeSp = System.currentTimeMillis()
             takeScreen(doubleClickInterval)
         }
+
         if (!receiveAdvancedTasks && visual.isHighTask()) {
             Timber.d("发现高级任务  pickUpTask FightController NWQ_ 2023/3/12");
             click(constant.pickUpTask2Area)
@@ -317,6 +332,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
             Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
             if (System.currentTimeMillis() - SPRepo.lastPickUpTaskTimeSp > constant.NAVIGATING_TOO_LONG) {
                 needBackStation = true
+                neeForceRefresh = true
             }
             nowStep = COMBAT_MONITORING
             battleStartTime = System.currentTimeMillis()
@@ -324,6 +340,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
             Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
             needBackStation = true
             needCancel = true
+            neeForceRefresh = true
             nowStep = ABNORMAL_STATE
         } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
             needCancel = true
@@ -527,13 +544,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
         if (visual.getTagNumber() > 4 || visual.hasGroupLock()) {
             nowStep = COMBAT_MONITORING
         } else if (visual.isInSpaceStation()) {
-            if (needBackStation && needCancel) {
-                (System.currentTimeMillis() + constant.REFRESH_INTERVAL - lastRefreshTimeSp).let {
-                    if (it > 0) {
-                        delay(it)
-                    }
-                }
-            }
             if (isPickupBox) {
                 unloadingCargo()
             }
