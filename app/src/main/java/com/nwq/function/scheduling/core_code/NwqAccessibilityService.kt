@@ -10,7 +10,14 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.fight.FightController
 import com.nwq.function.scheduling.utils.ContextUtil
+import com.nwq.function.scheduling.utils.sp.SP
+import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SpConstant
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 
 
 /**
@@ -31,25 +38,65 @@ class NwqAccessibilityService : AccessibilityService() {
         }
     }
 
+    private val helper by lazy {
+        AccessibilityHelper(this)
+    }
 
-    fun dealEvent(intent: Intent){
-       val cmd= intent.getIntExtra(Constant.CMD,CmdType.START)
-       when(cmd){
-           CmdType.START->{
-               list.forEach { it.close() }
-               list.clear()
-               val fight = FightController(AccessibilityHelper(this@NwqAccessibilityService))
-               fight.startGame()
-               list.add(fight)
-           }
-           CmdType.CLOSE->{
-               list.forEach { it.close() }
-               list.clear()
-           }
-           CmdType.CHECK_COLOR->{
+    private val onCompleteLister = {
+        val nowRole = SPRepo.role
+        var lastTime by SP(nowRole + SpConstant.LAST_COMPLETE_TIME, 0L)
+        lastTime = System.currentTimeMillis()
+        if (SPRepo.continueToTheNext) {
+            val nextRole = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+                SpConstant.PREFIX_ROLE2
+            } else {
+                SpConstant.PREFIX_ROLE1
+            }
+            SPRepo.role = nextRole
+            var lastTime1 = SP.getValue(nextRole + SpConstant.LAST_COMPLETE_TIME, 0L)
+            val date = Date(lastTime1)
+            val toyday = Date(System.currentTimeMillis())
+            if (toyday.hours >= 8) {
+                if (date.day < toyday.day || date.hours < 8) {
+                    startOpt()
+                }
+            } else if (date.day + 1 < toyday.day || (date.day < toyday.day && date.hours < 8)) {
+                startOpt()
+            }
+        }
+        true
+    }
 
-           }
-       }
+
+    private fun startOpt(outGame: Boolean = false) {
+        list.forEach { it.close() }
+        list.clear()
+        if (outGame) {
+            if ((helper.screenBitmap?.width ?: 0) > (helper.screenBitmap?.height ?: 0))
+                helper.pressHomeBtn()
+        } else {
+            helper.pressHomeBtn()
+        }
+        val fight = FightController(helper, onCompleteLister)
+        fight.startGame()
+        list.add(fight)
+    }
+
+
+    fun dealEvent(intent: Intent) {
+        val cmd = intent.getIntExtra(Constant.CMD, CmdType.START)
+        when (cmd) {
+            CmdType.START -> {
+                startOpt()
+            }
+            CmdType.CLOSE -> {
+                list.forEach { it.close() }
+                list.clear()
+            }
+            CmdType.CHECK_COLOR -> {
+
+            }
+        }
     }
 
 

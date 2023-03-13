@@ -12,7 +12,7 @@ create time: 2023/3/1 10:59
 Function description:
  */
 
-class ClickTestController(helper: AccessibilityHelper) : TravelController(helper) {
+class ClickTestController(helper: AccessibilityHelper) : TravelController(helper,{true}) {
 
 
     override suspend fun generalControlMethod() {

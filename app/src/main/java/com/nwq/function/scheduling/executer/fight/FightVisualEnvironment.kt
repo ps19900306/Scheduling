@@ -328,8 +328,8 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
     //判断所有的任务是否已经完成
     fun isCompleteAllTask(): Boolean {
         val list = listOf(
-            verificationTask(1025, 220, RedRule),
-            verificationTask(1075, 220, RedRule),
+            verificationTask(1025, 220, RedRule,1),
+            verificationTask(1075, 220, RedRule,1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0

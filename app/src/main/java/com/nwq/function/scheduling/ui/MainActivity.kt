@@ -65,5 +65,10 @@ class MainActivity : AppCompatActivity() {
         bind.setRole2.singleClick {
             SetRoleInfoActivity2.startSetRole(SpConstant.PREFIX_ROLE2, this)
         }
+
+        bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext
+        bind.continueToTheNextCb.setOnCheckedChangeListener { compoundButton, b ->
+            SPRepo.continueToTheNext = b
+        }
     }
 }

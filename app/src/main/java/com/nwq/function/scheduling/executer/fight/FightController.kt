@@ -17,9 +17,10 @@ create by: 86136
 create time: 2023/2/28 10:43
 Function description:
 这个是逻辑控制流程,保证能复用
+弹出的活动窗口需要处理
  */
 
-class FightController(p: AccessibilityHelper) : TravelController(p) {
+class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
 
     /**
      * 这个是状态常规量
@@ -34,6 +35,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
     private val START_MONITORING_RETURN_STATUS = 7//返回空间站监听
     private val MONITORING_RETURN_STATUS = 8//返回空间站监听
     private val ABNORMAL_STATE = 1000 //异常状态
+    private val EXIT_OPT = 10000 //异常状态
 
     private val TopOfst = SpConstant.TopOfst//顶部的偏移量
     private val BotOfst = SpConstant.BotOfst//底部的便宜量
@@ -127,7 +129,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
      */
     fun startGame() {
         GlobalScope.launch {
-            pressHomeBtn()
+            takeScreen(normalClickInterval)
             delay(2000)
             helper.click(
                 (82 + (constant.APP_LOCATION_X - 1) * 254).toFloat(),
@@ -140,6 +142,16 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         }
     }
 
+    suspend fun exitGame() {
+        theOutCheck()
+        clickJumpCollectionAddress(warehouseIndex, false)
+        pressBackBtn()
+        delay(helper.defultClickDuration * 2)
+        click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
+        takeScreen(doubleClickInterval)
+        runSwitch = false
+        onComplete.invoke()
+    }
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
@@ -175,6 +187,10 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                 ABNORMAL_STATE -> {
                     abnormalStateRepair()
                 }
+                EXIT_OPT -> {
+                    runSwitch = false
+                    exitGame()
+                }
             }
         }
     }
@@ -202,7 +218,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
 
     suspend fun pickUpTask() {
         if (mNumberOfTasksReceived <= 0) {
-            exit()
+            nowStep = EXIT_OPT
             return
         }
         clickTheDialogueClose(false)
@@ -237,6 +253,12 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         //打开新闻公告板
         click(constant.newTaskListArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
+
+        if (visual.isCompleteAllTask()) {//全部的任务已经完成
+            nowStep = EXIT_OPT
+            return
+        }
+
         if (needRefreshTask()) {
             click(constant.refreshTaskListArea, doubleClickInterval)
             lastRefreshTimeSp = System.currentTimeMillis()
@@ -302,7 +324,14 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
             needBackStation = true
             needCancel = true
             nowStep = ABNORMAL_STATE
+        } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
+            needCancel = true
+            clickTheDialogueClose(false)
+            Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
+            nowStep = PICK_UP_TASK
         }
+
+
     }
 
     var battleStartTime = 0L //这个是开始战斗监控的时间
@@ -821,12 +850,6 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         return -1
     }
 
-
-    suspend fun exit() {
-        theOutCheck()
-        clickJumpCollectionAddress(warehouseIndex, false)
-        runSwitch = false
-    }
 
     suspend fun ensureOpenPositionMenu() {
         var flag = 3

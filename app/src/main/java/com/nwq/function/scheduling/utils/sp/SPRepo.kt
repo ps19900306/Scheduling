@@ -1,5 +1,6 @@
 package com.nwq.function.scheduling.utils.sp
 
+import com.nwq.function.scheduling.utils.sp.SpConstant.CONTINUE_TO_THE_NEXT
 import com.nwq.function.scheduling.utils.sp.SpConstant.LAST_PICKUP_TASK_TIME
 import com.nwq.function.scheduling.utils.sp.SpConstant.LAST_REFRESH_TIME
 import com.nwq.function.scheduling.utils.sp.SpConstant.PREFIX_ROLE1
@@ -9,6 +10,7 @@ object SPRepo {
     var lastRefreshTimeSp by SP(LAST_REFRESH_TIME, 0L)
     var lastPickUpTaskTimeSp by SP(LAST_PICKUP_TASK_TIME, 0L)
     var lastBackSpaceStation by SP(LAST_PICKUP_TASK_TIME, 0L)
+    var continueToTheNext by SP(CONTINUE_TO_THE_NEXT, false)
 
-    var role by SP(ROLE,PREFIX_ROLE1)
+    var role by SP(ROLE, PREFIX_ROLE1)
 }

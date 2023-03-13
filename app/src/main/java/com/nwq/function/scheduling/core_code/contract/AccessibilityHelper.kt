@@ -79,6 +79,8 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         click(x, y, with, height, defultClickDuration)
     }
 
+
+
     suspend fun click(x: Float, y: Float, with: Int, height: Int, duration: Long) {
         val newX = (x + (Math.random() * 0.6 + 0.2) * with).toFloat()
         val newY = (y + (Math.random() * 0.6 + 0.2) * height).toFloat()
