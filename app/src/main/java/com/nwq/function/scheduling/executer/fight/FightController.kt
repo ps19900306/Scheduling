@@ -454,9 +454,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
-                    if (isPickupBox)//这里为了校验开关清空
+                    if (isPickupBox && !needBackStation)//这里为了校验开关清空
                         needCheckOpenList.add(pickUpPosition)
-
 
                     //打开定时开启的
                     checkTimingOnList(needCheckOpenList)
