@@ -119,9 +119,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isHighTask(): Boolean {
         val list = listOf(
-            verificationTask(628, 333, AllOver110Rule),
-            verificationTask(628, 341, AllLess50Rule),
-            verificationTask(628, 349, AllOver110Rule),
+            verificationTask(602, 343, HighTaskRule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -130,9 +128,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
 
     fun isHighTaskRight(): Boolean {
         val list = listOf(
-            verificationTask(2142, 381, AllOver110Rule),
-            verificationTask(2142, 390, AllLess50Rule),
-            verificationTask(2142, 399, AllOver110Rule),
+            verificationTask(2121, 398, HighTaskRule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -497,7 +493,7 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
         )
     }
 
-    fun warehouseIsFull():Boolean{
+    fun warehouseIsFull(): Boolean {
         val list = listOf(
             verificationTask(141, 144, WarehouseIsFullRule1),
             verificationTask(143, 144, WarehouseIsFullRule1),
@@ -507,7 +503,6 @@ class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(he
             list, screenBitmap, 0
         )
     }
-
 
 
 }

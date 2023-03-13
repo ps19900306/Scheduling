@@ -261,7 +261,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : TravelControll
             return
         }
 
-
         if (neeForceRefresh) {
             if (visual.canRefresh()) {
                 click(constant.refreshTaskListArea, doubleClickInterval)
