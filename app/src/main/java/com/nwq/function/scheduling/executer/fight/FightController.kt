@@ -290,7 +290,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
         if (visual.isShowDetermine()) {
             Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
             click(constant.dialogDetermineArea)
-        } else if (visual.hasGroupLock()) {
+        } else if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
             Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
             if (System.currentTimeMillis() - SPRepo.lastPickUpTaskTimeSp > constant.NAVIGATING_TOO_LONG) {
                 needBackStation = true
@@ -343,7 +343,7 @@ class FightController(p: AccessibilityHelper) : TravelController(p) {
                     //没有锁定上继续导航
                     useUnlock = false
                 }
-            } else if (visual.getTagNumber() > 0) {
+            } else if (visual.getTagNumber() > 0 || judgeIsOpen(weaponPosition)) {
                 Timber.d("存在锁定目标 combatMonitoring FightController NWQ_ 2023/3/10");
                 System.currentTimeMillis().let {
                     roundStartTime = it
