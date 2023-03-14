@@ -6,65 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.SetRoleInfoActivity2">
 
-    <TextView
-        android:id="@+id/resistanceModeTitleTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="抗性方式"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/resistanceModeContentTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="是否盾抗"
-        app:layout_constraintBottom_toBottomOf="@+id/resistanceModeTitleTv"
-        app:layout_constraintStart_toEndOf="@+id/resistanceModeTitleTv"
-        app:layout_constraintTop_toTopOf="@+id/resistanceModeTitleTv" />
-
-    <CheckBox
-        android:id="@+id/resistanceModeCheckTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="是否是盾抗"
-        app:layout_constraintBottom_toBottomOf="@+id/resistanceModeContentTv"
-        app:layout_constraintStart_toEndOf="@+id/resistanceModeContentTv"
-        app:layout_constraintTop_toTopOf="@+id/resistanceModeContentTv" />
-
-    <TextView
-        android:id="@+id/pickupTitleTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
-        android:text="拾取箱子"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resistanceModeTitleTv" />
-
-    <TextView
-        android:id="@+id/pickupContentTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="是否拾取"
-        app:layout_constraintBottom_toBottomOf="@+id/pickupTitleTv"
-        app:layout_constraintStart_toEndOf="@+id/pickupTitleTv"
-        app:layout_constraintTop_toTopOf="@+id/pickupTitleTv" />
-
-    <CheckBox
-        android:id="@+id/pickupCheckTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="是否拾取箱子"
-        app:layout_constraintBottom_toBottomOf="@+id/pickupContentTv"
-        app:layout_constraintStart_toEndOf="@+id/pickupContentTv"
-        app:layout_constraintTop_toTopOf="@+id/pickupContentTv" />
 
     <TextView
         android:id="@+id/baseLocationTitleTv"
@@ -74,7 +15,7 @@
         android:layout_marginTop="36dp"
         android:text="基地位置"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pickupTitleTv" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/baseLocationEdit"
@@ -109,12 +50,12 @@
         app:layout_constraintTop_toBottomOf="@+id/baseLocationTitleTv" />
 
     <EditText
-        android:inputType="number"
         android:id="@+id/list1Edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:hint="List1"
+        android:inputType="number"
         android:minWidth="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/list1TitleTv"
         app:layout_constraintStart_toEndOf="@+id/list1TitleTv"
@@ -152,12 +93,12 @@
         app:layout_constraintTop_toBottomOf="@+id/list1TitleTv" />
 
     <EditText
-        android:inputType="number"
         android:id="@+id/list2Edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:hint="List2"
+        android:inputType="number"
         android:minWidth="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/list2TitleTv"
         app:layout_constraintStart_toEndOf="@+id/list2TitleTv"
@@ -194,12 +135,12 @@
         app:layout_constraintTop_toBottomOf="@+id/list2TitleTv" />
 
     <EditText
-        android:inputType="number"
         android:id="@+id/list3Edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:hint="List3"
+        android:inputType="number"
         android:minWidth="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/list3TitleTv"
         app:layout_constraintStart_toEndOf="@+id/list3TitleTv"
@@ -236,12 +177,12 @@
         app:layout_constraintTop_toBottomOf="@+id/list3TitleTv" />
 
     <EditText
-        android:inputType="number"
         android:id="@+id/wholeBattleEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:hint="整个战斗"
+        android:inputType="number"
         android:minWidth="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/wholeBattleTitleTv"
         app:layout_constraintStart_toEndOf="@+id/wholeBattleTitleTv"
@@ -279,12 +220,12 @@
         app:layout_constraintTop_toBottomOf="@+id/wholeBattleTitleTv" />
 
     <EditText
-        android:inputType="number"
         android:id="@+id/roundBattleEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:hint="一个回合"
+        android:inputType="number"
         android:minWidth="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/roundBattleTitleTv"
         app:layout_constraintStart_toEndOf="@+id/roundBattleTitleTv"
@@ -319,5 +260,24 @@
         android:text="是否开启网子"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/roundBattleTitleTv" />
+
+    <CheckBox
+        android:id="@+id/pickupCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="是否拾取箱子"
+        app:layout_constraintBottom_toBottomOf="@+id/catchFoodCheckBox"
+        app:layout_constraintStart_toEndOf="@+id/catchFoodCheckBox"
+        app:layout_constraintTop_toTopOf="@+id/catchFoodCheckBox" />
+
+    <CheckBox
+        android:id="@+id/resistanceModeCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="是否是盾抗"
+        app:layout_constraintBottom_toBottomOf="@+id/pickupCheckTv"
+        app:layout_constraintStart_toEndOf="@+id/pickupCheckTv"
+        app:layout_constraintTop_toTopOf="@+id/pickupCheckTv" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
