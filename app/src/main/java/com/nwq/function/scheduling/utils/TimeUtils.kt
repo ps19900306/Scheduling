@@ -9,10 +9,10 @@ object TimeUtils {
         val date = Date(time)
         val toyday = Date(System.currentTimeMillis())
         if (toyday.hours >= 8) {
-            if (date.day < toyday.day || date.hours < 10) {
+            if (date.day < toyday.day || date.hours < 12) {
                 return true
             }
-        } else if (date.day + 1 < toyday.day || (date.day < toyday.day && date.hours < 10)) {
+        } else if (date.day + 1 < toyday.day || (date.day < toyday.day && date.hours < 12)) {
             return true
         }
         return false

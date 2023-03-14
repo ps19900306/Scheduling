@@ -3,8 +3,10 @@ package com.nwq.function.scheduling.executer.base
 import android.graphics.Bitmap
 import android.graphics.Color
 import com.nwq.function.scheduling.core_code.Area
+import com.nwq.function.scheduling.core_code.SwipeArea
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.utils.JsonUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -135,14 +137,13 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
     }
 
     suspend fun swipe(
-        startX: Double,
-        startY: Double,
-        endX: Double,
-        endY: Double,
-        duration: Double,
-        delayTime: Long = 0
+        swipeArea: SwipeArea,
+        midPoint:Int=0
     ) {
-        helper.slideByLocation(startX, startY, endX, endY, duration.toLong(), delayTime)
+        val task =swipeArea.toClickTask(midPoint)
+        Timber.d("${JsonUtil.objectToString(task)} swipe TravelController NWQ_ 2023/3/14");
+        helper.swipe(task)
     }
+
 
 }

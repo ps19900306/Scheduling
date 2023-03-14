@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.Area
+import com.nwq.function.scheduling.core_code.SwipeArea
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
 
@@ -65,7 +66,9 @@ class BaseConstant {
     var warehouseMoveArea = Area(160, 180, 270, 63)
     var warehouseAllArea = Area(630, 200, 370, 70) //物品机库
     var addTimeArea = Area(2113, 169, 73, 75)//增加时间的
-
+    var setTargetArea = Area(1923, 903, 355, 115)//行星开采设置终点的位置
+    var collectButtonArea1 = Area(344, 881, 682, 107)//收集按钮1
+    var collectButtonArea2 = Area(683, 879, 279, 109)//收集按钮2
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
     }
@@ -97,5 +100,35 @@ class BaseConstant {
         }
     }
 
+    fun celestialSwipeArea(delayTime: Long = 0L): SwipeArea {
+        var y = 1040 - (Math.random() * 270)
+        var x = 150 + (Math.random() * 100)
+        return SwipeArea(
+            x,
+            y,
+            x + (Math.random() * 20),
+            y - 210 - (Math.random() * 10),
+            900 + (Math.random() * 50),
+            delayTime
+        )
+    }
+
+    fun resourceLocation(position: Int): Area {
+        return if (position <= 2) {
+            Area(2051, 447 + (143 * position), 174, 51)
+        } else {
+            Area(2027, 511 + 143 * (position - 3), 174, 51)
+        }
+    }
+
+    fun resourceSwipeArea(delayTime: Long = 0L): SwipeArea {
+        return SwipeArea(
+            1610 + (Math.random() * 306),
+            783 + (Math.random() * 70),
+            1610 + (Math.random() * 306),
+            373 - (Math.random() * 43),
+            500 + (Math.random() * 200)
+        )
+    }
 
 }

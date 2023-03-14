@@ -233,7 +233,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
         needCancel = false
         //打开新闻公告板
-        click(constant.newTaskListArea, doubleClickInterval)
+        delay(normalClickInterval)
+        click(constant.newTaskListArea)
         takeScreen(doubleClickInterval)
 
         if (visual.isCompleteAllTask()) {//全部的任务已经完成
@@ -243,7 +244,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
         if (neeForceRefresh) {
             if (visual.canRefresh()) {
-                click(constant.refreshTaskListArea, doubleClickInterval)
+                click(constant.refreshTaskListArea)
                 lastRefreshTimeSp = System.currentTimeMillis()
                 takeScreen(doubleClickInterval)
             } else {
@@ -254,7 +255,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 }
             }
         } else if (needRefreshTask()) {
-            click(constant.refreshTaskListArea, doubleClickInterval)
+            click(constant.refreshTaskListArea)
             lastRefreshTimeSp = System.currentTimeMillis()
             takeScreen(doubleClickInterval)
         }
@@ -267,14 +268,16 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             mNumberOfTasksReceived--
             click(constant.pickUpTask1Area)
         }
-        takeScreen(doubleClickInterval)
+        takeScreen(normalClickInterval)
         ensureCloseDetermine()//低安要点确定
-        takeScreen(doubleClickInterval)
+        takeScreen(normalClickInterval)
         if (!receiveAdvancedTasks && visual.isHighTaskRight())//如果右边是高级任务也进行取消
         {
             Timber.d("发现高级任务右侧  pickUpTask FightController NWQ_ 2023/3/12");
             click(constant.openTaskRightArea)
-            click(constant.cancelTaskArea)
+            click(constant.cancelTaskArea,doubleClickInterval)
+            takeScreen(doubleClickInterval)
+            ensureCloseDetermine()
             theOutCheck()
             needCancel = true
             return

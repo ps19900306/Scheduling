@@ -8,6 +8,7 @@ import android.view.Display
 import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
+import com.nwq.function.scheduling.core_code.SwipeArea
 import com.nwq.function.scheduling.core_code.click.ClickTask
 import com.nwq.function.scheduling.core_code.click.ClickUtils
 import com.nwq.function.scheduling.core_code.click.DirectionType
@@ -23,7 +24,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     val defultClickDuration
         get() = ((Math.random() * 0.5 + 0.5) * 300).toLong()
     val defultClickDurationMeath
-        get() = { ((Math.random() * 0.5 + 0.5) * 300).toLong() }
+        get() = { ((Math.random() * 0.5 + 0.5) * 1000).toLong() }
 
     //这里跟新截图信息
     @RequiresApi(Build.VERSION_CODES.R)
@@ -133,48 +134,9 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         ClickUtils.optSlideTask(acService, task)
     }
 
-    suspend fun slideByLocation(
-        startX: Double,
-        startY: Double,
-        endX: Double,
-        endY: Double,
-        duration: Long,
-        delayTime: Long = 0
+    suspend fun swipe(
+        task: ClickTask,
     ) {
-        val startCoordinate = Coordinate(startX.toFloat(), startY.toFloat())
-        val endCoordinate = Coordinate(endX.toFloat(), endY.toFloat())
-        val task = ClickTask(listOf(startCoordinate, endCoordinate), delayTime, duration)
         ClickUtils.optClickTasks(acService, task)
     }
-
-    suspend fun slideByLocationMidpoint(
-        startX: Double,
-        startY: Double,
-        endX: Double,
-        endY: Double,
-        duration: Long,
-        delayTime: Long = 0,
-        midpointCount: Int = (Math.random() * 4).toInt()
-    ) {
-        val list = mutableListOf<Coordinate>()
-        val startCoordinate = Coordinate(startX.toFloat(), startY.toFloat())
-        list.add(startCoordinate)
-        if (midpointCount > 0) {
-            val xLength = endX - startX
-            val yLength = startY - endY
-            val xPercent = xLength / (midpointCount + 2)
-            val yPercent = yLength / (midpointCount + 2)
-            for (i in 0..midpointCount) {
-                val midX = xPercent * (i + 1) * (1 + Math.random() * 0.1)
-                val midY = yPercent * (i + 1) * (1 + Math.random() * 0.1)
-                list.add(Coordinate(midX.toFloat(), midY.toFloat()))
-            }
-        }
-        val endCoordinate = Coordinate(endX.toFloat(), endY.toFloat())
-        list.add(endCoordinate)
-        val task = ClickTask(listOf(startCoordinate, endCoordinate), delayTime, duration)
-        ClickUtils.optClickTasks(acService, task)
-    }
-
-
 }

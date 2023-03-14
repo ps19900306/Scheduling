@@ -158,11 +158,9 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         //celestialResources
         bind.celestialResourcesBtn.singleClick {
             bind.celestialResourcesEdit.text.toString().toIntOrNull()?.let {
-                if (!celestialResourcesList.contains(it)) {
-                    celestialResourcesList.add(it)
-                    celestialResourcesSP = JsonUtil.objectToString(celestialResourcesList)
-                    bind.celestialResourcesTitleTv.text = celestialResourcesSP
-                }
+                celestialResourcesList.add(it)
+                celestialResourcesSP = JsonUtil.objectToString(celestialResourcesList)
+                bind.celestialResourcesTitleTv.text = celestialResourcesSP
             }
         }
         bind.celestialResourcesClearBtn.singleClick {

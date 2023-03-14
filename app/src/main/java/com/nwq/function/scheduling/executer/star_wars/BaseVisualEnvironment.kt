@@ -231,8 +231,8 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun isOpenPositionMenu(): Boolean {
         val list = listOf(
             verificationTask(490, 305, AllOver150Rule),
-            verificationTask(490, 291, AllLess70Rule),
-            verificationTask(490, 320, AllLess70Rule),
+            verificationTask(490, 291, AllLess90Rule),
+            verificationTask(490, 320, AllLess90Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -242,11 +242,11 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun isSailing(): Boolean {
         val list = listOf(
             verificationTask(490, 305, AllOver150Rule),
-            verificationTask(490, 291, AllLess70Rule),
-            verificationTask(490, 320, AllLess70Rule),
+            verificationTask(490, 291, AllLess90Rule),
+            verificationTask(490, 320, AllLess90Rule),
             verificationTask(127, 305, AllOver150Rule, 1),
             verificationTask(139, 305, AllOver150Rule, 1),
-            verificationTask(134, 305, AllLess70Rule, 1),
+            verificationTask(134, 305, AllLess90Rule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -258,8 +258,8 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun isClosePositionMenu(): Boolean {
         val list = listOf(
             verificationTask(135, 305, AllOver150Rule),
-            verificationTask(135, 291, AllLess70Rule),
-            verificationTask(135, 320, AllLess70Rule),
+            verificationTask(135, 291, AllLess90Rule),
+            verificationTask(135, 320, AllLess90Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -502,9 +502,33 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
+    fun judeIsLaunchComplete(position: Int): Boolean {
+        var x = 2058
+        var y = if (position <= 2) {
+            473 + (143 * position)
+        } else {
+            541 + 143 * (position - 3)
+        }
+        val list = listOf(
+            verificationTask(x, y, LaunchCompleteRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
 
 
+    fun isShowCollectBtn(): Boolean {
 
-
+        val list = listOf(
+            verificationTask(785, 902, ShowCollectRule1),
+            verificationTask(793, 970, ShowCollectRule1),
+            verificationTask(787, 872, ShowCollectRule2),
+            verificationTask(805, 995, ShowCollectRule2),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
 
 }

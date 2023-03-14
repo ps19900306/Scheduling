@@ -6,6 +6,7 @@ import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
@@ -142,14 +143,18 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
     //卸载货物
     suspend fun unloadingCargo() {
         click(constant.getTopMenuArea(1))
-        click(constant.generalWarehouseArea, quadrupleClickInterval)
-        takeScreen(quadrupleClickInterval)
+        delay(tripleClickInterval)
+        click(constant.generalWarehouseArea)
+        delay(doubleClickInterval)
+        takeScreen()
         if (visual.isEmptyWarehouse()) {
             theOutCheck()
         } else {
-            click(constant.warehouseSelectAllArea, tripleClickInterval)
-            click(constant.warehouseMoveArea, normalClickInterval)
-            click(constant.warehouseAllArea, doubleClickInterval)
+            click(constant.warehouseSelectAllArea)
+            delay(normalClickInterval)
+            click(constant.warehouseMoveArea)
+            delay(normalClickInterval)
+            click(constant.warehouseAllArea)
             theOutCheck()
         }
     }
@@ -178,6 +183,7 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
     suspend fun theOutCheck() {
         Timber.d("  theOutCheck FightController NWQ_ 2023/3/12");
         var flag = true
+        var count = 20
         while (flag) {
             takeScreen(doubleClickInterval)
             if (visual.isOpenBigMenu()) {
@@ -188,8 +194,12 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
                 flag = false
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
-            } else {
+            } else if (count <= 0) {
                 click(constant.closeBigMenuArea)
+                flag = false
+                runSwitch = false
+            } else {
+                count--
             }
         }
     }
