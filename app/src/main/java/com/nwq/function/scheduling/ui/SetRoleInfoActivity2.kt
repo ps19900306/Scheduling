@@ -25,7 +25,6 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         }
     }
 
-
     lateinit var bind: ActivitySetRoleInfo2Binding
     val prefixRole by lazy { SPRepo.role }
     var resistanceModeSP by SP(prefixRole + SpConstant.CRESISTANCE_MODE, false)

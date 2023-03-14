@@ -446,7 +446,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         }
                         targetCount = nowTargetCount
                     } else if (hasOpenCatch) {
-                        if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 4 && nowTargetCount >= targetCount)) {
+                        if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 2 && nowTargetCount >= targetCount)) {
                             targetReduceTime = System.currentTimeMillis()
                             needCheckOpenList.addAll(catchFoodList)
                         }

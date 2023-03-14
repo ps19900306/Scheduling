@@ -142,9 +142,9 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
         if (visual.isEmptyWarehouse()) {
             theOutCheck()
         } else {
-            click(constant.warehouseSelectAllArea, quadrupleClickInterval)
-            click(constant.warehouseMoveArea, quadrupleClickInterval)
-            click(constant.warehouseAllArea, quadrupleClickInterval)
+            click(constant.warehouseSelectAllArea, tripleClickInterval)
+            click(constant.warehouseMoveArea, normalClickInterval)
+            click(constant.warehouseAllArea, doubleClickInterval)
             theOutCheck()
         }
     }
