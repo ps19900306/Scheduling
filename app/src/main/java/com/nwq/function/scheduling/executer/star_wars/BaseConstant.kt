@@ -17,8 +17,12 @@ class BaseConstant {
     var REFRESH_INTERVAL = 31 * 60 * 1000L
     var NAVIGATING_TOO_LONG = 15 * 60 * 1000L
     var NAVIGATING_EXCEPTION = 40 * 60 * 1000L
-    var INTO_BATTLE_EXCEPTION = 5 * 60 * 1000L
+    var INTO_BATTLE_EXCEPTION = 3 * 60 * 1000L
     var MAX_BATTLE_TIME = 30 * 60 * 1000L
+
+    var COLLECT_INTERVAL = 52 * 60 * 1000L
+    var ADD_INTERVAL = 10 * 60 * 1000L
+
 
     var MenuArea = Area(84, 3, 198, 120)
     var FightTaskMenuArea = Area(84, 3, 198, 120)
@@ -69,6 +73,11 @@ class BaseConstant {
     var setTargetArea = Area(1923, 903, 355, 115)//行星开采设置终点的位置
     var collectButtonArea1 = Area(344, 881, 682, 107)//收集按钮1
     var collectButtonArea2 = Area(683, 879, 279, 109)//收集按钮2
+
+    var jikuArea = Area(118, 409, 433, 84)//点击机库
+    var theTwoArea = Area(1066, 207, 158, 114)//第二个船
+    var jiHuoArea = Area(2050, 320, 342, 110)//点击激活
+
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
     }

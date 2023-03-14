@@ -86,6 +86,18 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
         JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
     }
+    val resourcesList by lazy {
+        val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
+        JsonUtil.anyToJsonObject(str) ?: mutableListOf<Int>()
+    }
+
+    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
+    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
+    val harvestVegetableController by lazy {
+        HarvestVegetableController(helper, {
+            true
+        })
+    }
 
     // 默认是武器的
     var CombatStamp_1 = 0L
@@ -123,7 +135,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     suspend fun exitGame() {
         theOutCheck()
-        //clickJumpCollectionAddress(warehouseIndex, false) 退出游戏导航也没有用
+        if (resourcesList.isNotEmpty() && System.currentTimeMillis() - resourcesCollectTimeSp > constant.COLLECT_INTERVAL) {
+            harvestVegetableController.startCollectVegetables()
+        } else {
+            harvestVegetableController.addPlanetaryTime()
+        }
+        delay(normalClickInterval)
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
         click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
@@ -188,6 +205,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
+                if (resourcesList.isNotEmpty() && System.currentTimeMillis() - resourcesAddTimeSp > constant.ADD_INTERVAL) {
+                    harvestVegetableController.addPlanetaryTime()
+                }
                 flag = false
                 nowStep = PICK_UP_TASK
             }
@@ -275,7 +295,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         {
             Timber.d("发现高级任务右侧  pickUpTask FightController NWQ_ 2023/3/12");
             click(constant.openTaskRightArea)
-            click(constant.cancelTaskArea,doubleClickInterval)
+            click(constant.cancelTaskArea, doubleClickInterval)
             takeScreen(doubleClickInterval)
             ensureCloseDetermine()
             theOutCheck()
@@ -390,7 +410,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
                 Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
                 useUnlock = false
-                nowStep = ABNORMAL_STATE
+                nowStep = EXIT_OPT
             }
         } else {
             if (canLockTarget()) {//可以进行锁定
@@ -440,6 +460,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             needCheckOpenList.addAll(catchFoodList)
                         }
                         targetCount = nowTargetCount
+
                     } else if (hasOpenCatch) {
                         if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 2 && nowTargetCount >= targetCount)) {
                             targetReduceTime = System.currentTimeMillis()
@@ -683,15 +704,29 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var judgeSmallShipTargetCount = 0
     var lastJudgeIsSmallShip = 0L
 
+    var newLockAttackPosition = 0
+    var newLockTargetCount = 0
     fun isAttackSmallShip(): Boolean {
         if (targetCount <= 0) return false
         var position = getNowAttackPosition()
         if (position > 0) {
-            judgeSmallShipTargetCount = targetCount
-            var result = visual.judgeIsSmall(position)
-            lastJudgeIsSmallShip = System.currentTimeMillis()
-            Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
-            return result
+            if (hasNewLock) {
+                newLockTargetCount = targetCount
+                newLockAttackPosition = targetCount
+                return false
+            } else {
+                if (newLockTargetCount == targetCount + 1 && newLockAttackPosition + 1 >= targetCount && position<newLockAttackPosition) {
+                    Timber.d("position:$position result:锁定目标改变，且开始锁定为最大位置所以  isAttackSmallShip FightController NWQ_ 2023/3/11");
+                    newLockAttackPosition = -100
+                    return true
+                } else {
+                    judgeSmallShipTargetCount = targetCount
+                    var result = visual.judgeIsSmall(position)
+                    lastJudgeIsSmallShip = System.currentTimeMillis()
+                    Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
+                    return result
+                }
+            }
         } else {
             if (!hasOpenCatch && !hasNewLock && judgeSmallShipTargetCount == targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
                 lastJudgeIsSmallShip = System.currentTimeMillis()

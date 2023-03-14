@@ -3,6 +3,7 @@ package com.nwq.function.scheduling.executer.star_wars
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SP
+import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -30,6 +31,9 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
         JsonUtil.anyToJsonObject(str) ?: mutableListOf<Int>()
     }
+    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
+    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
+
 
     suspend fun addPlanetaryTime() {
         click(constant.getTopMenuArea(3))
@@ -38,6 +42,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         click(constant.addTimeArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
+        resourcesAddTimeSp = System.currentTimeMillis()
         theOutCheck()
     }
 
@@ -46,11 +51,20 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             onComplete.invoke()
             return
         }
+        changeTrainShip()
+
         unloadingCargo()
         theOutCheck()
         click(constant.getTopMenuArea(3))
         selectEntryItem(nowCelestialCount, doubleClickInterval)
-        delay(doubleClickInterval)
+        delay(normalClickInterval)
+
+        click(constant.addTimeArea, doubleClickInterval)
+        takeScreen(doubleClickInterval)
+        ensureCloseDetermine()
+        resourcesAddTimeSp = System.currentTimeMillis()
+        delay(normalClickInterval)
+
         launchResources(list[nowCelestialCount], normalClickInterval)
         takeScreen(normalClickInterval)
         ensureCloseDetermine()
@@ -108,7 +122,9 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             }
             nowCelestialCount++
             if (nowCelestialCount >= list.size) {//结束了
+                resourcesCollectTimeSp = System.currentTimeMillis()
                 Timber.d("完成 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
+                SPRepo.lastBackSpaceStation = System.currentTimeMillis()
                 clickJumpCollectionAddress(warehouseIndex, false)
                 nowStep = MONITORING_RETURN_STATUS
             } else {
@@ -134,6 +150,24 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     }
 
 
+    suspend fun monitoringReturnStatus() {
+        takeScreen(quadrupleClickInterval * 2)
+        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
+            SPRepo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
+            if (!visual.isSailing()) {
+                clickJumpCollectionAddress(warehouseIndex, false)
+            }
+            return
+        } else if (visual.isInSpaceStation()) {
+            changeTrainShip()
+            delay(doubleClickInterval)
+            runSwitch = false //结束掉收菜
+        } else if (visual.isOpenBigMenu()) {
+            click(constant.closeBigMenuArea)
+        }
+    }
+
+
     private suspend fun selectEntryItem(position: Int, delayTime: Long = 0) {
         Timber.d("$position selectEntryItem HarvestVegetableController NWQ_ 2023/3/14");
         if (position < 5) {
@@ -154,4 +188,23 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         }
     }
 
+
+    //开始驾驶二号船 默认就只有二个船
+    suspend fun changeTrainShip() {
+        click(constant.getTopMenuArea(1))
+        delay(doubleClickInterval)
+
+        //点击机库
+        click(constant.jikuArea)
+        delay(doubleClickInterval)
+
+        //第二个船
+        click(constant.theTwoArea)
+        delay(doubleClickInterval)
+
+        //点击激活
+        click(constant.jiHuoArea)
+        delay(quadrupleClickInterval)
+        theOutCheck()
+    }
 }

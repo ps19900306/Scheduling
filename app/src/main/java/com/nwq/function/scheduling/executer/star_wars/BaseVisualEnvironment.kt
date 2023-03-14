@@ -73,7 +73,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
-        )
+        )&& hasPositionMenu()
     }
 
 
