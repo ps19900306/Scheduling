@@ -27,6 +27,8 @@ object SpConstant {
     const val WHOLE_BATTLE_LIST = "whole_battle_list"
     const val ROUND_BATTLE_LIST = "round_battle_list"
 
+    const val CELESTIAL_RESOURCES_LIST = "celestial_resources_list"
+
 
 
 }

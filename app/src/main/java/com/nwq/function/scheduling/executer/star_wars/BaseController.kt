@@ -10,6 +10,7 @@ import timber.log.Timber
 
 open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
 
+
     val prefixRole by lazy { SPRepo.role }
     protected val TopOfst = SpConstant.TopOfst//顶部的偏移量
     protected val BotOfst = SpConstant.BotOfst//底部的便宜量
@@ -28,7 +29,11 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
     }//是否护盾抗
 
     override suspend fun generalControlMethod() {
-
+//        while (runSwitch) {
+//            when (nowStep) {
+//
+//            }
+//        }
     }
 
 

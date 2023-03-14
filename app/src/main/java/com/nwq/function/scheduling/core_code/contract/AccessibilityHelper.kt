@@ -22,8 +22,9 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     var screenBitmap: Bitmap? = null
     val defultClickDuration
         get() = ((Math.random() * 0.5 + 0.5) * 300).toLong()
-     val defultClickDurationMeath
-         get() = {((Math.random() * 0.5 + 0.5) * 300).toLong()}
+    val defultClickDurationMeath
+        get() = { ((Math.random() * 0.5 + 0.5) * 300).toLong() }
+
     //这里跟新截图信息
     @RequiresApi(Build.VERSION_CODES.R)
     suspend fun takeScreen(): Bitmap? = suspendCoroutine {
@@ -80,7 +81,6 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     }
 
 
-
     suspend fun click(x: Float, y: Float, with: Int, height: Int, duration: Long) {
         val newX = (x + (Math.random() * 0.6 + 0.2) * with).toFloat()
         val newY = (y + (Math.random() * 0.6 + 0.2) * height).toFloat()
@@ -93,7 +93,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         ClickUtils.optClickTasks(acService, task)
     }
 
-    suspend fun click(area: List<Area>, delayTime: () -> Long =defultClickDurationMeath) {
+    suspend fun click(area: List<Area>, delayTime: () -> Long = defultClickDurationMeath) {
         val list = area.map {
             ClickTask(listOf(it.coordinate), delayTime.invoke(), defultClickDuration)
         }
@@ -131,6 +131,49 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     ) {
         val task = SlideScreenTask(x, y, with, height, direction, delayTime)
         ClickUtils.optSlideTask(acService, task)
+    }
+
+    suspend fun slideByLocation(
+        startX: Double,
+        startY: Double,
+        endX: Double,
+        endY: Double,
+        duration: Long,
+        delayTime: Long = 0
+    ) {
+        val startCoordinate = Coordinate(startX.toFloat(), startY.toFloat())
+        val endCoordinate = Coordinate(endX.toFloat(), endY.toFloat())
+        val task = ClickTask(listOf(startCoordinate, endCoordinate), delayTime, duration)
+        ClickUtils.optClickTasks(acService, task)
+    }
+
+    suspend fun slideByLocationMidpoint(
+        startX: Double,
+        startY: Double,
+        endX: Double,
+        endY: Double,
+        duration: Long,
+        delayTime: Long = 0,
+        midpointCount: Int = (Math.random() * 4).toInt()
+    ) {
+        val list = mutableListOf<Coordinate>()
+        val startCoordinate = Coordinate(startX.toFloat(), startY.toFloat())
+        list.add(startCoordinate)
+        if (midpointCount > 0) {
+            val xLength = endX - startX
+            val yLength = startY - endY
+            val xPercent = xLength / (midpointCount + 2)
+            val yPercent = yLength / (midpointCount + 2)
+            for (i in 0..midpointCount) {
+                val midX = xPercent * (i + 1) * (1 + Math.random() * 0.1)
+                val midY = yPercent * (i + 1) * (1 + Math.random() * 0.1)
+                list.add(Coordinate(midX.toFloat(), midY.toFloat()))
+            }
+        }
+        val endCoordinate = Coordinate(endX.toFloat(), endY.toFloat())
+        list.add(endCoordinate)
+        val task = ClickTask(listOf(startCoordinate, endCoordinate), delayTime, duration)
+        ClickUtils.optClickTasks(acService, task)
     }
 
 

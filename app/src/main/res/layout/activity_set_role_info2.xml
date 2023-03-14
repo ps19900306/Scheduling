@@ -7,15 +7,43 @@
     tools:context=".ui.SetRoleInfoActivity2">
 
 
+    <CheckBox
+        android:id="@+id/catchFoodCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="是否开启网子"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/pickupCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="是否拾取箱子"
+        app:layout_constraintBottom_toBottomOf="@+id/catchFoodCheckBox"
+        app:layout_constraintStart_toEndOf="@+id/catchFoodCheckBox"
+        app:layout_constraintTop_toTopOf="@+id/catchFoodCheckBox" />
+
+    <CheckBox
+        android:id="@+id/resistanceModeCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="是否是盾抗"
+        app:layout_constraintBottom_toBottomOf="@+id/pickupCheckTv"
+        app:layout_constraintStart_toEndOf="@+id/pickupCheckTv"
+        app:layout_constraintTop_toTopOf="@+id/pickupCheckTv" />
+
     <TextView
         android:id="@+id/baseLocationTitleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="36dp"
         android:text="基地位置"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/catchFoodCheckBox" />
 
     <EditText
         android:id="@+id/baseLocationEdit"
@@ -251,33 +279,45 @@
         app:layout_constraintStart_toEndOf="@+id/roundBattleBtn"
         app:layout_constraintTop_toTopOf="@+id/roundBattleBtn" />
 
-    <CheckBox
-        android:id="@+id/catchFoodCheckBox"
+    <TextView
+        android:id="@+id/celestialResourcesTitleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="是否开启网子"
+        android:layout_marginTop="36dp"
+        android:text="ListOn1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/roundBattleTitleTv" />
 
-    <CheckBox
-        android:id="@+id/pickupCheckTv"
+    <EditText
+        android:id="@+id/celestialResourcesEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="是否拾取箱子"
-        app:layout_constraintBottom_toBottomOf="@+id/catchFoodCheckBox"
-        app:layout_constraintStart_toEndOf="@+id/catchFoodCheckBox"
-        app:layout_constraintTop_toTopOf="@+id/catchFoodCheckBox" />
+        android:layout_marginStart="10dp"
+        android:hint="种菜位置"
+        android:inputType="number"
+        android:minWidth="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/celestialResourcesTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/celestialResourcesTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/celestialResourcesTitleTv" />
 
-    <CheckBox
-        android:id="@+id/resistanceModeCheckTv"
+    <Button
+        android:id="@+id/celestialResourcesBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="是否是盾抗"
-        app:layout_constraintBottom_toBottomOf="@+id/pickupCheckTv"
-        app:layout_constraintStart_toEndOf="@+id/pickupCheckTv"
-        app:layout_constraintTop_toTopOf="@+id/pickupCheckTv" />
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/celestialResourcesEdit"
+        app:layout_constraintStart_toEndOf="@+id/celestialResourcesEdit"
+        app:layout_constraintTop_toTopOf="@+id/celestialResourcesEdit" />
 
-
+    <Button
+        android:id="@+id/celestialResourcesClearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="清除"
+        app:layout_constraintBottom_toBottomOf="@+id/celestialResourcesBtn"
+        app:layout_constraintStart_toEndOf="@+id/celestialResourcesBtn"
+        app:layout_constraintTop_toTopOf="@+id/celestialResourcesBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

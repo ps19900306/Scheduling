@@ -36,7 +36,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
     var timeOnList3SP by SP(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
     var wholeBattleListSP by SP(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
     var roundBattleListSP by SP(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
-
+    var celestialResourcesSP by SP(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
     val list1: MutableList<Int> by lazy {
         JsonUtil.anyToJsonObject(timeOnList1SP) ?: mutableListOf()
     }
@@ -52,7 +52,9 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
     val roundList: MutableList<Int> by lazy {
         JsonUtil.anyToJsonObject(roundBattleListSP) ?: mutableListOf()
     }
-
+    val celestialResourcesList: MutableList<Int> by lazy {
+        JsonUtil.anyToJsonObject(celestialResourcesSP) ?: mutableListOf()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +76,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         }
         bind.baseLocationBtn.singleClick {
             bind.baseLocationEdit.text.toString().toIntOrNull()?.let {
-                baseLocationSP=it
+                baseLocationSP = it
             }
         }
         //111
@@ -153,6 +155,21 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
             roundBattleListSP = ""
             bind.roundBattleTitleTv.text = ""
         }
+        //celestialResources
+        bind.celestialResourcesBtn.singleClick {
+            bind.celestialResourcesEdit.text.toString().toIntOrNull()?.let {
+                if (!celestialResourcesList.contains(it)) {
+                    celestialResourcesList.add(it)
+                    celestialResourcesSP = JsonUtil.objectToString(celestialResourcesList)
+                    bind.celestialResourcesTitleTv.text = celestialResourcesSP
+                }
+            }
+        }
+        bind.celestialResourcesClearBtn.singleClick {
+            celestialResourcesList.clear()
+            celestialResourcesSP = ""
+            bind.celestialResourcesTitleTv.text = ""
+        }
     }
 
     fun initData() {
@@ -165,6 +182,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         bind.list3TitleTv.text = timeOnList3SP
         bind.wholeBattleTitleTv.text = wholeBattleListSP
         bind.roundBattleTitleTv.text = roundBattleListSP
+        bind.celestialResourcesTitleTv.text = celestialResourcesSP
     }
 
 }

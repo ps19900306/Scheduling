@@ -64,7 +64,7 @@ class BaseConstant {
     var warehouseSelectAllArea = Area(1714, 913, 170, 130)
     var warehouseMoveArea = Area(160, 180, 270, 63)
     var warehouseAllArea = Area(630, 200, 370, 70) //物品机库
-
+    var addTimeArea = Area(2113, 169, 73, 75)//增加时间的
 
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
@@ -83,6 +83,19 @@ class BaseConstant {
     }
 
     fun getAppArea(): Area {
-        return Area (82 + (APP_LOCATION_X - 1)* 254, 185 + (APP_LOCATION_Y - 1) * 291, 154, 153)
+        return Area(82 + (APP_LOCATION_X - 1) * 254, 185 + (APP_LOCATION_Y - 1) * 291, 154, 153)
     }
+
+
+    fun celestialBodyItem(position: Int): Area {
+        return if (position <= 3) {
+            Area(127, 261 + (position * 200), 419, 99)
+        } else if (position == 4) {
+            Area(129, 1010, 428, 70)
+        } else {
+            Area(129, 1010, 428, 70)
+        }
+    }
+
+
 }
