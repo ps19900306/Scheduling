@@ -1,4 +1,4 @@
-package com.nwq.function.scheduling.executer.fight
+package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
@@ -14,10 +14,10 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
     protected val TopOfst = SpConstant.TopOfst//顶部的偏移量
     protected val BotOfst = SpConstant.BotOfst//底部的便宜量
     protected val visual by lazy {
-        FightVisualEnvironment(helper)
+        BaseVisualEnvironment(helper)
     }
     protected val constant by lazy {
-        FightConstant()
+        BaseConstant()
     }
     protected val maintenanceDevicePosition = TopOfst + 1
     protected val weaponPosition = BotOfst + 3

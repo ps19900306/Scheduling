@@ -1,7 +1,6 @@
-package com.nwq.function.scheduling.executer.fight
+package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
-import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
@@ -108,8 +107,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
 
-
-
     /*******************************************************************
      *                        下面都是方法
      * *****************************************************************
@@ -118,12 +115,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         GlobalScope.launch {
             takeScreen(normalClickInterval)
             delay(2000)
-            helper.click(
-                (82 + (constant.APP_LOCATION_X - 1) * 254).toFloat(),
-                (185 + (constant.APP_LOCATION_Y - 1) * 291).toFloat(),
-                154,
-                153
-            )
+            click(constant.getAppArea())
             delay(doubleClickInterval * 2)
             generalControlMethod()
         }
@@ -593,8 +585,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
         return flag
     }
-
-
 
 
     //战斗开始时候需要开启的

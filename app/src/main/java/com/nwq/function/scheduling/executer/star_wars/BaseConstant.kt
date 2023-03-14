@@ -1,10 +1,10 @@
-package com.nwq.function.scheduling.executer.fight
+package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
 
-class FightConstant {
+class BaseConstant {
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
     val APP_LOCATION_X
         get() = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
@@ -80,5 +80,9 @@ class FightConstant {
 
     fun getTopMenuArea(index: Int): Area {
         return Area(102 + (index - 1) * 117, 140, 70, 70)
+    }
+
+    fun getAppArea(): Area {
+        return Area (82 + (APP_LOCATION_X - 1)* 254, 185 + (APP_LOCATION_Y - 1) * 291, 154, 153)
     }
 }

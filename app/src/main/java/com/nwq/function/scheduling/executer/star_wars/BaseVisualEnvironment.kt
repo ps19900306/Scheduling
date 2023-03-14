@@ -1,12 +1,10 @@
-package com.nwq.function.scheduling.executer.fight
+package com.nwq.function.scheduling.executer.star_wars
 
-import com.nwq.function.scheduling.core_code.Coordinate
-import com.nwq.function.scheduling.core_code.PixelsInfo
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.TwoPointTask
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
-import com.nwq.function.scheduling.executer.fight.rule.*
+import com.nwq.function.scheduling.executer.star_wars.rule.*
 import timber.log.Timber
 
 /**
@@ -16,7 +14,7 @@ Function description:
 所有需要进行图片判断的方法都需要放到这个里面
  */
 
-class FightVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(helper) {
+class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(helper) {
 
     //是否有全部锁定按钮
     fun hasGroupLock(): Boolean {

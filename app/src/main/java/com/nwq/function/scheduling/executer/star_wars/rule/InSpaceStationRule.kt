@@ -1,15 +1,15 @@
-package com.nwq.function.scheduling.executer.fight.rule
+package com.nwq.function.scheduling.executer.star_wars.rule
 
 import com.nwq.function.scheduling.core_code.img.ColorIdentificationRule
 
 /**
 create by: 86136
-create time: 2023/3/2 10:15
+create time: 2023/3/2 10:17
 Function description:
  */
 
-object AllOver200Rule : ColorIdentificationRule {
+object InSpaceStationRule : ColorIdentificationRule {
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        return red > 200 && blue > 200 && green > 200
+        return checkColor(listOf(160, 137, 35), red, green, blue)
     }
 }
