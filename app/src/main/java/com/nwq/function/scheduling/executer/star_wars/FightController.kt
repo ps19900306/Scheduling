@@ -118,7 +118,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
     var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
     val harvestVegetableController by lazy {
-        HarvestVegetableController(helper,{
+        HarvestVegetableController(helper, {
             true
         })
     }
@@ -181,7 +181,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 ABNORMAL_STATE -> {
                     abnormalStateRepair()
                 }
-                ALL_COMPLETE->{
+                ALL_COMPLETE -> {
                     onAllComplete()
                 }
                 EXIT_OPT -> {
@@ -192,8 +192,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
     }
 
-    private suspend  fun onAllComplete() {
-        if(openHarvestVegetablesSP){
+    private suspend fun onAllComplete() {
+        if (openHarvestVegetablesSP) {
             theOutCheck()
             if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesCollectTimeSp > constant.COLLECT_INTERVAL) {
                 harvestVegetableController.startCollectVegetables()
@@ -474,15 +474,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             needCheckOpenList.addAll(catchFoodList)
                         }
                         targetCount = nowTargetCount
-
-                    } else if (hasOpenCatch) {
+                    } else if (isAttackSmallShip()) {
+                        needCheckOpenList.addAll(catchFoodList)
+                        hasNewLock = false
+                    } else if (!hasNewLock) {
                         if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 2 && nowTargetCount >= targetCount)) {
                             targetReduceTime = System.currentTimeMillis()
                             needCheckOpenList.addAll(catchFoodList)
+                        } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount)) {
+                            targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
+                            needCheckOpenList.addAll(catchFoodList)
                         }
-                    } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount) || isAttackSmallShip()) {
-                        targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
-                        needCheckOpenList.addAll(catchFoodList)
                     }
                     //这里是为了一块检测
                     needCheckOpenList.addAll(wholeBattleOpenList)
