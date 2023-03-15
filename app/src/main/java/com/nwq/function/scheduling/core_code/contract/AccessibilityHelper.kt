@@ -5,6 +5,7 @@ import android.accessibilityservice.AccessibilityService.*
 import android.graphics.Bitmap
 import android.os.Build
 import android.view.Display
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
@@ -138,5 +139,9 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         task: ClickTask,
     ) {
         ClickUtils.optClickTasks(acService, task)
+    }
+
+    suspend fun getAccessibilityNodeInfo(): AccessibilityNodeInfo? {
+       return acService.getRootInActiveWindow()
     }
 }

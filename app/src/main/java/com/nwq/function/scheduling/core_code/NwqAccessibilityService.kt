@@ -11,6 +11,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.star_wars.FightController
 import com.nwq.function.scheduling.executer.star_wars.HarvestVegetableController
+import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SP
@@ -35,7 +36,13 @@ class NwqAccessibilityService : AccessibilityService() {
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                intent?.let { dealEvent(it) }
+                GlobalScope.launch {
+                    delay(6000)
+                    val task = ClickTestController(helper)
+                    list.add(task)
+                    task.randClickTest()
+                }
+                // intent?.let { dealEvent(it) }
             }
         }
     }

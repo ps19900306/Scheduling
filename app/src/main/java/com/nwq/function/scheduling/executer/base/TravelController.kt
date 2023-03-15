@@ -117,8 +117,8 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
     }
 
 
-    suspend fun click(x: Float, y: Float, delayTime: Long = 0) {
-        helper.click(x, y, delayTime)
+    suspend fun click(x: Float, y: Float, duration: Long = ((Math.random() + 0.5) * 300).toLong()) {
+        helper.click(x, y, duration)
     }
 
     suspend fun click(x: Float, y: Float, with: Int, height: Int) {
@@ -144,6 +144,8 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
         Timber.d("${JsonUtil.objectToString(task)} swipe TravelController NWQ_ 2023/3/14");
         helper.swipe(task)
     }
+
+
 
 
 }
