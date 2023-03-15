@@ -16,17 +16,20 @@ Function description:
 
 class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
 
-    private val WAIT_FOR_RESOURCE_LAUNCH = 0//等待资源发射
+    private val LAUNCH_RESOURCE_LAUNCH = 0//等待资源发射
     private val GO_TO_COLLECT_NAVIGATION_MONITORING = 2//收菜导航
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
 
     private var nowCelestialCount = 0
     private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
-    private var isDamage = false
+    private var hasLaunch = false
     val warehouseIndex by lazy {
         SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
     }
-
+    var resourcesBaseLocationSP by SP(
+        prefixRole + SpConstant.RESOURCES_BASE_LOCATION,
+        warehouseIndex
+    )//收菜的坐标
     val list by lazy {
         val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
         JsonUtil.anyToJsonObject(str) ?: mutableListOf<Int>()
@@ -47,12 +50,42 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     }
 
     suspend fun startCollectVegetables() {
+        theOutCheck()
+        takeScreen(normalClickInterval)
+        if (visual.isInSpaceStation()) {
+            launchAllVegetables()
+            nowStep = LAUNCH_RESOURCE_LAUNCH
+        } else {
+            clickJumpCollectionAddress(resourcesBaseLocationSP, false)
+            nowStep = MONITORING_RETURN_STATUS
+        }
+        generalControlMethod()
+    }
+
+
+    override suspend fun generalControlMethod() {
+        while (runSwitch) {
+            when (nowStep) {
+                LAUNCH_RESOURCE_LAUNCH -> {
+                    launchAllVegetables()
+                }
+                GO_TO_COLLECT_NAVIGATION_MONITORING -> {
+                    goCollectNavigationMonitoring()
+                }
+                MONITORING_RETURN_STATUS -> {
+                    monitoringReturnStatus()
+                }
+            }
+        }
+    }
+
+
+    private suspend fun launchAllVegetables() {
         if (list.isEmpty()) {
             onComplete.invoke()
             return
         }
         changeTrainShip()
-
         unloadingCargo()
         theOutCheck()
         click(constant.getTopMenuArea(3))
@@ -87,25 +120,16 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         ensureCloseDetermine()
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
-        generalControlMethod()
-    }
-
-    override suspend fun generalControlMethod() {
-        while (runSwitch) {
-            when (nowStep) {
-                GO_TO_COLLECT_NAVIGATION_MONITORING -> {
-                    goCollectNavigationMonitoring()
-                }
-                MONITORING_RETURN_STATUS -> {
-
-                }
-            }
-        }
+        hasLaunch = true
+        nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     }
 
 
-    suspend fun goCollectNavigationMonitoring() {
+    private suspend fun goCollectNavigationMonitoring() {
         takeScreen(quadrupleClickInterval)
+        if (visual.isInSpaceStation()) {
+            hasLaunch
+        }
         if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
             Timber.d(" 到底目的 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             if (visual.isShowCollectBtn()) {
@@ -125,7 +149,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 resourcesCollectTimeSp = System.currentTimeMillis()
                 Timber.d("完成 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
                 SPRepo.lastBackSpaceStation = System.currentTimeMillis()
-                clickJumpCollectionAddress(warehouseIndex, false)
+                clickJumpCollectionAddress(resourcesBaseLocationSP, false)
                 nowStep = MONITORING_RETURN_STATUS
             } else {
                 Timber.d("继续 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
@@ -136,32 +160,38 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 theOutCheck()
                 delay(doubleClickInterval)
                 click(constant.eraseWarningArea, normalClickInterval)
-
             }
         } else if (visual.isOpenEyesMenu() && visual.isOpenPositionMenu() && !visual.isSailing()) {//导航停止了
             Timber.d("导航停止了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             click(constant.eraseWarningArea)
         } else if (visual.isInSpaceStation() && visual.isOpenPositionMenu() && !visual.isSailing()) {//炸了
             Timber.d("//炸了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-            clickJumpCollectionAddress(warehouseIndex, false)
+            clickJumpCollectionAddress(resourcesBaseLocationSP, false)
             nowStep = MONITORING_RETURN_STATUS
-            isDamage = true
+
         }
     }
 
 
-    suspend fun monitoringReturnStatus() {
+    private suspend fun monitoringReturnStatus() {
         takeScreen(quadrupleClickInterval * 2)
         if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
             SPRepo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
             if (!visual.isSailing()) {
-                clickJumpCollectionAddress(warehouseIndex, false)
+                clickJumpCollectionAddress(resourcesBaseLocationSP, false)
             }
             return
         } else if (visual.isInSpaceStation()) {
-            changeTrainShip()
-            delay(doubleClickInterval)
-            runSwitch = false //结束掉收菜
+            if(hasLaunch){
+                unloadingCargo()
+                theOutCheck()
+                delay(normalClickInterval)
+                changeTrainShip()
+                delay(doubleClickInterval)
+                runSwitch = false //结束掉收菜
+            }else{
+                nowStep=LAUNCH_RESOURCE_LAUNCH
+            }
         } else if (visual.isOpenBigMenu()) {
             click(constant.closeBigMenuArea)
         }

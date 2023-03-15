@@ -1,5 +1,6 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import android.text.TextUtils
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SP
@@ -33,6 +34,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private val COMBAT_MONITORING = 6 //战斗监控阶段
     private val START_MONITORING_RETURN_STATUS = 7//返回空间站监听
     private val MONITORING_RETURN_STATUS = 8//返回空间站监听
+    private val ALL_COMPLETE = 9//返回空间站监听
     private val ABNORMAL_STATE = 1000 //异常状态
     private val EXIT_OPT = 10000 //异常状态
 
@@ -86,18 +88,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
         JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
     }
-    val resourcesList by lazy {
-        val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
-        JsonUtil.anyToJsonObject(str) ?: mutableListOf<Int>()
-    }
 
-    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
-    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
-    val harvestVegetableController by lazy {
-        HarvestVegetableController(helper, {
-            true
-        })
-    }
 
     // 默认是武器的
     var CombatStamp_1 = 0L
@@ -118,6 +109,19 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         else listOf<Int>()
     }
 
+    //这些是收菜的
+    val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
+        val isOpen = SP.getValue(prefixRole + SpConstant.OPEN_HARVEST_VEGETABLES, false)
+        val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
+        isOpen && !TextUtils.isEmpty(str)
+    }
+    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
+    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
+    val harvestVegetableController by lazy {
+        HarvestVegetableController(helper,{
+            true
+        })
+    }
 
     /*******************************************************************
      *                        下面都是方法
@@ -135,12 +139,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     suspend fun exitGame() {
         theOutCheck()
-        if (resourcesList.isNotEmpty() && System.currentTimeMillis() - resourcesCollectTimeSp > constant.COLLECT_INTERVAL) {
-            harvestVegetableController.startCollectVegetables()
-        } else {
-            harvestVegetableController.addPlanetaryTime()
-        }
-        delay(normalClickInterval)
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
         click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
@@ -183,12 +181,28 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 ABNORMAL_STATE -> {
                     abnormalStateRepair()
                 }
+                ALL_COMPLETE->{
+                    onAllComplete()
+                }
                 EXIT_OPT -> {
                     runSwitch = false
                     exitGame()
                 }
             }
         }
+    }
+
+    private suspend  fun onAllComplete() {
+        if(openHarvestVegetablesSP){
+            theOutCheck()
+            if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesCollectTimeSp > constant.COLLECT_INTERVAL) {
+                harvestVegetableController.startCollectVegetables()
+            } else {
+                harvestVegetableController.addPlanetaryTime()
+            }
+            delay(normalClickInterval)
+        }
+        nowStep = EXIT_OPT
     }
 
 
@@ -205,7 +219,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
-                if (resourcesList.isNotEmpty() && System.currentTimeMillis() - resourcesAddTimeSp > constant.ADD_INTERVAL) {
+                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > constant.ADD_INTERVAL) {
                     harvestVegetableController.addPlanetaryTime()
                 }
                 flag = false
@@ -217,7 +231,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     suspend fun pickUpTask() {
         if (mNumberOfTasksReceived <= 0) {
-            nowStep = EXIT_OPT
+            nowStep = ALL_COMPLETE
             return
         }
         takeScreen(2000)
@@ -258,7 +272,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         takeScreen(doubleClickInterval)
 
         if (visual.isCompleteAllTask()) {//全部的任务已经完成
-            nowStep = EXIT_OPT
+            nowStep = ALL_COMPLETE
             return
         }
 
@@ -715,7 +729,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 newLockAttackPosition = targetCount
                 return false
             } else {
-                if (newLockTargetCount == targetCount + 1 && newLockAttackPosition + 1 >= targetCount && position<newLockAttackPosition) {
+                if (newLockTargetCount == targetCount + 1 && newLockAttackPosition + 1 >= targetCount && position < newLockAttackPosition) {
                     Timber.d("position:$position result:锁定目标改变，且开始锁定为最大位置所以  isAttackSmallShip FightController NWQ_ 2023/3/11");
                     newLockAttackPosition = -100
                     return true

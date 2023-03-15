@@ -24,7 +24,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     val defultClickDuration
         get() = ((Math.random() * 0.5 + 0.5) * 300).toLong()
     val defultClickDurationMeath
-        get() = { ((Math.random() * 0.5 + 0.5) * 1000).toLong() }
+        get() = { ((Math.random() * 0.5 + 0.5) * 600).toLong() }
 
     //这里跟新截图信息
     @RequiresApi(Build.VERSION_CODES.R)

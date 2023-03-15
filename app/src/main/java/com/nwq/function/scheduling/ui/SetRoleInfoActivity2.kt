@@ -37,6 +37,10 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
     var wholeBattleListSP by SP(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
     var roundBattleListSP by SP(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
     var celestialResourcesSP by SP(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
+
+    var resourcesBaseLocationSP by SP(prefixRole + SpConstant.RESOURCES_BASE_LOCATION, 0)
+    var openHarvestVegetablesSP by SP(prefixRole + SpConstant.OPEN_HARVEST_VEGETABLES, false)
+
     val list1: MutableList<Int> by lazy {
         JsonUtil.anyToJsonObject(timeOnList1SP) ?: mutableListOf()
     }
@@ -76,6 +80,8 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         }
         bind.baseLocationBtn.singleClick {
             bind.baseLocationEdit.text.toString().toIntOrNull()?.let {
+                bind.baseLocationEdit.setText("")
+                bind.baseLocationTitleTv.setText("$it")
                 baseLocationSP = it
             }
         }
@@ -86,6 +92,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
                     list1.add(it)
                     timeOnList1SP = JsonUtil.objectToString(list1)
                     bind.list1TitleTv.text = timeOnList1SP
+                    bind.list1Edit.setText("")
                 }
             }
         }
@@ -102,6 +109,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
                     list2.add(it)
                     timeOnList2SP = JsonUtil.objectToString(list2)
                     bind.list2TitleTv.text = timeOnList2SP
+                    bind.list2Edit.setText("")
                 }
             }
         }
@@ -117,6 +125,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
                     list3.add(it)
                     timeOnList3SP = JsonUtil.objectToString(list3)
                     bind.list3TitleTv.text = timeOnList3SP
+                    bind.list3Edit.setText("")
                 }
             }
         }
@@ -132,6 +141,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
                     wholeList.add(it)
                     wholeBattleListSP = JsonUtil.objectToString(wholeList)
                     bind.wholeBattleTitleTv.text = wholeBattleListSP
+                    bind.wholeBattleEdit.setText("")
                 }
             }
         }
@@ -147,6 +157,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
                     roundList.add(it)
                     roundBattleListSP = JsonUtil.objectToString(roundList)
                     bind.roundBattleTitleTv.text = roundBattleListSP
+                    bind.roundBattleEdit.setText("")
                 }
             }
         }
@@ -161,6 +172,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
                 celestialResourcesList.add(it)
                 celestialResourcesSP = JsonUtil.objectToString(celestialResourcesList)
                 bind.celestialResourcesTitleTv.text = celestialResourcesSP
+                bind.celestialResourcesEdit.setText("")
             }
         }
         bind.celestialResourcesClearBtn.singleClick {
@@ -168,19 +180,34 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
             celestialResourcesSP = ""
             bind.celestialResourcesTitleTv.text = ""
         }
+
+        //设置收菜基地坐标
+        bind.resourceBaseLocationBtn.singleClick {
+            bind.resourceBaseLocationEdit.text.toString().toIntOrNull()?.let {
+                resourcesBaseLocationSP = it
+                bind.resourceBaseLocationEdit.setText("")
+                bind.resourceBaseLocationTitleTv.text = it.toString()
+            }
+        }
+
+        bind.resourceBaseCheckTv.singleClick {
+            openHarvestVegetablesSP = it.isChecked
+        }
     }
 
     fun initData() {
         bind.resistanceModeCheckTv.isChecked = resistanceModeSP
         bind.pickupCheckTv.isChecked = isPickupBoxSP
         bind.catchFoodCheckBox.isChecked = isCatchFoodSp
-        bind.baseLocationEdit.setText("$baseLocationSP")
+        bind.baseLocationTitleTv.text = "$baseLocationSP"
         bind.list1TitleTv.text = timeOnList1SP
         bind.list2TitleTv.text = timeOnList2SP
         bind.list3TitleTv.text = timeOnList3SP
         bind.wholeBattleTitleTv.text = wholeBattleListSP
         bind.roundBattleTitleTv.text = roundBattleListSP
         bind.celestialResourcesTitleTv.text = celestialResourcesSP
+        bind.resourceBaseLocationTitleTv.text = "$resourcesBaseLocationSP"
+        bind.resourceBaseCheckTv.isChecked = openHarvestVegetablesSP
     }
 
 }

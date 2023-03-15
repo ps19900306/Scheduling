@@ -61,7 +61,7 @@ class NwqAccessibilityService : AccessibilityService() {
             var lastTime1 = SP.getValue(nextRole + SpConstant.LAST_COMPLETE_TIME, 0L)
             if (TimeUtils.isNewTaskDay(lastTime1)) {
                 startOpt(true)
-            }else{
+            } else {
                 helper.pressHomeBtn()
             }
         }
@@ -70,12 +70,9 @@ class NwqAccessibilityService : AccessibilityService() {
 
 
     private fun startOpt(outGame: Boolean = false) {
+        //每次启动都刷新任务数目
         var count by SP(SPRepo.role + SpConstant.NUMBER_OF_TASKS_RECEIVED, 0)
-        var lastTime = SP.getValue(SPRepo.role + SpConstant.LAST_COMPLETE_TIME, 0L)
-        if (count == 0 && TimeUtils.isNewTaskDay(lastTime)) {
-            Timber.d("刷新任务数 ${SPRepo.role} startOpt NwqAccessibilityService NWQ_ 2023/3/13");
-            count = 50
-        }
+        count = 50
 
         list.forEach { it.close() }
         list.clear()

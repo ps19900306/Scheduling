@@ -320,4 +320,46 @@
         app:layout_constraintBottom_toBottomOf="@+id/celestialResourcesBtn"
         app:layout_constraintStart_toEndOf="@+id/celestialResourcesBtn"
         app:layout_constraintTop_toTopOf="@+id/celestialResourcesBtn" />
+
+    <TextView
+        android:id="@+id/resourceBaseLocationTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="坐标"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/celestialResourcesTitleTv" />
+
+    <EditText
+        android:id="@+id/resourceBaseLocationEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="收菜基地坐标"
+        android:inputType="number"
+        android:minWidth="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/resourceBaseLocationTitleTv"
+        app:layout_constraintStart_toEndOf="@+id/resourceBaseLocationTitleTv"
+        app:layout_constraintTop_toTopOf="@+id/resourceBaseLocationTitleTv" />
+
+    <Button
+        android:id="@+id/resourceBaseLocationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@+id/resourceBaseLocationEdit"
+        app:layout_constraintStart_toEndOf="@+id/resourceBaseLocationEdit"
+        app:layout_constraintTop_toTopOf="@+id/resourceBaseLocationEdit" />
+
+
+    <CheckBox
+        android:id="@+id/resourceBaseCheckTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启收菜"
+        app:layout_constraintBottom_toBottomOf="@+id/resourceBaseLocationBtn"
+        app:layout_constraintStart_toEndOf="@+id/resourceBaseLocationBtn"
+        app:layout_constraintTop_toTopOf="@+id/resourceBaseLocationBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
