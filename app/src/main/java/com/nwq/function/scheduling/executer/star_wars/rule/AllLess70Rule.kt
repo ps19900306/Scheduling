@@ -10,6 +10,8 @@ Function description:
 
 object AllLess70Rule : ColorIdentificationRule {
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        return red < 70 && blue < 70 && green < 70
+        val flag1 = red < 70 && blue < 70 && green < 70
+        val flag2 = red + blue + green < 150
+        return flag2 || flag1
     }
 }

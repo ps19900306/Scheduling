@@ -53,7 +53,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         theOutCheck()
         takeScreen(normalClickInterval)
         if (visual.isInSpaceStation()) {
-            launchAllVegetables()
             nowStep = LAUNCH_RESOURCE_LAUNCH
         } else {
             clickJumpCollectionAddress(resourcesBaseLocationSP, false)
@@ -161,7 +160,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 delay(doubleClickInterval)
                 click(constant.eraseWarningArea, normalClickInterval)
             }
-        } else if (visual.isOpenEyesMenu() && visual.isOpenPositionMenu() && !visual.isSailing()) {//导航停止了
+        } else if (visual.hasEyesMenu() && visual.isOpenPositionMenu() && !visual.isSailing()) {//导航停止了
             Timber.d("导航停止了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             click(constant.eraseWarningArea)
         } else if (visual.isInSpaceStation() && visual.isOpenPositionMenu() && !visual.isSailing()) {//炸了

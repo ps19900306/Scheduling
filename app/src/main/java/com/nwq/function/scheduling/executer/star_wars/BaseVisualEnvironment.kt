@@ -145,7 +145,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isCloseEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(2227, 605, AllLess50Rule),
+            verificationTask(2227, 605, AllLess70Rule),
             verificationTask(2218, 605, AllOver150Rule),
             verificationTask(2234, 605, AllOver150Rule),
         )
@@ -231,8 +231,8 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun isOpenPositionMenu(): Boolean {
         val list = listOf(
             verificationTask(490, 305, AllOver150Rule),
-            verificationTask(490, 291, AllLess90Rule),
-            verificationTask(490, 320, AllLess90Rule),
+            verificationTask(490, 291, AllLess80Rule),
+            verificationTask(490, 320, AllLess80Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -242,11 +242,11 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun isSailing(): Boolean {
         val list = listOf(
             verificationTask(490, 305, AllOver150Rule),
-            verificationTask(490, 291, AllLess90Rule),
-            verificationTask(490, 320, AllLess90Rule),
+            verificationTask(490, 291, AllLess80Rule),
+            verificationTask(490, 320, AllLess80Rule),
             verificationTask(127, 305, AllOver150Rule, 1),
             verificationTask(139, 305, AllOver150Rule, 1),
-            verificationTask(134, 305, AllLess90Rule, 1),
+            verificationTask(134, 305, AllLess80Rule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -258,8 +258,8 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun isClosePositionMenu(): Boolean {
         val list = listOf(
             verificationTask(135, 305, AllOver150Rule),
-            verificationTask(135, 291, AllLess90Rule),
-            verificationTask(135, 320, AllLess90Rule),
+            verificationTask(135, 291, AllLess80Rule),
+            verificationTask(135, 320, AllLess80Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
