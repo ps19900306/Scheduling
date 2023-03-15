@@ -36,13 +36,13 @@ class NwqAccessibilityService : AccessibilityService() {
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                GlobalScope.launch {
-                    delay(6000)
-                    val task = ClickTestController(helper)
-                    list.add(task)
-                    task.randClickTest()
-                }
-                // intent?.let { dealEvent(it) }
+//                GlobalScope.launch {
+//                    delay(6000)
+//                    val task = ClickTestController(helper)
+//                    list.add(task)
+//                    task.randClickTest()
+//                }
+                intent?.let { dealEvent(it) }
             }
         }
     }

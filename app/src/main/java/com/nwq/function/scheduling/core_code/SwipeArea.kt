@@ -23,8 +23,8 @@ data class SwipeArea(
             val xPercent = xLength / (midpointCount + 2)
             val yPercent = yLength / (midpointCount + 2)
             for (i in 0..midpointCount) {
-                val midX = startX + xPercent * (i + 1) + (Math.random() * 0.05 - 0.02) * xLength
-                val midY = startY + yPercent * (i + 1) + (Math.random() * 0.05 - 0.02) * yLength
+                val midX = startX + xPercent * (i + 1) + (Math.random() * 0.03 - 0.01) * xLength
+                val midY = startY + yPercent * (i + 1) + (Math.random() * 0.03 - 0.01) * yLength
                 list.add(Coordinate(midX.toFloat(), midY.toFloat()))
             }
         }
