@@ -20,8 +20,8 @@ class BaseConstant {
     var INTO_BATTLE_EXCEPTION = 3 * 60 * 1000L
     var MAX_BATTLE_TIME = 30 * 60 * 1000L
 
-    var COLLECT_INTERVAL = 52 * 60 * 1000L
-    var ADD_INTERVAL = 10 * 60 * 1000L
+    var COLLECT_INTERVAL = 52 * 60 * 60 * 1000L
+    var ADD_INTERVAL = 10 * 60 * 60 * 1000L
 
 
     var MenuArea = Area(84, 3, 198, 120)

@@ -659,7 +659,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
                 click(constant.leftDialogueArea, fastClickInterval)
-                hasClickConversation = true
                 flag = 2
             } else if (visual.hasRightDialogue()) {
                 Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
@@ -709,9 +708,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     suspend fun cancelTask() {
         Timber.d("取消任务 cancelTask FightController NWQ_ 2023/3/10");
-        click(constant.openTaskArea, normalClickInterval)
-        click(constant.cancelTaskArea, doubleClickInterval)
-        click(constant.dialogDetermineArea, doubleClickInterval)
+        click(constant.openTaskArea)
+        delay(normalClickInterval)
+        click(constant.cancelTaskArea)
+        delay(normalClickInterval)
+        click(constant.dialogDetermineArea)
+        delay(normalClickInterval)
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
     }
