@@ -70,15 +70,15 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     //后面这里由外部读取数据进行初始化
     private val wholeBattleOpenList by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(BotOfst + 2, TopOfst + 2)
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
     }
     private val roundBattleOpenList by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(BotOfst + 5, BotOfst + 6)
+        JsonUtil.anyToJsonObject(listStr) ?:  listOf<Int>()
     }
     private val timeOnOpenList1 by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf(TopOfst + 5, TopOfst + 6)
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
     }
     private val timeOnOpenList2 by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST2, "")
@@ -86,7 +86,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
     private val timeOnOpenList3 by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>(4 + TopOfst)
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
     }
 
 
