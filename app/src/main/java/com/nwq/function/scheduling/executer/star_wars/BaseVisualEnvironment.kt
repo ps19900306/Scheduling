@@ -145,7 +145,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isCloseEyesMenu(): Boolean {
         val list = listOf(
-            verificationTask(2227, 605, AllLess70Rule),
+            verificationTask(2227, 605, AllLess80Rule),
             verificationTask(2218, 605, AllOver150Rule),
             verificationTask(2234, 605, AllOver150Rule),
         )
@@ -181,7 +181,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         val list = listOf(
             verificationTask(1841, 606, AllOver150Rule),
             verificationTask(1870, 606, AllOver150Rule),
-            verificationTask(1862, 606, AllLess50Rule),
+            verificationTask(1862, 606, AllLess80Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
