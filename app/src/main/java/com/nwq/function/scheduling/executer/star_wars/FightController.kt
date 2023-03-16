@@ -288,6 +288,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     }
                 }
             }
+            neeForceRefresh=false
         } else if (needRefreshTask()) {
             click(constant.refreshTaskListArea)
             lastRefreshTimeSp = System.currentTimeMillis()
