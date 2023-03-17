@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SP
@@ -238,4 +239,61 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
             }
         }
     }
+
+
+    suspend fun ensureOpenLocalList() {
+        var flag = true
+        var count = 3
+        while (flag && count > 0) {
+            takeScreen(normalClickInterval)
+            if (visual.isOpenLocalList()) {
+                flag = false
+            } else if (visual.isOpenPositionMenu()) {
+                click(constant.closePositionArea)
+                delay(normalClickInterval)
+                click(constant.localListArea)
+                count--
+            } else {
+                click(constant.localListArea)
+                count--
+            }
+        }
+    }
+
+    suspend fun ensureCloseLocalList() {
+        var flag = true
+        var count = 3
+        while (flag && count > 0) {
+            takeScreen(normalClickInterval)
+            if (!visual.isOpenLocalList()) {
+                flag = false
+            } else if (visual.isOpenPositionMenu()) {
+                click(constant.closePositionArea)
+                delay(normalClickInterval)
+                click(constant.localListArea)
+                count--
+            } else {
+                click(constant.localListArea)
+                count--
+            }
+        }
+    }
+
+    var localOffsetX = 0
+    var localOffsetY = 0
+    suspend fun correctedCoordinate() {
+        visual.findPointByColor(
+            FindPointByColorTask(constant.localBaseX, 3, 0),
+            listOf(255, 255, 255)
+        )?.let {
+            localOffsetX = (it.x - constant.localBaseX.x).toInt()
+        }
+        visual.findPointByColor(
+            FindPointByColorTask(constant.localBaseY, 0, 3),
+            listOf(255, 255, 255)
+        )?.let {
+            localOffsetY = (it.y - constant.localBaseX.y).toInt()
+        }
+    }
+
 }

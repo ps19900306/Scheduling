@@ -11,8 +11,6 @@ Function description:
 
 data class FindPointByColorTask(
     val coordinate: Coordinate,
-    val colorRule: String,
-    val tolerance: Int = 0,
     val rangeX: Int = 0, //这个是为了范围取点
     val rangeY: Int = 0, //这个是为了范围取点
 ) {

@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.Area
+import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.SwipeArea
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
@@ -140,4 +141,10 @@ class BaseConstant {
         )
     }
 
+
+    //需要根据图片确认位置的
+    var closePositionArea = Area(1066, 207, 158, 114)//关闭
+    var localListArea = Area(2050, 320, 342, 110)//打开本地图标
+    val localBaseX=Coordinate(0,0)//用于修正X偏差度
+    val localBaseY=Coordinate(0,0)//用于修正Y偏差度
 }

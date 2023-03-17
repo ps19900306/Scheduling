@@ -13,29 +13,27 @@ object ImgUtils {
 
     //通过颜色去找颜色最接近的点
     fun findPointByColor(
-        data: FindPointByColorTask,
         bitmap: Bitmap,
+        data: FindPointByColorTask,
         colorRule: String,
-        tolerance: Int = 0
-    ): Coordinate {
+        tolerance: Int = 25,
+    ): Coordinate? {
         return findPointByColor(data.toPixelsInfo(), bitmap, colorRule, tolerance)
     }
 
     //通过颜色去找颜色最接近的点
     fun findPointByColor(
-        data: FindPointByColorTask,
         bitmap: Bitmap,
-        baseRed: Int,
-        baseBlue: Int,
-        baseGreen: Int,
-        tolerance: Int = 0
-    ): Coordinate {
+        data: FindPointByColorTask,
+        colorList: List<Int>,
+        tolerance: Int = 25,
+    ): Coordinate? {
         return findPointByColor(
             data.toPixelsInfo(),
             bitmap,
-            baseRed,
-            baseBlue,
-            baseGreen,
+            colorList[0],
+            colorList[1],
+            colorList[2],
             tolerance
         )
     }
@@ -222,7 +220,7 @@ object ImgUtils {
         bitmap: Bitmap,
         colorRule: String,
         tolerance: Int = 0
-    ): Coordinate {
+    ): Coordinate? {
         val baseColor = Color.parseColor(colorRule)
         val baseRed = Color.red(baseColor)
         val baseBlue = Color.blue(baseColor)
@@ -237,7 +235,7 @@ object ImgUtils {
         baseBlue: Int,
         baseGreen: Int,
         tolerance: Int = 0
-    ): Coordinate {
+    ): Coordinate?{
         val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
         bitmap.getPixels(
             pixels,
@@ -281,7 +279,7 @@ object ImgUtils {
                 Coordinate(pixelsInfo.startX.toFloat(), pixelsInfo.startY.toFloat())
             }
         } else {
-            Coordinate(pixelsInfo.startX.toFloat(), pixelsInfo.startY.toFloat())
+            null
         }
     }
 

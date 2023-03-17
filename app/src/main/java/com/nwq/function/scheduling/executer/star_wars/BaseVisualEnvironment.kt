@@ -1,6 +1,9 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import android.graphics.Bitmap
+import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.TwoPointTask
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
@@ -73,7 +76,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
-        )&& hasPositionMenu()
+        ) && hasPositionMenu()
     }
 
 
@@ -519,7 +522,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
 
     fun isShowCollectBtn(): Boolean {
-
         val list = listOf(
             verificationTask(785, 902, ShowCollectRule1),
             verificationTask(793, 970, ShowCollectRule1),
@@ -530,5 +532,49 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             list, screenBitmap, 0
         )
     }
+
+
+    //通过颜色去找颜色最接近的点
+    fun findPointByColor(
+        data: FindPointByColorTask,
+        colorRule: String,
+        tolerance: Int = 255,
+    ): Coordinate? {
+        return ImgUtils.findPointByColor(screenBitmap, data, colorRule, tolerance)
+    }
+
+    //通过颜色去找颜色最接近的点
+    fun findPointByColor(
+        data: FindPointByColorTask,
+        colorList: List<Int>,
+        tolerance: Int = 255,
+    ): Coordinate? {
+        return ImgUtils.findPointByColor(
+            screenBitmap,
+            data,
+            colorList,
+            tolerance
+        )
+    }
+
+
+    /********************************************************************************
+     * 这个不太确定是啥
+     */
+    fun isOpenLocalList(): Boolean {
+        val list = listOf(
+            verificationTask(850, 148, AllOver140Rule),
+            verificationTask(841, 157, AllLess50Rule),
+            verificationTask(846, 123, AllLess50Rule),
+            verificationTask(846, 181, AllLess50Rule),
+            verificationTask(817, 152, AllLess50Rule),
+            verificationTask(875, 152, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
 
 }
