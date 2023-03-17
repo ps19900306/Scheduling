@@ -138,6 +138,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             } else {
                 click(constant.collectButtonArea2, quadrupleClickInterval)
             }
+            lastCollectTime=System.currentTimeMillis()
             var flag = true
             while (flag) {
                 takeScreen(normalClickInterval)
