@@ -27,7 +27,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
      */
     private val DAMAGE = -100 //飞船已经损毁
     private val START_GAME = 0  //开始游戏
-    private val INTO_GAME = 1 //进入游戏
+
+    //  private val INTO_GAME = 1 //进入游戏
     private val PICK_UP_TASK = 2 //接取任务
     private val START_BATTLE_NAVIGATION_MONITORING = 4//战斗飞行导航监控
     private val BATTLE_NAVIGATION_MONITORING = 5//战斗飞行导航监控
@@ -56,7 +57,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     /**
      * 这个是控制变量
      */
-    private var nowStep = INTO_GAME
+    private var nowStep = START_GAME
     var needCancel = false
     var neeForceRefresh = false
     var needBackStation = false
@@ -74,7 +75,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
     private val roundBattleOpenList by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
-        JsonUtil.anyToJsonObject(listStr) ?:  listOf<Int>()
+        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
     }
     private val timeOnOpenList1 by lazy {
         val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
@@ -109,35 +110,24 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         else listOf<Int>()
     }
 
-    //这些是收菜的
-    val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
-        val isOpen = SP.getValue(prefixRole + SpConstant.OPEN_HARVEST_VEGETABLES, false)
-        val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
-        isOpen && !TextUtils.isEmpty(str)
-    }
-    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
-    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
-    val harvestVegetableController by lazy {
-        HarvestVegetableController(helper, {
-            true
-        })
-    }
 
     /*******************************************************************
      *                        下面都是方法
      * *****************************************************************
      */
-    fun startGame() {
-        GlobalScope.launch {
-            takeScreen(normalClickInterval)
-            delay(2000)
-            click(constant.getAppArea())
-            delay(doubleClickInterval * 2)
-            generalControlMethod()
-        }
+    private suspend fun startGame() {
+        mNumberOfTasksReceived = 50
+        takeScreen(normalClickInterval)
+        delay(2000)
+        click(constant.getAppArea())
+        delay(doubleClickInterval * 2)
+        generalControlMethod()
+        intoGame()
+        nowStep = PICK_UP_TASK
+
     }
 
-    suspend fun exitGame() {
+    private suspend fun exitGame() {
         theOutCheck()
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
@@ -153,9 +143,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             when (nowStep) {
                 START_GAME -> {
                     startGame()
-                }
-                INTO_GAME -> {
-                    intoGame()
                 }
                 PICK_UP_TASK -> {
                     pickUpTask()
@@ -206,30 +193,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
 
-    suspend fun intoGame() {
-        var flag = true
-        do {
-            takeScreen(doubleClickInterval)
-            if (visual.showAnnouncement()) {
-                click(constant.closeAnnouncementArea)
-            } else if (visual.readStartGame()) {
-                click(constant.startGameArea)
-            } else if (visual.selectRole()) {
-                click(constant.selectRoleArea)
-            } else if (visual.isOpenBigMenu()) {
-                click(constant.closeBigMenuArea)
-            } else if (visual.hasIntoGame()) {
-                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > constant.ADD_INTERVAL) {
-                    harvestVegetableController.addPlanetaryTime()
-                }
-                flag = false
-                nowStep = PICK_UP_TASK
-            }
-        } while (flag)
-    }
-
-
-    suspend fun pickUpTask() {
+    private suspend fun pickUpTask() {
         if (mNumberOfTasksReceived <= 0) {
             nowStep = ALL_COMPLETE
             return
@@ -288,7 +252,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     }
                 }
             }
-            neeForceRefresh=false
+            neeForceRefresh = false
         } else if (needRefreshTask()) {
             click(constant.refreshTaskListArea)
             lastRefreshTimeSp = System.currentTimeMillis()
@@ -342,7 +306,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
     }
 
-    suspend fun startNavigationMonitoring() {
+    private suspend fun startNavigationMonitoring() {
         takeScreen(quadrupleClickInterval)
         if (visual.isShowDetermine()) {
             Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
@@ -379,7 +343,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var hasNewLock = false
     var useUnlock = true //是否使用右上角的未锁定数进行锁定
     var hasOpenCatch = false
-    suspend fun combatMonitoring() {
+    private suspend fun combatMonitoring() {
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
             nowStep = ABNORMAL_STATE
             Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
@@ -549,7 +513,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
-    suspend fun monitoringReturnStatus() {
+    private suspend fun monitoringReturnStatus() {
         takeScreen(quadrupleClickInterval * 2)
         if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
             if (visual.isSailing()) {
@@ -575,7 +539,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
 
-    fun checkTimingOnList(needCheckOpenList: MutableList<Int>) {
+    private fun checkTimingOnList(needCheckOpenList: MutableList<Int>) {
         if (targetCount <= 1) {
             Timber.d("目标是 checkTimingOnList FightController NWQ_ 2023/3/10");
             return
@@ -602,7 +566,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
 
-    fun checkTimeOn(
+    private fun checkTimeOn(
         list: List<Int>,
         nowtime: Long,
         lastTime: Long,
@@ -629,12 +593,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
 
     //战斗开始时候需要开启的
-    suspend fun openDecelerationNet() {
+    private suspend fun openDecelerationNet() {
         clickEquipArray(openCheckEquipTimes(2, catchFoodList))
     }
 
     //战斗开始时候需要开启的
-    suspend fun openTheWholeBattle() {
+    private suspend fun openTheWholeBattle() {
         if (isPickupBox) {
             clickEquipArray(
                 openCheckEquipTimes(
@@ -649,7 +613,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
 
     //pickUp 是否是接取任务
-    suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
+    private suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
         var hasClickConversation = false
         var rightClickTimes = 0
         var flag = 2
@@ -707,7 +671,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
     }
 
-    suspend fun cancelTask() {
+    private suspend fun cancelTask() {
         Timber.d("取消任务 cancelTask FightController NWQ_ 2023/3/10");
         click(constant.openTaskArea)
         delay(normalClickInterval)
@@ -725,7 +689,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     var newLockAttackPosition = 0
     var newLockTargetCount = 0
-    fun isAttackSmallShip(): Boolean {
+    private fun isAttackSmallShip(): Boolean {
         if (targetCount <= 0) return false
         var position = getNowAttackPosition()
         if (position > 0) {
@@ -758,7 +722,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
     }
 
-    fun getNowAttackPosition(): Int {
+    private fun getNowAttackPosition(): Int {
         for (index in targetCount - 1 downTo 0) {
             if (visual.judgeNowAttackPosition(index)) {
                 return index
@@ -767,7 +731,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         return -1
     }
 
-    suspend fun abnormalStateRepair() {
+    private suspend fun abnormalStateRepair() {
         Timber.d("abnormalStateRepair FightController NWQ_ 2023/3/10");
         theOutCheck()
         needCancel = true
@@ -780,7 +744,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
 
     //战斗开始时候需要开启的
-    fun closeTheWholeBattle() {
+    private fun closeTheWholeBattle() {
         mEnterCombatStatus = false
         useUnlock = true
         DESTROY_INTERVAL = 50 * 1000

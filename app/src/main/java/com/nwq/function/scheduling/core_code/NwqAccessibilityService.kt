@@ -55,8 +55,6 @@ class NwqAccessibilityService : AccessibilityService() {
         val nowRole = SPRepo.role
         var lastTime by SP(nowRole + SpConstant.LAST_COMPLETE_TIME, 0L)
         lastTime = System.currentTimeMillis()
-        var count by SP(nowRole + SpConstant.NUMBER_OF_TASKS_RECEIVED, 0)
-        count = 0
         Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
         if (SPRepo.continueToTheNext) {
             val nextRole = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
@@ -78,9 +76,6 @@ class NwqAccessibilityService : AccessibilityService() {
 
     private fun startOpt(outGame: Boolean = false) {
         //每次启动都刷新任务数目
-        var count by SP(SPRepo.role + SpConstant.NUMBER_OF_TASKS_RECEIVED, 0)
-        count = 50
-
         list.forEach { it.close() }
         list.clear()
         if (outGame) {
@@ -91,7 +86,7 @@ class NwqAccessibilityService : AccessibilityService() {
             helper.pressHomeBtn()
         }
         val fight = FightController(helper, onCompleteLister)
-        fight.startGame()
+        fight.startOperation()
         list.add(fight)
     }
 

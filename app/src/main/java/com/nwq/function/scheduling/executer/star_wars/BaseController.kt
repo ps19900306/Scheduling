@@ -1,5 +1,6 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import android.text.TextUtils
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.executer.base.TravelController
@@ -30,12 +31,49 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
         SP.getValue(prefixRole + SpConstant.CRESISTANCE_MODE, false)
     }//是否护盾抗
 
+    //这些是收菜的
+    val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
+        val isOpen = SP.getValue(prefixRole + SpConstant.OPEN_HARVEST_VEGETABLES, false)
+        val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
+        isOpen && !TextUtils.isEmpty(str)
+    }
+    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
+    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
+    val harvestVegetableController by lazy {
+        HarvestVegetableController(helper, {
+            true
+        })
+    }
+
     override suspend fun generalControlMethod() {
 //        while (runSwitch) {
 //            when (nowStep) {
 //
 //            }
 //        }
+    }
+
+
+    //这个是
+    suspend fun intoGame() {
+        var flag = true
+        do {
+            takeScreen(doubleClickInterval)
+            if (visual.showAnnouncement()) {
+                click(constant.closeAnnouncementArea)
+            } else if (visual.readStartGame()) {
+                click(constant.startGameArea)
+            } else if (visual.selectRole()) {
+                click(constant.selectRoleArea)
+            } else if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+            } else if (visual.hasIntoGame()) {
+                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > constant.ADD_INTERVAL) {
+                    harvestVegetableController.addPlanetaryTime()
+                }
+                flag = false
+            }
+        } while (flag)
     }
 
 
