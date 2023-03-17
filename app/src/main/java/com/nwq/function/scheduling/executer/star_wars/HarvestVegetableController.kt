@@ -33,9 +33,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
         JsonUtil.anyToJsonObject(str) ?: mutableListOf<Int>()
     }
-    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
-    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
-
 
     suspend fun addPlanetaryTime() {
         click(constant.getTopMenuArea(3))

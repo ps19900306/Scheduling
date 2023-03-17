@@ -37,6 +37,7 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
         val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
         isOpen && !TextUtils.isEmpty(str)
     }
+
     var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
     var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
     val harvestVegetableController by lazy {
@@ -44,7 +45,6 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
             true
         })
     }
-
     override suspend fun generalControlMethod() {
 //        while (runSwitch) {
 //            when (nowStep) {
