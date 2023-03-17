@@ -27,8 +27,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
     }
     var resourcesBaseLocationSP by SP(
-        prefixRole + SpConstant.RESOURCES_BASE_LOCATION,
-        warehouseIndex
+        prefixRole + SpConstant.RESOURCES_BASE_LOCATION, warehouseIndex
     )//收菜的坐标
     val list by lazy {
         val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
@@ -120,16 +119,19 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
         hasLaunch = true
+        lastCollectTime = System.currentTimeMillis()
         nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     }
 
+
+    var lastCollectTime = 0L
 
     private suspend fun goCollectNavigationMonitoring() {
         takeScreen(quadrupleClickInterval)
         if (visual.isInSpaceStation()) {
             hasLaunch
         }
-        if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
+        if (System.currentTimeMillis() - lastCollectTime > 10 * 60 * 1000 || (visual.isClosePositionMenu() && visual.hasEyesMenu())) {
             Timber.d(" 到底目的 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             if (visual.isShowCollectBtn()) {
                 click(constant.collectButtonArea1, doubleClickInterval)
@@ -160,7 +162,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 delay(doubleClickInterval)
                 click(constant.eraseWarningArea, normalClickInterval)
             }
-        } else if (visual.hasEyesMenu() && visual.isOpenPositionMenu() && !visual.isSailing()) {//导航停止了
+        } else if (visual.hasEyesMenu() && visual.isOpenPositionMenu() && !visual.isSailing() && !visual.isInSpaceStation()) {//导航停止了
             Timber.d("导航停止了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             click(constant.eraseWarningArea)
         } else if (visual.isInSpaceStation() && visual.isOpenPositionMenu() && !visual.isSailing()) {//炸了
@@ -181,15 +183,15 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             }
             return
         } else if (visual.isInSpaceStation()) {
-            if(hasLaunch){
+            if (hasLaunch) {
                 unloadingCargo()
                 theOutCheck()
                 delay(normalClickInterval)
                 changeTrainShip()
                 delay(doubleClickInterval)
                 runSwitch = false //结束掉收菜
-            }else{
-                nowStep=LAUNCH_RESOURCE_LAUNCH
+            } else {
+                nowStep = LAUNCH_RESOURCE_LAUNCH
             }
         } else if (visual.isOpenBigMenu()) {
             click(constant.closeBigMenuArea)
