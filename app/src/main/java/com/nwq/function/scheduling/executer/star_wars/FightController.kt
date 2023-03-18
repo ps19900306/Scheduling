@@ -616,7 +616,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
         var hasClickConversation = false
         var rightClickTimes = 0
-        var flag = 2
+        var count = if (pickUp) {
+            10
+        } else {
+            2
+        }
+        var flag = count
+
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0) {
             takeScreen(normalClickInterval)
@@ -624,12 +630,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
                 click(constant.leftDialogueArea, fastClickInterval)
-                flag = 2
+                flag = count
             } else if (visual.hasRightDialogue()) {
                 Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.rightDialogueArea)
                 rightClickTimes++
-                flag = 2
+                count = 10
+                flag = count
             } else if (visual.isShowDetermine()) {
                 Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
                 if (needCancel || (rightClickTimes >= 1 && !receiveAdvancedTasks)) {
