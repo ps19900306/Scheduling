@@ -147,4 +147,5 @@ class BaseConstant {
     var localListArea = Area(2050, 320, 342, 110)//打开本地图标
     val localBaseX=Coordinate(0,0)//用于修正X偏差度
     val localBaseY=Coordinate(0,0)//用于修正Y偏差度
+    var openEyeMenuArea = Area(2050, 320, 342, 110)//打开本地图标
 }

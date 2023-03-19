@@ -34,6 +34,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         JsonUtil.anyToJsonObject(str) ?: mutableListOf<Int>()
     }
 
+
+
     suspend fun addPlanetaryTime() {
         click(constant.getTopMenuArea(3))
         delay(doubleClickInterval)
@@ -167,7 +169,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             Timber.d("//炸了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             clickJumpCollectionAddress(resourcesBaseLocationSP, false)
             nowStep = MONITORING_RETURN_STATUS
-
         }
     }
 

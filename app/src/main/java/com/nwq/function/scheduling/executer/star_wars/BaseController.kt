@@ -11,7 +11,7 @@ import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
-open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
+abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
 
 
     val prefixRole by lazy { SPRepo.role }
@@ -37,20 +37,12 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
         val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
         isOpen && !TextUtils.isEmpty(str)
     }
-
     var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
     var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
     val harvestVegetableController by lazy {
         HarvestVegetableController(helper, {
             true
         })
-    }
-    override suspend fun generalControlMethod() {
-//        while (runSwitch) {
-//            when (nowStep) {
-//
-//            }
-//        }
     }
 
 
@@ -73,7 +65,7 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
                 }
                 flag = false
             }
-        } while (flag)
+        } while (flag && runSwitch)
     }
 
 
@@ -180,10 +172,15 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
     }
 
     //卸载货物
-    suspend fun unloadingCargo() {
+    suspend fun unloadingCargo(normal: Boolean = true) {
         click(constant.getTopMenuArea(1))
         delay(tripleClickInterval)
-        click(constant.generalWarehouseArea)
+
+        if (normal)
+            click(constant.generalWarehouseArea)
+        else
+            click(constant.mineralWarehouseArea)
+
         delay(doubleClickInterval)
         takeScreen()
         if (visual.isEmptyWarehouse()) {
@@ -208,7 +205,7 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
 
     suspend fun ensureOpenPositionMenu() {
         var flag = 3
-        while (!visual.hasPositionMenu() && flag > 0) {
+        while (!visual.hasPositionMenu() && flag > 0 && runSwitch) {
             click(constant.eraseWarningArea)
             takeScreen(doubleClickInterval)
         }
@@ -219,11 +216,21 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
         }
     }
 
+    suspend fun ensureOpenEyeMenu() {
+        if (!visual.hasEyesMenu()) {
+            theOutCheck()
+        }
+        if (visual.isCloseEyesMenu()) {
+            click(constant.openEyeMenuArea, normalClickInterval)
+        }
+    }
+
+
     suspend fun theOutCheck() {
         Timber.d("  theOutCheck FightController NWQ_ 2023/3/12");
         var flag = true
         var count = 20
-        while (flag) {
+        while (flag && runSwitch) {
             takeScreen(doubleClickInterval)
             if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
@@ -282,7 +289,7 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
     suspend fun ensureOpenLocalList() {
         var flag = true
         var count = 3
-        while (flag && count > 0) {
+        while (flag && count > 0 && runSwitch) {
             takeScreen(normalClickInterval)
             if (visual.isOpenLocalList()) {
                 flag = false
@@ -301,7 +308,7 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
     suspend fun ensureCloseLocalList() {
         var flag = true
         var count = 3
-        while (flag && count > 0) {
+        while (flag && count > 0 && runSwitch) {
             takeScreen(normalClickInterval)
             if (!visual.isOpenLocalList()) {
                 flag = false
@@ -319,19 +326,25 @@ open class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelCont
 
     var localOffsetX = 0
     var localOffsetY = 0
-    suspend fun correctedCoordinate() {
+    suspend fun correctedCoordinate(): Boolean {
+        var hasModifyX = false
         visual.findPointByColor(
             FindPointByColorTask(constant.localBaseX, 3, 0),
             listOf(255, 255, 255)
         )?.let {
+            hasModifyX = true
             localOffsetX = (it.x - constant.localBaseX.x).toInt()
         }
+        var hasModifyY = false
         visual.findPointByColor(
             FindPointByColorTask(constant.localBaseY, 0, 3),
             listOf(255, 255, 255)
         )?.let {
+            hasModifyY = true
             localOffsetY = (it.y - constant.localBaseX.y).toInt()
         }
+        Timber.d("hasModifyX:$hasModifyX hasModifyY:$hasModifyY  correctedCoordinate BaseController NWQ_ 2023/3/19");
+        return hasModifyX && hasModifyY
     }
 
 }
