@@ -572,6 +572,17 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
+    fun checkOneHostile(position: Int, offsetX: Int, offsetY: Int): Int {
+        val list = listOf(
+            verificationTask(566+124*position+offsetX, 720, AllOver140Rule, 1),
+            verificationTask(572+124*position, 726, AllOver140Rule, 1),
+            verificationTask(578+124*position, 721, AllOver140Rule, 1),
+            verificationTask(573+124*position, 705, AllOver140Rule, 1),
+            verificationTask(566+124*position, 711, AllOver140Rule, 1),
+        )
+
+        return 0
+    }
 
 
 }
