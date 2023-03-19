@@ -139,11 +139,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     //确保存在眼睛菜单
     fun hasEyesMenu(): Boolean {
-        if (isCloseEyesMenu() || isOpenEyesMenu()) {
-            return true
-        } else { //这个就是说不存在菜单则以此判断为不再太空
-            return false
-        }
+        return isCloseEyesMenu() || isOpenEyesMenu()
     }
 
     fun isCloseEyesMenu(): Boolean {
@@ -574,6 +570,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             list, screenBitmap, 0
         )
     }
+
 
 
 

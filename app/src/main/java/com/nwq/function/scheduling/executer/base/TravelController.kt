@@ -136,6 +136,18 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
         helper.slide(x, y, with, height, direction, delayTime)
     }
 
+    suspend fun slide(
+        x: Int,
+        y: Int,
+        with: Int,
+        height: Int,
+        @DirectionType direction: Int,
+        delayTime: Long = 0
+    ) {
+        helper.slide(x.toFloat(), y.toFloat(), with, height, direction, delayTime)
+    }
+
+
     suspend fun swipe(
         swipeArea: SwipeArea,
         midPoint:Int=0

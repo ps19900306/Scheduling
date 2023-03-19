@@ -169,7 +169,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             Timber.d("//炸了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             clickJumpCollectionAddress(resourcesBaseLocationSP, false)
             nowStep = MONITORING_RETURN_STATUS
-
         }
     }
 

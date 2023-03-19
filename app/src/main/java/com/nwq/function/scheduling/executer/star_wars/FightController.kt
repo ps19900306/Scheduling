@@ -121,10 +121,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
-        generalControlMethod()
         intoGame()
         nowStep = PICK_UP_TASK
-
     }
 
     private suspend fun exitGame() {
@@ -459,7 +457,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         needCheckOpenList.add(pickUpPosition)
 
                     //打开定时开启的
-                    checkTimingOnList(needCheckOpenList)
+                        checkTimingOnList(needCheckOpenList)
 
                     //这个是判断是否需要开关维修
                     bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
@@ -624,7 +622,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var flag = count
 
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
-        while (flag > 0) {
+        while (flag > 0&& runSwitch) {
             takeScreen(normalClickInterval)
             if (visual.hasLeftDialogue()) {
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
