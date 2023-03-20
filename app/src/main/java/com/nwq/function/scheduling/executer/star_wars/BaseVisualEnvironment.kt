@@ -1,6 +1,5 @@
 package com.nwq.function.scheduling.executer.star_wars
 
-import android.graphics.Bitmap
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
@@ -569,12 +568,14 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    fun isSafeInList(localOffsetX: Int, localOffsetY: Int): Boolean {
+    //是否危险的
+    fun isDangerous(localOffsetX: Int, localOffsetY: Int): Boolean {
         return !(discoverEnemyList(0, localOffsetX, localOffsetY)
                 || discoverEnemyList(1, localOffsetX, localOffsetY)
                 || discoverEnemyList(2, localOffsetX, localOffsetY))
     }
 
+    //是否发现敌人 ，发现返回TRUE
     fun discoverEnemyList(Index: Int, offsetX: Int, YOffset: Int): Boolean {
         val XOffset = Index * 124 + offsetX
         val list = listOf(
@@ -590,4 +591,42 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
+    fun getOreTargetNumber(): Int {
+        var number = -1
+        for (i in 4 downTo 0) {
+            if (hasTarget(i)) {
+                number = i + 1
+                Timber.d("$number getMiniTarget FightVisualEnvironment NWQ_ 2023/3/11");
+                return number
+            }
+        }
+        Timber.d("$number getMiniTarget FightVisualEnvironment NWQ_ 2023/3/11");
+        return number
+    }
+
+    //是否具有开采的行星目标 这个判断是资源条(从右边数第一个)
+    //判断是否存在一个黑圈 通过色差判定
+    fun hasOreTarget(index: Int): Boolean {
+        return true
+    }
+
+    //右侧菜单是否有条目
+    fun hasEyeItem(): Boolean {
+        return true
+    }
+
+    //需要根据图片确认位置的
+    val REMOTE_PLANETARY_GROUP = 801 //远端行星群
+    val RESOURCE_PLANET = 802 //资源行星
+    val CURRENT_PLANETARY_GROUP = 803 //当前行星群
+    val MENU_NOT_OPEN = 804 //未点开的状态
+    fun judeResourceType(position: Int): Int {
+        return REMOTE_PLANETARY_GROUP
+    }
+
+
+    //判断资源条目是否已经到了顶部
+    fun IsTheResourceNotTop(): Boolean {
+        return true
+    }
 }

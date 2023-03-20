@@ -8,6 +8,7 @@ import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
+import timber.log.Timber
 import java.util.Date
 
 /**
@@ -24,8 +25,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private val WAIT_FOR_SAFE = 2//安全等待期
     private val OUT_SPAE = 3 //出空间站
     private val LOOKING_FOR_PLANETARY_GROUPS = 4//寻找资源行星
-    private val GO_TO_COLLECT_NAVIGATION_MONITORING = 4//战斗飞行导航监控
-    private val Mining_MONITORING = 5//采矿监控期间
+    private val MINING_MONITORING = 5//采矿监控期间
 
 
     private val ABNORMAL_STATE = 1000 //异常状态
@@ -90,75 +90,14 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 OUT_SPAE -> {
                     outSpace()
                 }
-
-            }
-        }
-    }
-
-
-    private suspend fun outSpace() {
-        click(constant.outSpaceArea)
-        var cout = 10
-        var flag = true
-        while (flag && runSwitch && cout > 0) {
-            takeScreen(doubleClickInterval)
-            if (visual.hasEyesMenu() && visual.hasPositionMenu()) {
-                flag = false
-            } else if (cout == 5 && visual.isInSpaceStation()) {
-                click(constant.outSpaceArea)
-            } else if (cout == 1) {
-                nowStep = EXIT_OPT
-            }
-        }
-    }
-
-    var lastSafeTime = 0L
-    var LastDangerousTime = 0L
-    var lastIsSafe = true
-    private suspend fun waitForSafe() {
-        //先打开本地保证数据是正确的
-        ensureOpenLocalList()
-        //修正数据
-        if (!hasCorrected) {
-            if (correctedCoordinate()) {
-                hasCorrected = true
-            } else {
-                slide(
-                    screenBitmap.width / 2 - 50,
-                    screenBitmap.height / 2 - 50,
-                    150,
-                    100,
-                    DirectionType.RIGHT
-                )
-                if (!correctedCoordinate()) {
-                    nowStep = EXIT_OPT
-                    return
+                LOOKING_FOR_PLANETARY_GROUPS -> {
+                    lookingForMineralStars()
+                }
+                MINING_MONITORING -> {
+                    monitoringDuringMining()
                 }
             }
         }
-
-
-        takeScreen(normalClickInterval)
-        val nowIsSafe = visual.isSafeInList(localOffsetX, localOffsetY)
-        if (nowIsSafe == true && lastIsSafe == true) {
-            if (System.currentTimeMillis() - lastSafeTime > getWaitTime()) {
-                nowStep = OUT_SPAE
-                waitTime = 0L
-            }
-        } else if (nowIsSafe == true && lastIsSafe != true) {
-            lastSafeTime = System.currentTimeMillis()
-        } else if (nowIsSafe != true && lastIsSafe == true) {
-            LastDangerousTime = System.currentTimeMillis()
-        }
-        lastIsSafe = nowIsSafe
-    }
-
-    var waitTime = 0L
-    fun getWaitTime(): Long {
-        if (waitTime == 0L) {
-            waitTime = ((Math.random() * 20 + 10) * 60 * 1000L).toLong()
-        }
-        return waitTime
     }
 
     private suspend fun startGame() {
@@ -176,6 +115,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             nowStep = MONITORING_RETURN_STATUS
         }
     }
+
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     private suspend fun monitoringReturnStatus() {
@@ -204,6 +144,180 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             count--
         }
     }
+
+
+    var lastSafeTime = 0L
+    var LastDangerousTime = 0L
+    var lastIsSafe = true
+    private suspend fun waitForSafe() {
+        //先打开本地保证数据是正确的
+        ensureOpenLocalList()
+        //修正数据
+        if (!hasCorrected) {
+            if (correctedCoordinate()) {
+                hasCorrected = true
+            } else {
+                slide(
+                    screenBitmap.width / 2 - 50,
+                    screenBitmap.height / 2 - 50,
+                    150,
+                    100,
+                    DirectionType.RIGHT
+                )
+                if (!correctedCoordinate()) {
+                    nowStep = EXIT_OPT
+                    return
+                }
+            }
+        }
+
+
+        takeScreen(normalClickInterval)
+        val nowIsSafe = !visual.isDangerous(localOffsetX, localOffsetY)
+        if (nowIsSafe == true && lastIsSafe == true) {
+            if (System.currentTimeMillis() - lastSafeTime > getWaitTime()) {
+                nowStep = OUT_SPAE
+                wait_Time = 0L
+            }
+        } else if (nowIsSafe == true && lastIsSafe != true) {
+            lastSafeTime = System.currentTimeMillis()
+        } else if (nowIsSafe != true && lastIsSafe == true) {
+            LastDangerousTime = System.currentTimeMillis()
+        }
+        lastIsSafe = nowIsSafe
+    }
+
+    var wait_Time = 0L
+    private fun getWaitTime(): Long {
+        if (wait_Time == 0L) {
+            wait_Time = ((Math.random() * 20 + 10) * 60 * 1000L).toLong()
+        }
+        return wait_Time
+    }
+
+
+    //这里处理出战，包括飞点等，这里先只做简单流程
+    private suspend fun outSpace() {
+        click(constant.outSpaceArea)
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            takeScreen(doubleClickInterval)
+            if (visual.hasPositionMenu() && visual.hasEyesMenu()) {
+                flag = false
+            }
+            count--
+        }
+        nowStep = LOOKING_FOR_PLANETARY_GROUPS
+    }
+
+    private suspend fun lookingForMineralStars() {
+        var flag = true
+        var count = (Math.random() * 3 + 1).toInt()
+        var hasRefresh = false
+        while (flag && count > 0 && runSwitch) {
+            takeScreen(doubleClickInterval)
+            if (isDangerous()) {
+                clickJumpCollectionAddress(warehouseIndex, false)
+                nowStep = MONITORING_RETURN_STATUS
+                flag = false
+            }
+            ensureOpenEyeMenu()
+            delay(normalClickInterval)
+
+            //这里表示已经锁定上目标了 可以进行采矿监控了
+            if (visual.getOreTargetNumber() > 0) {
+                nowStep = MINING_MONITORING
+                click(constant.getTopClickArea(0))
+                click(constant.getTopSurroundArea(0), normalClickInterval)
+                flag = false
+            }
+
+            //如果没有数据就刷新一下
+            if (!visual.hasEyeItem()) {
+                if (!hasRefresh) {
+                    clickJumpCollectionAddress(warehouseIndex, false)
+                    nowStep = MONITORING_RETURN_STATUS
+                    flag = false
+                } else {
+                    swipe(constant.eyeMenuSwipeToTopArea(), 1)
+                    hasRefresh = true
+                    count = 4
+                }
+            }
+
+            if (visual.IsTheResourceNotTop()) {
+                swipe(constant.eyeMenuSwipeToTopArea(), 1)
+                count = 4
+                continue
+            }
+
+            click(constant.clickEyesMenuItemArea(count))
+            takeScreen(normalClickInterval)
+            when (visual.judeResourceType(count)) {
+                visual.REMOTE_PLANETARY_GROUP -> {
+                    click(constant.getTransitionArea(count))
+                    delay(quadrupleClickInterval)
+                    for (i in 0 until 3) {
+                        swipe(constant.eyeMenuSwipeToTopArea(), (Math.random() * 1 + 1).toInt())
+                        delay(normalClickInterval)
+                    }
+                    count = 4
+                    hasRefresh = false
+                }
+                visual.RESOURCE_PLANET -> {
+                    click(constant.getLockingArea(count))
+                }
+                visual.MENU_NOT_OPEN -> {
+
+                }
+            }
+            count--
+        }
+    }
+
+    //这个是开采监控阶段
+    private suspend fun monitoringDuringMining() {
+        var flag = true
+        var lastTargetCount = 0
+        var count = 65
+        while (flag && count > 0 && runSwitch) {
+            takeScreen(doubleClickInterval)
+            if (visual.shieldTooLow() || isDangerous() || visual.warehouseIsFull()) {
+                clickJumpCollectionAddress(warehouseIndex, false)
+                nowStep = MONITORING_RETURN_STATUS
+                flag = false
+            }
+            val count = visual.getTagNumber()
+            if (count <= 0) {
+                nowStep = LOOKING_FOR_PLANETARY_GROUPS
+                flag = false
+            }
+            if (count > 1 && lastTargetCount > count) {
+                click(constant.getTopClickArea(0))
+                click(constant.getTopSurroundArea(0), normalClickInterval)
+            }
+            lastTargetCount = count
+            clickEquipArray(openCheckEquipTimes(3, wholeBattleOpenList))
+        }
+        if (count <= 0) {
+            Timber.d("采矿超时返回 monitoringDuringMining MinerController NWQ_ 2023/3/20");
+            clickJumpCollectionAddress(warehouseIndex, false)
+            nowStep = MONITORING_RETURN_STATUS
+        }
+
+    }
+
+    private fun isDangerous(): Boolean {
+        return if (visual.isDangerous(localOffsetX, localOffsetY)) {
+            LastDangerousTime = System.currentTimeMillis()
+            Timber.d("isDangerous MinerController NWQ_ 2023/3/20");
+            true
+        } else {
+            false
+        }
+    }
+
 
     private fun checkTimingOnList(needCheckOpenList: MutableList<Int>) {
         var nowTime = System.currentTimeMillis()

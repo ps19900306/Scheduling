@@ -137,18 +137,55 @@ class BaseConstant {
             783 + (Math.random() * 70),
             1610 + (Math.random() * 306),
             373 - (Math.random() * 43),
-            500 + (Math.random() * 200)
+            500 + (Math.random() * 200),
+            delayTime
         )
     }
 
 
-    //需要根据图片确认位置的
-    var closePositionArea = Area(455, 258, 73, 76)//关闭
-    var localListArea = Area(132, 995, 109, 47)//打开本地图标
-    val localBaseX=Coordinate(567,718)//用于修正X偏差度
-    val localBaseY=Coordinate(573,705)//用于修正Y偏差度
-    var openEyeMenuArea = Area(2197, 565, 70, 70)//打开本地图标
-    var outSpaceArea = Area(2004, 331, 111, 59)//打开本地图标
-    //需要根据图片确认位置的
+    fun eyeMenuSwipeToTopArea(delayTime: Long = 0L): SwipeArea {
+        return SwipeArea(
+            2250 + (Math.random() * 50),
+            150 + (Math.random() * 60),
+            2250 + (Math.random() * 50),
+            800 - (Math.random() * 60),
+            500 + (Math.random() * 300),
+            delayTime
+        )
+    }
+
+
+
+
+    val closePositionArea = Area(455, 258, 73, 76)//关闭
+    val localListArea = Area(132, 995, 109, 47)//打开本地图标
+    val localBaseX = Coordinate(567, 718)//用于修正X偏差度
+    val localBaseY = Coordinate(573, 705)//用于修正Y偏差度
+    val openEyeMenuArea = Area(2197, 565, 70, 70)//打开本地图标
+    val outSpaceArea = Area(2004, 331, 111, 59)//打开本地图标
+    fun getTransitionArea(index: Int): Area {//点击跃迁
+        return Area(1580, 200 + (index * 100), 300, 100)
+    }
+
+    fun getLockingArea(index: Int): Area {//点击锁定
+        return Area(1609, 104 + (index * 105), 230, 64)
+    }
+
+    fun getTopClickArea(index: Int): Area {//顶部可以点击目标
+        return Area(1790 - 124 * index, 43, 30, 40)
+    }
+
+    fun getTopApproachArea(index: Int): Area {//点击接近
+        return Area(1703 - 124 * index, 274, 142, 57)
+    }
+
+    fun getTopSurroundArea(index: Int): Area {//点击环绕
+        return Area(1552 - 124 * index, 412, 188, 70)
+    }
+
+    //点击右边的菜单栏目资源的条目 点击行星位置 行星群
+    fun clickEyesMenuItemArea(index: Int): Area {
+        return Area(1985, 85 + (index * 105), 188, 70)
+    }
 
 }
