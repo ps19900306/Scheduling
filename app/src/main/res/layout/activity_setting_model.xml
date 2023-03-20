@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.SettingModelActivity">
+
+    <TextView
+        style="@style/normalTitleTv"
+        android:text="选择设置类型" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/select_model_rc"
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+</LinearLayout>

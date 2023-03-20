@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="是否开启网子"
+        android:text="开启网子"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,7 +21,7 @@
         android:id="@+id/pickupCheckTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="是否拾取箱子"
+        android:text="拾取箱子"
         app:layout_constraintBottom_toBottomOf="@+id/catchFoodCheckBox"
         app:layout_constraintStart_toEndOf="@+id/catchFoodCheckBox"
         app:layout_constraintTop_toTopOf="@+id/catchFoodCheckBox" />
@@ -30,10 +30,19 @@
         android:id="@+id/resistanceModeCheckTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="是否是盾抗"
+        android:text="盾抗"
         app:layout_constraintBottom_toBottomOf="@+id/pickupCheckTv"
         app:layout_constraintStart_toEndOf="@+id/pickupCheckTv"
         app:layout_constraintTop_toTopOf="@+id/pickupCheckTv" />
+
+    <CheckBox
+        android:id="@+id/FightModeCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="际遇模式"
+        app:layout_constraintBottom_toBottomOf="@+id/resistanceModeCheckTv"
+        app:layout_constraintStart_toEndOf="@+id/resistanceModeCheckTv"
+        app:layout_constraintTop_toTopOf="@+id/resistanceModeCheckTv" />
 
     <TextView
         android:id="@+id/baseLocationTitleTv"

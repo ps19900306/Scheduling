@@ -28,24 +28,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(bind.root)
 
         bind.startRole1.singleClick {
-            if (SPRepo.role != SpConstant.PREFIX_ROLE1) {
-                SPRepo.role = SpConstant.PREFIX_ROLE1
-                SPRepo.lastBackSpaceStation = 0
-                SPRepo.lastRefreshTimeSp = 0
-                SPRepo.lastPickUpTaskTimeSp = 0
-            }
+            SPRepo.role = SpConstant.PREFIX_ROLE1
             val intent = Intent("schedule.cmd")
             intent.setDataAndType("schedule.cmd".toUri(), "cmd/int")
             intent.putExtra(Constant.CMD, CmdType.START)
             sendBroadcast(intent);
         }
         bind.startRole2.singleClick {
-            if (SPRepo.role != SpConstant.PREFIX_ROLE2) {
-                SPRepo.role = SpConstant.PREFIX_ROLE2
-                SPRepo.lastBackSpaceStation = 0
-                SPRepo.lastRefreshTimeSp = 0
-                SPRepo.lastPickUpTaskTimeSp = 0
-            }
+            SPRepo.role = SpConstant.PREFIX_ROLE2
             val intent = Intent("schedule.cmd")
             intent.setDataAndType("schedule.cmd".toUri(), "cmd/int")
             intent.putExtra(Constant.CMD, CmdType.START)

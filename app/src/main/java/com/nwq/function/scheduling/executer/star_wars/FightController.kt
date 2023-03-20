@@ -1,15 +1,9 @@
 package com.nwq.function.scheduling.executer.star_wars
 
-import android.text.TextUtils
+
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
-import com.nwq.function.scheduling.utils.sp.SP
-import com.nwq.function.scheduling.utils.sp.SPRepo
-import com.nwq.function.scheduling.utils.sp.SPRepo.lastRefreshTimeSp
-import com.nwq.function.scheduling.utils.sp.SpConstant
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -50,9 +44,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     var DEFAULT_DESTROY_INTERVAL = 80 * 1000 //能够容忍的最大击毁间隔
     var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
-    val warehouseIndex by lazy {
-        SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
-    }
+    val warehouseIndex = spReo.fightBaseLocation
 
     /**
      * 这个是控制变量
@@ -61,33 +53,25 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var needCancel = false
     var neeForceRefresh = false
     var needBackStation = false
-    var mNumberOfTasksReceived by SP(SPRepo.role + SpConstant.NUMBER_OF_TASKS_RECEIVED, 50)
+    var mNumberOfTasksReceived = 50
 
-
-    val isPickupBox by lazy {
-        SP.getValue(prefixRole + SpConstant.IS_PICKUP_BOX, false)
-    }
+    val isPickupBox = spReo.isPickupBoxSP
 
     //后面这里由外部读取数据进行初始化
     private val wholeBattleOpenList by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.wholeBattleListSP) ?: listOf<Int>()
     }
     private val roundBattleOpenList by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.roundBattleListSP) ?: listOf<Int>()
     }
     private val timeOnOpenList1 by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.timeOnList1SP) ?: listOf<Int>()
     }
     private val timeOnOpenList2 by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST2, "")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.timeOnList2SP) ?: listOf<Int>()
     }
     private val timeOnOpenList3 by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.timeOnList3SP) ?: listOf<Int>()
     }
 
 
@@ -104,7 +88,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
 
     val Equipment_Interval = 30 * 1000L
-    var isCatchFoodSp by SP(prefixRole + SpConstant.IS_CATCH_FOOD, true)
+    var isCatchFoodSp =spReo.isCatchFoodSp
     private val catchFoodList by lazy {
         if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
         else listOf<Int>()
@@ -123,6 +107,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         delay(doubleClickInterval * 2)
         intoGame()
         nowStep = PICK_UP_TASK
+        spReo.lastBackSpaceStation = 0
+        spReo.lastRefreshTimeSp = 0
+        spReo.lastPickUpTaskTimeSp = 0
     }
 
     private suspend fun exitGame() {
@@ -147,7 +134,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 }
                 START_BATTLE_NAVIGATION_MONITORING -> {
                     Timber.d("开始导航 generalControlMethod FightController NWQ_ 2023/3/10");
-                    SPRepo.lastPickUpTaskTimeSp = System.currentTimeMillis()
+                    spReo.lastPickUpTaskTimeSp = System.currentTimeMillis()
                     nowStep = BATTLE_NAVIGATION_MONITORING
                 }
                 BATTLE_NAVIGATION_MONITORING -> {
@@ -157,7 +144,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     combatMonitoring()
                 }
                 START_MONITORING_RETURN_STATUS -> {
-                    SPRepo.lastBackSpaceStation = System.currentTimeMillis()
+                    spReo.lastBackSpaceStation = System.currentTimeMillis()
                     nowStep = MONITORING_RETURN_STATUS
                 }
                 MONITORING_RETURN_STATUS -> {
@@ -241,10 +228,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         if (neeForceRefresh) {
             if (visual.canRefresh()) {
                 click(constant.refreshTaskListArea)
-                lastRefreshTimeSp = System.currentTimeMillis()
+                spReo.lastRefreshTimeSp = System.currentTimeMillis()
                 takeScreen(doubleClickInterval)
             } else {
-                (System.currentTimeMillis() + constant.REFRESH_INTERVAL - lastRefreshTimeSp).let {
+                (System.currentTimeMillis() + constant.REFRESH_INTERVAL - spReo.lastRefreshTimeSp).let {
                     if (it > 0) {
                         delay(it)
                     }
@@ -253,7 +240,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             neeForceRefresh = false
         } else if (needRefreshTask()) {
             click(constant.refreshTaskListArea)
-            lastRefreshTimeSp = System.currentTimeMillis()
+            spReo.lastRefreshTimeSp = System.currentTimeMillis()
             takeScreen(doubleClickInterval)
         }
 
@@ -311,13 +298,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             click(constant.dialogDetermineArea)
         } else if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
             Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            if (System.currentTimeMillis() - SPRepo.lastPickUpTaskTimeSp > constant.NAVIGATING_TOO_LONG) {
+            if (System.currentTimeMillis() - spReo.lastPickUpTaskTimeSp > constant.NAVIGATING_TOO_LONG) {
                 needBackStation = true
                 neeForceRefresh = true
             }
             nowStep = COMBAT_MONITORING
             battleStartTime = System.currentTimeMillis()
-        } else if (System.currentTimeMillis() - SPRepo.lastPickUpTaskTimeSp > constant.NAVIGATING_EXCEPTION) {
+        } else if (System.currentTimeMillis() - spReo.lastPickUpTaskTimeSp > constant.NAVIGATING_EXCEPTION) {
             Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
             needBackStation = true
             needCancel = true
@@ -457,7 +444,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         needCheckOpenList.add(pickUpPosition)
 
                     //打开定时开启的
-                        checkTimingOnList(needCheckOpenList)
+                    checkTimingOnList(needCheckOpenList)
 
                     //这个是判断是否需要开关维修
                     bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
@@ -513,9 +500,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     private suspend fun monitoringReturnStatus() {
         takeScreen(quadrupleClickInterval * 2)
-        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
+        if (System.currentTimeMillis() - spReo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
             if (visual.isSailing()) {
-                SPRepo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
+                spReo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
             } else {
                 nowStep = ABNORMAL_STATE
             }
@@ -622,7 +609,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var flag = count
 
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
-        while (flag > 0&& runSwitch) {
+        while (flag > 0 && runSwitch) {
             takeScreen(normalClickInterval)
             if (visual.hasLeftDialogue()) {
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
@@ -657,7 +644,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     private fun needRefreshTask(): Boolean {
-        return System.currentTimeMillis() - lastRefreshTimeSp > constant.REFRESH_INTERVAL && visual.canRefresh()
+        return System.currentTimeMillis() - spReo.lastRefreshTimeSp > constant.REFRESH_INTERVAL && visual.canRefresh()
     }
 
 

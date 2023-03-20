@@ -7,6 +7,7 @@ import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -14,9 +15,11 @@ import timber.log.Timber
 abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
 
 
-    val prefixRole by lazy { SPRepo.role }
-    protected val TopOfst = SpConstant.TopOfst//顶部的偏移量
-    protected val BotOfst = SpConstant.BotOfst//底部的便宜量
+    protected val spReo by lazy {
+        SPRepoPrefix.getNowSPRepo()
+    }
+    protected val TopOfst = 6//顶部的偏移量
+    protected val BotOfst = -1//底部的便宜量
     protected val visual by lazy {
         BaseVisualEnvironment(helper)
     }
@@ -27,18 +30,16 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val weaponPosition = BotOfst + 3
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
-    val isShieldResistance by lazy {
-        SP.getValue(prefixRole + SpConstant.CRESISTANCE_MODE, false)
-    }//是否护盾抗
+    val isShieldResistance = spReo.resistanceModeSP
 
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
-        val isOpen = SP.getValue(prefixRole + SpConstant.OPEN_HARVEST_VEGETABLES, false)
-        val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
+        val isOpen = spReo.openHarvestVegetablesSP
+        val str = spReo.celestialResourcesSP
         isOpen && !TextUtils.isEmpty(str)
     }
-    var resourcesAddTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_TIME, 0L)
-    var resourcesCollectTimeSp by SP(prefixRole + SpConstant.RESOURCES_ADD_COLLECT, 0L)
+    var resourcesAddTimeSp = spReo.resourcesAddTimeSP
+    var resourcesCollectTimeSp = spReo.resourcesCollectTimeSP
     val harvestVegetableController by lazy {
         HarvestVegetableController(helper, {
             true

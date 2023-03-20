@@ -16,6 +16,7 @@ import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -52,18 +53,15 @@ class NwqAccessibilityService : AccessibilityService() {
     }
 
     private val onCompleteLister = {
-        val nowRole = SPRepo.role
-        var lastTime by SP(nowRole + SpConstant.LAST_COMPLETE_TIME, 0L)
-        lastTime = System.currentTimeMillis()
+        SPRepoPrefix.getNowSPRepo().lastCompleteTimeSP = System.currentTimeMillis()
         Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
         if (SPRepo.continueToTheNext) {
-            val nextRole = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+            SPRepo.role = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
                 SpConstant.PREFIX_ROLE2
             } else {
                 SpConstant.PREFIX_ROLE1
             }
-            SPRepo.role = nextRole
-            var lastTime1 = SP.getValue(nextRole + SpConstant.LAST_COMPLETE_TIME, 0L)
+            var lastTime1 = SPRepoPrefix.getNowSPRepo().lastCompleteTimeSP
             if (TimeUtils.isNewTaskDay(lastTime1)) {
                 startOpt(true)
             } else {

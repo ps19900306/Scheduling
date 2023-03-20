@@ -27,6 +27,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
 
     lateinit var bind: ActivitySetRoleInfo2Binding
     val prefixRole by lazy { SPRepo.role }
+
     var resistanceModeSP by SP(prefixRole + SpConstant.CRESISTANCE_MODE, false)
     var isPickupBoxSP by SP(prefixRole + SpConstant.IS_PICKUP_BOX, false)
     var isCatchFoodSp by SP(prefixRole + SpConstant.IS_CATCH_FOOD, true)
@@ -37,7 +38,6 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
     var wholeBattleListSP by SP(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
     var roundBattleListSP by SP(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
     var celestialResourcesSP by SP(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
-
     var resourcesBaseLocationSP by SP(prefixRole + SpConstant.RESOURCES_BASE_LOCATION, 0)
     var openHarvestVegetablesSP by SP(prefixRole + SpConstant.OPEN_HARVEST_VEGETABLES, false)
 

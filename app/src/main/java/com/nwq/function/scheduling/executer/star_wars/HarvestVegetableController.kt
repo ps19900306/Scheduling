@@ -2,9 +2,6 @@ package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
-import com.nwq.function.scheduling.utils.sp.SP
-import com.nwq.function.scheduling.utils.sp.SPRepo
-import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -23,15 +20,10 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     private var nowCelestialCount = 0
     private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     private var hasLaunch = false
-    val warehouseIndex by lazy {
-        SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
-    }
-    var resourcesBaseLocationSP by SP(
-        prefixRole + SpConstant.RESOURCES_BASE_LOCATION, warehouseIndex
-    )//收菜的坐标
+    var resourcesBaseLocationSP =spReo.resourcesBaseLocationSP
+
     val list by lazy {
-        val str = SP.getValue(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
-        JsonUtil.anyToJsonObject(str) ?: mutableListOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.celestialResourcesSP) ?: mutableListOf<Int>()
     }
 
 
@@ -149,7 +141,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             if (nowCelestialCount >= list.size) {//结束了
                 resourcesCollectTimeSp = System.currentTimeMillis()
                 Timber.d("完成 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-                SPRepo.lastBackSpaceStation = System.currentTimeMillis()
+                spReo.lastBackSpaceStation = System.currentTimeMillis()
                 clickJumpCollectionAddress(resourcesBaseLocationSP, false)
                 nowStep = MONITORING_RETURN_STATUS
             } else {
@@ -175,8 +167,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
 
     private suspend fun monitoringReturnStatus() {
         takeScreen(quadrupleClickInterval * 2)
-        if (System.currentTimeMillis() - SPRepo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
-            SPRepo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
+        if (System.currentTimeMillis() - spReo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
+            spReo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
             if (!visual.isSailing()) {
                 clickJumpCollectionAddress(resourcesBaseLocationSP, false)
             }

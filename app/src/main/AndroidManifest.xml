@@ -19,6 +19,9 @@
         android:theme="@style/Theme.Scheduling"
         tools:targetApi="31">
         <activity
+            android:name=".SettingModelActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.SetRoleInfoActivity2"
             android:exported="false" />
         <activity

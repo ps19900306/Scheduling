@@ -6,6 +6,7 @@ import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -33,46 +34,28 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private var nowStep = START_GAME
     private var hasCorrected = false //是否修正坐标
-    val warehouseIndex by lazy {
-        SP.getValue(prefixRole + SpConstant.BASE_LOCATION, 0)
-    }
+    val warehouseIndex = spReo.miningBaseLocationSP
 
     private val isAlarm = false
 
 
-    private val wholeBattleOpenList by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
+    private val miningGunList by lazy {
+        JsonUtil.anyToJsonObject(spReo.miningGunListSP) ?: listOf<Int>()
     }//这里是采矿的
-    private val roundBattleOpenList by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
-    }
-    private val timeOnOpenList1 by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
-    }//这个放皮球的
-    private val timeOnOpenList2 by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST2, "")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
-    }//这个放推子
-    private val timeOnOpenList3 by lazy {
-        val listStr = SP.getValue(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
-        JsonUtil.anyToJsonObject(listStr) ?: listOf<Int>()
+    private val miningInertiaList by lazy {
+        JsonUtil.anyToJsonObject(spReo.miningInertiaListSP) ?: listOf<Int>()
+    }//这个放皮球的 或者  这个放推子
+    private val miningStabilizerList by lazy {
+        JsonUtil.anyToJsonObject(spReo.miningStabilizerListSP) ?: listOf<Int>()
     }//放圣光
-
 
     // 这个放皮球的
     var CombatStamp_1 = 0L
-    val BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
-
-    // 这个放推子
-    var CombatStamp_2 = 0L
-    val BASIC_COMBAT_INTERVAL_2 = 170 * 1000L
+    val BASIC_COMBAT_INTERVAL_1 = 60 * 1000L
 
     // 放圣光
     var CombatStamp_3 = 0L
-    val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
+    val BASIC_COMBAT_INTERVAL_3 = 70 * 1000L
 
 
     override suspend fun generalControlMethod() {
@@ -298,7 +281,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 click(constant.getTopSurroundArea(0), normalClickInterval)
             }
             lastTargetCount = count
-            clickEquipArray(openCheckEquipTimes(3, wholeBattleOpenList))
+            clickEquipArray(openCheckEquipTimes(3, miningGunList))
         }
         if (count <= 0) {
             Timber.d("采矿超时返回 monitoringDuringMining MinerController NWQ_ 2023/3/20");
@@ -322,14 +305,21 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private fun checkTimingOnList(needCheckOpenList: MutableList<Int>) {
         var nowTime = System.currentTimeMillis()
         if (checkTimeOn(
-                timeOnOpenList3, nowTime, CombatStamp_3, BASIC_COMBAT_INTERVAL_3, needCheckOpenList
+                miningInertiaList,
+                nowTime,
+                CombatStamp_3,
+                BASIC_COMBAT_INTERVAL_3,
+                needCheckOpenList
             )
         ) {
             CombatStamp_3 = nowTime
         }
-        needCheckOpenList.addAll(timeOnOpenList2)
         if (checkTimeOn(
-                timeOnOpenList1, nowTime, CombatStamp_1, BASIC_COMBAT_INTERVAL_1, needCheckOpenList
+                miningStabilizerList,
+                nowTime,
+                CombatStamp_1,
+                BASIC_COMBAT_INTERVAL_1,
+                needCheckOpenList
             )
         ) {
             CombatStamp_1 = nowTime
