@@ -143,9 +143,12 @@ class BaseConstant {
 
 
     //需要根据图片确认位置的
-    var closePositionArea = Area(1066, 207, 158, 114)//关闭
-    var localListArea = Area(2050, 320, 342, 110)//打开本地图标
-    val localBaseX=Coordinate(0,0)//用于修正X偏差度
-    val localBaseY=Coordinate(0,0)//用于修正Y偏差度
-    var openEyeMenuArea = Area(2050, 320, 342, 110)//打开本地图标
+    var closePositionArea = Area(455, 258, 73, 76)//关闭
+    var localListArea = Area(132, 995, 109, 47)//打开本地图标
+    val localBaseX=Coordinate(567,718)//用于修正X偏差度
+    val localBaseY=Coordinate(573,705)//用于修正Y偏差度
+    var openEyeMenuArea = Area(2197, 565, 70, 70)//打开本地图标
+    var outSpaceArea = Area(2004, 331, 111, 59)//打开本地图标
+    //需要根据图片确认位置的
+
 }

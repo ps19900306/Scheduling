@@ -546,10 +546,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         tolerance: Int = 255,
     ): Coordinate? {
         return ImgUtils.findPointByColor(
-            screenBitmap,
-            data,
-            colorList,
-            tolerance
+            screenBitmap, data, colorList, tolerance
         )
     }
 
@@ -572,17 +569,25 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    fun checkOneHostile(position: Int, offsetX: Int, offsetY: Int): Int {
-        val list = listOf(
-            verificationTask(566+124*position+offsetX, 720, AllOver140Rule, 1),
-            verificationTask(572+124*position, 726, AllOver140Rule, 1),
-            verificationTask(578+124*position, 721, AllOver140Rule, 1),
-            verificationTask(573+124*position, 705, AllOver140Rule, 1),
-            verificationTask(566+124*position, 711, AllOver140Rule, 1),
-        )
-
-        return 0
+    fun isSafeInList(localOffsetX: Int, localOffsetY: Int): Boolean {
+        return !(discoverEnemyList(0, localOffsetX, localOffsetY)
+                || discoverEnemyList(1, localOffsetX, localOffsetY)
+                || discoverEnemyList(2, localOffsetX, localOffsetY))
     }
 
+    fun discoverEnemyList(Index: Int, offsetX: Int, YOffset: Int): Boolean {
+        val XOffset = Index * 124 + offsetX
+        val list = listOf(
+            verificationTask(566 + XOffset, 720 + YOffset, AllOver140Rule, 1),
+            verificationTask(572 + XOffset, 726 + YOffset, AllOver140Rule, 1),
+            verificationTask(578 + XOffset, 721 + YOffset, AllOver140Rule, 1),
+            verificationTask(578 + XOffset, 711 + YOffset, AllOver140Rule, 1),
+            verificationTask(573 + XOffset, 705 + YOffset, AllOver140Rule, 1),
+            verificationTask(566 + XOffset, 711 + YOffset, AllOver140Rule, 1),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
 
 }
