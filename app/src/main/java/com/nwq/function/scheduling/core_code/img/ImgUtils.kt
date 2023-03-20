@@ -5,6 +5,7 @@ import android.graphics.Color
 import androidx.core.graphics.red
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
+import com.nwq.function.scheduling.utils.JsonUtil
 import timber.log.Timber
 import kotlin.math.abs
 
@@ -65,7 +66,8 @@ object ImgUtils {
         val pixel1 = bitmap.getPixel(data.coordinate2.x.toInt(), data.coordinate2.y.toInt())
         return data.twoPointComparison.optInt(
             pixel,
-            pixel1)
+            pixel1
+        )
     }
 
     //多个点找一个颜色 如果一个符合则返回True
@@ -155,7 +157,13 @@ object ImgUtils {
         colorRule: ColorIdentificationRule
     ): Boolean {
         val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
-        Timber.d("x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}  , green: ${Color.green(color)}  , blue: ${Color.blue(color)} judgeColorRule ImgUtils NWQ_ 2023/3/12");
+        Timber.d(
+            "x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}  , green: ${
+                Color.green(
+                    color
+                )
+            }  , blue: ${Color.blue(color)} judgeColorRule ImgUtils NWQ_ 2023/3/12"
+        );
         return colorRule.optInt(color)
     }
 
@@ -235,7 +243,8 @@ object ImgUtils {
         baseBlue: Int,
         baseGreen: Int,
         tolerance: Int = 0
-    ): Coordinate?{
+    ): Coordinate? {
+        Timber.d(" ${JsonUtil.objectToString(pixelsInfo)}  tolerance:$tolerance  findPointByColor ImgUtils NWQ_ 2023/3/20");
         val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
         bitmap.getPixels(
             pixels,
@@ -247,7 +256,7 @@ object ImgUtils {
             pixelsInfo.height
         )
         var lastIndex = -1
-        var lastDeviationValue = 100
+        var lastDeviationValue = 255
         pixels.forEachIndexed { i, it ->
             val deviationValue = judgeColorSqrt(
                 Color.red(it),
@@ -257,6 +266,7 @@ object ImgUtils {
                 baseBlue,
                 baseGreen
             )
+
             if (deviationValue <= tolerance && deviationValue < lastDeviationValue) {
                 lastDeviationValue = deviationValue
                 lastIndex = i

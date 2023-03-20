@@ -88,13 +88,13 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
-        generalControlMethod()
         intoGame()
         if (visual.isInSpaceStation()) {
             nowStep = MONITORING_RETURN_STATUS
         } else if (visual.warehouseIsFull()) {
             clickJumpCollectionAddress(warehouseIndex, false)
         } else {
+            clickJumpCollectionAddress(warehouseIndex, false)
             nowStep = MONITORING_RETURN_STATUS
         }
     }
@@ -117,8 +117,8 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 }
             }
             if (visual.isInSpaceStation() && visual.hasPositionMenu()) {
-                delay(doubleClickInterval)
-                unloadingCargo()
+//                delay(doubleClickInterval)
+//                unloadingCargo(false)
                 delay(doubleClickInterval)
                 flag = false
             } else if (count <= 10 && !visual.isSailing()) {
@@ -140,6 +140,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             if (correctedCoordinate()) {
                 hasCorrected = true
             } else {
+                delay(normalClickInterval)
                 slide(
                     screenBitmap.width / 2 - 50,
                     screenBitmap.height / 2 - 50,
@@ -197,7 +198,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun lookingForMineralStars() {
         var flag = true
         var count = (Math.random() * 3 + 1).toInt()
-        var hasRefresh = false
+        var canRefresh = true
         while (flag && count > 0 && runSwitch) {
             takeScreen(doubleClickInterval)
             if (isDangerous()) {
@@ -216,22 +217,23 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 flag = false
             }
 
-            //如果没有数据就刷新一下
-            if (!visual.hasEyeItem()) {
-                if (!hasRefresh) {
-                    clickJumpCollectionAddress(warehouseIndex, false)
-                    nowStep = MONITORING_RETURN_STATUS
-                    flag = false
-                } else {
-                    swipe(constant.eyeMenuSwipeToTopArea(), 1)
-                    hasRefresh = true
-                    count = 4
-                }
-            }
+//            //如果没有数据就刷新一下
+//            if (!visual.hasEyeItem()) {
+//                if (!hasRefresh) {
+//                    clickJumpCollectionAddress(warehouseIndex, false)
+//                    nowStep = MONITORING_RETURN_STATUS
+//                    flag = false
+//                } else {
+//                    swipe(constant.eyeMenuSwipeToTopArea(), 1)
+//                    hasRefresh = true
+//                    count = 4
+//                }
+//            }
 
             if (visual.IsTheResourceNotTop()) {
                 swipe(constant.eyeMenuSwipeToTopArea(), 1)
                 count = 4
+                Timber.d("IsTheResourceNotTop lookingForMineralStars MinerController NWQ_ 2023/3/20");
                 continue
             }
 
@@ -246,13 +248,21 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         delay(normalClickInterval)
                     }
                     count = 4
-                    hasRefresh = false
+                    canRefresh = true
                 }
                 visual.RESOURCE_PLANET -> {
                     click(constant.getLockingArea(count))
                 }
                 visual.MENU_NOT_OPEN -> {
-
+                    if (canRefresh) {
+                        swipe(constant.eyeMenuSwipeToTopArea(), 1)
+                        canRefresh = false
+                        count = 4
+                    } else {
+                        clickJumpCollectionAddress(warehouseIndex, false)
+                        nowStep = MONITORING_RETURN_STATUS
+                        flag = false
+                    }
                 }
             }
             count--

@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.Coordinate
+import com.nwq.function.scheduling.core_code.PixelsInfo
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.core_code.img.ImgUtils
@@ -555,12 +556,10 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
      */
     fun isOpenLocalList(): Boolean {
         val list = listOf(
-            verificationTask(850, 148, AllOver140Rule),
-            verificationTask(841, 157, AllLess50Rule),
-            verificationTask(846, 123, AllLess50Rule),
-            verificationTask(846, 181, AllLess50Rule),
-            verificationTask(817, 152, AllLess50Rule),
-            verificationTask(875, 152, AllLess50Rule),
+            verificationTask(852, 147, AllOver150Rule),
+            verificationTask(842, 157, AllOver150Rule),
+            verificationTask(841, 147, AllLess70Rule),
+            verificationTask(851, 157, AllLess70Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -570,9 +569,9 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     //是否危险的
     fun isDangerous(localOffsetX: Int, localOffsetY: Int): Boolean {
-        return !(discoverEnemyList(0, localOffsetX, localOffsetY)
-                || discoverEnemyList(1, localOffsetX, localOffsetY)
-                || discoverEnemyList(2, localOffsetX, localOffsetY))
+        return !(discoverEnemyList(0, localOffsetX, localOffsetY) || discoverEnemyList(
+            1, localOffsetX, localOffsetY
+        ) || discoverEnemyList(2, localOffsetX, localOffsetY))
     }
 
     //是否发现敌人 ，发现返回TRUE
@@ -594,7 +593,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun getOreTargetNumber(): Int {
         var number = -1
         for (i in 4 downTo 0) {
-            if (hasTarget(i)) {
+            if (hasOreTarget(i)) {
                 number = i + 1
                 Timber.d("$number getMiniTarget FightVisualEnvironment NWQ_ 2023/3/11");
                 return number
@@ -607,12 +606,21 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //是否具有开采的行星目标 这个判断是资源条(从右边数第一个)
     //判断是否存在一个黑圈 通过色差判定
     fun hasOreTarget(index: Int): Boolean {
-        return true
+        val list1 = listOf(
+            verificationTask(1800 - 130 * index, 101, AllOver150Rule),
+            verificationTask(1798 - 130 * index, 99, AllOver150Rule),
+            verificationTask(1787 - 130 * index, 98, AllLess50Rule),
+            verificationTask(1797 - 130 * index, 79, AllLess70Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
     }
 
     //右侧菜单是否有条目
     fun hasEyeItem(): Boolean {
-        return true
+        val info = PixelsInfo(1954, 86, 1, 90, 1, 0)
+        return ImgUtils.findColorRule(info, screenBitmap, AllOver150Rule)
     }
 
     //需要根据图片确认位置的
@@ -621,12 +629,49 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     val CURRENT_PLANETARY_GROUP = 803 //当前行星群
     val MENU_NOT_OPEN = 804 //未点开的状态
     fun judeResourceType(position: Int): Int {
-        return REMOTE_PLANETARY_GROUP
+        val offestY = 120
+        val list1 = listOf(
+            verificationTask(1626, 480 + offestY * position, AllLess70Rule),
+            verificationTask(1627, 463 + offestY * position, AllOver150Rule, 1),
+            verificationTask(1627, 495 + offestY * position, AllOver150Rule, 1),
+        )
+        if (ImgUtils.performPointsColorVerification(
+                list1, screenBitmap, 0
+            )
+        ) {
+            return RESOURCE_PLANET
+        }
+
+        val list2 = listOf(
+            verificationTask(1626, 378 + offestY * position, AllLess70Rule),
+            verificationTask(1627, 362 + offestY * position, AllOver150Rule, 1),
+            verificationTask(1627, 395 + offestY * position, AllOver150Rule, 1),
+        )
+        if (ImgUtils.performPointsColorVerification(
+                list2, screenBitmap, 0
+            )
+        ) {
+            return CURRENT_PLANETARY_GROUP
+        }
+
+        val list3 = listOf(
+            verificationTask(1637, 132 + offestY * position, AllLess70Rule),
+            verificationTask(1628, 142 + offestY * position, AllOver150Rule, 1),
+            verificationTask(1650, 141 + offestY * position, AllOver150Rule, 1),
+        )
+        if (ImgUtils.performPointsColorVerification(
+                list3, screenBitmap, 0
+            )
+        ) {
+            return REMOTE_PLANETARY_GROUP
+        }
+        return MENU_NOT_OPEN
     }
 
 
     //判断资源条目是否已经到了顶部
     fun IsTheResourceNotTop(): Boolean {
-        return true
+        val info = PixelsInfo(1954, 90, 1, 30, 1, 0)
+        return ImgUtils.findColorRule(info, screenBitmap, AllOver150Rule)
     }
 }

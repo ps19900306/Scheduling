@@ -11,6 +11,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.star_wars.FightController
 import com.nwq.function.scheduling.executer.star_wars.HarvestVegetableController
+import com.nwq.function.scheduling.executer.star_wars.MinerController
 import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
@@ -37,12 +38,6 @@ class NwqAccessibilityService : AccessibilityService() {
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-//                GlobalScope.launch {
-//                    delay(6000)
-//                    val task = ClickTestController(helper)
-//                    list.add(task)
-//                    task.randClickTest()
-//                }
                 intent?.let { dealEvent(it) }
             }
         }
@@ -83,9 +78,18 @@ class NwqAccessibilityService : AccessibilityService() {
         } else {
             helper.pressHomeBtn()
         }
-        val fight = FightController(helper, onCompleteLister)
-        fight.startOperation()
-        list.add(fight)
+        if (SPRepoPrefix.getNowSPRepo().nowSelectModeSP == SpConstant.FIGHT_MODEL) {
+            Timber.d("启动任务 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
+            val fight = FightController(helper, onCompleteLister)
+            fight.startOperation()
+            list.add(fight)
+        } else {
+            Timber.d("启动采集 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
+            val fight = MinerController(helper, { true })
+            fight.startOperation()
+            list.add(fight)
+        }
+
     }
 
 

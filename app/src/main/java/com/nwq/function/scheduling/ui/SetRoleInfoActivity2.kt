@@ -13,6 +13,7 @@ import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.singleClick
 import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
 
 class SetRoleInfoActivity2 : AppCompatActivity() {
@@ -193,6 +194,14 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         bind.resourceBaseCheckTv.singleClick {
             openHarvestVegetablesSP = it.isChecked
         }
+
+        bind.fightModeCheck.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                SPRepoPrefix.getNowSPRepo().nowSelectModeSP = SpConstant.FIGHT_MODEL
+            } else {
+                SPRepoPrefix.getNowSPRepo().nowSelectModeSP = SpConstant.MINER_MODEL
+            }
+        }
     }
 
     fun initData() {
@@ -208,6 +217,8 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         bind.celestialResourcesTitleTv.text = celestialResourcesSP
         bind.resourceBaseLocationTitleTv.text = "$resourcesBaseLocationSP"
         bind.resourceBaseCheckTv.isChecked = openHarvestVegetablesSP
+        bind.fightModeCheck.isChecked =
+            SPRepoPrefix.getNowSPRepo().nowSelectModeSP == SpConstant.FIGHT_MODEL
     }
 
 }

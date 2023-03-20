@@ -1,5 +1,7 @@
 package com.nwq.function.scheduling.utils.sp
 
+import com.nwq.function.scheduling.utils.sp.SpConstant.FIGHT_MODEL
+
 class SPRepoPrefix(val prefix: String) {
 
     companion object {
@@ -13,6 +15,8 @@ class SPRepoPrefix(val prefix: String) {
             return list.find { it.prefix == SPRepo.role } ?: SPRepoPrefix(SPRepo.role)
         }
     }
+
+    var nowSelectModeSP by SP(prefix + SpConstant.NOW_SELECT_MODE, FIGHT_MODEL)
 
     //战斗的
     var fightBaseLocation by SP(prefix + SpConstant.BASE_LOCATION, 0)
@@ -39,10 +43,10 @@ class SPRepoPrefix(val prefix: String) {
 
 
     //采矿的
-    var miningBaseLocationSP by SP(prefix + SpConstant.MINING_BASE_LOCATION, 0)
-    var miningGunListSP by SP(prefix + SpConstant.MINING_GUN_LIST, "[11,12]")
-    var miningInertiaListSP by SP(prefix + SpConstant.MINING_INERTIA_LIST, "[11,12]")//皮球
-    var miningStabilizerListSP by SP(prefix + SpConstant.MINING_STABILIZER_LIST, "[11,12]")//圣光
+    var miningBaseLocationSP by SP(prefix + SpConstant.MINING_BASE_LOCATION, fightBaseLocation)
+    var miningGunListSP by SP(prefix + SpConstant.MINING_GUN_LIST, "[3,4,5]")
+    var miningInertiaListSP by SP(prefix + SpConstant.MINING_INERTIA_LIST, "[0]")//皮球
+    var miningStabilizerListSP by SP(prefix + SpConstant.MINING_STABILIZER_LIST, "[10,11,12]")//圣光
 
 
 }

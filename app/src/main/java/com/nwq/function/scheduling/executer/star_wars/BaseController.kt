@@ -5,10 +5,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
-import com.nwq.function.scheduling.utils.sp.SP
-import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
-import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -291,7 +288,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var flag = true
         var count = 3
         while (flag && count > 0 && runSwitch) {
-            takeScreen(normalClickInterval)
+            takeScreen(doubleClickInterval)
             if (visual.isOpenLocalList()) {
                 flag = false
             } else if (visual.isOpenPositionMenu()) {
@@ -314,7 +311,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             if (!visual.isOpenLocalList()) {
                 flag = false
             } else if (visual.isOpenPositionMenu()) {
-                click(constant.closePositionArea)
+                click(constant.isOpenPositionArea)
                 delay(normalClickInterval)
                 click(constant.localListArea)
                 count--
@@ -331,7 +328,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var hasModifyX = false
         visual.findPointByColor(
             FindPointByColorTask(constant.localBaseX, 3, 0),
-            listOf(255, 255, 255)
+            listOf(200, 200, 200)
         )?.let {
             hasModifyX = true
             localOffsetX = (it.x - constant.localBaseX.x).toInt()
@@ -339,12 +336,12 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var hasModifyY = false
         visual.findPointByColor(
             FindPointByColorTask(constant.localBaseY, 0, 3),
-            listOf(255, 255, 255)
+            listOf(200, 200, 200)
         )?.let {
             hasModifyY = true
             localOffsetY = (it.y - constant.localBaseX.y).toInt()
         }
-        Timber.d("hasModifyX:$hasModifyX hasModifyY:$hasModifyY  correctedCoordinate BaseController NWQ_ 2023/3/19");
+        Timber.d("hasModifyX:$hasModifyX $localOffsetX  hasModifyY:$hasModifyY $localOffsetY  correctedCoordinate BaseController NWQ_ 2023/3/19");
         return hasModifyX && hasModifyY
     }
 
