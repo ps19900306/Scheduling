@@ -8,6 +8,7 @@ import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
+import java.util.Date
 
 /**
 create by: 86136
@@ -20,10 +21,12 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private val START_GAME = 0  //开始游戏
     private val MONITORING_RETURN_STATUS = 1//返回空间站监听
-    private val OUT_SPAE = 2 //出空间站
+    private val WAIT_FOR_SAFE = 2//安全等待期
+    private val OUT_SPAE = 3 //出空间站
+    private val LOOKING_FOR_PLANETARY_GROUPS = 4//寻找资源行星
     private val GO_TO_COLLECT_NAVIGATION_MONITORING = 4//战斗飞行导航监控
     private val Mining_MONITORING = 5//采矿监控期间
-    private val WAIT_FOR_SAFE = 5//安全等待期
+
 
     private val ABNORMAL_STATE = 1000 //异常状态
     private val EXIT_OPT = 10000 //退出
@@ -81,14 +84,39 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 MONITORING_RETURN_STATUS -> {
                     monitoringReturnStatus()
                 }
+                WAIT_FOR_SAFE -> {
+                    waitForSafe()
+                }
                 OUT_SPAE -> {
                     outSpace()
                 }
+
             }
         }
     }
 
+
     private suspend fun outSpace() {
+        click(constant.outSpaceArea)
+        var cout = 10
+        var flag = true
+        while (flag && runSwitch && cout > 0) {
+            takeScreen(doubleClickInterval)
+            if (visual.hasEyesMenu() && visual.hasPositionMenu()) {
+                flag = false
+            } else if (cout == 5 && visual.isInSpaceStation()) {
+                click(constant.outSpaceArea)
+            } else if (cout == 1) {
+                nowStep = EXIT_OPT
+            }
+        }
+    }
+
+    var lastSafeTime = 0L
+    var LastDangerousTime = 0L
+    var lastIsSafe = true
+    private suspend fun waitForSafe() {
+        //先打开本地保证数据是正确的
         ensureOpenLocalList()
         //修正数据
         if (!hasCorrected) {
@@ -104,14 +132,34 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 )
                 if (!correctedCoordinate()) {
                     nowStep = EXIT_OPT
+                    return
                 }
             }
         }
+
+
+        takeScreen(normalClickInterval)
+        val nowIsSafe = visual.isSafeInList(localOffsetX, localOffsetY)
+        if (nowIsSafe == true && lastIsSafe == true) {
+            if (System.currentTimeMillis() - lastSafeTime > getWaitTime()) {
+                nowStep = OUT_SPAE
+                waitTime = 0L
+            }
+        } else if (nowIsSafe == true && lastIsSafe != true) {
+            lastSafeTime = System.currentTimeMillis()
+        } else if (nowIsSafe != true && lastIsSafe == true) {
+            LastDangerousTime = System.currentTimeMillis()
+        }
+        lastIsSafe = nowIsSafe
     }
 
-
-
-
+    var waitTime = 0L
+    fun getWaitTime(): Long {
+        if (waitTime == 0L) {
+            waitTime = ((Math.random() * 20 + 10) * 60 * 1000L).toLong()
+        }
+        return waitTime
+    }
 
     private suspend fun startGame() {
         takeScreen(normalClickInterval)
@@ -133,7 +181,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun monitoringReturnStatus() {
         var flag = true
         var count = 20
-        nowStep = OUT_SPAE
+        nowStep = WAIT_FOR_SAFE
         while (flag && count > 0 && runSwitch) {
             takeScreen(normalClickInterval)
             if (isAlarm) {

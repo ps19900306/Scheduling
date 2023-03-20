@@ -546,10 +546,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         tolerance: Int = 255,
     ): Coordinate? {
         return ImgUtils.findPointByColor(
-            screenBitmap,
-            data,
-            colorList,
-            tolerance
+            screenBitmap, data, colorList, tolerance
         )
     }
 
@@ -572,6 +569,25 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
+    fun isSafeInList(localOffsetX: Int, localOffsetY: Int): Boolean {
+        return !(discoverEnemyList(0, localOffsetX, localOffsetY)
+                || discoverEnemyList(1, localOffsetX, localOffsetY)
+                || discoverEnemyList(2, localOffsetX, localOffsetY))
+    }
 
+    fun discoverEnemyList(Index: Int, offsetX: Int, YOffset: Int): Boolean {
+        val XOffset = Index * 124 + offsetX
+        val list = listOf(
+            verificationTask(566 + XOffset, 720 + YOffset, AllOver140Rule, 1),
+            verificationTask(572 + XOffset, 726 + YOffset, AllOver140Rule, 1),
+            verificationTask(578 + XOffset, 721 + YOffset, AllOver140Rule, 1),
+            verificationTask(578 + XOffset, 711 + YOffset, AllOver140Rule, 1),
+            verificationTask(573 + XOffset, 705 + YOffset, AllOver140Rule, 1),
+            verificationTask(566 + XOffset, 711 + YOffset, AllOver140Rule, 1),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
 
 }
