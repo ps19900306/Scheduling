@@ -76,9 +76,14 @@ class SPRepoPrefix(val prefix: String) {
     val resourcesCollectTimeSP = SP(prefix + SpConstant.RESOURCES_ADD_COLLECT, 0L)
     var resourcesCollectTime by resourcesCollectTimeSP
 
+    val collectIntervalSP = SP(prefix + SpConstant.COLLECT_INTERVAL, 72)
+    var collectInterval by collectIntervalSP
+
+    val addIntervalSP = SP(prefix + SpConstant.ADD_INTERVAL, 12)
+    var addInterval by addIntervalSP
 
     //采矿的
-    val miningBaseLocationSP = SP(prefix + SpConstant.MINING_BASE_LOCATION, fightBaseLocation)
+    val miningBaseLocationSP = SP(prefix + SpConstant.MINING_BASE_LOCATION, 0)
     var miningBaseLocation by miningBaseLocationSP
 
     val miningGunListSP = SP(prefix + SpConstant.MINING_GUN_LIST, "[3,4,5]")

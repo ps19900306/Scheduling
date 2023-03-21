@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 
+import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
 import kotlinx.coroutines.delay
@@ -167,7 +168,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun onAllComplete() {
         if (openHarvestVegetablesSP) {
             theOutCheck()
-            if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesCollectTimeSp > constant.COLLECT_INTERVAL) {
+            if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesCollectTimeSp > spReo.collectInterval * Constant.Hour) {
                 harvestVegetableController.startCollectVegetables()
             } else {
                 harvestVegetableController.addPlanetaryTime()

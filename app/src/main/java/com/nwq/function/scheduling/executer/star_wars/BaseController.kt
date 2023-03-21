@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 import android.text.TextUtils
+import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.executer.base.TravelController
@@ -58,7 +59,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
-                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > constant.ADD_INTERVAL) {
+                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > spReo.addInterval * Constant.Hour) {
                     harvestVegetableController.addPlanetaryTime()
                 }
                 flag = false
