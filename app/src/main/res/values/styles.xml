@@ -6,6 +6,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:minWidth">60dp</item>
+        <item name="android:layout_marginStart">16dp</item>
         <item name="android:textColor">#ff202038</item>
     </style>
 

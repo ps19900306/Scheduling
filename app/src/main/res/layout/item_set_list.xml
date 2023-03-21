@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/titleTv"
+        style="@style/normalTitleTv" />
+    <EditText
+        android:id="@+id/contentEdit"
+        style="@style/normalTitleTv" />
+    <Button
+        android:id="@+id/okBtn"
+        android:text="@string/ok"
+        style="@style/normalTitleTv" />
+    <Button
+        android:id="@+id/clearBtn"
+        android:text="@string/clear"
+        style="@style/normalTitleTv" />
+</LinearLayout>

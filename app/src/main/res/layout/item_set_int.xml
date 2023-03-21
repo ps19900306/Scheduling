@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/titleTv"
+        style="@style/normalTitleTv" />
+    <EditText
+        android:id="@+id/contentEdit"
+        style="@style/normalTitleTv" />
+    <Button
+        android:id="@+id/okBtn"
+        android:text="@string/ok"
+        style="@style/normalTitleTv" />
+</LinearLayout>

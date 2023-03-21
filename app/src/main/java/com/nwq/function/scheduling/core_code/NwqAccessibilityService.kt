@@ -5,23 +5,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.provider.Settings.Global
 import android.view.accessibility.AccessibilityEvent
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.star_wars.FightController
-import com.nwq.function.scheduling.executer.star_wars.HarvestVegetableController
 import com.nwq.function.scheduling.executer.star_wars.MinerController
-import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
-import com.nwq.function.scheduling.utils.sp.SP
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -48,7 +41,7 @@ class NwqAccessibilityService : AccessibilityService() {
     }
 
     private val onCompleteLister = {
-        SPRepoPrefix.getNowSPRepo().lastCompleteTimeSP = System.currentTimeMillis()
+        SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
         Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
         if (SPRepo.continueToTheNext) {
             SPRepo.role = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
@@ -56,7 +49,7 @@ class NwqAccessibilityService : AccessibilityService() {
             } else {
                 SpConstant.PREFIX_ROLE1
             }
-            var lastTime1 = SPRepoPrefix.getNowSPRepo().lastCompleteTimeSP
+            var lastTime1 = SPRepoPrefix.getNowSPRepo().lastCompleteTime
             if (TimeUtils.isNewTaskDay(lastTime1)) {
                 startOpt(true)
             } else {
@@ -78,7 +71,7 @@ class NwqAccessibilityService : AccessibilityService() {
         } else {
             helper.pressHomeBtn()
         }
-        if (SPRepoPrefix.getNowSPRepo().nowSelectModeSP == SpConstant.FIGHT_MODEL) {
+        if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
             Timber.d("启动任务 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
             val fight = FightController(helper, onCompleteLister)
             fight.startOperation()

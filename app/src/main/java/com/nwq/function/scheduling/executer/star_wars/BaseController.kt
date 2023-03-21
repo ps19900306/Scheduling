@@ -1,10 +1,12 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 import android.text.TextUtils
+import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
+import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -27,16 +29,16 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val weaponPosition = BotOfst + 3
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
-    val isShieldResistance = spReo.resistanceModeSP
+    val isShieldResistance = spReo.resistanceMode
 
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
-        val isOpen = spReo.openHarvestVegetablesSP
-        val str = spReo.celestialResourcesSP
+        val isOpen = spReo.openHarvestVegetables
+        val str = spReo.celestialResources
         isOpen && !TextUtils.isEmpty(str)
     }
-    var resourcesAddTimeSp = spReo.resourcesAddTimeSP
-    var resourcesCollectTimeSp = spReo.resourcesCollectTimeSP
+    var resourcesAddTimeSp = spReo.resourcesAddTime
+    var resourcesCollectTimeSp = spReo.resourcesCollectTime
     val harvestVegetableController by lazy {
         HarvestVegetableController(helper, {
             true
@@ -58,7 +60,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
-                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > constant.ADD_INTERVAL) {
+                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > spReo.addInterval * Constant.Hour) {
                     harvestVegetableController.addPlanetaryTime()
                 }
                 flag = false
@@ -344,5 +346,14 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         Timber.d("hasModifyX:$hasModifyX $localOffsetX  hasModifyY:$hasModifyY $localOffsetY  correctedCoordinate BaseController NWQ_ 2023/3/19");
         return hasModifyX && hasModifyY
     }
+
+    //领取每日礼物
+    suspend fun dailyGiftPack() {
+        if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
+
+            spReo.dailytaskstime = System.currentTimeMillis()
+        }
+    }
+
 
 }

@@ -10,7 +10,11 @@ object SpConstant {
 
     const val RESOURCES_ADD_TIME = "resources_add_time"
     const val RESOURCES_ADD_COLLECT = "resources_add_collect"
+    const val COLLECT_INTERVAL = "collect_interval"
+    const val ADD_INTERVAL = "add_interval"
 
+
+    const val DAILY_TASKS_TIME="daily_tasks_time"
     const val LAST_COMPLETE_TIME = "LAST_COMPLETE_TIME"
     const val CONTINUE_TO_THE_NEXT = "CONTINUE_TO_THE_NEXT"
 
@@ -37,4 +41,6 @@ object SpConstant {
     const val MINING_GUN_LIST="mining_gun_list"
     const val MINING_INERTIA_LIST="mining_inertia_list"
     const val MINING_STABILIZER_LIST="mining_stabilizer_list"
+
+
 }

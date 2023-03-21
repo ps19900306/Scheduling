@@ -50,10 +50,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         bind.setRole1.singleClick {
-            SetRoleInfoActivity2.startSetRole(SpConstant.PREFIX_ROLE1, this)
+            SelectModelActivity.startSelectSet(SpConstant.PREFIX_ROLE1, this)
         }
         bind.setRole2.singleClick {
-            SetRoleInfoActivity2.startSetRole(SpConstant.PREFIX_ROLE2, this)
+            SelectModelActivity.startSelectSet(SpConstant.PREFIX_ROLE2, this)
+        }
+        bind.testColor.singleClick {
         }
 
         bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext

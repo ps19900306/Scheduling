@@ -20,10 +20,10 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     private var nowCelestialCount = 0
     private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     private var hasLaunch = false
-    var resourcesBaseLocationSP =spReo.resourcesBaseLocationSP
+    var resourcesBaseLocationSP =spReo.resourcesBaseLocation
 
     val list by lazy {
-        JsonUtil.anyToJsonObject(spReo.celestialResourcesSP) ?: mutableListOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.celestialResources) ?: mutableListOf<Int>()
     }
 
 
