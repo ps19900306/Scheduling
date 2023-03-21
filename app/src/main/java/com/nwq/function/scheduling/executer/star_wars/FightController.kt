@@ -203,7 +203,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     delay(normalClickInterval)
                     return
                 } else {
-                    click(constant.optTaskArea)
+                    if (spReo.hasLegionnaires) {
+                        click(constant.optTaskArea2)
+                    } else {
+                        click(constant.optTaskArea)
+                    }
+
                     takeScreen(doubleClickInterval)
                     if (visual.hasReceivedTask(spReo.hasLegionnaires)) {
                         clickTheDialogueClose(true)
@@ -219,7 +224,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         needCancel = false
         //打开新闻公告板
         delay(normalClickInterval)
-        click(constant.newTaskListArea)
+        click(constant.newTaskListArea(spReo.hasLegionnaires))
         takeScreen(doubleClickInterval)
 
         if (visual.isCompleteAllTask()) {//全部的任务已经完成
@@ -269,9 +274,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             return
         }
 
-        if(spReo.hasLegionnaires){
+        if (spReo.hasLegionnaires) {
             click(constant.openTaskRightArea2)
-        }else{
+        } else {
             click(constant.openTaskRightArea)
         }
 

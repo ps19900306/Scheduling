@@ -28,12 +28,20 @@ class BaseConstant {
 
     var openTaskArea = Area(1195, 524, 661, 125)
     var optTaskArea = Area(1912, 542, 110, 115)//(1912, 542, 110, 115)
+    var optTaskArea2 = Area(1893, 678, 145, 158)//(1912, 542, 110, 115)
     var cancelTaskArea = Area(1740, 201, 212, 67)
 
     var dialogDetermineArea = Area(2000, 770, 250, 90)//这个是右小角弹出窗口的确定按钮
     var dialogCancleArea = Area(1675, 824, 212, 42)
 
-    var newTaskListArea = Area(1257, 753, 555, 83)
+    fun newTaskListArea(boolean: Boolean): Area {
+        return if (boolean) {
+            Area(309, 167, 660, 250)
+        } else {
+            Area(1257, 753, 555, 83)
+        }
+    }
+
 
     var refreshTaskListArea = Area(1319, 185, 220, 70)
 
@@ -153,8 +161,6 @@ class BaseConstant {
             delayTime
         )
     }
-
-
 
 
     val isOpenPositionArea = Area(455, 258, 73, 76)//已经开启的位置
