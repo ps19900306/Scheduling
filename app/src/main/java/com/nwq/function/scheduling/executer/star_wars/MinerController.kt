@@ -1,8 +1,10 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
+import com.nwq.function.scheduling.utils.TimeUtils
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -50,6 +52,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     // 放圣光
     var CombatStamp_3 = 0L
     val BASIC_COMBAT_INTERVAL_3 = 70 * 1000L
+
 
 
     override suspend fun generalControlMethod() {
@@ -159,6 +162,13 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
         }
 
+        if(lastIsSafe){
+            if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesCollectTimeSp > spReo.collectInterval * Constant.Hour) {
+                harvestVegetableController.startCollectVegetables()
+            } else if(openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > spReo.addInterval * Constant.Hour){
+                harvestVegetableController.addPlanetaryTime()
+            }
+        }
 
         takeScreen(normalClickInterval)
         val nowIsSafe = !visual.isDangerous(localOffsetX, localOffsetY)
