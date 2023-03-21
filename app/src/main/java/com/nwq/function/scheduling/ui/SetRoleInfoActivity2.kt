@@ -5,10 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.google.gson.Gson
-import com.nwq.function.scheduling.databinding.ActivityGetColorBinding
 import com.nwq.function.scheduling.databinding.ActivitySetRoleInfo2Binding
-import com.nwq.function.scheduling.utils.BroadcastUtils
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.singleClick
 import com.nwq.function.scheduling.utils.sp.SP
@@ -197,9 +194,9 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
 
         bind.fightModeCheck.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                SPRepoPrefix.getNowSPRepo().nowSelectModeSP = SpConstant.FIGHT_MODEL
+                SPRepoPrefix.getNowSPRepo().nowSelectMode = SpConstant.FIGHT_MODEL
             } else {
-                SPRepoPrefix.getNowSPRepo().nowSelectModeSP = SpConstant.MINER_MODEL
+                SPRepoPrefix.getNowSPRepo().nowSelectMode = SpConstant.MINER_MODEL
             }
         }
     }
@@ -218,7 +215,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
         bind.resourceBaseLocationTitleTv.text = "$resourcesBaseLocationSP"
         bind.resourceBaseCheckTv.isChecked = openHarvestVegetablesSP
         bind.fightModeCheck.isChecked =
-            SPRepoPrefix.getNowSPRepo().nowSelectModeSP == SpConstant.FIGHT_MODEL
+            SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL
     }
 
 }

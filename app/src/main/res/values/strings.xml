@@ -2,5 +2,7 @@
     <string name="app_name">Scheduling</string>
     <string name="accessibility_service_label">Scheduling</string>
     <string name="accessibility_service_description">Scheduling</string>
+    <string name="ok">确定</string>
+    <string name="clear">清除</string>
 
 </resources>

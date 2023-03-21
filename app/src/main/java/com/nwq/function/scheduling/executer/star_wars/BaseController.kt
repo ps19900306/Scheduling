@@ -27,16 +27,16 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val weaponPosition = BotOfst + 3
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
-    val isShieldResistance = spReo.resistanceModeSP
+    val isShieldResistance = spReo.resistanceMode
 
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
-        val isOpen = spReo.openHarvestVegetablesSP
-        val str = spReo.celestialResourcesSP
+        val isOpen = spReo.openHarvestVegetables
+        val str = spReo.celestialResources
         isOpen && !TextUtils.isEmpty(str)
     }
-    var resourcesAddTimeSp = spReo.resourcesAddTimeSP
-    var resourcesCollectTimeSp = spReo.resourcesCollectTimeSP
+    var resourcesAddTimeSp = spReo.resourcesAddTime
+    var resourcesCollectTimeSp = spReo.resourcesCollectTime
     val harvestVegetableController by lazy {
         HarvestVegetableController(helper, {
             true

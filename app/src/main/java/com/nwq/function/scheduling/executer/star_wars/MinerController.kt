@@ -2,15 +2,9 @@ package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
-import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
-import com.nwq.function.scheduling.utils.sp.SP
-import com.nwq.function.scheduling.utils.sp.SPRepo
-import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
-import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
-import java.util.Date
 
 /**
 create by: 86136
@@ -34,19 +28,19 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private var nowStep = START_GAME
     private var hasCorrected = false //是否修正坐标
-    val warehouseIndex = spReo.miningBaseLocationSP
+    val warehouseIndex = spReo.miningBaseLocation
 
     private val isAlarm = false
 
 
     private val miningGunList by lazy {
-        JsonUtil.anyToJsonObject(spReo.miningGunListSP) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.miningGunList) ?: listOf<Int>()
     }//这里是采矿的
     private val miningInertiaList by lazy {
-        JsonUtil.anyToJsonObject(spReo.miningInertiaListSP) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.miningInertiaList) ?: listOf<Int>()
     }//这个放皮球的 或者  这个放推子
     private val miningStabilizerList by lazy {
-        JsonUtil.anyToJsonObject(spReo.miningStabilizerListSP) ?: listOf<Int>()
+        JsonUtil.anyToJsonObject(spReo.miningStabilizerList) ?: listOf<Int>()
     }//放圣光
 
     // 这个放皮球的

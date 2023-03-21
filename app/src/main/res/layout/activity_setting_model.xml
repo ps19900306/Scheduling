@@ -12,8 +12,9 @@
         android:text="选择设置类型" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/select_model_rc"
+        android:id="@+id/recyclerView"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
-        android:layout_height="48dp" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

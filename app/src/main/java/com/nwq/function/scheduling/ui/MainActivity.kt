@@ -55,6 +55,9 @@ class MainActivity : AppCompatActivity() {
         bind.setRole2.singleClick {
             SetRoleInfoActivity2.startSetRole(SpConstant.PREFIX_ROLE2, this)
         }
+        bind.testColor.singleClick {
+            SettingModelActivity.startSettingModel(SpConstant.PREFIX_ROLE1, this)
+        }
 
         bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext
         bind.continueToTheNextCb.setOnCheckedChangeListener { compoundButton, b ->
