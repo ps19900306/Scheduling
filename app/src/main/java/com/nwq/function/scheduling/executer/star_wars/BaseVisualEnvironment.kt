@@ -569,21 +569,23 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     //是否危险的
     fun isDangerous(localOffsetX: Int, localOffsetY: Int): Boolean {
-        return !(discoverEnemyList(0, localOffsetX, localOffsetY) || discoverEnemyList(
-            1, localOffsetX, localOffsetY
-        ) || discoverEnemyList(2, localOffsetX, localOffsetY))
+        return discoverEnemyList(0, localOffsetX, localOffsetY) || discoverEnemyList(
+            1,
+            localOffsetX,
+            localOffsetY
+        ) || discoverEnemyList(2, localOffsetX, localOffsetY)
     }
 
     //是否发现敌人 ，发现返回TRUE
     fun discoverEnemyList(Index: Int, offsetX: Int, YOffset: Int): Boolean {
         val XOffset = Index * 124 + offsetX
         val list = listOf(
-            verificationTask(566 + XOffset, 720 + YOffset, AllOver140Rule, 1),
-            verificationTask(572 + XOffset, 726 + YOffset, AllOver140Rule, 1),
+            verificationTask(567 + XOffset, 712 + YOffset, AllOver140Rule, 1),
+            verificationTask(567 + XOffset, 722 + YOffset, AllOver140Rule, 1),
+            verificationTask(572 + XOffset, 727 + YOffset, AllOver140Rule, 1),
             verificationTask(578 + XOffset, 721 + YOffset, AllOver140Rule, 1),
-            verificationTask(578 + XOffset, 711 + YOffset, AllOver140Rule, 1),
-            verificationTask(573 + XOffset, 705 + YOffset, AllOver140Rule, 1),
-            verificationTask(566 + XOffset, 711 + YOffset, AllOver140Rule, 1),
+            verificationTask(578 + XOffset, 713 + YOffset, AllOver140Rule, 1),
+            verificationTask(573 + XOffset, 706 + YOffset, AllOver140Rule, 1),
         )
         return !ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -629,11 +631,11 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     val CURRENT_PLANETARY_GROUP = 803 //当前行星群
     val MENU_NOT_OPEN = 804 //未点开的状态
     fun judeResourceType(position: Int): Int {
-        val offestY = 120
+        val offestY = 104
         val list1 = listOf(
-            verificationTask(1626, 480 + offestY * position, AllLess70Rule),
-            verificationTask(1627, 463 + offestY * position, AllOver150Rule, 1),
-            verificationTask(1627, 495 + offestY * position, AllOver150Rule, 1),
+            verificationTask(1626, 600-offestY + offestY * position, AllLess70Rule),
+            verificationTask(1627, 583-offestY + offestY * position, AllOver150Rule, 3),
+            verificationTask(1627, 615-offestY + offestY * position, AllOver150Rule, 3),
         )
         if (ImgUtils.performPointsColorVerification(
                 list1, screenBitmap, 0

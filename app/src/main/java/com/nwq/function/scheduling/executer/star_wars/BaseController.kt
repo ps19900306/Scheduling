@@ -95,7 +95,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
     suspend fun clickEquipArray(list: List<Int>) {
-        Timber.d("${JsonUtil.objectToString(list)} 点击数组有 FightController NWQ_ 2023/3/10");
+        Timber.d("${JsonUtil.objectToString(list)} 点击数组有 BaseController NWQ_ 2023/3/10");
         if (list.isNullOrEmpty()) {
             return
         }
@@ -225,7 +225,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
 
     suspend fun theOutCheck() {
-        Timber.d("  theOutCheck FightController NWQ_ 2023/3/12");
+        Timber.d("  theOutCheck BaseController NWQ_ 2023/3/12");
         var flag = true
         var count = 20
         while (flag && runSwitch) {
@@ -339,7 +339,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             listOf(200, 200, 200)
         )?.let {
             hasModifyY = true
-            localOffsetY = (it.y - constant.localBaseX.y).toInt()
+            localOffsetY = (it.y - constant.localBaseY.y).toInt()
         }
         Timber.d("hasModifyX:$hasModifyX $localOffsetX  hasModifyY:$hasModifyY $localOffsetY  correctedCoordinate BaseController NWQ_ 2023/3/19");
         return hasModifyX && hasModifyY

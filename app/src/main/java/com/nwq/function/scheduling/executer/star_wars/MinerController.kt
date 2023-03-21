@@ -117,8 +117,8 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 }
             }
             if (visual.isInSpaceStation() && visual.hasPositionMenu()) {
-//                delay(doubleClickInterval)
-//                unloadingCargo(false)
+                delay(doubleClickInterval)
+                unloadingCargo(false)
                 delay(doubleClickInterval)
                 flag = false
             } else if (count <= 10 && !visual.isSailing()) {
@@ -163,10 +163,15 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = OUT_SPAE
                 wait_Time = 0L
             }
+            Timber.d("准备出  waitForSafe MinerController NWQ_ 2023/3/21");
         } else if (nowIsSafe == true && lastIsSafe != true) {
             lastSafeTime = System.currentTimeMillis()
+            Timber.d("等待期  waitForSafe MinerController NWQ_ 2023/3/21");
         } else if (nowIsSafe != true && lastIsSafe == true) {
             LastDangerousTime = System.currentTimeMillis()
+            Timber.d("发现敌军  waitForSafe MinerController NWQ_ 2023/3/21");
+        } else {
+            Timber.d("敌军一直存在  waitForSafe MinerController NWQ_ 2023/3/21");
         }
         lastIsSafe = nowIsSafe
     }
@@ -217,18 +222,6 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 flag = false
             }
 
-//            //如果没有数据就刷新一下
-//            if (!visual.hasEyeItem()) {
-//                if (!hasRefresh) {
-//                    clickJumpCollectionAddress(warehouseIndex, false)
-//                    nowStep = MONITORING_RETURN_STATUS
-//                    flag = false
-//                } else {
-//                    swipe(constant.eyeMenuSwipeToTopArea(), 1)
-//                    hasRefresh = true
-//                    count = 4
-//                }
-//            }
 
             if (visual.IsTheResourceNotTop()) {
                 swipe(constant.eyeMenuSwipeToTopArea(), 1)
@@ -241,8 +234,9 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             takeScreen(normalClickInterval)
             when (visual.judeResourceType(count)) {
                 visual.REMOTE_PLANETARY_GROUP -> {
+                    Timber.d("REMOTE_PLANETARY_GROUP  lookingForMineralStars MinerController NWQ_ 2023/3/21");
                     click(constant.getTransitionArea(count))
-                    delay(quadrupleClickInterval)
+                    delay(quadrupleClickInterval*3)
                     for (i in 0 until 3) {
                         swipe(constant.eyeMenuSwipeToTopArea(), (Math.random() * 1 + 1).toInt())
                         delay(normalClickInterval)
@@ -251,17 +245,21 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     canRefresh = true
                 }
                 visual.RESOURCE_PLANET -> {
+                    Timber.d("RESOURCE_PLANET  lookingForMineralStars MinerController NWQ_ 2023/3/21");
                     click(constant.getLockingArea(count))
                 }
                 visual.MENU_NOT_OPEN -> {
-                    if (canRefresh) {
-                        swipe(constant.eyeMenuSwipeToTopArea(), 1)
-                        canRefresh = false
-                        count = 4
-                    } else {
-                        clickJumpCollectionAddress(warehouseIndex, false)
-                        nowStep = MONITORING_RETURN_STATUS
-                        flag = false
+                    Timber.d("MENU_NOT_OPEN  lookingForMineralStars MinerController NWQ_ 2023/3/21");
+                    if (count == 1) {
+                        if (canRefresh) {
+                            swipe(constant.eyeMenuSwipeToTopArea(), 1)
+                            canRefresh = false
+                            count = 4
+                        } else {
+                            clickJumpCollectionAddress(warehouseIndex, false)
+                            nowStep = MONITORING_RETURN_STATUS
+                            flag = false
+                        }
                     }
                 }
             }
@@ -271,18 +269,21 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //这个是开采监控阶段
     private suspend fun monitoringDuringMining() {
+        Timber.d("采矿监控阶段 monitoringDuringMining MinerController NWQ_ 2023/3/20");
         var flag = true
         var lastTargetCount = 0
         var count = 65
         while (flag && count > 0 && runSwitch) {
             takeScreen(doubleClickInterval)
             if (visual.shieldTooLow() || isDangerous() || visual.warehouseIsFull()) {
+                Timber.d("返回基地了  monitoringDuringMining MinerController NWQ_ 2023/3/21");
                 clickJumpCollectionAddress(warehouseIndex, false)
                 nowStep = MONITORING_RETURN_STATUS
                 flag = false
             }
-            val count = visual.getTagNumber()
+            val count = visual.getOreTargetNumber()
             if (count <= 0) {
+                Timber.d("没有矿石了  monitoringDuringMining MinerController NWQ_ 2023/3/21");
                 nowStep = LOOKING_FOR_PLANETARY_GROUPS
                 flag = false
             }
