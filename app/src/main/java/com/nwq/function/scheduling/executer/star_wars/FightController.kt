@@ -191,10 +191,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         Timber.d("准备接取任务  inSpaceStation: $inSpaceStation pickUpTask FightController NWQ_ 2023/3/12");
         click(constant.getTopMenuArea(2))
         takeScreen(tripleClickInterval)
-        if (visual.hasReceivedTask()) {
+        if (visual.hasReceivedTask(spReo.hasLegionnaires)) {
             clickTheDialogueClose(false)
             takeScreen(doubleClickInterval)
-            if (visual.hasReceivedTask()) {
+            if (visual.hasReceivedTask(spReo.hasLegionnaires)) {
                 Timber.d("已经存在任务 pickUpTask FightController NWQ_ 2023/3/10");
                 if (needCancel) {
                     cancelTask()
@@ -205,7 +205,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 } else {
                     click(constant.optTaskArea)
                     takeScreen(doubleClickInterval)
-                    if (visual.hasReceivedTask()) {
+                    if (visual.hasReceivedTask(spReo.hasLegionnaires)) {
                         clickTheDialogueClose(true)
                         takeScreen(doubleClickInterval)
                         ensureCloseDetermine()
@@ -269,7 +269,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             return
         }
 
-        click(constant.openTaskRightArea)
+        if(spReo.hasLegionnaires){
+            click(constant.openTaskRightArea2)
+        }else{
+            click(constant.openTaskRightArea)
+        }
+
+
         click(constant.openTaskDetermineArea, doubleClickInterval)
 
         //到这里就结束了

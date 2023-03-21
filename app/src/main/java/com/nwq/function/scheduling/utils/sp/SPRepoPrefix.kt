@@ -60,6 +60,9 @@ class SPRepoPrefix(val prefix: String) {
     val lastBackSpaceStationSP = SP(prefix + SpConstant.LAST_PICKUP_TASK_TIME, 0L)
     var lastBackSpaceStation by lastBackSpaceStationSP
 
+    val hasLegionnairesSP = SP(prefix + SpConstant.HAS_LEGIONNAIRES, false)
+    var hasLegionnaires by hasLegionnairesSP
+
 
     //收菜的
     val celestialResourcesSP = SP(prefix + SpConstant.CELESTIAL_RESOURCES_LIST, "")

@@ -11,10 +11,9 @@ import com.nwq.function.scheduling.ui.adapter.SetParameterAdapter
 import com.nwq.function.scheduling.ui.data.SetCheckInfo
 import com.nwq.function.scheduling.ui.data.SetListInfo
 import com.nwq.function.scheduling.ui.data.SetIntInfo
-import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
-import java.lang.reflect.Type
+
 
 class SettingModelActivity : AppCompatActivity() {
 
@@ -70,6 +69,7 @@ class SettingModelActivity : AppCompatActivity() {
             SetListInfo("List1:165", repo.timeOnList1SP),
             SetListInfo("List2:1700", repo.timeOnList2SP),
             SetListInfo("List3:75", repo.timeOnList3SP),
+            SetCheckInfo("是否有军团任务", repo.hasLegionnairesSP),
         )
     }
 

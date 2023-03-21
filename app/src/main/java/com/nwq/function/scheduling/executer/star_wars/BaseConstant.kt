@@ -40,7 +40,7 @@ class BaseConstant {
     var pickTaskArea = Area(570, 668, 444, 25)
 
     var openTaskRightArea = Area(2085, 326, 303, 120) //这个是进入任务页 进行取消操作
-
+    var openTaskRightArea2 = Area(2085, 569, 303, 120) //这个是进入任务页 进行取消操作
     var openTaskDetermineArea = Area(1607, 869, 331, 87)//这个是点击确定按钮
 
     var leftDialogueArea = Area(335, 373, 617, 185)

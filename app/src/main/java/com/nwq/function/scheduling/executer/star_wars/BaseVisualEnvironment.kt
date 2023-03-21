@@ -80,7 +80,18 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    fun hasReceivedTask(): Boolean {
+    fun hasReceivedTask(boolean: Boolean): Boolean {
+        if (boolean) {
+            val list = listOf(
+                verificationTask(1104, 760, AllOver170Rule),
+                verificationTask(1094, 760, AllLess50Rule),
+                verificationTask(1124, 789, AllLess50Rule),
+            )
+            return ImgUtils.performPointsColorVerification(
+                list, screenBitmap, 0
+            )
+        }
+
         val list = listOf(
             verificationTask(1424, 787, AllOver200Rule),
             verificationTask(1492, 785, AllOver200Rule),
@@ -105,6 +116,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             return true
         }
     }
+
 
     fun isShowDetermine(): Boolean {
         val list = listOf(
@@ -570,9 +582,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //是否危险的
     fun isDangerous(localOffsetX: Int, localOffsetY: Int): Boolean {
         return discoverEnemyList(0, localOffsetX, localOffsetY) || discoverEnemyList(
-            1,
-            localOffsetX,
-            localOffsetY
+            1, localOffsetX, localOffsetY
         ) || discoverEnemyList(2, localOffsetX, localOffsetY)
     }
 
@@ -633,9 +643,9 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun judeResourceType(position: Int): Int {
         val offestY = 104
         val list1 = listOf(
-            verificationTask(1626, 600-offestY + offestY * position, AllLess70Rule),
-            verificationTask(1627, 583-offestY + offestY * position, AllOver150Rule, 3),
-            verificationTask(1627, 615-offestY + offestY * position, AllOver150Rule, 3),
+            verificationTask(1626, 600 - offestY + offestY * position, AllLess70Rule),
+            verificationTask(1627, 583 - offestY + offestY * position, AllOver150Rule, 3),
+            verificationTask(1627, 615 - offestY + offestY * position, AllOver150Rule, 3),
         )
         if (ImgUtils.performPointsColorVerification(
                 list1, screenBitmap, 0

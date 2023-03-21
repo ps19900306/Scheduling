@@ -12,7 +12,7 @@ object SpConstant {
     const val RESOURCES_ADD_COLLECT = "resources_add_collect"
     const val COLLECT_INTERVAL = "collect_interval"
     const val ADD_INTERVAL = "add_interval"
-
+    const val HAS_LEGIONNAIRES = "has_legionnaires"
 
     const val DAILY_TASKS_TIME="daily_tasks_time"
     const val LAST_COMPLETE_TIME = "LAST_COMPLETE_TIME"

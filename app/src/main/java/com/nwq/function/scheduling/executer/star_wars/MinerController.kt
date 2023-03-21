@@ -242,7 +242,8 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     Timber.d("REMOTE_PLANETARY_GROUP  lookingForMineralStars MinerController NWQ_ 2023/3/21");
                     click(constant.getTransitionArea(count))
                     delay(quadrupleClickInterval * 5)
-                    for (i in 0 until 3) {
+                    val max=  Math.random()*3 +1
+                    for (i in 0 until max.toInt()) {
                         swipe(constant.eyeMenuSwipeToTopArea(), (Math.random() * 1 + 1).toInt())
                         delay(normalClickInterval)
                     }
