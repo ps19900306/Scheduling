@@ -104,8 +104,9 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     private suspend fun monitoringReturnStatus() {
+        Timber.d("返回监控阶段 monitoringReturnStatus MinerController NWQ_ 2023/3/21");
         var flag = true
-        var count = 20
+        var count = 60
         nowStep = WAIT_FOR_SAFE
         while (flag && count > 0 && runSwitch) {
             takeScreen(normalClickInterval)
@@ -125,6 +126,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 flag = false
             } else if (count <= 10 && !visual.isSailing()) {
                 clickJumpCollectionAddress(warehouseIndex, false)
+                count=60
             }
             count--
         }
