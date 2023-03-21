@@ -6,6 +6,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
+import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -345,5 +346,14 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         Timber.d("hasModifyX:$hasModifyX $localOffsetX  hasModifyY:$hasModifyY $localOffsetY  correctedCoordinate BaseController NWQ_ 2023/3/19");
         return hasModifyX && hasModifyY
     }
+
+    //领取每日礼物
+    suspend fun dailyGiftPack() {
+        if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
+
+            spReo.dailytaskstime = System.currentTimeMillis()
+        }
+    }
+
 
 }

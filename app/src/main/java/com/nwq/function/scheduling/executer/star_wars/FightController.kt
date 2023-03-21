@@ -89,7 +89,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
 
     val Equipment_Interval = 30 * 1000L
-    var isCatchFoodSp =spReo.isCatchFood
+    var isCatchFoodSp = spReo.isCatchFood
     private val catchFoodList by lazy {
         if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
         else listOf<Int>()
@@ -115,6 +115,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun exitGame() {
         theOutCheck()
+        dailyGiftPack()
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
         click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)

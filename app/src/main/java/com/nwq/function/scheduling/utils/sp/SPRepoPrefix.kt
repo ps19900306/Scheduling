@@ -18,6 +18,7 @@ class SPRepoPrefix(val prefix: String) {
 
     val nowSelectModeSP = SP(prefix + SpConstant.NOW_SELECT_MODE, FIGHT_MODEL)
     var nowSelectMode by nowSelectModeSP
+    var dailytaskstime by SP(prefix + SpConstant.DAILY_TASKS_TIME, 0L)
 
     //战斗的
     val fightBaseLocationSP = SP(prefix + SpConstant.BASE_LOCATION, 0)
