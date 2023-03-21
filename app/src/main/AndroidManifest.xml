@@ -19,6 +19,9 @@
         android:theme="@style/Theme.Scheduling"
         tools:targetApi="31">
         <activity
+            android:name=".ui.SelectModelActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.SettingModelActivity"
             android:exported="false" />
         <activity

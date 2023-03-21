@@ -10,7 +10,7 @@ create time: 2023/3/21 10:57
 Function description:
  */
 
-data class SetPositionInfo(var title: String, var sp: SP<Int>) : MultiItemEntity {
+data class SetIntInfo(var title: String, var sp: SP<Int>) : MultiItemEntity {
 
     var position by sp
 

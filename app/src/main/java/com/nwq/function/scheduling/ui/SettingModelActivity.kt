@@ -10,24 +10,27 @@ import com.nwq.function.scheduling.databinding.ActivitySettingModelBinding
 import com.nwq.function.scheduling.ui.adapter.SetParameterAdapter
 import com.nwq.function.scheduling.ui.data.SetCheckInfo
 import com.nwq.function.scheduling.ui.data.SetListInfo
-import com.nwq.function.scheduling.ui.data.SetPositionInfo
+import com.nwq.function.scheduling.ui.data.SetIntInfo
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
+import java.lang.reflect.Type
 
 class SettingModelActivity : AppCompatActivity() {
 
 
     companion object {
-        fun startSettingModel(role: String, context: Context) {
+
+        private const val SET_TYPE = "set_type"
+        fun startSettingModel(type: Int, context: Context) {
             val intent = Intent(context, SettingModelActivity::class.java)
-            SPRepo.role = role
+            intent.putExtra(SET_TYPE, type)
             context.startActivity(intent)
         }
     }
 
     lateinit var bind: ActivitySettingModelBinding
     lateinit var adapter: SetParameterAdapter
-
+    var type: Int = 0
     val repo by lazy { SPRepoPrefix.getNowSPRepo() }
 
 
@@ -35,6 +38,7 @@ class SettingModelActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bind = ActivitySettingModelBinding.inflate(LayoutInflater.from(this))
         setContentView(bind.root)
+        type = intent.getIntExtra(SET_TYPE, 0)
         adapter = SetParameterAdapter(getList())
         bind.recyclerView.adapter = adapter
     }
@@ -43,7 +47,7 @@ class SettingModelActivity : AppCompatActivity() {
     private fun getList(): MutableList<MultiItemEntity> {
         val list = mutableListOf<MultiItemEntity>()
         list.add(SetCheckInfo("是否拾取箱子", repo.isPickupBoxSP))
-        list.add(SetPositionInfo("战斗基地坐标", repo.fightBaseLocationSP))
+        list.add(SetIntInfo("战斗基地坐标", repo.fightBaseLocationSP))
         list.add(SetListInfo("timeOnList1", repo.timeOnList1SP))
         return list
     }

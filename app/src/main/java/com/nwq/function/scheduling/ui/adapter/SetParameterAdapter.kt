@@ -1,9 +1,6 @@
 package com.nwq.function.scheduling.ui.adapter
 
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.nwq.function.scheduling.R
@@ -12,7 +9,7 @@ import com.nwq.function.scheduling.databinding.ItemSetIntBinding
 import com.nwq.function.scheduling.databinding.ItemSetListBinding
 import com.nwq.function.scheduling.ui.data.SetCheckInfo
 import com.nwq.function.scheduling.ui.data.SetListInfo
-import com.nwq.function.scheduling.ui.data.SetPositionInfo
+import com.nwq.function.scheduling.ui.data.SetIntInfo
 import com.nwq.function.scheduling.utils.singleClick
 
 /**
@@ -44,7 +41,7 @@ class SetParameterAdapter(list: MutableList<MultiItemEntity>) :
                 bind.checkbox.text = item.title
                 bind.checkbox.isChecked = item.isCheck
             }
-            is SetPositionInfo -> {
+            is SetIntInfo -> {
                 val bind = ItemSetIntBinding.bind(holder.itemView)
                 bind.okBtn.singleClick {
                     bind.contentEdit.text.toString().let {
