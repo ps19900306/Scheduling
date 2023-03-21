@@ -76,6 +76,9 @@ class BaseConstant {
     var theTwoArea = Area(1066, 207, 158, 114)//第二个船
     var jiHuoArea = Area(2050, 320, 342, 110)//点击激活
 
+    var libaoArea1 = Area(111, 518, 66, 65)//点击激活
+    var libaoArea2 = Area(451, 731, 315, 51)//点击激活
+    var libaoArea3 = Area(1906, 152, 56, 58)//点击激活
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
     }

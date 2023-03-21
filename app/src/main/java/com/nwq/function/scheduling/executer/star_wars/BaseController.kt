@@ -176,10 +176,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         click(constant.getTopMenuArea(1))
         delay(tripleClickInterval)
 
-        if (normal)
-            click(constant.generalWarehouseArea)
-        else
-            click(constant.mineralWarehouseArea)
+        if (normal) click(constant.generalWarehouseArea)
+        else click(constant.mineralWarehouseArea)
 
         delay(doubleClickInterval)
         takeScreen()
@@ -329,16 +327,14 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun correctedCoordinate(): Boolean {
         var hasModifyX = false
         visual.findPointByColor(
-            FindPointByColorTask(constant.localBaseX, 3, 0),
-            listOf(200, 200, 200)
+            FindPointByColorTask(constant.localBaseX, 3, 0), listOf(200, 200, 200)
         )?.let {
             hasModifyX = true
             localOffsetX = (it.x - constant.localBaseX.x).toInt()
         }
         var hasModifyY = false
         visual.findPointByColor(
-            FindPointByColorTask(constant.localBaseY, 0, 3),
-            listOf(200, 200, 200)
+            FindPointByColorTask(constant.localBaseY, 0, 3), listOf(200, 200, 200)
         )?.let {
             hasModifyY = true
             localOffsetY = (it.y - constant.localBaseY.y).toInt()
@@ -350,7 +346,14 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     //领取每日礼物
     suspend fun dailyGiftPack() {
         if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
-
+            Timber.d("领取每日礼包 dailyGiftPack BaseController NWQ_ 2023/3/21");
+            click(constant.libaoArea1, doubleClickInterval)
+            click(constant.libaoArea2, doubleClickInterval)
+            click(constant.libaoArea3, doubleClickInterval)
+            takeScreen(doubleClickInterval)
+            if (!visual.hasIntoGame()) {
+                click(constant.libaoArea3, normalClickInterval)
+            }
             spReo.dailytaskstime = System.currentTimeMillis()
         }
     }

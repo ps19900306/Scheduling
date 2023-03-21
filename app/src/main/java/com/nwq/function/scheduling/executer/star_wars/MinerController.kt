@@ -87,10 +87,18 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             nowStep = MONITORING_RETURN_STATUS
         } else if (visual.warehouseIsFull()) {
             clickJumpCollectionAddress(warehouseIndex, false)
-        } else {
-            clickJumpCollectionAddress(warehouseIndex, false)
             nowStep = MONITORING_RETURN_STATUS
+        } else {
+            ensureOpenLocalList()
+            if (correctedCoordinate()) {
+                hasCorrected = true
+                nowStep = LOOKING_FOR_PLANETARY_GROUPS
+            } else {
+                clickJumpCollectionAddress(warehouseIndex, false)
+                nowStep = MONITORING_RETURN_STATUS
+            }
         }
+        dailyGiftPack()
     }
 
 
@@ -214,6 +222,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 click(constant.getTopClickArea(0))
                 click(constant.getTopSurroundArea(0), normalClickInterval)
                 flag = false
+                return
             }
 
 
@@ -230,7 +239,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 visual.REMOTE_PLANETARY_GROUP -> {
                     Timber.d("REMOTE_PLANETARY_GROUP  lookingForMineralStars MinerController NWQ_ 2023/3/21");
                     click(constant.getTransitionArea(count))
-                    delay(quadrupleClickInterval*3)
+                    delay(quadrupleClickInterval * 5)
                     for (i in 0 until 3) {
                         swipe(constant.eyeMenuSwipeToTopArea(), (Math.random() * 1 + 1).toInt())
                         delay(normalClickInterval)
