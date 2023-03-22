@@ -341,6 +341,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var hasNewLock = false
     var useUnlock = true //是否使用右上角的未锁定数进行锁定
     var hasOpenCatch = false
+    var intoCount = 3
     private suspend fun combatMonitoring() {
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
             nowStep = ABNORMAL_STATE
@@ -368,10 +369,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     hasOpenCatch = false
                     openTheWholeBattle()
                     useUnlock = true
-                } else {
-                    Timber.d("没有锁定上继续导航 combatMonitoring FightController NWQ_ 2023/3/10");
-                    //没有锁定上继续导航
+                } else if (intoCount < 0) {
+                    Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
                     useUnlock = false
+                    nowStep = EXIT_OPT
+                } else {
+                    intoCount--
                 }
             } else if (visual.getTagNumber() > 0 || judgeIsOpen(weaponPosition)) {
                 Timber.d("存在锁定目标 combatMonitoring FightController NWQ_ 2023/3/10");
@@ -750,6 +753,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //战斗开始时候需要开启的
     private fun closeTheWholeBattle() {
+        intoCount=3
         mEnterCombatStatus = false
         useUnlock = true
         DESTROY_INTERVAL = 50 * 1000
