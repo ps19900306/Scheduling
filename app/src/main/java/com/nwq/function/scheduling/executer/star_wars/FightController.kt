@@ -343,6 +343,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var hasOpenCatch = false
     var intoCount = 3
     private suspend fun combatMonitoring() {
+        Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
             if(mEnterCombatStatus){
                 nowStep = ABNORMAL_STATE
@@ -354,9 +355,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 return
             }
         }
-        Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
         takeScreen(quadrupleClickInterval)
         if (ensureCloseDetermine()) {
+            return
+        }
+
+        if(visual.isDamage()){
+            nowStep = EXIT_OPT
+            Timber.d("已经损毁 combatMonitoring FightController NWQ_ 2023/3/10");
             return
         }
         if (!mEnterCombatStatus) {

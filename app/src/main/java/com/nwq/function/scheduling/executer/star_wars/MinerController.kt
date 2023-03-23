@@ -218,6 +218,12 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             ensureOpenEyeMenu()
             delay(normalClickInterval)
 
+            if(visual.isDamage()){
+                nowStep = EXIT_OPT
+                Timber.d("已经损毁 lookingForMineralStars MinerController NWQ_ 2023/3/10");
+                return
+            }
+
             //这里表示已经锁定上目标了 可以进行采矿监控了
             if (visual.getOreTargetNumber() > 0) {
                 nowStep = MINING_MONITORING
