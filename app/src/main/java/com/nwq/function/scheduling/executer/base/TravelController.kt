@@ -72,15 +72,15 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
     }
 
     //如果截图失败则等待二秒后继续截图
-    suspend fun takeScreen(delayTime: Long) {
+    suspend fun takeScreen(delayTime: Long): Boolean {
         if (delayTime > 0) {
             delay(delayTime)
         }
-        takeScreen()
+        return takeScreen()
     }
 
     //如果截图失败则等待二秒后继续截图
-    suspend fun takeScreen() {
+    suspend fun takeScreen(): Boolean {
         var bitmap: Bitmap? = null
         do {
             bitmap = helper.takeScreen()
@@ -88,6 +88,7 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
                 delay(2000)
             }
         } while (bitmap == null)
+        return bitmap.width > bitmap.height
     }
 
     suspend fun getColor(x: Int, y: Int): Color? {
@@ -150,14 +151,12 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
 
     suspend fun swipe(
         swipeArea: SwipeArea,
-        midPoint:Int=0
+        midPoint: Int = 0
     ) {
-        val task =swipeArea.toClickTask(midPoint)
+        val task = swipeArea.toClickTask(midPoint)
         Timber.d("${JsonUtil.objectToString(task)} swipe TravelController NWQ_ 2023/3/14");
         helper.swipe(task)
     }
-
-
 
 
 }

@@ -688,7 +688,13 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
     //是否已经损毁
-    fun isDamage():Boolean{
+    fun isDamage(): Boolean {
         return false
     }
+
+    //判断是否是普通异常
+    fun isCommonUnusual() {
+
+    }
+
 }

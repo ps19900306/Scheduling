@@ -100,4 +100,27 @@ class SPRepoPrefix(val prefix: String) {
     var miningStabilizerList by miningStabilizerListSP
 
 
+    //副本
+    val isHasPropellerFSP = SP(prefix + SpConstant.F_IS_HAS_propeller, false)
+    var isHasPropellerF by isHasPropellerFSP
+
+    val isCatchFoodFSP = SP(prefix + SpConstant.F_IS_CATCH_FOOD, true)
+    var isCatchFoodF by isCatchFoodFSP
+
+    val timeOnList1FSP = SP(prefix + SpConstant.F_TIME_ON_LIST1, "[11,12]")
+    var timeOnList1F by timeOnList1FSP
+
+    val timeOnList2FSP = SP(prefix + SpConstant.F_TIME_ON_LIST2, "")
+    var timeOnList2F by timeOnList2FSP
+
+    val timeOnList3FSP = SP(prefix + SpConstant.F_TIME_ON_LIST3, "[10]")
+    var timeOnList3F by timeOnList3FSP
+
+    val wholeBattleListFSP = SP(prefix + SpConstant.F_WHOLE_BATTLE_LIST, "[1,8]")
+    var wholeBattleListF by wholeBattleListFSP
+
+    val roundBattleListFSP = SP(prefix + SpConstant.F_ROUND_BATTLE_LIST, "[4,5]")
+    var roundBattleListF by roundBattleListFSP
+
+
 }
