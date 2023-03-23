@@ -100,6 +100,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         spReo.lastBackSpaceStation = 0
         spReo.lastRefreshTime = 0
         spReo.lastPickUpTaskTime = 0
+        if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > spReo.addInterval * Constant.Hour) {
+            harvestVegetableController.addPlanetaryTime()
+            delay(normalClickInterval)
+        }
+
     }
 
     private suspend fun exitGame() {
