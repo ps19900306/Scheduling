@@ -65,7 +65,10 @@ class FuBenController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             val nowTargetCount = visual.getTagNumber()
             if (nowTargetCount <= 0) {
                 if (isHasPropeller) {
-                    clickEquipArray(checkEquipTimes(2, null, listOf(propellerPosition)))
+                    val list = checkEquipTimes(2, listOf(weaponPosition), listOf(propellerPosition))
+                    if (list.contains(weaponPosition) && list.contains(propellerPosition)) {
+                        clickEquipArray(listOf(propellerPosition))
+                    }
                 }
                 hasNewLock = true
                 hasOpenCatch = false
