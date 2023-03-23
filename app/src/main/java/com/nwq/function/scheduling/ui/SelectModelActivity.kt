@@ -59,6 +59,7 @@ class SelectModelActivity : AppCompatActivity() {
         val list = mutableListOf<SelectModelInfo>()
         list.add(SelectModelInfo("际遇模式", SpConstant.FIGHT_MODEL))
         list.add(SelectModelInfo("采矿模式", SpConstant.MINER_MODEL))
+        list.add(SelectModelInfo("副本模式", SpConstant.FUBEN_MODEL))
         return list
     }
 }

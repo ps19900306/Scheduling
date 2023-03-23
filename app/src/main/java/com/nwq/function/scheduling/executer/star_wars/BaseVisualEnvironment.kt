@@ -686,4 +686,15 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         val info = PixelsInfo(1954, 90, 1, 30, 1, 0)
         return ImgUtils.findColorRule(info, screenBitmap, AllOver150Rule)
     }
+
+    //是否已经损毁
+    fun isDamage(): Boolean {
+        return false
+    }
+
+    //判断是否是普通异常
+    fun isCommonUnusual() {
+
+    }
+
 }

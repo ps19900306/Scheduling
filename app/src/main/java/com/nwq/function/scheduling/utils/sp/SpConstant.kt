@@ -4,6 +4,7 @@ object SpConstant {
     const val NOW_SELECT_MODE="now_select_mode"
     const val FIGHT_MODEL=1
     const val MINER_MODEL=2
+    const val FUBEN_MODEL=3
 
     const val LAST_REFRESH_TIME = "last_refresh_time"
     const val LAST_PICKUP_TASK_TIME = "last_pickup_task_time"
@@ -24,7 +25,7 @@ object SpConstant {
     const val CRESISTANCE_MODE = "cresistance_mode"
     const val IS_PICKUP_BOX = "is_pickup_box"
     const val IS_CATCH_FOOD = "is_catch_food"
-    const val BASE_LOCATION = "base_location"//这个是战斗的默认回去的基地坐标
+    const val BASE_LOCATION = "base_location" //这个是战斗的默认回去的基地坐标
     const val TIME_ON_LIST1 = "time_on_list1"
     const val TIME_ON_LIST2 = "time_on_list2"
     const val TIME_ON_LIST3 = "time_on_list3"
@@ -42,5 +43,13 @@ object SpConstant {
     const val MINING_INERTIA_LIST="mining_inertia_list"
     const val MINING_STABILIZER_LIST="mining_stabilizer_list"
 
+    const val F_IS_CATCH_FOOD = "f_is_catch_food"
+    const val F_IS_HAS_propeller = "f_is_has_propeller"
+    const val F_TIME_ON_LIST1 = "f_time_on_list1"
+    const val F_TIME_ON_LIST2 = "f_time_on_list2"
+    const val F_TIME_ON_LIST3 = "f_time_on_list3"
+    const val F_WHOLE_BATTLE_LIST = "f_whole_battle_list"
+    const val F_ROUND_BATTLE_LIST = "f_round_battle_list"
+    const val F_CRESISTANCE_MODE = "f_cresistance_mode"
 
 }

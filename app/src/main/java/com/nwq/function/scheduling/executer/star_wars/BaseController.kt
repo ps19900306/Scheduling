@@ -8,6 +8,7 @@ import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
+import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -19,6 +20,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
     protected val TopOfst = 6//顶部的偏移量
     protected val BotOfst = -1//底部的便宜量
+    var DEFAULT_DESTROY_INTERVAL = 80 * 1000 //能够容忍的最大击毁间隔
+    var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
     protected val visual by lazy {
         BaseVisualEnvironment(helper)
     }
@@ -29,7 +32,12 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val weaponPosition = BotOfst + 3
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
-    val isShieldResistance = spReo.resistanceMode
+    protected val propellerPosition = BotOfst + 6
+    val isShieldResistance =
+        if (spReo.nowSelectMode == SpConstant.FIGHT_MODEL)
+            spReo.resistanceMode
+        else
+            spReo.resistanceModeF
 
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
@@ -45,6 +53,19 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         })
     }
 
+    // 默认是武器的
+    var CombatStamp_1 = 0L
+    val BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
+
+    // 默认是武器的
+    var CombatStamp_2 = 0L
+    val BASIC_COMBAT_INTERVAL_2 = 170 * 1000L
+
+    // 默认是转速的
+    var CombatStamp_3 = 0L
+    val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
+
+    val Equipment_Interval = 30 * 1000L
 
     //这个是
     suspend fun intoGame() {

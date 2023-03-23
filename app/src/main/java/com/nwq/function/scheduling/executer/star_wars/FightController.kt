@@ -43,8 +43,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     val ON_STATE = 2
     var maintenanceStatus = UNKNOWN_STATE
 
-    var DEFAULT_DESTROY_INTERVAL = 80 * 1000 //能够容忍的最大击毁间隔
-    var DESTROY_INTERVAL = DEFAULT_DESTROY_INTERVAL //能够容忍的最大击毁间隔
+
     val warehouseIndex = spReo.fightBaseLocation
 
     /**
@@ -65,6 +64,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private val roundBattleOpenList by lazy {
         JsonUtil.anyToJsonObject(spReo.roundBattleList) ?: listOf<Int>()
     }
+    var isCatchFoodSp = spReo.isCatchFood
+    private val catchFoodList by lazy {
+        if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
+        else listOf<Int>()
+    }
     private val timeOnOpenList1 by lazy {
         JsonUtil.anyToJsonObject(spReo.timeOnList1) ?: listOf<Int>()
     }
@@ -76,24 +80,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
 
-    // 默认是武器的
-    var CombatStamp_1 = 0L
-    val BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
 
-    // 默认是武器的
-    var CombatStamp_2 = 0L
-    val BASIC_COMBAT_INTERVAL_2 = 170 * 1000L
 
-    // 默认是转速的
-    var CombatStamp_3 = 0L
-    val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
 
-    val Equipment_Interval = 30 * 1000L
-    var isCatchFoodSp = spReo.isCatchFood
-    private val catchFoodList by lazy {
-        if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
-        else listOf<Int>()
-    }
 
 
     /*******************************************************************
@@ -341,15 +330,28 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var hasNewLock = false
     var useUnlock = true //是否使用右上角的未锁定数进行锁定
     var hasOpenCatch = false
+    var intoCount = 3
     private suspend fun combatMonitoring() {
-        if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
-            nowStep = ABNORMAL_STATE
-            Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
-            return
-        }
         Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
+        if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
+            if(mEnterCombatStatus){
+                nowStep = ABNORMAL_STATE
+                Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
+                return
+            }else{
+                nowStep = EXIT_OPT
+                Timber.d("进入战斗超时 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
+                return
+            }
+        }
         takeScreen(quadrupleClickInterval)
         if (ensureCloseDetermine()) {
+            return
+        }
+
+        if(visual.isDamage()){
+            nowStep = EXIT_OPT
+            Timber.d("已经损毁 combatMonitoring FightController NWQ_ 2023/3/10");
             return
         }
         if (!mEnterCombatStatus) {
@@ -368,10 +370,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     hasOpenCatch = false
                     openTheWholeBattle()
                     useUnlock = true
-                } else {
-                    Timber.d("没有锁定上继续导航 combatMonitoring FightController NWQ_ 2023/3/10");
-                    //没有锁定上继续导航
+                } else if (intoCount < 0) {
+                    Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
                     useUnlock = false
+                    nowStep = EXIT_OPT
+                } else {
+                    intoCount--
                 }
             } else if (visual.getTagNumber() > 0 || judgeIsOpen(weaponPosition)) {
                 Timber.d("存在锁定目标 combatMonitoring FightController NWQ_ 2023/3/10");
@@ -441,10 +445,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         needCheckOpenList.addAll(catchFoodList)
                         hasNewLock = false
                     } else if (!hasNewLock) {
-                        if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 2 && nowTargetCount >= targetCount)) {
-                            targetReduceTime = System.currentTimeMillis()
-                            needCheckOpenList.addAll(catchFoodList)
-                        } else if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount)) {
+                        if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount)) {
                             targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
                             needCheckOpenList.addAll(catchFoodList)
                         }
@@ -691,7 +692,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     var judgeSmallShipTargetCount = 0
     var lastJudgeIsSmallShip = 0L
-
     var newLockAttackPosition = 0
     var newLockTargetCount = 0
     private fun isAttackSmallShip(): Boolean {
@@ -750,6 +750,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //战斗开始时候需要开启的
     private fun closeTheWholeBattle() {
+        intoCount=3
         mEnterCombatStatus = false
         useUnlock = true
         DESTROY_INTERVAL = 50 * 1000
