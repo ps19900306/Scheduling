@@ -4,6 +4,7 @@ object SpConstant {
     const val NOW_SELECT_MODE="now_select_mode"
     const val FIGHT_MODEL=1
     const val MINER_MODEL=2
+    const val FUBEN_MODEL=3
 
     const val LAST_REFRESH_TIME = "last_refresh_time"
     const val LAST_PICKUP_TASK_TIME = "last_pickup_task_time"
@@ -49,4 +50,6 @@ object SpConstant {
     const val F_TIME_ON_LIST3 = "f_time_on_list3"
     const val F_WHOLE_BATTLE_LIST = "f_whole_battle_list"
     const val F_ROUND_BATTLE_LIST = "f_round_battle_list"
+    const val F_CRESISTANCE_MODE = "f_cresistance_mode"
+
 }

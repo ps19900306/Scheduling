@@ -49,12 +49,16 @@ class SettingModelActivity : AppCompatActivity() {
         when (type) {
             SpConstant.MINER_MODEL -> {
                 list.addAll(minerList)
+                list.addAll(vegetableList)
             }
             SpConstant.FIGHT_MODEL -> {
                 list.addAll(fightList)
+                list.addAll(vegetableList)
+            }
+            SpConstant.FUBEN_MODEL -> {
+                list.addAll(fuBentList)
             }
         }
-        list.addAll(vegetableList)
         return list
     }
 
@@ -71,6 +75,19 @@ class SettingModelActivity : AppCompatActivity() {
             SetListInfo("List3:75", repo.timeOnList3SP),
             SetCheckInfo("是否有军团任务", repo.hasLegionnairesSP),
         )
+    }
+
+    val fuBentList by lazy {
+        listOf(
+            SetCheckInfo("开启网子", repo.isCatchFoodFSP),
+            SetCheckInfo("是否有推子", repo.isHasPropellerFSP),
+            SetCheckInfo("盾抗", repo.resistanceModeFSP),
+            SetListInfo("整个战斗", repo.wholeBattleListFSP),
+            SetListInfo("单个回合", repo.roundBattleListFSP),
+            SetListInfo("List1:165", repo.timeOnList1FSP),
+            SetListInfo("List2:1700", repo.timeOnList2FSP),
+            SetListInfo("List3:75", repo.timeOnList3FSP),
+            )
     }
 
     val vegetableList by lazy {

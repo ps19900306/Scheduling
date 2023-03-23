@@ -101,7 +101,11 @@ class SPRepoPrefix(val prefix: String) {
 
 
     //副本
-    val isHasPropellerFSP = SP(prefix + SpConstant.F_IS_HAS_propeller, false)
+
+    val resistanceModeFSP = SP(prefix + SpConstant.F_CRESISTANCE_MODE, false)
+    var resistanceModeF by resistanceModeFSP
+
+    val isHasPropellerFSP = SP(prefix + SpConstant.F_IS_HAS_propeller, true)
     var isHasPropellerF by isHasPropellerFSP
 
     val isCatchFoodFSP = SP(prefix + SpConstant.F_IS_CATCH_FOOD, true)

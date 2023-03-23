@@ -8,6 +8,7 @@ import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
+import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -32,7 +33,11 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
     protected val propellerPosition = BotOfst + 6
-    val isShieldResistance = spReo.resistanceMode
+    val isShieldResistance =
+        if (spReo.nowSelectMode == SpConstant.FIGHT_MODEL)
+            spReo.resistanceMode
+        else
+            spReo.resistanceModeF
 
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
@@ -47,6 +52,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             true
         })
     }
+
     // 默认是武器的
     var CombatStamp_1 = 0L
     val BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
