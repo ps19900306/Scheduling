@@ -344,9 +344,15 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var intoCount = 3
     private suspend fun combatMonitoring() {
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
-            nowStep = ABNORMAL_STATE
-            Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
-            return
+            if(mEnterCombatStatus){
+                nowStep = ABNORMAL_STATE
+                Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
+                return
+            }else{
+                nowStep = EXIT_OPT
+                Timber.d("进入战斗超时 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
+                return
+            }
         }
         Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
         takeScreen(quadrupleClickInterval)
