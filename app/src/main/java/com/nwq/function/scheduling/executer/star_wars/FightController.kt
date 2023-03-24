@@ -294,7 +294,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             click(constant.dialogDetermineArea)
         } else if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
             Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            if (System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_TOO_LONG) {
+            if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_TOO_LONG) {
                 needBackStation = true
                 neeForceRefresh = true
             }
