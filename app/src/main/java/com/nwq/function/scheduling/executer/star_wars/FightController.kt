@@ -288,32 +288,42 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     private suspend fun startNavigationMonitoring() {
-        takeScreen(quadrupleClickInterval)
-
-        if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
-            Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            nowStep = COMBAT_MONITORING
-            battleStartTime = System.currentTimeMillis()
-        } else if (visual.isShowDetermine()) {
-            Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            click(constant.dialogDetermineArea)
-        } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
-            needCancel = true
-            clickTheDialogueClose(false)
-            Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            nowStep = PICK_UP_TASK
-        } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
-            if (visual.isDamage()) {
-                nowStep = EXIT_OPT
-            } else if (System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_TOO_LONG) {
-                nowStep = PICK_UP_TASK
+        spReo.lastPickUpTaskTime = System.currentTimeMillis()
+        nowStep = PICK_UP_TASK
+        var flag = true
+        var count = 30
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
             }
-        } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
-            Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            needBackStation = true
-            needCancel = true
-            neeForceRefresh = true
-            nowStep = ABNORMAL_STATE
+            if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
+                Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                nowStep = COMBAT_MONITORING
+                battleStartTime = System.currentTimeMillis()
+                flag=false
+            } else if (visual.isShowDetermine()) {
+                Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                click(constant.dialogDetermineArea)
+            } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
+                needCancel = true
+                clickTheDialogueClose(false)
+                Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                nowStep = PICK_UP_TASK
+                flag=false
+            } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
+                count--
+                if (visual.isDamage()) {
+                    nowStep = EXIT_OPT
+                    flag=false
+                }
+            } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
+                Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                needBackStation = true
+                needCancel = true
+                neeForceRefresh = true
+                nowStep = ABNORMAL_STATE
+                flag=false
+            }
         }
     }
 
