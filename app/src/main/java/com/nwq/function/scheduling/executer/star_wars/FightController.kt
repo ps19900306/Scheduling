@@ -80,7 +80,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
 
-
     /*******************************************************************
      *                        下面都是方法
      * *****************************************************************
@@ -106,7 +105,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun exitGame() {
         theOutCheck()
         dailyGiftPack()
-        clickJumpCollectionAddress(warehouseIndex,false)
+        clickJumpCollectionAddress(warehouseIndex, false)
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
         click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
@@ -293,15 +292,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         if (visual.isShowDetermine()) {
             Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
             click(constant.dialogDetermineArea)
+        } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
+            if (visual.isDamage()) {
+                nowStep = EXIT_OPT
+            } else if (System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_TOO_LONG) {
+                nowStep = PICK_UP_TASK
+            }
         } else if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
             Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_TOO_LONG) {
-                needBackStation = true
-                neeForceRefresh = true
-            }
             nowStep = COMBAT_MONITORING
             battleStartTime = System.currentTimeMillis()
-        } else if (System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
+        } else if (!spReo.hasLegionnaires&&System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
             Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
             needBackStation = true
             needCancel = true
@@ -312,9 +313,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             clickTheDialogueClose(false)
             Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
             nowStep = PICK_UP_TASK
-        }else if(visual.isClosePositionMenu() && visual.isDamage()){
-            nowStep = EXIT_OPT
-            Timber.d("已经损毁 combatMonitoring FightController NWQ_ 2023/3/10");
         }
     }
 
@@ -332,11 +330,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
             nowStep = ABNORMAL_STATE
-            if(mEnterCombatStatus){
+            if (mEnterCombatStatus) {
                 nowStep = ABNORMAL_STATE
                 Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
-            }else if(visual.isDamage()){
+            } else if (visual.isDamage()) {
                 nowStep = EXIT_OPT
                 Timber.d("已经损毁 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
@@ -623,7 +621,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 click(constant.rightDialogueArea)
                 rightClickTimes++
                 flag = count
-            }else {
+            } else {
                 Timber.d("Nothing clickTheDialogueClose NWQ_ 2023/3/10");
                 flag--
             }
@@ -729,7 +727,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //战斗开始时候需要开启的
     private fun closeTheWholeBattle() {
-        intoCount=3
+        intoCount = 3
         mEnterCombatStatus = false
         useUnlock = true
         DESTROY_INTERVAL = 50 * 1000

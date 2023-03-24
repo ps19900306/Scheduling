@@ -16,7 +16,7 @@ class BaseConstant {
         }
 
     var REFRESH_INTERVAL = 31 * 60 * 1000L
-    var NAVIGATING_TOO_LONG = 15 * 60 * 1000L
+    var NAVIGATING_TOO_LONG = 10 * 60 * 1000L
     var NAVIGATING_EXCEPTION = 40 * 60 * 1000L
     var INTO_BATTLE_EXCEPTION = 3 * 60 * 1000L
     var MAX_BATTLE_TIME = 30 * 60 * 1000L
