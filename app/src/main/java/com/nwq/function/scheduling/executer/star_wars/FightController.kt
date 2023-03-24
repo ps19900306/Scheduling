@@ -106,6 +106,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun exitGame() {
         theOutCheck()
         dailyGiftPack()
+        clickJumpCollectionAddress(warehouseIndex,false)
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
         click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
@@ -612,7 +613,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0 && runSwitch) {
-            takeScreen(normalClickInterval)
+            takeScreen(fastClickInterval)
             if (visual.hasLeftDialogue()) {
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
