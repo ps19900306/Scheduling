@@ -244,6 +244,15 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
     }
 
+    suspend fun ensureCloseEyeMenu() {
+        if (!visual.hasEyesMenu()) {
+            theOutCheck()
+        }
+        if (visual.isOpenEyesMenu()) {
+            click(constant.closeEyeMenuArea, normalClickInterval)
+        }
+    }
+
 
     suspend fun theOutCheck() {
         Timber.d("  theOutCheck BaseController NWQ_ 2023/3/12");

@@ -154,6 +154,17 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         return isCloseEyesMenu() || isOpenEyesMenu()
     }
 
+    fun isOpenEyesMenu(): Boolean {
+        val list = listOf(
+            verificationTask(1841, 606, AllOver150Rule),
+            verificationTask(1870, 606, AllOver150Rule),
+            verificationTask(1862, 606, AllLess80Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 1
+        )
+    }
+
     fun isCloseEyesMenu(): Boolean {
         val list = listOf(
             verificationTask(2227, 605, AllLess80Rule),
@@ -188,16 +199,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
-    fun isOpenEyesMenu(): Boolean {
-        val list = listOf(
-            verificationTask(1841, 606, AllOver150Rule),
-            verificationTask(1870, 606, AllOver150Rule),
-            verificationTask(1862, 606, AllLess80Rule),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 1
-        )
-    }
+
 
 
     //判断菜单是否是打开的

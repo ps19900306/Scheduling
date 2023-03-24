@@ -355,6 +355,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         if (ensureCloseDetermine()) {
             return
         }
+        ensureCloseEyeMenu()
 
         if (!mEnterCombatStatus) {
             if (canLockTargetDelay()) {
