@@ -328,26 +328,23 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun combatMonitoring() {
         Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
+            nowStep = ABNORMAL_STATE
             if(mEnterCombatStatus){
                 nowStep = ABNORMAL_STATE
                 Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
-            }else{
+            }else if(visual.isDamage()){
                 nowStep = EXIT_OPT
-                Timber.d("进入战斗超时 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
+                Timber.d("已经损毁 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
             }
         }
+
         takeScreen(quadrupleClickInterval)
         if (ensureCloseDetermine()) {
             return
         }
 
-        if(visual.isDamage()){
-            nowStep = EXIT_OPT
-            Timber.d("已经损毁 combatMonitoring FightController NWQ_ 2023/3/10");
-            return
-        }
         if (!mEnterCombatStatus) {
             if (canLockTargetDelay()) {
                 click(constant.lockTargetGroupArea)
@@ -607,7 +604,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //pickUp 是否是接取任务
     private suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
-        var hasClickConversation = false
+        var hasClickConversation = true
         var rightClickTimes = 0
         var count = 4
         var flag = count
@@ -618,7 +615,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             if (visual.hasLeftDialogue()) {
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
-                hasClickConversation = true
                 flag = count
             } else if (visual.hasRightDialogue()) {
                 Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
