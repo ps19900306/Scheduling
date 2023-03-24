@@ -291,7 +291,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         spReo.lastPickUpTaskTime = System.currentTimeMillis()
         nowStep = PICK_UP_TASK
         var flag = true
-        var count = 30
+        var count = 40
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
@@ -300,7 +300,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 nowStep = COMBAT_MONITORING
                 battleStartTime = System.currentTimeMillis()
-                flag=false
+                flag = false
             } else if (visual.isShowDetermine()) {
                 Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 click(constant.dialogDetermineArea)
@@ -309,12 +309,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 clickTheDialogueClose(false)
                 Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 nowStep = PICK_UP_TASK
-                flag=false
+                flag = false
             } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
                 count--
                 if (visual.isDamage()) {
                     nowStep = EXIT_OPT
-                    flag=false
+                    flag = false
                 }
             } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
                 Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
@@ -322,7 +322,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 needCancel = true
                 neeForceRefresh = true
                 nowStep = ABNORMAL_STATE
-                flag=false
+                flag = false
             }
         }
     }
@@ -352,13 +352,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
         }
         takeScreen(quadrupleClickInterval)
-        if (ensureCloseDetermine()) {
+        if (ensureCloseDetermine()) {//这里大概率用不到了
             return
         }
-        ensureCloseEyeMenu()
-
         if (!mEnterCombatStatus) {
             if (canLockTargetDelay()) {
+                ensureCloseEyeMenu()
                 click(constant.lockTargetGroupArea)
                 takeScreen(doubleClickInterval)
                 targetCount = visual.getTagNumber()
