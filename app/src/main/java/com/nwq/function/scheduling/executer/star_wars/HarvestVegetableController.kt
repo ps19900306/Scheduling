@@ -35,7 +35,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         click(constant.addTimeArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
-        resourcesAddTimeSp = System.currentTimeMillis()
+        spReo.resourcesAddTime = System.currentTimeMillis()
         theOutCheck()
     }
 
@@ -139,7 +139,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             }
             nowCelestialCount++
             if (nowCelestialCount >= list.size) {//结束了
-                resourcesCollectTimeSp = System.currentTimeMillis()
+                spReo.resourcesCollectTime = System.currentTimeMillis()
                 Timber.d("完成 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
                 spReo.lastBackSpaceStation = System.currentTimeMillis()
                 clickJumpCollectionAddress(resourcesBaseLocationSP, false)
