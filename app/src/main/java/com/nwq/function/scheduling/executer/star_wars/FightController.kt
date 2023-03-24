@@ -283,17 +283,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             needCancel = true
             theOutCheck()
         } else if (inSpaceStation) {
-            click(constant.dialogDetermineArea, normalClickInterval)
-            takeScreen(doubleClickInterval)
-            ensureCloseDetermine()
             takeScreen(doubleClickInterval)
             ensureCloseDetermine()
             nowStep = START_BATTLE_NAVIGATION_MONITORING
         } else {
-            takeScreen(doubleClickInterval)
-            ensureCloseDetermine()
-            takeScreen(doubleClickInterval)
-            ensureCloseDetermine()
+
             nowStep = START_BATTLE_NAVIGATION_MONITORING
         }
     }
