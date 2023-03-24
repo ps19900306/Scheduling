@@ -620,11 +620,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
         var hasClickConversation = false
         var rightClickTimes = 0
-        var count = if (pickUp) {
-            10
-        } else {
-            2
-        }
+        var count = 4
         var flag = count
 
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
@@ -633,32 +629,25 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             if (visual.hasLeftDialogue()) {
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
-                click(constant.leftDialogueArea, fastClickInterval)
+                hasClickConversation = true
                 flag = count
             } else if (visual.hasRightDialogue()) {
                 Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.rightDialogueArea)
                 rightClickTimes++
-                count = 10
                 flag = count
-            } else if (visual.isShowDetermine()) {
-                Timber.d("isShowDetermine clickTheDialogueClose NWQ_ 2023/3/10");
-                if (needCancel || (rightClickTimes >= 1 && !receiveAdvancedTasks)) {
-                    needCancel = true
-                    needBackStation = true
-                    hasClickConversation = false
-                    click(constant.dialogCancleArea)
-                } else {
-                    click(constant.dialogDetermineArea)
-                    hasClickConversation = true
-                }
-                flag = 0
-            } else {
+            }else {
                 Timber.d("Nothing clickTheDialogueClose NWQ_ 2023/3/10");
                 flag--
             }
         }
-
+        if (needCancel || (rightClickTimes >= 1 && !receiveAdvancedTasks)) {
+            needCancel = true
+            needBackStation = true
+            hasClickConversation = false
+        } else {
+            hasClickConversation = true
+        }
         return hasClickConversation
     }
 

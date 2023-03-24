@@ -46,12 +46,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }//放圣光
 
     // 这个放皮球的
-    var CombatStamp_1 = 0L
-    val BASIC_COMBAT_INTERVAL_1 = 60 * 1000L
+    override var BASIC_COMBAT_INTERVAL_1 = 60 * 1000L
 
     // 放圣光
-    var CombatStamp_3 = 0L
-    val BASIC_COMBAT_INTERVAL_3 = 70 * 1000L
+    override var BASIC_COMBAT_INTERVAL_3 = 70 * 1000L
 
 
 

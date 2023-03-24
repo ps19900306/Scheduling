@@ -55,15 +55,15 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     // 默认是武器的
     var CombatStamp_1 = 0L
-    val BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
+    open var BASIC_COMBAT_INTERVAL_1 = 165 * 1000L
 
     // 默认是武器的
     var CombatStamp_2 = 0L
-    val BASIC_COMBAT_INTERVAL_2 = 170 * 1000L
+    var BASIC_COMBAT_INTERVAL_2 = 170 * 1000L
 
     // 默认是转速的
     var CombatStamp_3 = 0L
-    val BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
+    open var BASIC_COMBAT_INTERVAL_3 = 75 * 1000L
 
     val Equipment_Interval = 30 * 1000L
 
