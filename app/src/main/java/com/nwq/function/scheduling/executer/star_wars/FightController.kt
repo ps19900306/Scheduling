@@ -80,11 +80,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
 
-
-
-
-
-
     /*******************************************************************
      *                        下面都是方法
      * *****************************************************************
@@ -110,6 +105,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun exitGame() {
         theOutCheck()
         dailyGiftPack()
+        clickJumpCollectionAddress(warehouseIndex, false)
         pressBackBtn()
         delay(helper.defultClickDuration * 2)
         click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
@@ -287,39 +283,50 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             ensureCloseDetermine()
             nowStep = START_BATTLE_NAVIGATION_MONITORING
         } else {
-
             nowStep = START_BATTLE_NAVIGATION_MONITORING
         }
     }
 
     private suspend fun startNavigationMonitoring() {
-        takeScreen(quadrupleClickInterval)
-        if (visual.isShowDetermine()) {
-            Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            click(constant.dialogDetermineArea)
-        } else if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
-            Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            if (System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_TOO_LONG) {
-                needBackStation = true
-                neeForceRefresh = true
+        spReo.lastPickUpTaskTime = System.currentTimeMillis()
+        nowStep = PICK_UP_TASK
+        var flag = true
+        var count = 40
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
             }
-            nowStep = COMBAT_MONITORING
-            battleStartTime = System.currentTimeMillis()
-        } else if (System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
-            Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            needBackStation = true
-            needCancel = true
-            neeForceRefresh = true
-            nowStep = ABNORMAL_STATE
-        } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
-            needCancel = true
-            clickTheDialogueClose(false)
-            Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            nowStep = PICK_UP_TASK
+            if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
+                Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                nowStep = COMBAT_MONITORING
+                battleStartTime = System.currentTimeMillis()
+                flag = false
+            } else if (visual.isShowDetermine()) {
+                Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                click(constant.dialogDetermineArea)
+            } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
+                needCancel = true
+                clickTheDialogueClose(false)
+                Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                nowStep = PICK_UP_TASK
+                flag = false
+            } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
+                count--
+                if (visual.isDamage()) {
+                    nowStep = EXIT_OPT
+                    flag = false
+                }
+            } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
+                Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
+                needBackStation = true
+                needCancel = true
+                neeForceRefresh = true
+                nowStep = ABNORMAL_STATE
+                flag = false
+            }
         }
-
-
     }
+
 
     var battleStartTime = 0L //这个是开始战斗监控的时间
     var mEnterCombatStatus = false //这个是进入战斗的时间
@@ -333,28 +340,24 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun combatMonitoring() {
         Timber.d("进入战斗监控 combatMonitoring FightController NWQ_ 2023/3/10");
         if (System.currentTimeMillis() - battleStartTime > constant.MAX_BATTLE_TIME) {
-            if(mEnterCombatStatus){
+            nowStep = ABNORMAL_STATE
+            if (mEnterCombatStatus) {
                 nowStep = ABNORMAL_STATE
                 Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
-            }else{
+            } else if (visual.isDamage()) {
                 nowStep = EXIT_OPT
-                Timber.d("进入战斗超时 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
+                Timber.d("已经损毁 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
             }
         }
         takeScreen(quadrupleClickInterval)
-        if (ensureCloseDetermine()) {
-            return
-        }
-
-        if(visual.isDamage()){
-            nowStep = EXIT_OPT
-            Timber.d("已经损毁 combatMonitoring FightController NWQ_ 2023/3/10");
+        if (ensureCloseDetermine()) {//这里大概率用不到了
             return
         }
         if (!mEnterCombatStatus) {
             if (canLockTargetDelay()) {
+                ensureCloseEyeMenu()
                 click(constant.lockTargetGroupArea)
                 takeScreen(doubleClickInterval)
                 targetCount = visual.getTagNumber()
@@ -612,25 +615,24 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //pickUp 是否是接取任务
     private suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
-        var hasClickConversation = false
+        var hasClickConversation = true
         var rightClickTimes = 0
         var count = 4
         var flag = count
 
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
         while (flag > 0 && runSwitch) {
-            takeScreen(normalClickInterval)
+            takeScreen(fastClickInterval)
             if (visual.hasLeftDialogue()) {
                 Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
-                hasClickConversation = true
                 flag = count
             } else if (visual.hasRightDialogue()) {
                 Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.rightDialogueArea)
                 rightClickTimes++
                 flag = count
-            }else {
+            } else {
                 Timber.d("Nothing clickTheDialogueClose NWQ_ 2023/3/10");
                 flag--
             }
@@ -639,8 +641,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             needCancel = true
             needBackStation = true
             hasClickConversation = false
-        } else {
-            hasClickConversation = true
         }
         return hasClickConversation
     }
@@ -738,7 +738,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //战斗开始时候需要开启的
     private fun closeTheWholeBattle() {
-        intoCount=3
+        intoCount = 3
         mEnterCombatStatus = false
         useUnlock = true
         DESTROY_INTERVAL = 50 * 1000

@@ -16,7 +16,7 @@ class BaseConstant {
         }
 
     var REFRESH_INTERVAL = 31 * 60 * 1000L
-    var NAVIGATING_TOO_LONG = 15 * 60 * 1000L
+    var NAVIGATING_TOO_LONG = 10 * 60 * 1000L
     var NAVIGATING_EXCEPTION = 40 * 60 * 1000L
     var INTO_BATTLE_EXCEPTION = 3 * 60 * 1000L
     var MAX_BATTLE_TIME = 30 * 60 * 1000L
@@ -169,6 +169,7 @@ class BaseConstant {
     val localBaseX = Coordinate(567, 716)//用于修正X偏差度
     val localBaseY = Coordinate(573, 705)//用于修正Y偏差度
     val openEyeMenuArea = Area(2197, 565, 70, 70)//打开本地图标
+    val closeEyeMenuArea = Area(2197-377, 565, 70, 70)//打开本地图标
     val outSpaceArea = Area(2004, 331, 111, 59)//打开本地图标
     fun getTransitionArea(index: Int): Area {//点击跃迁
         return Area(1580, 200 + (index * 100), 300, 100)
