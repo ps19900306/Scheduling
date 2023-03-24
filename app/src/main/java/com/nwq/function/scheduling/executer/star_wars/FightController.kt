@@ -289,30 +289,31 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun startNavigationMonitoring() {
         takeScreen(quadrupleClickInterval)
-        if (visual.isShowDetermine()) {
+
+        if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
+            Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
+            nowStep = COMBAT_MONITORING
+            battleStartTime = System.currentTimeMillis()
+        } else if (visual.isShowDetermine()) {
             Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
             click(constant.dialogDetermineArea)
+        } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
+            needCancel = true
+            clickTheDialogueClose(false)
+            Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
+            nowStep = PICK_UP_TASK
         } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
             if (visual.isDamage()) {
                 nowStep = EXIT_OPT
             } else if (System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_TOO_LONG) {
                 nowStep = PICK_UP_TASK
             }
-        } else if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
-            Timber.d("hasGroupLock startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            nowStep = COMBAT_MONITORING
-            battleStartTime = System.currentTimeMillis()
-        } else if (!spReo.hasLegionnaires&&System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
+        } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
             Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
             needBackStation = true
             needCancel = true
             neeForceRefresh = true
             nowStep = ABNORMAL_STATE
-        } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
-            needCancel = true
-            clickTheDialogueClose(false)
-            Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
-            nowStep = PICK_UP_TASK
         }
     }
 
