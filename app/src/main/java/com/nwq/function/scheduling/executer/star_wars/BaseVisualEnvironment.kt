@@ -689,7 +689,14 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     //是否已经损毁
     fun isDamage(): Boolean {
-        return false
+        val list1 = listOf(
+            verificationTask(2138, 1012, AllOver200Rule,1),
+            verificationTask(2096, 1017, RedRule,1),
+            verificationTask(2127, 1024, AllLess80Rule,1),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )&& hasPositionMenu() && hasEyesMenu()
     }
 
     //判断是否是普通异常

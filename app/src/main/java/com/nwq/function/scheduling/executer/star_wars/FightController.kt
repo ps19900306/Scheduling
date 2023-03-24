@@ -311,10 +311,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             clickTheDialogueClose(false)
             Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
             nowStep = PICK_UP_TASK
+        }else if(visual.isClosePositionMenu() && visual.isDamage()){
+            nowStep = EXIT_OPT
+            Timber.d("已经损毁 combatMonitoring FightController NWQ_ 2023/3/10");
         }
-
-
     }
+
 
     var battleStartTime = 0L //这个是开始战斗监控的时间
     var mEnterCombatStatus = false //这个是进入战斗的时间
@@ -339,7 +341,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 return
             }
         }
-
         takeScreen(quadrupleClickInterval)
         if (ensureCloseDetermine()) {
             return
