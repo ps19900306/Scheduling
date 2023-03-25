@@ -117,6 +117,48 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         }
     }
 
+    fun showNotTask(): Boolean {//这个是基于下面的前往公告版 就是没有接取任务
+        val list = listOf(
+            verificationTask(1375, 801, QingRule),
+            verificationTask(1670, 800, QingRule),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun hasLegionnaires(): Boolean {//这个是判断有军团任务的情况下是否加载了任务
+        val list = listOf(
+            verificationTask(1937, 588, AllOver150Rule),
+            verificationTask(1969, 598, AllOver150Rule),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun hasLegionnairesTask(): Boolean {//这个是判断有军团任务的情况下是否加载了任务
+        val list = listOf(
+            verificationTask(1104, 760, AllOver170Rule),
+            verificationTask(1094, 760, AllLess50Rule),
+            verificationTask(1124, 789, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun hasTask(): Boolean {//这个是判断没有军团任务的情况下是否加载了任务
+        val list = listOf(
+            verificationTask(1105, 591, AllOver170Rule),
+            verificationTask(1095, 591, AllLess50Rule),
+            verificationTask(1124, 591, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
 
     fun isShowDetermine(): Boolean {
         val list = listOf(
@@ -142,6 +184,56 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     fun isHighTaskRight(): Boolean {
         val list = listOf(
             verificationTask(2121, 398, HighTaskRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun checkIsCommonTask(): Int {
+        var list = listOf(
+            verificationTask(628, 342, BaiQingRule),
+            verificationTask(644, 342, QianQingRule),
+        )
+        if (ImgUtils.performPointsColorVerification(
+                list, screenBitmap, 0
+            )
+        ) return 1
+        list = listOf(
+            verificationTask(1093, 342, BaiQingRule),
+            verificationTask(1109, 342, QianQingRule),
+        )
+        if (ImgUtils.performPointsColorVerification(
+                list, screenBitmap, 0
+            )
+        ) return 2
+        return -1
+    }
+
+
+    fun hasPickUpSuccess(): Boolean {
+        val list = listOf(
+            verificationTask(2142, 391, AllOver170Rule),
+            verificationTask(2152, 391, AllLess70Rule),
+        )
+
+        val list2 = listOf(
+            verificationTask(2142, 565, AllOver170Rule),
+            verificationTask(2152, 565, AllLess70Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        ) || ImgUtils.performPointsColorVerification(
+            list2, screenBitmap, 0
+        )
+
+        634
+    }
+
+    fun hasPickUpSuccessL(): Boolean {
+        val list = listOf(
+            verificationTask(2142, 634, AllOver170Rule),
+            verificationTask(2152, 634, AllLess70Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -198,8 +290,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             list, screenBitmap
         )
     }
-
-
 
 
     //判断菜单是否是打开的
@@ -692,13 +782,13 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //是否已经损毁
     fun isDamage(): Boolean {
         val list1 = listOf(
-            verificationTask(2138, 1012, AllOver200Rule,1),
-            verificationTask(2096, 1017, RedRule,1),
-            verificationTask(2127, 1024, AllLess80Rule,1),
+            verificationTask(2138, 1012, AllOver200Rule, 1),
+            verificationTask(2096, 1017, RedRule, 1),
+            verificationTask(2127, 1024, AllLess80Rule, 1),
         )
         return !ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
-        )&& hasPositionMenu() && hasEyesMenu()
+        ) && hasPositionMenu() && hasEyesMenu()
     }
 
     //判断是否是普通异常

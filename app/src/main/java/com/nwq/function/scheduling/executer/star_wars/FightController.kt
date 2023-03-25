@@ -22,14 +22,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
      */
     private val DAMAGE = -100 //飞船已经损毁
     private val START_GAME = 0  //开始游戏
-
-    //  private val INTO_GAME = 1 //进入游戏
-    private val PICK_UP_TASK = 2 //接取任务
-    private val START_BATTLE_NAVIGATION_MONITORING = 4//战斗飞行导航监控
-    private val BATTLE_NAVIGATION_MONITORING = 5//战斗飞行导航监控
-    private val COMBAT_MONITORING = 6 //战斗监控阶段
-    private val START_MONITORING_RETURN_STATUS = 7//返回空间站监听
-    private val MONITORING_RETURN_STATUS = 8//返回空间站监听
+    private val PICK_UP_TASK = 1 //接取任务
+    private val BATTLE_NAVIGATION_MONITORING = 2//战斗飞行导航监控
+    private val COMBAT_MONITORING = 3 //战斗监控阶段
+    private val MONITORING_RETURN_STATUS = 4//返回空间站监听
     private val ALL_COMPLETE = 9//返回空间站监听
     private val ABNORMAL_STATE = 1000 //异常状态
     private val EXIT_OPT = 10000 //异常状态
@@ -124,20 +120,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 PICK_UP_TASK -> {
                     pickUpTask()
                 }
-                START_BATTLE_NAVIGATION_MONITORING -> {
-                    Timber.d("开始导航 generalControlMethod FightController NWQ_ 2023/3/10");
-                    spReo.lastPickUpTaskTime = System.currentTimeMillis()
-                    nowStep = BATTLE_NAVIGATION_MONITORING
-                }
                 BATTLE_NAVIGATION_MONITORING -> {
                     startNavigationMonitoring()
                 }
                 COMBAT_MONITORING -> {
                     combatMonitoring()
-                }
-                START_MONITORING_RETURN_STATUS -> {
-                    spReo.lastBackSpaceStation = System.currentTimeMillis()
-                    nowStep = MONITORING_RETURN_STATUS
                 }
                 MONITORING_RETURN_STATUS -> {
                     monitoringReturnStatus()
@@ -171,88 +158,144 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
 
     private suspend fun pickUpTask() {
-        if (mNumberOfTasksReceived <= 0) {
-            nowStep = ALL_COMPLETE
-            return
-        }
-        takeScreen(2000)
+        Timber.d("准备接取任务 pickUpTask FightController NWQ_ 2023/3/12");
 
-        var inSpaceStation = visual.isInSpaceStation()
-        Timber.d("准备接取任务  inSpaceStation: $inSpaceStation pickUpTask FightController NWQ_ 2023/3/12");
+        val inSpaceStation = visual.isInSpaceStation()
+        nowStep = BATTLE_NAVIGATION_MONITORING
+        //点开任务栏目
+        var flag = true
+        var count = 2
         click(constant.getTopMenuArea(2))
-        takeScreen(tripleClickInterval)
-        if (visual.hasReceivedTask(spReo.hasLegionnaires)) {
-            clickTheDialogueClose(false)
-            takeScreen(doubleClickInterval)
-            if (visual.hasReceivedTask(spReo.hasLegionnaires)) {
-                Timber.d("已经存在任务 pickUpTask FightController NWQ_ 2023/3/10");
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isOpenBigMenu()) {
+                flag = false
+            } else if (count % 2 == 1) {
+                click(constant.getTopMenuArea(2))
+            }
+            count--
+        }
+
+        //等待进入接取任务的
+        flag = true
+        count = 3
+        click(constant.getTopMenuArea(2))
+        var hasTask = false
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
+
+            if (spReo.hasLegionnaires) {//有军团任务
+                if (visual.hasLegionnaires()) {
+                    hasTask = visual.hasLegionnairesTask()
+                    flag = false
+                }
+            } else {//没有军团任务
+                if (visual.showNotTask()) {
+                    flag = false
+                    hasTask = false
+                }
+                if (visual.hasTask()) {
+                    flag = false
+                    hasTask = true
+                }
+            }
+            count--
+        }
+
+
+        if (hasTask) {//如果已经有任务
+            clickTheDialogueClose()
+            if (visual.hasLegionnaires()) {//
+                click(constant.optTaskArea2)
+                if (visual.hasLegionnairesTask()) {//这里表示任务没有超时去走战斗导航就可以了
+                    clickTheDialogueClose()
+                    return
+                }
+            } else {
                 if (needCancel) {
                     cancelTask()
-                    needCancel = false
-                    Timber.d("需要取消已经存在的任务 pickUpTask FightController NWQ_ 2023/3/10");
-                    delay(normalClickInterval)
-                    return
+                    count = 0
                 } else {
-                    if (spReo.hasLegionnaires) {
-                        click(constant.optTaskArea2)
-                    } else {
-                        click(constant.optTaskArea)
-                    }
-
-                    takeScreen(doubleClickInterval)
-                    if (visual.hasReceivedTask(spReo.hasLegionnaires)) {
-                        clickTheDialogueClose(true)
-                        takeScreen(doubleClickInterval)
-                        ensureCloseDetermine()
-                        theOutCheck()
-                        nowStep = START_BATTLE_NAVIGATION_MONITORING
+                    click(constant.optTaskArea)
+                    if (visual.hasTask()) {//这里表示任务没有超时去走战斗导航就可以了
+                        clickTheDialogueClose()
                         return
-                    }//有可能任务红了就继续走
+                    } else {
+                        count = 0
+                    }
                 }
             }
         }
-        needCancel = false
-        //打开新闻公告板
-        delay(normalClickInterval)
-        click(constant.newTaskListArea(spReo.hasLegionnaires))
-        takeScreen(doubleClickInterval)
 
-        if (visual.isCompleteAllTask()) {//全部的任务已经完成
+        needCancel = false
+        //下面是走没有任务的流程
+        //打开新闻公告版本
+        click(constant.newTaskListArea(spReo.hasLegionnaires || count == 0))
+        nowStep = BATTLE_NAVIGATION_MONITORING
+        flag = true
+        count = 4
+        var positon = -1
+        var pickSuccess = false
+        click(constant.getTopMenuArea(2))
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            positon = visual.checkIsCommonTask()
+            if (neeForceRefresh) {
+                if (visual.canRefresh()) {
+                    click(constant.refreshTaskListArea)
+                    spReo.lastRefreshTime = System.currentTimeMillis()
+                    neeForceRefresh = false
+                } else if (count == 1) {
+                    (System.currentTimeMillis() + constant.REFRESH_INTERVAL - spReo.lastRefreshTime).let {
+                        if (it > 0) {
+                            delay(it)
+                        }
+                        click(constant.refreshTaskListArea)
+                        spReo.lastRefreshTime = System.currentTimeMillis()
+                    }
+                    neeForceRefresh = false
+                }
+            } else if (needRefreshTask() && positon > 0) {
+                count = 4
+                click(constant.refreshTaskListArea)
+                spReo.lastRefreshTime = System.currentTimeMillis()
+            } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())) {
+                //这里表示接取任务成功
+                flag = false
+                pickSuccess = true
+            } else {
+                when (positon) {
+                    1 -> {
+                        click(constant.pickUpTask1Area)
+                        delay(normalClickInterval)//这样做是为了保证最多点击二次
+                        count = 1
+                    }
+                    2 -> {
+                        click(constant.pickUpTask2Area)
+                        delay(normalClickInterval)
+                        count = 1
+                    }
+                }
+            }
+            count--
+        }
+
+        //这里为点开流程
+        if (!pickSuccess) {//全部的任务已经完成
             nowStep = ALL_COMPLETE
             return
         }
 
-        if (neeForceRefresh) {
-            if (visual.canRefresh()) {
-                click(constant.refreshTaskListArea)
-                spReo.lastRefreshTime = System.currentTimeMillis()
-                takeScreen(doubleClickInterval)
-            } else {
-                (System.currentTimeMillis() + constant.REFRESH_INTERVAL - spReo.lastRefreshTime).let {
-                    if (it > 0) {
-                        delay(it)
-                    }
-                }
-            }
-            neeForceRefresh = false
-        } else if (needRefreshTask()) {
-            click(constant.refreshTaskListArea)
-            spReo.lastRefreshTime = System.currentTimeMillis()
-            takeScreen(doubleClickInterval)
-        }
-
-        if (!receiveAdvancedTasks && visual.isHighTask()) {
-            Timber.d("发现高级任务  pickUpTask FightController NWQ_ 2023/3/12");
-            mNumberOfTasksReceived--
-            click(constant.pickUpTask2Area)
-        } else {
-            mNumberOfTasksReceived--
-            click(constant.pickUpTask1Area)
-        }
-        takeScreen(normalClickInterval)
-        ensureCloseDetermine()//低安要点确定
-        takeScreen(normalClickInterval)
-        if (!receiveAdvancedTasks && visual.isHighTaskRight())//如果右边是高级任务也进行取消
+        if (!spReo.hasLegionnaires && visual.isHighTaskRight())//如果右边是高级任务也进行取消
         {
             Timber.d("发现高级任务右侧  pickUpTask FightController NWQ_ 2023/3/12");
             click(constant.openTaskRightArea)
@@ -260,6 +303,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             takeScreen(doubleClickInterval)
             ensureCloseDetermine()
             theOutCheck()
+            nowStep = PICK_UP_TASK
             needCancel = true
             return
         }
@@ -269,21 +313,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         } else {
             click(constant.openTaskRightArea)
         }
-
-
         click(constant.openTaskDetermineArea, doubleClickInterval)
 
-        //到这里就结束了
-        if (!clickTheDialogueClose(true)) {
+        if (!clickTheDialogueClose(4)) {
             Timber.d("接任务出现问题 needCancel:$needCancel  pickUpTask FightController NWQ_ 2023/3/10");
             needCancel = true
+            nowStep = PICK_UP_TASK
             theOutCheck()
-        } else if (inSpaceStation) {
-            takeScreen(doubleClickInterval)
-            ensureCloseDetermine()
-            nowStep = START_BATTLE_NAVIGATION_MONITORING
-        } else {
-            nowStep = START_BATTLE_NAVIGATION_MONITORING
         }
     }
 
@@ -301,12 +337,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = COMBAT_MONITORING
                 battleStartTime = System.currentTimeMillis()
                 flag = false
-            } else if (visual.isShowDetermine()) {
+            } else if (visual.isShowDetermine() && !visual.isSailing() && visual.hasEyesMenu()) {
                 Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 click(constant.dialogDetermineArea)
             } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
                 needCancel = true
-                clickTheDialogueClose(false)
+                clickTheDialogueClose()
                 Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 nowStep = PICK_UP_TASK
                 flag = false
@@ -345,10 +381,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = ABNORMAL_STATE
                 Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
-            } else if (visual.isDamage()) {
-                nowStep = EXIT_OPT
-                Timber.d("已经损毁 且未锁定退出 combatMonitoring FightController NWQ_ 2023/3/10");
-                return
             }
         }
         takeScreen(quadrupleClickInterval)
@@ -374,8 +406,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     useUnlock = true
                 } else if (intoCount < 0) {
                     Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
-                    useUnlock = false
-                    nowStep = EXIT_OPT
+                    if (visual.isDamage()) {//损毁了才进行推出
+                        useUnlock = false
+                        nowStep = EXIT_OPT
+                    } else {
+                        useUnlock = false
+                        nowStep = ABNORMAL_STATE
+                    }
+                    intoCount = 3
                 } else {
                     intoCount--
                 }
@@ -392,8 +430,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 useUnlock = true
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
                 Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
-                useUnlock = false
-                nowStep = EXIT_OPT
+                if (visual.isDamage()) {//损毁了才进行推出
+                    useUnlock = false
+                    nowStep = EXIT_OPT
+                } else {
+                    useUnlock = false
+                    nowStep = PICK_UP_TASK
+                }
             }
         } else {
             if (canLockTarget()) {//可以进行锁定
@@ -494,7 +537,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     if (closeList.contains(weaponPosition) && closeList.contains(cellPosition)) {//这里表示已经关闭的
                         if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
                             //这里要做异常处理了 这里表示战斗结束了
-                            clickTheDialogueClose(false)
+                            clickTheDialogueClose()
                             closeTheWholeBattle()
                             if (needBackStation) {
                                 nowStep = ABNORMAL_STATE
@@ -533,7 +576,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             needBackStation = false
             nowStep = PICK_UP_TASK
         } else if (needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()) {
-            clickTheDialogueClose(true)
+            clickTheDialogueClose(4)
         } else if (visual.isOpenBigMenu()) {
             click(constant.closeBigMenuArea)
         }
@@ -614,10 +657,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
 
     //pickUp 是否是接取任务
-    private suspend fun clickTheDialogueClose(pickUp: Boolean): Boolean {
+    private suspend fun clickTheDialogueClose(count: Int = 2): Boolean {
         var hasClickConversation = true
         var rightClickTimes = 0
-        var count = 4
         var flag = count
 
         Timber.d("clickTheDialogueClose clickTheDialogueClose NWQ_ 2023/3/10");
@@ -730,7 +772,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         needCancel = true
         needBackStation = true
         clickJumpCollectionAddress(warehouseIndex, false)
-        nowStep = START_MONITORING_RETURN_STATUS
+        nowStep = MONITORING_RETURN_STATUS
     }
 
     //determine 是否需要点击确定按钮，一般出舱是需要的
