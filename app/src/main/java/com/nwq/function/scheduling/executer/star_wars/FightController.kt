@@ -179,7 +179,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         //等待进入接取任务的
         flag = true
         count = 3
-        click(constant.getTopMenuArea(2))
         var hasTask = false
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(normalClickInterval)) {
@@ -245,7 +244,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         count = 4
         var positon = -1
         var pickSuccess = false
-        click(constant.getTopMenuArea(2))
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false

@@ -212,6 +212,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
             count--
         }
+        ensureOpenPositionMenu()
         nowStep = LOOKING_FOR_PLANETARY_GROUPS
     }
 

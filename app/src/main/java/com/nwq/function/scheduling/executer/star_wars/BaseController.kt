@@ -216,15 +216,22 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
     suspend fun ensureOpenPositionMenu() {
-        var flag = 3
-        while (!visual.hasPositionMenu() && flag > 0 && runSwitch) {
-            click(constant.eraseWarningArea)
-            takeScreen(doubleClickInterval)
-        }
-        if (visual.isClosePositionMenu()) {
-            click(constant.eraseWarningArea)
-        } else if (!visual.isDefaultCoordinateMenu()) {
-            click(constant.defaultCoordinateMenuArea)
+        var flag = true
+        var count = 3
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.hasPositionMenu()) {
+                flag = false
+                if (visual.isClosePositionMenu()) {
+                    click(constant.eraseWarningArea)
+                } else if (!visual.isDefaultCoordinateMenu()) {
+                    click(constant.defaultCoordinateMenuArea)
+                }
+            }
+            count--
         }
     }
 
