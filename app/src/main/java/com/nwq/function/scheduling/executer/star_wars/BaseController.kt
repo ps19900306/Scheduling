@@ -33,11 +33,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
     protected val propellerPosition = BotOfst + 6
-    val isShieldResistance =
-        if (spReo.nowSelectMode == SpConstant.FIGHT_MODEL)
-            spReo.resistanceMode
-        else
-            spReo.resistanceModeF
+    val isShieldResistance = if (spReo.nowSelectMode == SpConstant.FIGHT_MODEL) spReo.resistanceMode
+    else spReo.resistanceModeF
 
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
@@ -268,13 +265,14 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 flag = false
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
+            } else if (count == 10 || count == 5) {
+                pressBackBtn()
             } else if (count <= 0) {
                 click(constant.closeBigMenuArea)
                 flag = false
                 runSwitch = false
-            } else {
-                count--
             }
+            count--
         }
     }
 

@@ -791,6 +791,17 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         ) && hasPositionMenu() && hasEyesMenu()
     }
 
+    fun isDamageM(): Boolean {//这个是采矿的损毁
+        val list1 = listOf(
+            verificationTask(1679, 976, SimpleRule.getSimple(243, 254, 255), 1),
+            verificationTask(1672, 1002, SimpleRule.getSimple(41, 55, 66), 1),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        ) && hasPositionMenu() && hasEyesMenu()
+    }
+
+
     //判断是否是普通异常
     fun isCommonUnusual() {
 

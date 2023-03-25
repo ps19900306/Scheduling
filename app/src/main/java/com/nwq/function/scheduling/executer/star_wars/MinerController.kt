@@ -74,6 +74,9 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 MINING_MONITORING -> {
                     monitoringDuringMining()
                 }
+                EXIT_OPT->{
+                    exitGame()
+                }
             }
         }
     }
@@ -226,7 +229,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             ensureOpenEyeMenu()
             delay(normalClickInterval)
 
-            if(visual.isDamage()){
+            if(visual.isDamageM()){
                 nowStep = EXIT_OPT
                 Timber.d("已经损毁 lookingForMineralStars MinerController NWQ_ 2023/3/10");
                 return
@@ -376,4 +379,11 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         return flag
     }
 
+    private suspend fun exitGame() {
+        theOutCheck()
+        clickJumpCollectionAddress(warehouseIndex, false)
+        delay(helper.defultClickDuration * 2)
+        pressHomeBtn()
+        runSwitch = false
+    }
 }

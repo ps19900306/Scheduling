@@ -208,6 +208,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             count--
         }
 
+        if(count<=0 && flag){//没有进入
+            theOutCheck()
+            nowStep = PICK_UP_TASK
+            return
+        }
+
 
         if (hasTask) {//如果已经有任务
             clickTheDialogueClose()
