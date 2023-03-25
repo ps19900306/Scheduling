@@ -122,7 +122,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(1375, 801, QingRule),
             verificationTask(1670, 800, QingRule),
         )
-        return !ImgUtils.performPointsColorVerification(
+        return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }

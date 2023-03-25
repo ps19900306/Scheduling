@@ -158,7 +158,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             }
         }
         list.addAll(list2)
-        return list
+        return if (list.size > 0) list.toSet().toMutableList() else list//这里进行一次去重
     }
 
 

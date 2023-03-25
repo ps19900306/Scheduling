@@ -525,7 +525,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     }
                     clickEquipArray(list)
 
-
                     if (!hasOpenCatch && needCheckOpenList.contains(0) && checkEquipTimes(
                             2, listOf(), catchFoodList
                         ).isNotEmpty()
