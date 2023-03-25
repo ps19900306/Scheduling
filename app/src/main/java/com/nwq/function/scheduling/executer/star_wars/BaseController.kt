@@ -236,9 +236,6 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
     suspend fun ensureOpenEyeMenu() {
-        if (!visual.hasEyesMenu()) {
-            theOutCheck()
-        }
         if (visual.isCloseEyesMenu()) {
             click(constant.openEyeMenuArea, normalClickInterval)
         }

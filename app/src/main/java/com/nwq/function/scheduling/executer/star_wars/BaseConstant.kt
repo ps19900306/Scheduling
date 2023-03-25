@@ -156,7 +156,7 @@ class BaseConstant {
             2250 + (Math.random() * 50),
             150 + (Math.random() * 60),
             2250 + (Math.random() * 50),
-            800 - (Math.random() * 60),
+            900 - (Math.random() * 60),
             500 + (Math.random() * 300),
             delayTime
         )
