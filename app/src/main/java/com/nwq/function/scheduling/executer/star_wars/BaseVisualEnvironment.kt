@@ -132,7 +132,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(1937, 588, AllOver150Rule),
             verificationTask(1969, 598, AllOver150Rule),
         )
-        return !ImgUtils.performPointsColorVerification(
+        return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }

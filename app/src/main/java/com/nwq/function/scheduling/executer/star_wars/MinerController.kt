@@ -164,9 +164,9 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
 
         if(lastIsSafe){
-            if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesCollectTimeSp > spReo.collectInterval * Constant.Hour) {
+            if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
                 harvestVegetableController.startCollectVegetables()
-            } else if(openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > spReo.addInterval * Constant.Hour){
+            } else if(openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour){
                 harvestVegetableController.addPlanetaryTime()
             }
         }

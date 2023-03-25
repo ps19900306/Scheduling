@@ -88,10 +88,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         delay(doubleClickInterval * 2)
         intoGame()
         nowStep = PICK_UP_TASK
-        spReo.lastBackSpaceStation = 0
-        spReo.lastRefreshTime = 0
-        spReo.lastPickUpTaskTime = 0
-        if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > spReo.addInterval * Constant.Hour) {
+        if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
             harvestVegetableController.addPlanetaryTime()
             delay(normalClickInterval)
         }
@@ -146,7 +143,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun onAllComplete() {
         if (openHarvestVegetablesSP) {
             theOutCheck()
-            if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesCollectTimeSp > spReo.collectInterval * Constant.Hour) {
+            if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
                 harvestVegetableController.startCollectVegetables()
             } else {
                 harvestVegetableController.addPlanetaryTime()
@@ -276,6 +273,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 spReo.lastRefreshTime = System.currentTimeMillis()
             } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())) {
                 //这里表示接取任务成功
+                Timber.d("接取任务成功  pickUpTask FightController NWQ_ 2023/3/25");
                 flag = false
                 pickSuccess = true
             } else {
@@ -283,12 +281,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     1 -> {
                         click(constant.pickUpTask1Area)
                         delay(normalClickInterval)//这样做是为了保证最多点击二次
-                        count = 1
+                        count = 2
                     }
                     2 -> {
                         click(constant.pickUpTask2Area)
                         delay(normalClickInterval)
-                        count = 1
+                        count = 2
                     }
                 }
             }
@@ -297,6 +295,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
         //这里为点开流程
         if (!pickSuccess) {//全部的任务已经完成
+            Timber.d("ALL_COMPLETE  pickUpTask FightController NWQ_ 2023/3/25");
             nowStep = ALL_COMPLETE
             return
         }

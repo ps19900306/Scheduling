@@ -42,8 +42,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         val str = spReo.celestialResources
         isOpen && !TextUtils.isEmpty(str)
     }
-    var resourcesAddTimeSp = spReo.resourcesAddTime
-    var resourcesCollectTimeSp = spReo.resourcesCollectTime
+
     val harvestVegetableController by lazy {
         HarvestVegetableController(helper, {
             true
@@ -78,9 +77,6 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
-                if (openHarvestVegetablesSP && System.currentTimeMillis() - resourcesAddTimeSp > spReo.addInterval * Constant.Hour) {
-                    harvestVegetableController.addPlanetaryTime()
-                }
                 flag = false
             }
         } while (flag && runSwitch)

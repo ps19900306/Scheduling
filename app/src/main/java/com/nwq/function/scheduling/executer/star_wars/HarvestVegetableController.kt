@@ -84,7 +84,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         click(constant.addTimeArea, doubleClickInterval)
         takeScreen(doubleClickInterval)
         ensureCloseDetermine()
-        resourcesAddTimeSp = System.currentTimeMillis()
+        spReo.resourcesAddTime = System.currentTimeMillis()
         delay(normalClickInterval)
 
         launchResources(list[nowCelestialCount], normalClickInterval)
