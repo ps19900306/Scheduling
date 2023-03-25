@@ -52,7 +52,6 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     override var BASIC_COMBAT_INTERVAL_3 = 70 * 1000L
 
 
-
     override suspend fun generalControlMethod() {
         while (runSwitch) {
             when (nowStep) {
@@ -74,7 +73,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 MINING_MONITORING -> {
                     monitoringDuringMining()
                 }
-                EXIT_OPT->{
+                EXIT_OPT -> {
                     exitGame()
                 }
             }
@@ -130,7 +129,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 flag = false
             } else if (count <= 10 && !visual.isSailing()) {
                 clickJumpCollectionAddress(warehouseIndex, false)
-                count=60
+                count = 60
             }
             count--
         }
@@ -163,10 +162,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
         }
 
-        if(lastIsSafe){
+        if (lastIsSafe) {
             if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
                 harvestVegetableController.startCollectVegetables()
-            } else if(openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour){
+            } else if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
                 harvestVegetableController.addPlanetaryTime()
             }
         }
@@ -218,7 +217,8 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun lookingForMineralStars() {
         var flag = true
-        var count = (Math.random() * 3 + 1).toInt()
+        var startCount = (Math.random() * 3 + 1).toInt()
+        var count = startCount
         var canRefresh = true
         while (flag && count > 0 && runSwitch) {
             takeScreen(doubleClickInterval)
@@ -230,7 +230,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             ensureOpenEyeMenu()
             delay(normalClickInterval)
 
-            if(visual.isDamageM()){
+            if (visual.isDamageM()) {
                 nowStep = EXIT_OPT
                 Timber.d("已经损毁 lookingForMineralStars MinerController NWQ_ 2023/3/10");
                 return
@@ -260,7 +260,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     Timber.d("REMOTE_PLANETARY_GROUP  lookingForMineralStars MinerController NWQ_ 2023/3/21");
                     click(constant.getTransitionArea(count))
                     delay(quadrupleClickInterval * 5)
-                    val max=  Math.random()*3 +1
+                    val max = Math.random() * 3 + 1
                     for (i in 0 until max.toInt()) {
                         swipe(constant.eyeMenuSwipeToTopArea(), (Math.random() * 1 + 1).toInt())
                         delay(normalClickInterval)
@@ -271,6 +271,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 visual.RESOURCE_PLANET -> {
                     Timber.d("RESOURCE_PLANET  lookingForMineralStars MinerController NWQ_ 2023/3/21");
                     click(constant.getLockingArea(count))
+                    count= (Math.random() * 2 + 3).toInt()
                 }
                 visual.MENU_NOT_OPEN -> {
                     Timber.d("MENU_NOT_OPEN  lookingForMineralStars MinerController NWQ_ 2023/3/21");
