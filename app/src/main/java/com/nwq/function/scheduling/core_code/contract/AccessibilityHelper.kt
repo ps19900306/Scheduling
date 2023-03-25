@@ -9,7 +9,6 @@ import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
-import com.nwq.function.scheduling.core_code.SwipeArea
 import com.nwq.function.scheduling.core_code.click.ClickTask
 import com.nwq.function.scheduling.core_code.click.ClickUtils
 import com.nwq.function.scheduling.core_code.click.DirectionType
@@ -23,8 +22,8 @@ class AccessibilityHelper(val acService: AccessibilityService) {
 
     var screenBitmap: Bitmap? = null
     val defultClickDuration
-        get() = ((Math.random() * 0.5 + 1) * 300).toLong()
-    val defultClickDurationMeath
+        get() = ((Math.random() * 0.3 + 0.4) * 300).toLong()
+    val delayClickIntervalMeath
         get() = { ((Math.random() * 0.5 + 1) * 600).toLong() }
 
     //这里跟新截图信息
@@ -95,7 +94,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
         ClickUtils.optClickTasks(acService, task)
     }
 
-    suspend fun click(area: List<Area>, delayTime: () -> Long = defultClickDurationMeath) {
+    suspend fun click(area: List<Area>, delayTime: () -> Long = delayClickIntervalMeath) {
         val list = area.map {
             ClickTask(listOf(it.coordinate), delayTime.invoke(), defultClickDuration)
         }
@@ -142,6 +141,6 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     }
 
     suspend fun getAccessibilityNodeInfo(): AccessibilityNodeInfo? {
-       return acService.getRootInActiveWindow()
+        return acService.getRootInActiveWindow()
     }
 }
