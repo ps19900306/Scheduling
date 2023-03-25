@@ -162,13 +162,13 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isShowDetermine(): Boolean {
         val list = listOf(
-            verificationTask(2118, 780, "#ff2d5a55"),
-            verificationTask(2013, 843, "#ff33615d"),
-            verificationTask(2215, 849, "#ff315f5a"),
+            verificationTask(2001, 824, SimpleRule.getSimple(48, 95, 89), 1),
+            verificationTask(1667, 827, SimpleRule.getSimple(28, 48, 49), 1),
+            verificationTask(2100, 553, AllLess50Rule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
-        ) || isClosePositionMenuGray()
+        )
     }
 
 
@@ -292,10 +292,23 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
+    fun hasGrayPositionMenu(): Boolean {
+        return isOpenPositionMenuGray() || isClosePositionMenuGray()
+    }
+
     //判断菜单是否是打开的
     fun isOpenPositionMenuGray(): Boolean {
         val list = listOf(
             verificationTask(491, 301, "#ff37383a"),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isClosePositionMenuGray(): Boolean {
+        val list = listOf(
+            verificationTask(136, 301, "#ff37383a"),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -316,14 +329,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
 
     //判断菜单是否是关闭 此时弹出了确定框
-    fun isClosePositionMenuGray(): Boolean {
-        val list = listOf(
-            verificationTask(136, 301, "#ff37383a"),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
-        )
-    }
+
 
     //是否有位置菜单
     fun hasPositionMenu(): Boolean {
@@ -793,12 +799,12 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isDamageM(): Boolean {//这个是采矿的损毁
         val list1 = listOf(
-            verificationTask(1679, 976, SimpleRule.getSimple(243, 254, 255), 1),
-            verificationTask(1672, 1002, SimpleRule.getSimple(41, 55, 66), 1),
+            verificationTask(1679, 976, AllOver200Rule, 1),
+            verificationTask(1686, 1019, AllLess50Rule, 1),
         )
         return !ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
-        ) && hasPositionMenu() && hasEyesMenu()
+        )
     }
 
 

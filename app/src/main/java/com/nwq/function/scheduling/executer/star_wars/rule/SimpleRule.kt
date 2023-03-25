@@ -18,6 +18,6 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int) : ColorIdentifi
     }
 
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        return !checkColor(listOf(redB, greenB, blueB), red, green, blue, 8)
+        return checkColor(listOf(redB, greenB, blueB), red, green, blue, 3)
     }
 }

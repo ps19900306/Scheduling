@@ -119,8 +119,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
 
     private suspend fun goCollectNavigationMonitoring() {
         takeScreen(quadrupleClickInterval)
-        if (visual.isInSpaceStation()) {
-            hasLaunch
+        if (visual.isOpenBigMenu() && !visual.hasPositionMenu() && !visual.hasEyesMenu()) {
+            click(constant.closeBigMenuArea)
         }
         if (System.currentTimeMillis() - lastCollectTime > 10 * 60 * 1000 || (visual.isClosePositionMenu() && visual.hasEyesMenu())) {
             Timber.d(" 到底目的 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");

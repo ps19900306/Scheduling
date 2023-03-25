@@ -204,7 +204,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             count--
         }
 
-        if(count<=0 && flag){//没有进入
+        if (count <= 0 && flag) {//没有进入
             theOutCheck()
             nowStep = PICK_UP_TASK
             return
@@ -340,9 +340,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = COMBAT_MONITORING
                 battleStartTime = System.currentTimeMillis()
                 flag = false
-            } else if (visual.isShowDetermine() && !visual.isSailing() && visual.hasEyesMenu()) {
-                Timber.d("isShowDetermine startNavigationMonitoring FightController NWQ_ 2023/3/10");
+            } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
+                delay(doubleClickInterval)
             } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
                 needCancel = true
                 clickTheDialogueClose()
