@@ -254,13 +254,13 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var count = 20
         while (flag && runSwitch) {
             takeScreen(doubleClickInterval)
-            if (visual.isOpenBigMenu()) {
+            if (visual.hasIntoGame()) {
+                flag = false
+            }else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if(visual.isOpenWallet()){
                 click(constant.closeWalletArea)
-            } else if (visual.hasIntoGame()) {
-                flag = false
-            } else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {
+            }  else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {
                 flag = false
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
