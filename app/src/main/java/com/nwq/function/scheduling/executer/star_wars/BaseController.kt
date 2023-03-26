@@ -259,6 +259,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             takeScreen(doubleClickInterval)
             if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
+            } else if(visual.isOpenWallet()){
+                click(constant.closeWalletArea)
             } else if (visual.hasIntoGame()) {
                 flag = false
             } else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {

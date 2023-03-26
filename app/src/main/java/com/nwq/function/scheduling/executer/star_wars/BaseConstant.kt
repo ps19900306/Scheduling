@@ -27,9 +27,10 @@ class BaseConstant {
 
 
     var openTaskArea = Area(1195, 524, 661, 125)
-    var optTaskArea = Area(1912, 542, 110, 115)//(1912, 542, 110, 115)
+    var optTaskArea = Area(1896, 516, 138, 144)//(1912, 542, 110, 115)
     var optTaskArea2 = Area(1893, 678, 145, 158)//(1912, 542, 110, 115)
     var cancelTaskArea = Area(1740, 201, 212, 67)
+    var closeWalletArea = Area( 1917, 97 , 67, 66)
 
     var dialogDetermineArea = Area(2000, 770, 250, 90)//这个是右小角弹出窗口的确定按钮
     var dialogCancleArea = Area(1675, 824, 212, 42)

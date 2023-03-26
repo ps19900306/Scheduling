@@ -170,6 +170,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
             if (visual.isOpenBigMenu()) {
                 flag = false
+            } else if (visual.isOpenWallet()) {
+                click(constant.closeWalletArea)
+                count = 2
             } else if (count % 2 == 1) {
                 click(constant.getTopMenuArea(2))
             }
@@ -197,6 +200,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     hasTask = false
                 }
                 if (visual.hasTask()) {
+                    Timber.d("hasTask pickUpTask FightController NWQ_ 2023/3/26");
                     flag = false
                     hasTask = true
                 }
@@ -205,6 +209,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
 
         if (count <= 0 && flag) {//没有进入
+            Timber.d("没有进入 pickUpTask FightController NWQ_ 2023/3/26");
             theOutCheck()
             nowStep = PICK_UP_TASK
             return
@@ -213,18 +218,23 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
         if (hasTask) {//如果已经有任务
             clickTheDialogueClose()
-            if (visual.hasLegionnaires()) {//
+            if (spReo.hasLegionnaires) {//
+                Timber.d("点击打开按钮 hasLegionnaires  pickUpTask FightController NWQ_ 2023/3/26");
                 click(constant.optTaskArea2)
+                takeScreen(normalClickInterval)
                 if (visual.hasLegionnairesTask()) {//这里表示任务没有超时去走战斗导航就可以了
                     clickTheDialogueClose()
                     return
                 }
             } else {
                 if (needCancel) {
+                    Timber.d("needCancel pickUpTask FightController NWQ_ 2023/3/26");
                     cancelTask()
                     count = 0
                 } else {
+                    Timber.d("点击打开按钮 FightController NWQ_ 2023/3/26");
                     click(constant.optTaskArea)
+                    takeScreen(normalClickInterval)
                     if (visual.hasTask()) {//这里表示任务没有超时去走战斗导航就可以了
                         clickTheDialogueClose()
                         return
@@ -279,14 +289,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     1 -> {
                         click(constant.pickUpTask1Area)
                         delay(normalClickInterval)//这样做是为了保证最多点击二次
-                        if(count > 2)
-                        count = 2
+                        if (count > 2) count = 2
                     }
                     2 -> {
                         click(constant.pickUpTask2Area)
                         delay(normalClickInterval)
-                        if(count > 2)
-                        count = 2
+                        if (count > 2) count = 2
                     }
                 }
             }
