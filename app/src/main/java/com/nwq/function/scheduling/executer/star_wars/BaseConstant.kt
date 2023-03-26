@@ -166,7 +166,7 @@ class BaseConstant {
 
     val isOpenPositionArea = Area(455, 258, 73, 76)//已经开启的位置
     val closePositionArea = Area(418, 342, 100, 70)//已经开启的位置
-    val localListArea = Area(132, 995, 109, 47)//打开本地图标
+    val localListArea = Area(102, 989, 179, 56)//打开本地图标
     val localBaseX = Coordinate(567, 716)//用于修正X偏差度
     val localBaseY = Coordinate(573, 705)//用于修正Y偏差度
     val openEyeMenuArea = Area(2197, 565, 70, 70)//打开本地图标
