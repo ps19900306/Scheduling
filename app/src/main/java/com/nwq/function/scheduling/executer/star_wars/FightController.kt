@@ -222,7 +222,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 Timber.d("点击打开按钮 hasLegionnaires  pickUpTask FightController NWQ_ 2023/3/26");
                 click(constant.optTaskArea2)
                 takeScreen(normalClickInterval)
-                if (visual.hasLegionnairesTask()) {//这里表示任务没有超时去走战斗导航就可以了
+                if (visual.hasLegionnairesTask()|| !visual.isOpenBigMenu()) {//这里表示任务没有超时去走战斗导航就可以了
                     clickTheDialogueClose()
                     return
                 }
@@ -235,7 +235,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     Timber.d("点击打开按钮 FightController NWQ_ 2023/3/26");
                     click(constant.optTaskArea)
                     takeScreen(normalClickInterval)
-                    if (visual.hasTask()) {//这里表示任务没有超时去走战斗导航就可以了
+                    if (visual.hasTask() || !visual.isOpenBigMenu()) {//这里表示任务没有超时去走战斗导航就可以了
                         clickTheDialogueClose()
                         return
                     } else {
