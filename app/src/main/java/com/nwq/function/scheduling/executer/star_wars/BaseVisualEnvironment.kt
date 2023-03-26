@@ -808,17 +808,27 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    fun isOpenWallet(): Boolean{
+    fun isOpenWallet(): Boolean {
         val list1 = listOf(
-            verificationTask(437, 130, AllOver200Rule ),
-            verificationTask(452, 130, AllOver200Rule,1),
-            verificationTask(444, 130, QingRule,1),
+            verificationTask(437, 130, AllOver200Rule),
+            verificationTask(452, 130, AllOver200Rule, 1),
+            verificationTask(444, 130, QingRule, 1),
         )
         return !ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
         )
     }
 
+
+    fun isShowTaskOpt(): Boolean {
+        val list1 = listOf(
+            verificationTask(1724, 914, QingRule),
+            verificationTask(1820, 914, QingRule),
+        )
+        return !ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
 
     //判断是否是普通异常
     fun isCommonUnusual() {

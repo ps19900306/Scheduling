@@ -222,7 +222,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 Timber.d("点击打开按钮 hasLegionnaires  pickUpTask FightController NWQ_ 2023/3/26");
                 click(constant.optTaskArea2)
                 takeScreen(normalClickInterval)
-                if (visual.hasLegionnairesTask()|| !visual.isOpenBigMenu()) {//这里表示任务没有超时去走战斗导航就可以了
+                if (visual.hasLegionnairesTask() || !visual.isOpenBigMenu()) {//这里表示任务没有超时去走战斗导航就可以了
                     clickTheDialogueClose()
                     return
                 }
@@ -321,12 +321,27 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             return
         }
 
+
         if (spReo.hasLegionnaires) {
             click(constant.openTaskRightArea2)
         } else {
             click(constant.openTaskRightArea)
         }
-        click(constant.openTaskDetermineArea, doubleClickInterval)
+
+        //这里是为了等到弹出选择按钮再进行点击确定保证操作正确
+        flag = true
+        count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(fastClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isShowTaskOpt()) {
+                flag = false
+            }
+            count--
+        }
+        click(constant.openTaskDetermineArea, fastClickInterval)
 
         if (!clickTheDialogueClose(4)) {
             Timber.d("接任务出现问题 needCancel:$needCancel  pickUpTask FightController NWQ_ 2023/3/10");
