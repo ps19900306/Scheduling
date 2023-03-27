@@ -157,7 +157,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun pickUpTask() {
         Timber.d("准备接取任务 pickUpTask FightController NWQ_ 2023/3/12");
 
-        val inSpaceStation = visual.isInSpaceStation()
         nowStep = BATTLE_NAVIGATION_MONITORING
         //点开任务栏目
         var flag = true

@@ -251,20 +251,23 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun theOutCheck() {
         Timber.d("  theOutCheck BaseController NWQ_ 2023/3/12");
         var flag = true
-        var count = 20
+        var count = 10
         while (flag && runSwitch) {
-            takeScreen(doubleClickInterval)
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
             if (visual.hasIntoGame()) {
                 flag = false
-            }else if (visual.isOpenBigMenu()) {
-                click(constant.closeBigMenuArea)
-            } else if(visual.isOpenWallet()){
-                click(constant.closeWalletArea)
-            }  else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {
+            } else if (visual.hasPositionMenu() && visual.hasRightDialogue()) {
                 flag = false
+            } else if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+            } else if (visual.isOpenWallet()) {
+                click(constant.closeWalletArea)
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
-            } else if (count == 10 || count == 5) {
+            } else if (count == 5) {
                 pressBackBtn()
             } else if (count <= 0) {
                 click(constant.closeBigMenuArea)
