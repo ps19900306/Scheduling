@@ -271,7 +271,8 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 visual.RESOURCE_PLANET -> {
                     Timber.d("RESOURCE_PLANET  lookingForMineralStars MinerController NWQ_ 2023/3/21");
                     click(constant.getLockingArea(count))
-                    count= (Math.random() * 2 + 3).toInt()
+                    count = (Math.random() * 2 + 2).toInt()
+                    canRefresh = true
                 }
                 visual.MENU_NOT_OPEN -> {
                     Timber.d("MENU_NOT_OPEN  lookingForMineralStars MinerController NWQ_ 2023/3/21");
@@ -282,6 +283,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             count = 4
                         } else {
                             clickJumpCollectionAddress(warehouseIndex, false)
+                            lastIsSafe = false
                             nowStep = MONITORING_RETURN_STATUS
                             flag = false
                         }
@@ -329,6 +331,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private fun isDangerous(): Boolean {
         return if (visual.isDangerous(localOffsetX, localOffsetY)) {
+            lastIsSafe = false
             LastDangerousTime = System.currentTimeMillis()
             Timber.d("isDangerous MinerController NWQ_ 2023/3/20");
             true
