@@ -9,4 +9,5 @@ object Constant {
     const val CMD = "cmd"
 
     const val Hour = 1000L * 60 * 60
+    const val MINUTE = 1000L * 60
 }

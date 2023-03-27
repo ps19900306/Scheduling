@@ -825,9 +825,47 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(1724, 914, QingRule),
             verificationTask(1820, 914, QingRule),
         )
-        return !ImgUtils.performPointsColorVerification(
+        return ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
         )
+    }
+
+
+    /****
+     * 下面都是没有确认的
+     */
+    //是否打开仓库
+    fun isOpenStorehouseMenu(): Boolean {
+        val list1 = listOf(
+            verificationTask(293, 57, AllLess70Rule),
+            verificationTask(282, 73, AllOver150Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
+
+    //是否打开收菜仓库
+    fun isOpenVegetableMenu(): Boolean {
+        val list1 = listOf(
+            verificationTask(293, 57, AllOver150Rule),
+            verificationTask(282, 73, AllLess50Rule, 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
+
+    //抵达收菜点
+    fun arriveReceivingPoint(): Boolean {
+        val list1 = listOf(
+            verificationTask(554, 936, QingRule),
+            verificationTask(806, 935, QingRule),
+            verificationTask(682, 798, AllLess70Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        ) && isClosePositionMenu()
     }
 
     //判断是否是普通异常

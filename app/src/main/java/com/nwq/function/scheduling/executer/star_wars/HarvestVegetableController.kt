@@ -1,5 +1,6 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
 import kotlinx.coroutines.delay
@@ -68,19 +69,24 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     }
 
 
-    private suspend fun openVegetablesMenu():Boolean {
+    private suspend fun openVegetablesMenu(): Boolean {
         var flag = true
-        var count = 10
+        var count = 5
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return false
             }
-            if(visual.isClosePositionMenu()){
+            if (visual.isClosePositionMenu()) {
                 click(constant.getTopMenuArea(3))
-            }else if(visual.isOpenBigMenu()){
-
+            } else if (visual.isOpenBigMenu()) {
+                if (visual.isOpenVegetableMenu()) {
+                    return true
+                } else if (visual.isOpenStorehouseMenu()) {
+                    click(constant.closeBigMenuArea)
+                }
             }
+            count--
         }
         return false
     }
@@ -95,21 +101,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         unloadingCargo()
         theOutCheck()
 
-        var flag = true
-        var count = 10
-
-        click(constant.getTopMenuArea(3))
-        while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
-                runSwitch = false
-                return
-            }
-
-        }
-
-
-
-
+        openVegetablesMenu()
         selectEntryItem(nowCelestialCount, doubleClickInterval)
         delay(normalClickInterval)
 
@@ -123,7 +115,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         takeScreen(normalClickInterval)
         ensureCloseDetermine()
         val startTime = System.currentTimeMillis()
-        flag = true
+        var flag = true
         while (flag && System.currentTimeMillis() - startTime < 20 * 60 * 1000) {
             takeScreen(quadrupleClickInterval)
             if (visual.judeIsLaunchComplete(list[nowCelestialCount])) {
@@ -154,7 +146,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         if (visual.isOpenBigMenu() && !visual.hasPositionMenu() && !visual.hasEyesMenu()) {
             click(constant.closeBigMenuArea)
         }
-        if (System.currentTimeMillis() - lastCollectTime > 10 * 60 * 1000 || (visual.isClosePositionMenu() && visual.hasEyesMenu())) {
+        if (System.currentTimeMillis() - lastCollectTime > 10 * Constant.MINUTE || visual.arriveReceivingPoint()) {
             Timber.d(" 到底目的 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             if (visual.isShowCollectBtn()) {
                 click(constant.collectButtonArea1, doubleClickInterval)
@@ -178,7 +170,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 nowStep = MONITORING_RETURN_STATUS
             } else {
                 Timber.d("继续 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-                click(constant.getTopMenuArea(3))
+                openVegetablesMenu()
                 selectEntryItem(nowCelestialCount, doubleClickInterval)
                 delay(normalClickInterval)
                 click(constant.setTargetArea, normalClickInterval)
