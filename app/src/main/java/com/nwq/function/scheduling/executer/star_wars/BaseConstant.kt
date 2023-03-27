@@ -30,7 +30,7 @@ class BaseConstant {
     var optTaskArea = Area(1896, 516, 138, 144)//(1912, 542, 110, 115)
     var optTaskArea2 = Area(1893, 678, 145, 158)//(1912, 542, 110, 115)
     var cancelTaskArea = Area(1740, 201, 212, 67)
-    var closeWalletArea = Area( 1917, 97 , 67, 66)
+    var closeWalletArea = Area(1917, 97, 67, 66)
 
     var dialogDetermineArea = Area(2000, 770, 250, 90)//这个是右小角弹出窗口的确定按钮
     var dialogCancleArea = Area(1675, 824, 212, 42)
@@ -61,7 +61,7 @@ class BaseConstant {
 
     var lockTargetGroupArea = Area(1395, 639, 92, 94)
 
-    var eraseWarningArea = Area(102, 261, 64, 70)
+    var eraseWarningArea = Area(102, 261, 64, 70)//这里是开始导航的位置
 
     var defaultCoordinateMenuArea = Area(457, 264, 65, 65)
 
@@ -170,7 +170,7 @@ class BaseConstant {
     val localBaseX = Coordinate(567, 716)//用于修正X偏差度
     val localBaseY = Coordinate(573, 705)//用于修正Y偏差度
     val openEyeMenuArea = Area(2197, 565, 70, 70)//打开本地图标
-    val closeEyeMenuArea = Area(2197-377, 565, 70, 70)//打开本地图标
+    val closeEyeMenuArea = Area(2197 - 377, 565, 70, 70)//打开本地图标
     val outSpaceArea = Area(2004, 331, 111, 59)//打开本地图标
     fun getTransitionArea(index: Int): Area {//点击跃迁
         return Area(1580, 200 + (index * 100), 300, 100)

@@ -175,8 +175,18 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 delay(normalClickInterval)
                 click(constant.setTargetArea, normalClickInterval)
                 theOutCheck()
-                delay(doubleClickInterval)
-                click(constant.eraseWarningArea, normalClickInterval)
+                if (visual.isOpenPositionMenu()) {
+                    click(constant.eraseWarningArea, normalClickInterval)
+                } else {
+                    Timber.d("未开始导航 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/27");
+                    openVegetablesMenu()
+                    selectEntryItem(nowCelestialCount, doubleClickInterval)
+                    delay(normalClickInterval)
+                    click(constant.setTargetArea, normalClickInterval)
+                    theOutCheck()
+                    click(constant.eraseWarningArea, normalClickInterval)
+                }
+
             }
         } else if (visual.hasEyesMenu() && visual.isOpenPositionMenu() && !visual.isSailing() && !visual.isInSpaceStation()) {//导航停止了
             Timber.d("导航停止了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
