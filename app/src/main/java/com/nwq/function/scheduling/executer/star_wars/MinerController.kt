@@ -118,9 +118,6 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     val needOpenList = mutableListOf<Int>()
                     checkTimingOnList(needOpenList)
                 }
-                if (visual.armorTooLow()) {//被打到红甲就结束
-                    nowStep = EXIT_OPT
-                }
             }
             if (visual.isInSpaceStation() && visual.hasPositionMenu()) {
                 delay(doubleClickInterval)
