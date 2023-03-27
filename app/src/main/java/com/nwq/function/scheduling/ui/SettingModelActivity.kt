@@ -87,17 +87,18 @@ class SettingModelActivity : AppCompatActivity() {
             SetListInfo("List1:165", repo.timeOnList1FSP),
             SetListInfo("List2:1700", repo.timeOnList2FSP),
             SetListInfo("List3:75", repo.timeOnList3FSP),
-            )
+        )
     }
 
     val vegetableList by lazy {
         listOf(
             SetCheckInfo("开启收菜", repo.openHarvestVegetablesSP),
+            SetCheckInfo("是否换船", repo.transferShipSP),
             SetIntInfo("收菜基地", repo.resourcesBaseLocationSP),
             SetIntInfo("收集间隔/hour", repo.collectIntervalSP),
             SetIntInfo("添加间隔/hour", repo.addIntervalSP),
             SetListInfo("收菜行星列表", repo.celestialResourcesSP),
-        )
+            )
     }
 
     val minerList by lazy {

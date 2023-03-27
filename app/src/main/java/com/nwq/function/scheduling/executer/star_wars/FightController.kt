@@ -352,7 +352,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun startNavigationMonitoring() {
         spReo.lastPickUpTaskTime = System.currentTimeMillis()
-        nowStep = PICK_UP_TASK
+        nowStep = PICK_UP_TASK //这里转接任务
         var flag = true
         var count = 40
         while (flag && count > 0 && runSwitch) {
@@ -364,15 +364,16 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = COMBAT_MONITORING
                 battleStartTime = System.currentTimeMillis()
                 flag = false
-            } else if (visual.isShowDetermine()) {
-                click(constant.dialogDetermineArea)
-                delay(doubleClickInterval)
             } else if ((visual.hasRightDialogue() || visual.hasLeftDialogue()) && visual.isClosePositionMenu()) {
                 needCancel = true
                 clickTheDialogueClose()
                 Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 nowStep = PICK_UP_TASK
                 flag = false
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
+                delay(doubleClickInterval)
+                count = 40
             } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
                 count--
                 if (visual.isDamage()) {
@@ -384,8 +385,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 needBackStation = true
                 needCancel = true
                 neeForceRefresh = true
-                nowStep = ABNORMAL_STATE
-                flag = false
+                //flag = false
             }
         }
     }

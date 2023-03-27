@@ -78,6 +78,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
                 flag = false
+
             }
         } while (flag && runSwitch)
     }

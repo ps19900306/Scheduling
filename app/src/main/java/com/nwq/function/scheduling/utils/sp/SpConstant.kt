@@ -5,6 +5,7 @@ object SpConstant {
     const val FIGHT_MODEL=1
     const val MINER_MODEL=2
     const val FUBEN_MODEL=3
+    const val VEGETABLES_MODEL=4
 
     const val LAST_REFRESH_TIME = "last_refresh_time"
     const val LAST_PICKUP_TASK_TIME = "last_pickup_task_time"
@@ -36,6 +37,8 @@ object SpConstant {
     const val RESOURCES_BASE_LOCATION = "RESOURCES_BASE_LOCATION"//这个是收菜的基地坐标
     const val OPEN_HARVEST_VEGETABLES = "OPEN_HARVEST_VEGETABLES"//这个是是否开启收菜
     const val CELESTIAL_RESOURCES_LIST = "celestial_resources_list"
+    const val TRANSFER_SHIP = "TRANSFER_SHIP"
+
 
 
     const val MINING_BASE_LOCATION = "mining_base_location"//这个是收菜的基地坐标

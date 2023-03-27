@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.star_wars.FightController
+import com.nwq.function.scheduling.executer.star_wars.HarvestVegetableController
 import com.nwq.function.scheduling.executer.star_wars.MinerController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
@@ -77,9 +78,14 @@ class NwqAccessibilityService : AccessibilityService() {
             val fight = FightController(helper, onCompleteLister)
             fight.startOperation()
             list.add(fight)
-        } else {
+        } else if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.MINER_MODEL) {
             Timber.d("启动采集 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
             val fight = MinerController(helper, { true })
+            fight.startOperation()
+            list.add(fight)
+        } else if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.VEGETABLES_MODEL) {
+            Timber.d("启动收菜 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
+            val fight = HarvestVegetableController(helper, { true })
             fight.startOperation()
             list.add(fight)
         }

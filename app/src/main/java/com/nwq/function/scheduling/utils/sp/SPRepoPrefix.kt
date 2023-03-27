@@ -74,6 +74,10 @@ class SPRepoPrefix(val prefix: String) {
     val openHarvestVegetablesSP = SP(prefix + SpConstant.OPEN_HARVEST_VEGETABLES, false)
     var openHarvestVegetables by openHarvestVegetablesSP
 
+    val transferShipSP = SP(prefix + SpConstant.TRANSFER_SHIP, true)
+    var transferShip by transferShipSP
+
+
     val resourcesAddTimeSP = SP(prefix + SpConstant.RESOURCES_ADD_TIME, 0L)
     var resourcesAddTime by resourcesAddTimeSP
 

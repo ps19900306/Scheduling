@@ -20,12 +20,11 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     private var nowCelestialCount = 0
     private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     private var hasLaunch = false
-    var resourcesBaseLocationSP =spReo.resourcesBaseLocation
+    var resourcesBaseLocationSP = spReo.resourcesBaseLocation
 
     val list by lazy {
         JsonUtil.anyToJsonObject(spReo.celestialResources) ?: mutableListOf<Int>()
     }
-
 
 
     suspend fun addPlanetaryTime() {
@@ -69,6 +68,24 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     }
 
 
+    private suspend fun openVegetablesMenu():Boolean {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if(visual.isClosePositionMenu()){
+                click(constant.getTopMenuArea(3))
+            }else if(visual.isOpenBigMenu()){
+
+            }
+        }
+        return false
+    }
+
+
     private suspend fun launchAllVegetables() {
         if (list.isEmpty()) {
             onComplete.invoke()
@@ -77,7 +94,22 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         changeTrainShip()
         unloadingCargo()
         theOutCheck()
+
+        var flag = true
+        var count = 10
+
         click(constant.getTopMenuArea(3))
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+
+        }
+
+
+
+
         selectEntryItem(nowCelestialCount, doubleClickInterval)
         delay(normalClickInterval)
 
@@ -91,7 +123,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         takeScreen(normalClickInterval)
         ensureCloseDetermine()
         val startTime = System.currentTimeMillis()
-        var flag = true
+        flag = true
         while (flag && System.currentTimeMillis() - startTime < 20 * 60 * 1000) {
             takeScreen(quadrupleClickInterval)
             if (visual.judeIsLaunchComplete(list[nowCelestialCount])) {
@@ -129,7 +161,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             } else {
                 click(constant.collectButtonArea2, quadrupleClickInterval)
             }
-            lastCollectTime=System.currentTimeMillis()
+            lastCollectTime = System.currentTimeMillis()
             var flag = true
             while (flag) {
                 takeScreen(normalClickInterval)
@@ -213,6 +245,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
 
     //开始驾驶二号船 默认就只有二个船
     suspend fun changeTrainShip() {
+        if (!spReo.transferShip)
+            return
         click(constant.getTopMenuArea(1))
         delay(doubleClickInterval)
 
