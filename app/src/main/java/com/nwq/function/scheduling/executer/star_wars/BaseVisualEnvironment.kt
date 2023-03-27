@@ -192,16 +192,16 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun checkIsCommonTask(): Int {
         var list = listOf(
-            verificationTask(628, 342, BaiQingRule),
-            verificationTask(644, 342, QianQingRule),
+            verificationTask(628, 342, BaiQingRule,1),
+            verificationTask(644, 342, QianQingRule,1),
         )
         if (ImgUtils.performPointsColorVerification(
                 list, screenBitmap, 0
-            )
+            ) && !isHighTaskRight()
         ) return 1
         list = listOf(
-            verificationTask(1093, 342, BaiQingRule),
-            verificationTask(1109, 342, QianQingRule),
+            verificationTask(1093, 342, BaiQingRule,1),
+            verificationTask(1109, 342, QianQingRule,1),
         )
         if (ImgUtils.performPointsColorVerification(
                 list, screenBitmap, 0
