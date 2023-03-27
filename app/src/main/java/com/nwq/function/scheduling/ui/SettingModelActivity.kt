@@ -49,14 +49,15 @@ class SettingModelActivity : AppCompatActivity() {
         when (type) {
             SpConstant.MINER_MODEL -> {
                 list.addAll(minerList)
-                list.addAll(vegetableList)
             }
             SpConstant.FIGHT_MODEL -> {
                 list.addAll(fightList)
-                list.addAll(vegetableList)
             }
             SpConstant.FUBEN_MODEL -> {
                 list.addAll(fuBentList)
+            }
+            SpConstant.VEGETABLES_MODEL -> {
+                list.addAll(vegetableList)
             }
         }
         return list
