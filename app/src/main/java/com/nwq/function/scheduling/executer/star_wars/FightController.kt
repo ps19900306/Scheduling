@@ -544,8 +544,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
-                    if (isPickupBox && !needBackStation)//这里为了校验开关清空
-                        needCheckOpenList.add(pickUpPosition)
+
 
                     //打开定时开启的
                     checkTimingOnList(needCheckOpenList)
@@ -555,13 +554,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
                     //这里是判断点击
                     val list = checkEquipTimes(2, needCheckOpenList, needCheckCloseList)
-                    if (isPickupBox) {
-                        if (list.contains(pickUpPosition)) {
-                            if (visual.warehouseIsFull()) {
-                                needBackStation = true
-                            }
-                            list.remove(pickUpPosition)
-                        }
+                    if (isPickupBox && !needBackStation && visual.warehouseIsFull()) {
+                        needBackStation = true
                     }
                     clickEquipArray(list)
 
