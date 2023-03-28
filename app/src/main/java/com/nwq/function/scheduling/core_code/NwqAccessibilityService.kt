@@ -50,7 +50,7 @@ class NwqAccessibilityService : AccessibilityService() {
             } else {
                 SpConstant.PREFIX_ROLE1
             }
-            var lastTime1 = SPRepoPrefix.getNowSPRepo().lastCompleteTime
+            var lastTime1 = SPRepoPrefix.getSPRepo(SPRepo.role).lastCompleteTime
             if (TimeUtils.isNewTaskDay(lastTime1)) {
                 startOpt(true)
             } else {

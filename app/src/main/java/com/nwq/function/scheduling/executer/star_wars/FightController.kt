@@ -298,11 +298,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         click(constant.pickUpTask1Area)
                         delay(normalClickInterval)//这样做是为了保证最多点击二次
                         hasPickUpTask = true
+                        if (count > 2) count = 2
                     }
                     2 -> {
                         click(constant.pickUpTask2Area)
                         delay(normalClickInterval)
                         hasPickUpTask = true
+                        if (count > 2) count = 2
                     }
                 }
             }
