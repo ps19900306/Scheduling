@@ -250,10 +250,10 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.hasPositionMenu()) {
                 if (visual.isClosePositionMenu()) {
                     click(constant.eraseWarningArea)
-                } else if (visual.isDefaultCoordinateMenu()) {
-                    click(constant.defaultCoordinateMenuArea)
                 } else if (visual.isOpenPositionMenu()) {
                     flag = false
+                    if (!visual.isDefaultCoordinateMenu())
+                        click(constant.defaultCoordinateMenuArea)
                 }
             } else {
                 click(constant.eraseWarningArea)
