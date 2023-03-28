@@ -143,8 +143,15 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(1094, 760, AllLess50Rule),
             verificationTask(1124, 789, AllLess50Rule),
         )
+        val list2 = listOf(
+            verificationTask(1104, 760, RedRule),
+            verificationTask(1094, 760, AllLess50Rule),
+            verificationTask(1124, 789, AllLess50Rule),
+        )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
+        )|| ImgUtils.performPointsColorVerification(
+            list2, screenBitmap, 0
         )
     }
 
@@ -154,8 +161,16 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(1095, 591, AllLess50Rule),
             verificationTask(1124, 591, AllLess50Rule),
         )
+
+        val list2 = listOf(
+            verificationTask(1105, 591, RedRule),
+            verificationTask(1095, 591, AllLess50Rule),
+            verificationTask(1124, 591, AllLess50Rule),
+        )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
+        ) || ImgUtils.performPointsColorVerification(
+            list2, screenBitmap, 0
         )
     }
 
@@ -192,16 +207,16 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun checkIsCommonTask(): Int {
         var list = listOf(
-            verificationTask(628, 342, BaiQingRule,1),
-            verificationTask(644, 342, QianQingRule,1),
+            verificationTask(628, 342, BaiQingRule, 1),
+            verificationTask(644, 342, QianQingRule, 1),
         )
         if (ImgUtils.performPointsColorVerification(
                 list, screenBitmap, 0
             ) && !isHighTaskRight()
         ) return 1
         list = listOf(
-            verificationTask(1093, 342, BaiQingRule,1),
-            verificationTask(1109, 342, QianQingRule,1),
+            verificationTask(1093, 342, BaiQingRule, 1),
+            verificationTask(1109, 342, QianQingRule, 1),
         )
         if (ImgUtils.performPointsColorVerification(
                 list, screenBitmap, 0
@@ -437,8 +452,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             list, screenBitmap
         )
     }
-
-
 
 
     fun armorFull(): Boolean {

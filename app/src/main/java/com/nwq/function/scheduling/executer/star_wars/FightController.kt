@@ -207,10 +207,15 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         if (count <= 0 && flag) {//没有进入
             Timber.d("没有进入 pickUpTask FightController NWQ_ 2023/3/26");
             theOutCheck()
-            nowStep = PICK_UP_TASK
+            if (needBackStation) {
+                nowStep = EXIT_OPT
+            } else {
+                nowStep = PICK_UP_TASK
+                needBackStation = true
+            }
             return
         }
-
+        needBackStation = false
 
         if (hasTask) {//如果已经有任务
             clickTheDialogueClose()
