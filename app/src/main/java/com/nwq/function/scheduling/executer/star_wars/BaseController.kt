@@ -216,30 +216,48 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     suspend fun clickJumpCollectionAddress(index: Int, determine: Boolean) {
         ensureOpenPositionMenu()
+        var flag = true
+        var count = 4
         click(constant.getAddressArea(index), normalClickInterval)
-        if (determine) {
-            click(constant.dialogDetermineArea, normalClickInterval)
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (!visual.hasPositionMenu()||visual.isSailing()) {
+                flag = false
+            }else{
+                click(constant.getAddressArea(index))
+            }
+            count--
         }
     }
 
     suspend fun ensureOpenPositionMenu() {
         var flag = true
-        var count = 3
+        var count = 4
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return
             }
             if (visual.hasPositionMenu()) {
-                flag = false
                 if (visual.isClosePositionMenu()) {
                     click(constant.eraseWarningArea)
-                } else if (!visual.isDefaultCoordinateMenu()) {
+                } else if (visual.isDefaultCoordinateMenu()) {
                     click(constant.defaultCoordinateMenuArea)
+                } else {
+                    flag = false
                 }
+            }
+            if (count == 1) {
+                Timber.d("打开失败 ensureOpenPositionMenu BaseController NWQ_ 2023/3/28");
+                runSwitch = false
+                return
             }
             count--
         }
+
     }
 
     suspend fun ensureOpenEyeMenu() {
