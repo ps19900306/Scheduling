@@ -56,6 +56,8 @@ class NwqAccessibilityService : AccessibilityService() {
             } else {
                 helper.pressHomeBtn()
             }
+        }else{
+            helper.pressHomeBtn()
         }
         true
     }

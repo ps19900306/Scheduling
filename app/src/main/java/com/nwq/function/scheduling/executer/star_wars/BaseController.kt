@@ -224,9 +224,9 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 runSwitch = false
                 return
             }
-            if (!visual.hasPositionMenu()||visual.isSailing()) {
+            if (!visual.hasPositionMenu() || visual.isSailing()) {
                 flag = false
-            }else{
+            } else {
                 click(constant.getAddressArea(index))
             }
             count--
@@ -241,14 +241,22 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 runSwitch = false
                 return
             }
-            if (visual.hasPositionMenu()) {
+            if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+            } else if (visual.isOpenWallet()) {
+                click(constant.closeWalletArea)
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogCancleArea)
+            } else if (visual.hasPositionMenu()) {
                 if (visual.isClosePositionMenu()) {
                     click(constant.eraseWarningArea)
                 } else if (visual.isDefaultCoordinateMenu()) {
                     click(constant.defaultCoordinateMenuArea)
-                } else {
+                } else if (visual.isOpenPositionMenu()) {
                     flag = false
                 }
+            } else {
+                click(constant.eraseWarningArea)
             }
             if (count == 1) {
                 Timber.d("打开失败 ensureOpenPositionMenu BaseController NWQ_ 2023/3/28");
