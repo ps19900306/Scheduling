@@ -606,9 +606,15 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             } else {
                                 nowStep = PICK_UP_TASK
                             }
-                        } else if (targetReduceTime - System.currentTimeMillis() > 60 * 1000L) {//防止卡住
+                        } else if (targetReduceTime - System.currentTimeMillis() > Constant.MINUTE) {//防止卡住
                             closeTheWholeBattle()
-                            nowStep = PICK_UP_TASK
+                            if (needExit) {
+                                nowStep = EXIT_OPT
+                            } else if (needBackStation) {
+                                nowStep = ABNORMAL_STATE
+                            } else {
+                                nowStep = PICK_UP_TASK
+                            }
                         }
                     } else {
                         clickEquipArray(closeList)
