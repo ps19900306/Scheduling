@@ -55,7 +55,6 @@ class NwqAccessibilityService : AccessibilityService() {
                 startOpt(true)
             } else {
                 helper.pressHomeBtn()
-                helper.pressHomeBtn()
             }
         }
         true
@@ -66,13 +65,14 @@ class NwqAccessibilityService : AccessibilityService() {
         //每次启动都刷新任务数目
         list.forEach { it.close() }
         list.clear()
-        if (outGame) {
-            if ((helper.screenBitmap?.width ?: 0) > (helper.screenBitmap?.height
-                    ?: 0)
-            ) helper.pressHomeBtn()
-        } else {
-            helper.pressHomeBtn()
-        }
+//        if (outGame) {
+//            if ((helper.screenBitmap?.width ?: 0) > (helper.screenBitmap?.height
+//                    ?: 0)
+//            ) helper.pressHomeBtn()
+//        } else {
+//            helper.pressHomeBtn()
+//        }
+        helper.pressHomeBtn()
         if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
             Timber.d("启动任务 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
             val fight = FightController(helper, onCompleteLister)

@@ -123,6 +123,9 @@ class FuBenController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     hasOpenCatch = true
                 }
 
+
+
+
             }
         }
     }

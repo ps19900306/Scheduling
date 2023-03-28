@@ -46,10 +46,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
      * 这个是控制变量
      */
     private var nowStep = START_GAME
-    var needCancel = false
-    var neeForceRefresh = false
-    var needBackStation = false
-    var mNumberOfTasksReceived = 50
+
 
     val isPickupBox = spReo.isPickupBox
 
@@ -81,7 +78,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
      * *****************************************************************
      */
     private suspend fun startGame() {
-        mNumberOfTasksReceived = 50
         takeScreen(normalClickInterval)
         delay(2000)
         click(constant.getAppArea())
@@ -99,10 +95,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         theOutCheck()
         dailyGiftPack()
         clickJumpCollectionAddress(warehouseIndex, false)
-        pressBackBtn()
-        delay(helper.defultClickDuration * 2)
-        click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
-        takeScreen(doubleClickInterval)
+        delay(doubleClickInterval)
+//        pressBackBtn()
+//        delay(helper.defultClickDuration * 2)
+//        click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
+//        takeScreen(doubleClickInterval)
         runSwitch = false
         onComplete.invoke()
     }
@@ -555,6 +552,20 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         hasOpenCatch = true
                     }
 
+                    //如果多次开修失败
+                    if (list.contains(1 + TopOfst)) {
+                        val nowTime = System.currentTimeMillis()
+                        if (maintenanceTimeStartStamp - nowTime < MAINTENANCE_INTERVAL) {
+                            maintenanceOpenCount-- //表示上次没有开启成功
+                        } else {
+                            maintenanceOpenCount = 3
+                        }
+                        if (maintenanceOpenCount <= 0) {
+                            needExit = true
+                        }
+                        maintenanceTimeStartStamp = System.currentTimeMillis()
+                    }
+
                 } else {
                     needCheckOpenList.addAll(wholeBattleOpenList)
                     needCheckOpenList.addAll(roundBattleOpenList)
@@ -565,7 +576,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             //这里要做异常处理了 这里表示战斗结束了
                             clickTheDialogueClose()
                             closeTheWholeBattle()
-                            if (needBackStation) {
+                            if (needExit) {
+                                nowStep = EXIT_OPT
+                            } else if (needBackStation) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK

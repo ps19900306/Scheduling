@@ -35,6 +35,10 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val propellerPosition = BotOfst + 6
     val isShieldResistance = if (spReo.nowSelectMode == SpConstant.FIGHT_MODEL) spReo.resistanceMode
     else spReo.resistanceModeF
+    protected var needCancel = false
+    protected var neeForceRefresh = false
+    protected var needBackStation = false
+    protected var needExit = false
 
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
@@ -287,30 +291,36 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         return false
     }
 
+    var maintenanceOpenCount = 3
     var maintenanceTimeStartStamp = 0L
     var MAINTENANCE_INTERVAL = 30000L //维修间隔
     suspend fun bloodVolumeMonitoring(
         needCheckOpenList: MutableList<Int>, needCheckCloseList: MutableList<Int>
     ) {
-        if (System.currentTimeMillis() - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
-            return
-        }
+//        if (System.currentTimeMillis() - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
+//            return
+//        }
         if (isShieldResistance) {
             if (visual.shieldTooLow()) {
                 needCheckOpenList.add(maintenanceDevicePosition)
-            } else if (visual.shieldFull()) {
-                needCheckCloseList.add(maintenanceDevicePosition)
-            } else {
-
+                maintenanceTimeStartStamp = System.currentTimeMillis()
             }
+            if (visual.armorTooLow()) {
+                needBackStation = true
+            }
+//            else if (visual.shieldFull()) {
+//                needCheckCloseList.add(maintenanceDevicePosition)
+//            }
         } else {
             if (visual.armorTooLow()) {
                 needCheckOpenList.add(maintenanceDevicePosition)
-            } else if (visual.armorFull()) {
-                needCheckCloseList.add(maintenanceDevicePosition)
-            } else {
-
             }
+            if (visual.structuralDamage()) {
+                needBackStation = true
+            }
+//            else if (visual.armorFull()) {
+//                needCheckCloseList.add(maintenanceDevicePosition)
+//            }
         }
     }
 

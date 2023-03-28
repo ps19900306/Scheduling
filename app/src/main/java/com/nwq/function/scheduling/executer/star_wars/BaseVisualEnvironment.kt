@@ -427,6 +427,20 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
+
+    fun structuralDamage(): Boolean {
+        val list = listOf(
+            verificationTask(1229, 878, RedRule),
+            verificationTask(1235, 880, RedRule),
+        )
+        return ImgUtils.performPointsColorVerificationV2(
+            list, screenBitmap
+        )
+    }
+
+
+
+
     fun armorFull(): Boolean {
         val list = listOf(
             verificationTask(1244, 874, AllOver170Rule),
