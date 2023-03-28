@@ -360,7 +360,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         spReo.lastPickUpTaskTime = System.currentTimeMillis()
         nowStep = PICK_UP_TASK //这里转接任务
         var flag = true
-        var count = 40
+        var count = 15
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
