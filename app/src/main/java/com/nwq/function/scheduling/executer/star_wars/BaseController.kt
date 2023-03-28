@@ -293,7 +293,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     var maintenanceOpenCount = 3
     var maintenanceTimeStartStamp = 0L
-    var MAINTENANCE_INTERVAL = 30000L //维修间隔
+    var MAINTENANCE_INTERVAL = Constant.MINUTE //维修间隔
     suspend fun bloodVolumeMonitoring(
         needCheckOpenList: MutableList<Int>, needCheckCloseList: MutableList<Int>
     ) {
