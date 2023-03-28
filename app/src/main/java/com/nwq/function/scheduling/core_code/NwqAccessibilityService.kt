@@ -45,18 +45,19 @@ class NwqAccessibilityService : AccessibilityService() {
         SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
         Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
         if (SPRepo.continueToTheNext) {
-            SPRepo.role = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
-                SpConstant.PREFIX_ROLE2
+            val spReo = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+                SPRepo.role = SpConstant.PREFIX_ROLE2
+                SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2)
             } else {
-                SpConstant.PREFIX_ROLE1
+                SPRepo.role = SpConstant.PREFIX_ROLE1
+                SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1)
             }
-            var lastTime1 = SPRepoPrefix.getSPRepo(SPRepo.role).lastCompleteTime
-            if (TimeUtils.isNewTaskDay(lastTime1)) {
+            if (spReo.nowSelectMode == SpConstant.MINER_MODEL || TimeUtils.isNewTaskDay(spReo.lastCompleteTime)) {
                 startOpt(true)
             } else {
                 helper.pressHomeBtn()
             }
-        }else{
+        } else {
             helper.pressHomeBtn()
         }
         true

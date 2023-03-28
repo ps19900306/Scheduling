@@ -10,7 +10,7 @@
         android:id="@+id/testColor"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:text="测试颜色"
+        android:text="重置完成"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.948"

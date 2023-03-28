@@ -15,6 +15,7 @@ import com.nwq.function.scheduling.databinding.ActivityMainBinding
 import com.nwq.function.scheduling.utils.BroadcastUtils
 import com.nwq.function.scheduling.utils.singleClick
 import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import timber.log.Timber
 
@@ -56,6 +57,8 @@ class MainActivity : AppCompatActivity() {
             SelectModelActivity.startSelectSet(SpConstant.PREFIX_ROLE2, this)
         }
         bind.testColor.singleClick {
+            SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1).lastCompleteTime=0L
+            SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2).lastCompleteTime=0L
         }
 
         bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext
