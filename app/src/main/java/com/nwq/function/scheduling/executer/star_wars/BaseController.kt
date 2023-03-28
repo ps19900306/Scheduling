@@ -235,7 +235,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     suspend fun ensureOpenPositionMenu() {
         var flag = true
-        var count = 4
+        var count = 10
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
