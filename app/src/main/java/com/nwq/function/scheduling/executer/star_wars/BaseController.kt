@@ -68,10 +68,12 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     val Equipment_Interval = 30 * 1000L
 
     //这个是
-    suspend fun intoGame() {
-        var flag = true
+    suspend fun intoGame(): Boolean {
         do {
-            takeScreen(doubleClickInterval)
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return false
+            }
             if (visual.showAnnouncement()) {
                 click(constant.closeAnnouncementArea)
             } else if (visual.readStartGame()) {
@@ -81,10 +83,10 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
-                flag = false
-
+                return true
             }
-        } while (flag && runSwitch)
+        } while (runSwitch)
+        return false
     }
 
 

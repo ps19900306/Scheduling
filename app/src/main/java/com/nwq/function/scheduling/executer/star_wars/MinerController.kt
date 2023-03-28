@@ -81,27 +81,31 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     private suspend fun startGame() {
-        takeScreen(normalClickInterval)
+        if (!takeScreen(normalClickInterval)) {
+            runSwitch = false
+            return
+        }
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
-        intoGame()
-        if (visual.isInSpaceStation()) {
-            nowStep = MONITORING_RETURN_STATUS
-        } else if (visual.warehouseIsFull()) {
-            clickJumpCollectionAddress(warehouseIndex, false)
-            nowStep = MONITORING_RETURN_STATUS
-        } else {
-            ensureOpenLocalList()
-            if (correctedCoordinate()) {
-                hasCorrected = true
-                nowStep = LOOKING_FOR_PLANETARY_GROUPS
-            } else {
+        if (intoGame()) {
+            if (visual.isInSpaceStation()) {
+                nowStep = MONITORING_RETURN_STATUS
+            } else if (visual.warehouseIsFull()) {
                 clickJumpCollectionAddress(warehouseIndex, false)
                 nowStep = MONITORING_RETURN_STATUS
+            } else {
+                ensureOpenLocalList()
+                if (correctedCoordinate()) {
+                    hasCorrected = true
+                    nowStep = LOOKING_FOR_PLANETARY_GROUPS
+                } else {
+                    clickJumpCollectionAddress(warehouseIndex, false)
+                    nowStep = MONITORING_RETURN_STATUS
+                }
             }
+            dailyGiftPack()
         }
-        dailyGiftPack()
     }
 
 
@@ -112,7 +116,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var count = 60
         nowStep = WAIT_FOR_SAFE
         while (flag && count > 0 && runSwitch) {
-            takeScreen(normalClickInterval)
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
             if (isAlarm) {
                 if (count < 15 && visual.shieldTooLow()) {
                     val needOpenList = mutableListOf<Int>()
@@ -166,8 +173,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 harvestVegetableController.addPlanetaryTime()
             }
         }
-
-        takeScreen(normalClickInterval)
+        if (!takeScreen(normalClickInterval)) {
+            runSwitch = false
+            return
+        }
         val nowIsSafe = !visual.isDangerous(localOffsetX, localOffsetY)
         if (nowIsSafe == true && lastIsSafe == true) {
             if (System.currentTimeMillis() - lastSafeTime > getWaitTime()) {
@@ -202,7 +211,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
-            takeScreen(doubleClickInterval)
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
             if (visual.hasPositionMenu() && visual.hasEyesMenu()) {
                 flag = false
             }
@@ -218,7 +230,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var count = startCount
         var canRefresh = true
         while (flag && count > 0 && runSwitch) {
-            takeScreen(doubleClickInterval)
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
             if (isDangerous()) {
                 clickJumpCollectionAddress(warehouseIndex, false)
                 nowStep = MONITORING_RETURN_STATUS
@@ -251,7 +266,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
 
             click(constant.clickEyesMenuItemArea(count))
-            takeScreen(normalClickInterval)
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
             when (visual.judeResourceType(count)) {
                 visual.REMOTE_PLANETARY_GROUP -> {
                     Timber.d("REMOTE_PLANETARY_GROUP  lookingForMineralStars MinerController NWQ_ 2023/3/21");
@@ -298,7 +316,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var lastTargetCount = 0
         var count = 65
         while (flag && count > 0 && runSwitch) {
-            takeScreen(doubleClickInterval)
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
             if (visual.shieldTooLow() || isDangerous() || visual.warehouseIsFull()) {
                 Timber.d("返回基地了  monitoringDuringMining MinerController NWQ_ 2023/3/21");
                 clickJumpCollectionAddress(warehouseIndex, false)

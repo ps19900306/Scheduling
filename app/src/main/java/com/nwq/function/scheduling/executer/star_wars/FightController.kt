@@ -82,13 +82,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
-        intoGame()
-        nowStep = PICK_UP_TASK
-        if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
-            harvestVegetableController.addPlanetaryTime()
-            delay(normalClickInterval)
+        if (intoGame()) {
+            if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
+                nowStep = COMBAT_MONITORING
+            } else {
+                nowStep = PICK_UP_TASK
+                if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+                    harvestVegetableController.addPlanetaryTime()
+                    delay(normalClickInterval)
+                }
+            }
         }
-
     }
 
     private suspend fun exitGame() {
@@ -412,7 +416,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 return
             }
         }
-        takeScreen(quadrupleClickInterval)
+        if (!takeScreen(quadrupleClickInterval)) {
+            runSwitch = false
+            return
+        }
         if (ensureCloseDetermine()) {//这里大概率用不到了
             return
         }
@@ -602,7 +609,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     private suspend fun monitoringReturnStatus() {
-        takeScreen(quadrupleClickInterval * 2)
+        if (!takeScreen(quadrupleClickInterval * 2)) {
+            runSwitch = false
+            return
+        }
         if (System.currentTimeMillis() - spReo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
             if (visual.isSailing()) {
                 spReo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
