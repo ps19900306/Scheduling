@@ -212,7 +212,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             Timber.d("没有进入 pickUpTask FightController NWQ_ 2023/3/26");
             theOutCheck()
             if (needBackStation) {
-                nowStep = EXIT_OPT
+                nowStep = ABNORMAL_STATE
             } else {
                 nowStep = PICK_UP_TASK
                 needBackStation = true
@@ -393,10 +393,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 count = 20
             } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
                 count--
-                if (visual.isDamage()) {
-                    nowStep = EXIT_OPT
-                    flag = false
-                }
             } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
                 Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 needBackStation = true
