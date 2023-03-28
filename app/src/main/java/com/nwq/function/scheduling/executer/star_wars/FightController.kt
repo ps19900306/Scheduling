@@ -259,6 +259,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         count = 4
         var positon = -1
         var pickSuccess = false
+        var hasPickUpTask = false
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
@@ -289,17 +290,19 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 Timber.d("接取任务成功  pickUpTask FightController NWQ_ 2023/3/25");
                 flag = false
                 pickSuccess = true
+            } else if (visual.isShowTaskOpt()) {
+                click(constant.openTaskDetermineArea, fastClickInterval)
             } else {
                 when (positon) {
                     1 -> {
                         click(constant.pickUpTask1Area)
                         delay(normalClickInterval)//这样做是为了保证最多点击二次
-                        if (count > 2) count = 2
+                        hasPickUpTask = true
                     }
                     2 -> {
                         click(constant.pickUpTask2Area)
                         delay(normalClickInterval)
-                        if (count > 2) count = 2
+                        hasPickUpTask = true
                     }
                 }
             }
@@ -308,9 +311,15 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
         //这里为点开流程
         if (!pickSuccess) {//全部的任务已经完成
-            Timber.d("ALL_COMPLETE  pickUpTask FightController NWQ_ 2023/3/25");
-            nowStep = ALL_COMPLETE
-            return
+            if (hasPickUpTask) {
+                Timber.d("ALL_COMPLETE  pickUpTask FightController NWQ_ 2023/3/25");
+                nowStep = ALL_COMPLETE
+                return
+            } else {
+                Timber.d("未成功哦给接取  ABNORMAL_STATE  pickUpTask FightController NWQ_ 2023/3/25");
+                nowStep = ABNORMAL_STATE
+                return
+            }
         }
 
         if (!spReo.hasLegionnaires && visual.isHighTaskRight())//如果右边是高级任务也进行取消
@@ -382,8 +391,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
                 count = 20
-            }
-            else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
+            } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
                 count--
                 if (visual.isDamage()) {
                     nowStep = EXIT_OPT
