@@ -308,6 +308,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 maintenanceTimeStartStamp = System.currentTimeMillis()
             }
             if (visual.armorTooLow()) {
+                Timber.d("装甲受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
                 needBackStation = true
             }
 //            else if (visual.shieldFull()) {
@@ -318,6 +319,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 needCheckOpenList.add(maintenanceDevicePosition)
             }
             if (visual.structuralDamage()) {
+                Timber.d("结构受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
                 needBackStation = true
             }
 //            else if (visual.armorFull()) {

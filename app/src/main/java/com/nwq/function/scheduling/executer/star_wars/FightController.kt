@@ -378,9 +378,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 flag = false
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
-                delay(doubleClickInterval)
-                count = 40
-            } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
+                count = 20
+            } else if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+                count = 20
+            }
+            else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
                 count--
                 if (visual.isDamage()) {
                     nowStep = EXIT_OPT
@@ -621,7 +624,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
             return
         }
-        if (visual.getTagNumber() > 4 || visual.hasGroupLock()) {
+        if (visual.getTagNumber() > 2 || visual.hasGroupLock()) {
             nowStep = COMBAT_MONITORING
         } else if (visual.isInSpaceStation()) {
             if (isPickupBox) {
