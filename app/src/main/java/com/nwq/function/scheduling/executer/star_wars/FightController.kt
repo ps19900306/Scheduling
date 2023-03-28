@@ -256,7 +256,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         click(constant.newTaskListArea(spReo.hasLegionnaires || count == 0))
         nowStep = BATTLE_NAVIGATION_MONITORING
         flag = true
-        count = 4
+        count = 6
         var positon = -1
         var pickSuccess = false
         var hasPickUpTask = false
