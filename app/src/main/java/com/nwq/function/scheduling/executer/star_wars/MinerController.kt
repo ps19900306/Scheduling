@@ -81,10 +81,6 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     private suspend fun startGame() {
-        if (!takeScreen(normalClickInterval)) {
-            runSwitch = false
-            return
-        }
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
