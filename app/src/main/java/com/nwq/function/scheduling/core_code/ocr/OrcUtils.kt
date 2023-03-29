@@ -27,6 +27,19 @@ object OrcUtils {
         }
     }
 
+    private suspend fun cutImg(bitmap: Bitmap, x: Int, y: Int, width: Int, height: Int): String {
+        return withContext(Dispatchers.IO) {
+            val tessBaseApi = TessBaseAPI()
+            tessBaseApi.init(orcFileFolder, language)
+            val resultBitmap = Bitmap.createBitmap(bitmap, x, y, width, height)
+            tessBaseApi.setImage(resultBitmap)
+            val result = tessBaseApi.utF8Text
+            tessBaseApi.end()
+            resultBitmap.recycle()
+            result
+        }
+    }
+
 
     private suspend fun startOCR(
         imagedata: ByteArray,

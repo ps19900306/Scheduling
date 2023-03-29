@@ -2,6 +2,10 @@ package com.nwq.function.scheduling.utils
 
 import android.view.View
 import android.widget.Checkable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 /**
  * 点击事件防重复
@@ -32,3 +36,10 @@ var <T : View> T.lastClickTime: Long
     set(value) = setTag(1766613352, value)
     get() = getTag(1766613352) as? Long ?: 0
 
+fun CoroutineScope.runOnUI(doInUI: suspend CoroutineScope.() -> Unit): Job {
+    return launch(Dispatchers.Main.immediate) { doInUI() }
+}
+
+fun CoroutineScope.runOnIO(doInIO: suspend CoroutineScope.() -> Unit): Job {
+    return launch(Dispatchers.IO) { doInIO() }
+}
