@@ -8,11 +8,9 @@ import android.net.Uri
 import android.os.Environment
 import android.os.FileUtils
 import android.provider.MediaStore
+import com.nwq.function.scheduling.core_code.ocr.OrcUtils
 import timber.log.Timber
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.io.OutputStream
+import java.io.*
 
 /**
 create by: 86136
@@ -27,6 +25,10 @@ object FileUtils {
     var LastImageName = ""
     private val TextFileDir =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+    val orcFileFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/orc"
+    const val language = "chi_sim"
+    const val languageAllName = "chi_sim.traineddata"
+
     private var fileWriter: FileWriter? = null
 
 
@@ -100,4 +102,29 @@ object FileUtils {
             null
         }
     }
+
+
+    fun orcExists(): Boolean {
+        val orcFile = File(orcFileFolder, languageAllName)
+        return orcFile.exists()
+    }
+
+    fun copyOrcFile(inputStream: InputStream) {
+        val file = File(orcFileFolder)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        val orcFile = File(orcFileFolder, languageAllName)
+        val outOs = FileOutputStream(orcFile)
+        val buffer = ByteArray(1024)
+        var length = inputStream.read(buffer)
+        while (length > 0) {
+            outOs.write(buffer, 0, length)
+            length = inputStream.read(buffer)
+        }
+        outOs.flush()
+        outOs.close()
+        inputStream.close()
+    }
+
 }
