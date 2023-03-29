@@ -257,7 +257,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         //下面是走没有任务的流程
         //打开新闻公告版本
         click(constant.newTaskListArea(spReo.hasLegionnaires || count == 0))
-        nowStep = BATTLE_NAVIGATION_MONITORING
         flag = true
         count = 6
         var positon = -1
@@ -602,8 +601,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                                 nowStep = PICK_UP_TASK
                             }
                         }
-                    } else {
-                        clickEquipArray(closeList)
                     }
                 }
             }
