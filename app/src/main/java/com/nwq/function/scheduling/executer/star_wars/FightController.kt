@@ -608,11 +608,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             if (visual.isSailing()) {
                 spReo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
             } else {
+                spReo.lastBackSpaceStation = System.currentTimeMillis()
                 nowStep = ABNORMAL_STATE
             }
             return
         }
         if (visual.getTagNumber() > 2 || visual.hasGroupLock()) {
+            spReo.lastBackSpaceStation = System.currentTimeMillis()
             nowStep = COMBAT_MONITORING
         } else if (visual.isInSpaceStation()) {
             if (isPickupBox) {
@@ -816,6 +818,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         theOutCheck()
         needCancel = true
         needBackStation = true
+        spReo.lastBackSpaceStation = System.currentTimeMillis()
         clickJumpCollectionAddress(warehouseIndex, false)
         nowStep = MONITORING_RETURN_STATUS
     }
