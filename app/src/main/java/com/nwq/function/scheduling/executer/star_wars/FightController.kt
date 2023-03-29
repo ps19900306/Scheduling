@@ -161,7 +161,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         nowStep = BATTLE_NAVIGATION_MONITORING
         //点开任务栏目
         var flag = true
-        var count = 2
+        var count = 4
         click(constant.getTopMenuArea(2))
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(normalClickInterval)) {
@@ -172,7 +172,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 flag = false
             } else if (visual.isOpenWallet()) {
                 click(constant.closeWalletArea)
-                count = 2
+                count = 4
+            } else if (visual.isCloseEyesMenu() && !visual.hasPositionMenu()) {
+                click(constant.closeLeftMenu)
+                count = 4
             } else if (count % 2 == 1) {
                 click(constant.getTopMenuArea(2))
             }
@@ -394,6 +397,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 click(constant.closeBigMenuArea)
                 count = 20
             } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
+                if (visual.isDamage()) {
+                    nowStep = EXIT_OPT
+                }
                 count--
             } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
                 Timber.d("导航时间过长 startNavigationMonitoring FightController NWQ_ 2023/3/10");
@@ -423,6 +429,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = ABNORMAL_STATE
                 Timber.d("进入战斗超时 combatMonitoring FightController NWQ_ 2023/3/10");
                 return
+            } else {
+
             }
         }
         if (!takeScreen(quadrupleClickInterval)) {
@@ -433,7 +441,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             return
         }
         if (!mEnterCombatStatus) {
-            if (canLockTargetDelay()) {
+            if (visual.hasGroupLock()) {
                 ensureCloseEyeMenu()
                 click(constant.lockTargetGroupArea)
                 takeScreen(doubleClickInterval)
@@ -449,15 +457,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     hasOpenCatch = false
                     openTheWholeBattle()
                     useUnlock = true
+                    intoCount = 3
                 } else if (intoCount < 0) {
-                    Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
-                    if (visual.isDamage()) {//损毁了才进行推出
-                        useUnlock = false
-                        nowStep = EXIT_OPT
-                    } else {
-                        useUnlock = false
-                        nowStep = ABNORMAL_STATE
-                    }
+                    useUnlock = false
+                    nowStep = ABNORMAL_STATE
                     intoCount = 3
                 } else {
                     intoCount--
@@ -474,14 +477,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 openTheWholeBattle()
                 useUnlock = true
             } else if (System.currentTimeMillis() - battleStartTime > constant.INTO_BATTLE_EXCEPTION) {//进入战斗失败
-                Timber.d("进入战斗失败 combatMonitoring FightController NWQ_ 2023/3/10");
-                if (visual.isDamage()) {//损毁了才进行推出
-                    useUnlock = false
-                    nowStep = EXIT_OPT
-                } else {
-                    useUnlock = false
-                    nowStep = PICK_UP_TASK
-                }
+                Timber.d("长时间未能进行锁定  combatMonitoring FightController NWQ_ 2023/3/10");
+                useUnlock = false
+                nowStep = PICK_UP_TASK
             }
         } else {
             if (canLockTarget()) {//可以进行锁定
@@ -568,7 +566,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     }
 
                     //如果多次开修失败
-                    if (list.contains(1 + TopOfst)) {
+                    if (list.contains(maintenanceDevicePosition)) {
                         val nowTime = System.currentTimeMillis()
                         if (maintenanceTimeStartStamp - nowTime < MAINTENANCE_INTERVAL) {
                             maintenanceOpenCount-- //表示上次没有开启成功
