@@ -150,7 +150,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
-        )|| ImgUtils.performPointsColorVerification(
+        ) || ImgUtils.performPointsColorVerification(
             list2, screenBitmap, 0
         )
     }
@@ -894,6 +894,34 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             list1, screenBitmap, 0
         ) && isClosePositionMenu()
     }
+
+    //打开了左边的才对呢
+    fun isOpenLeftMenu(): Boolean {
+        val list1 = listOf(
+            verificationTask(1146, 331, AllOver170Rule),
+            verificationTask(1160, 331, AllOver170Rule),
+            verificationTask(1145, 340, AllLess50Rule),
+            verificationTask(1172, 316, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        ) && isClosePositionMenu()
+    }
+
+    //打开了大际遇的界面
+    fun isOpenJiYuBigMenu(): Boolean {
+        val list1 = listOf(
+            verificationTask(293, 83, AllOver150Rule),
+            verificationTask(394, 65, AllOver150Rule),
+            verificationTask(283, 83, AllLess50Rule),
+            verificationTask(301, 84, AllLess50Rule),
+            verificationTask(293, 60, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        ) && isClosePositionMenu()
+    }
+
 
     //判断是否是普通异常
     fun isCommonUnusual() {

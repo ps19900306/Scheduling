@@ -31,7 +31,8 @@ class BaseConstant {
     var optTaskArea2 = Area(1893, 678, 145, 158)//(1912, 542, 110, 115)
     var cancelTaskArea = Area(1740, 201, 212, 67)
     var closeWalletArea = Area(1917, 97, 67, 66)
-    var closeLeftMenu = Area(1775, 185, 200, 100)//左边的各种菜单被打开
+    var leftJiYuMenu = Area(285, 677, 356, 178)//左边菜单际遇按钮
+
     var dialogDetermineArea = Area(2000, 770, 250, 90)//这个是右小角弹出窗口的确定按钮
     var dialogCancleArea = Area(1675, 824, 212, 42)
 

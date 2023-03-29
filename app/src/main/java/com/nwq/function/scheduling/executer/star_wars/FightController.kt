@@ -157,29 +157,34 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun pickUpTask() {
         Timber.d("准备接取任务 pickUpTask FightController NWQ_ 2023/3/12");
-
         nowStep = BATTLE_NAVIGATION_MONITORING
-        //点开任务栏目
+
+        //这里要等待打开任务栏目
         var flag = true
-        var count = 4
-        click(constant.getTopMenuArea(2))
+        var count = 10
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(normalClickInterval)) {
+            if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return
             }
             if (visual.isOpenBigMenu()) {
-                flag = false
+                if (visual.isOpenJiYuBigMenu()) {
+                    flag = false
+                } else {
+                    click(constant.closeBigMenuArea)
+                }
             } else if (visual.isOpenWallet()) {
                 click(constant.closeWalletArea)
-                count = 4
-            } else if (visual.isCloseEyesMenu() && !visual.hasPositionMenu()) {
-                click(constant.closeLeftMenu)
-                count = 4
-            } else if (count % 2 == 1) {
+            } else if (visual.isOpenLeftMenu()) {
+                click(constant.leftJiYuMenu)
+            } else {
                 click(constant.getTopMenuArea(2))
             }
             count--
+        }
+
+        if (count == 0) {
+            Timber.d("打开任务失败 pickUpTask FightController NWQ_ 2023/3/29");
         }
 
         //等待进入接取任务的
@@ -191,7 +196,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 runSwitch = false
                 return
             }
-
             if (spReo.hasLegionnaires) {//有军团任务
                 if (visual.hasLegionnaires()) {
                     hasTask = visual.hasLegionnairesTask()
@@ -210,19 +214,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
             count--
         }
-
-        if (count <= 0 && flag) {//没有进入
-            Timber.d("没有进入 pickUpTask FightController NWQ_ 2023/3/26");
-            theOutCheck()
-            if (needBackStation) {
-                nowStep = ABNORMAL_STATE
-            } else {
-                nowStep = PICK_UP_TASK
-                needBackStation = true
-            }
-            return
-        }
-        needBackStation = false
 
         if (hasTask) {//如果已经有任务
             clickTheDialogueClose()
