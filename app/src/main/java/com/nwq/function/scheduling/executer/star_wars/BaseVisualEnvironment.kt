@@ -905,21 +905,21 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
         return ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
-        ) && isClosePositionMenu()
+        )
     }
 
     //打开了大际遇的界面
     fun isOpenJiYuBigMenu(): Boolean {
         val list1 = listOf(
             verificationTask(293, 83, AllOver150Rule),
-            verificationTask(394, 65, AllOver150Rule),
+            verificationTask(294, 65, AllOver150Rule),
             verificationTask(283, 83, AllLess50Rule),
             verificationTask(301, 84, AllLess50Rule),
             verificationTask(293, 60, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
-        ) && isClosePositionMenu()
+        )
     }
 
 
