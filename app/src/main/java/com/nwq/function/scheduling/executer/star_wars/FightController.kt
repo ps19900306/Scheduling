@@ -574,7 +574,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             maintenanceOpenCount = 3
                         }
                         if (maintenanceOpenCount <= 0) {
-                            needExit = true
+                            needBackStation = true
                         }
                         maintenanceTimeStartStamp = System.currentTimeMillis()
                     }
@@ -589,18 +589,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             //这里要做异常处理了 这里表示战斗结束了
                             clickTheDialogueClose()
                             closeTheWholeBattle()
-                            if (needExit) {
-                                nowStep = EXIT_OPT
-                            } else if (needBackStation) {
+                            if (needBackStation) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
                             }
                         } else if (targetReduceTime - System.currentTimeMillis() > Constant.MINUTE) {//防止卡住
                             closeTheWholeBattle()
-                            if (needExit) {
-                                nowStep = EXIT_OPT
-                            } else if (needBackStation) {
+                            if (needBackStation) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
