@@ -177,13 +177,21 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isShowDetermine(): Boolean {
         val list = listOf(
+            verificationTask(2100, 553, AllLess20Rule),
             verificationTask(2001, 824, SimpleRule.getSimple(48, 95, 89), 1),
             verificationTask(1667, 827, SimpleRule.getSimple(28, 48, 49), 1),
-            verificationTask(2100, 553, AllLess20Rule, 1),
-            verificationTask(2162, 696, AllLess20Rule, 1),
         )
+        val list1 = listOf(
+            verificationTask(2162, 696, AllLess20Rule),
+            verificationTask(2001, 824, SimpleRule.getSimple(48, 95, 89), 1),
+            verificationTask(1667, 827, SimpleRule.getSimple(28, 48, 49), 1),
+        )
+
+
         return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 1
+            list, screenBitmap, 0
+        ) || ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
         ) || isClosePositionMenuGray()
     }
 
@@ -315,7 +323,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //判断菜单是否是打开的
     fun isOpenPositionMenuGray(): Boolean {
         val list = listOf(
-            verificationTask(491, 301, SimpleRule.getSimple(55, 56, 58,2), 1),
+            verificationTask(491, 301, SimpleRule.getSimple(55, 56, 58, 2), 1),
             verificationTask(491, 289, AllLess20Rule, 1),
         )
         return ImgUtils.performPointsColorVerification(
@@ -325,7 +333,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isClosePositionMenuGray(): Boolean {
         val list = listOf(
-            verificationTask(136, 301, SimpleRule.getSimple(55, 56, 58,2), 1),
+            verificationTask(136, 301, SimpleRule.getSimple(55, 56, 58, 2), 1),
             verificationTask(136, 289, AllLess20Rule, 1),
         )
         return ImgUtils.performPointsColorVerification(
