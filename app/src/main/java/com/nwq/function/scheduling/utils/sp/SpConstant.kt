@@ -1,11 +1,11 @@
 package com.nwq.function.scheduling.utils.sp
 
 object SpConstant {
-    const val NOW_SELECT_MODE="now_select_mode"
-    const val FIGHT_MODEL=1
-    const val MINER_MODEL=2
-    const val FUBEN_MODEL=3
-    const val VEGETABLES_MODEL=4
+    const val NOW_SELECT_MODE = "now_select_mode"
+    const val FIGHT_MODEL = 1
+    const val MINER_MODEL = 2
+    const val FUBEN_MODEL = 3
+    const val VEGETABLES_MODEL = 4
 
     const val LAST_REFRESH_TIME = "last_refresh_time"
     const val LAST_PICKUP_TASK_TIME = "last_pickup_task_time"
@@ -16,7 +16,7 @@ object SpConstant {
     const val ADD_INTERVAL = "add_interval"
     const val HAS_LEGIONNAIRES = "has_legionnaires"
 
-    const val DAILY_TASKS_TIME="daily_tasks_time"
+    const val DAILY_TASKS_TIME = "daily_tasks_time"
     const val LAST_COMPLETE_TIME = "LAST_COMPLETE_TIME"
     const val CONTINUE_TO_THE_NEXT = "CONTINUE_TO_THE_NEXT"
 
@@ -40,14 +40,13 @@ object SpConstant {
     const val TRANSFER_SHIP = "TRANSFER_SHIP"
 
 
-
     const val MINING_BASE_LOCATION = "mining_base_location"//这个是收菜的基地坐标
-    const val MINING_GUN_LIST="mining_gun_list"
-    const val MINING_INERTIA_LIST="mining_inertia_list"
-    const val MINING_STABILIZER_LIST="mining_stabilizer_list"
+    const val MINING_GUN_LIST = "mining_gun_list"
+    const val MINING_INERTIA_LIST = "mining_inertia_list"
+    const val MINING_STABILIZER_LIST = "mining_stabilizer_list"
 
     const val F_IS_CATCH_FOOD = "f_is_catch_food"
-    const val F_IS_HAS_propeller = "f_is_has_propeller"
+    const val F_IS_HAS_propeller = "f_is_has_propeller"//是否带推子
     const val F_TIME_ON_LIST1 = "f_time_on_list1"
     const val F_TIME_ON_LIST2 = "f_time_on_list2"
     const val F_TIME_ON_LIST3 = "f_time_on_list3"

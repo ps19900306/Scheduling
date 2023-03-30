@@ -92,7 +92,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     delay(normalClickInterval)
                 }
             }
-        }else{
+        } else {
             onComplete.invoke()
         }
     }
@@ -566,6 +566,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             maintenanceOpenCount = 3
                         }
                         if (maintenanceOpenCount <= 0) {
+                            Timber.d("开启失败需要返回 cmbatMonitoring FightController NWQ_ 2023/3/30");
+                            maintenanceOpenCount = 3
                             needBackStation = true
                         }
                         maintenanceTimeStartStamp = System.currentTimeMillis()

@@ -164,7 +164,7 @@ class BaseConstant {
         )
     }
 
-
+    //挖矿
     val isOpenPositionArea = Area(455, 258, 73, 76)//已经开启的位置
     val closePositionArea = Area(418, 342, 100, 70)//已经开启的位置
     val localListArea = Area(102, 989, 179, 56)//打开本地图标
@@ -198,4 +198,8 @@ class BaseConstant {
         return Area(1985, 85 + (index * 105), 188, 70)
     }
 
+
+    //副本接受按钮
+    val acceptDungeonArea = Area(2004, 331, 111, 59)//打开本地图标
+    val preparationDungeonArea = Area(2004, 331, 111, 59)//打开本地图标
 }

@@ -8,12 +8,18 @@ import timber.log.Timber
 create by: 86136
 create time: 2023/3/23 15:18
 Function description:
+普通成员
  */
 
-class FuBenController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
+class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
 
     val isHasPropeller = spReo.isHasPropellerF
 
+    private val IN_SPACE_STATION = 0  //在空间站
+    private val IN_PREPARATION_INTERFACE = 1 //在准备界面
+    private val BATTLE_NAVIGATION_MONITORING = 2//战斗监控阶段
+
+    var nowStep = IN_SPACE_STATION
     var targetCount = 0;
     var hasNewLock = true
     var targetReduceTime = 0L //这个是上次目标减少的时间
@@ -43,7 +49,66 @@ class FuBenController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private val COMBAT_MONITORING = 1 //战斗监控阶段
     override suspend fun generalControlMethod() {
+        while (runSwitch) {
+            Timber.d("nowStep:$nowStep generalControlMethod FightController NWQ_ 2023/3/10");
+            when (nowStep) {
+                IN_SPACE_STATION -> {
+                    stationMonitoring()
+                }
+                IN_PREPARATION_INTERFACE -> {
+                    preparationMonitoring()
+                }
+                BATTLE_NAVIGATION_MONITORING -> {
+                    combatMonitoring()
+                }
+            }
+        }
+    }
 
+
+    suspend fun stationMonitoring() {
+        nowStep++
+        var flag = true
+        var count = 40
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isDungeonWaiting()) {
+                false
+            }
+            if (visual.isInviteToDungeon()) {
+                click(constant.acceptDungeonArea)
+            }
+            count--
+        }
+        if (count == 0 && flag) {
+            runSwitch = false
+            return
+        }
+    }
+
+
+    suspend fun preparationMonitoring() {
+        nowStep++
+        var flag = true
+        var count = 40
+        click(constant.preparationDungeonArea)
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isDungeonFight()) {
+                false
+            }
+            count--
+        }
+        if (count == 0 && flag) {
+            runSwitch = false
+            return
+        }
     }
 
 
@@ -122,10 +187,6 @@ class FuBenController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     Timber.d("hasOpenCatch:$hasOpenCatch combatMonitoring FightController NWQ_ 2023/3/13");
                     hasOpenCatch = true
                 }
-
-
-
-
             }
         }
     }

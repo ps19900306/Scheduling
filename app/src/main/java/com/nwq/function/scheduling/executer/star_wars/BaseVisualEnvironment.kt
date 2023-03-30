@@ -868,9 +868,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    /****
-     * 下面都是没有确认的
-     */
+
     //是否打开仓库
     fun isOpenStorehouseMenu(): Boolean {
         val list1 = listOf(
@@ -918,6 +916,10 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
+
+    /****
+     * 下面都是没有确认的
+     */
     //打开了大际遇的界面
     fun isOpenJiYuBigMenu(): Boolean {
         val list1 = listOf(
@@ -932,6 +934,47 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
+
+    //打开了大际遇的界面
+    fun isInviteToDungeon(): Boolean {
+        val list1 = listOf(
+            verificationTask(293, 83, AllOver150Rule),
+            verificationTask(294, 65, AllOver150Rule),
+            verificationTask(283, 83, AllLess50Rule),
+            verificationTask(301, 84, AllLess50Rule),
+            verificationTask(293, 60, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
+
+    fun isDungeonWaiting(): Boolean {
+        val list1 = listOf(
+            verificationTask(293, 83, AllOver150Rule),
+            verificationTask(294, 65, AllOver150Rule),
+            verificationTask(283, 83, AllLess50Rule),
+            verificationTask(301, 84, AllLess50Rule),
+            verificationTask(293, 60, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
+
+
+    fun isDungeonFight(): Boolean {
+        val list1 = listOf(
+            verificationTask(293, 83, AllOver150Rule),
+            verificationTask(294, 65, AllOver150Rule),
+            verificationTask(283, 83, AllLess50Rule),
+            verificationTask(301, 84, AllLess50Rule),
+            verificationTask(293, 60, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
 
     //判断是否是普通异常
     fun isCommonUnusual() {
