@@ -258,8 +258,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                     click(constant.eraseWarningArea)
                 } else if (visual.isOpenPositionMenu()) {
                     flag = false
-                    if (!visual.isDefaultCoordinateMenu())
-                        click(constant.defaultCoordinateMenuArea)
+                    if (!visual.isDefaultCoordinateMenu()) click(constant.defaultCoordinateMenuArea)
                 }
             } else {
                 click(constant.eraseWarningArea)
@@ -339,10 +338,6 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 needCheckOpenList.add(maintenanceDevicePosition)
                 maintenanceTimeStartStamp = System.currentTimeMillis()
             }
-            if (visual.armorTooLow()) {
-                Timber.d("装甲受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
-                needBackStation = true
-            }
 //            else if (visual.shieldFull()) {
 //                needCheckCloseList.add(maintenanceDevicePosition)
 //            }
@@ -350,14 +345,23 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             if (visual.armorTooLow()) {
                 needCheckOpenList.add(maintenanceDevicePosition)
             }
-            if (visual.structuralDamage()) {
-                Timber.d("结构受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
-                needBackStation = true
-            }
+
 //            else if (visual.armorFull()) {
 //                needCheckCloseList.add(maintenanceDevicePosition)
 //            }
         }
+    }
+
+    fun needBack(): Boolean {
+        val result = if (isShieldResistance) {
+            visual.armorTooLow()
+        } else {
+            visual.structuralDamage()
+        }
+        if (result) {
+            Timber.d("结构受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
+        }
+        return result
     }
 
 

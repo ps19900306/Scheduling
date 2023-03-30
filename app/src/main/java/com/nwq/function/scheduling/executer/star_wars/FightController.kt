@@ -583,14 +583,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             //这里要做异常处理了 这里表示战斗结束了
                             clickTheDialogueClose()
                             closeTheWholeBattle()
-                            if (needBackStation) {
+                            if (needBackStation ||needBack()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
                             }
                         } else if (targetReduceTime - System.currentTimeMillis() > Constant.MINUTE) {//防止卡住
                             closeTheWholeBattle()
-                            if (needBackStation) {
+                            if (needBackStation||needBack()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
