@@ -183,7 +183,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(2162, 696, AllLess20Rule, 1),
         )
         return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
+            list, screenBitmap, 1
         ) || isClosePositionMenuGray()
     }
 
