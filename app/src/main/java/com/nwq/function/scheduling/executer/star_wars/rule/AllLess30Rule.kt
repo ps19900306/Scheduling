@@ -8,10 +8,10 @@ create time: 2023/3/2 10:17
 Function description:
  */
 
-object AllLess20Rule : ColorIdentificationRule {
+object AllLess30Rule : ColorIdentificationRule {
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        val flag1 = red < 20 && blue < 20 && green < 20
-        val flag2 = red + blue + green < 60
+        val flag1 = red < 30 && blue < 30 && green < 30
+        val flag2 = red + blue + green < 90
         return flag2 || flag1
     }
 }
