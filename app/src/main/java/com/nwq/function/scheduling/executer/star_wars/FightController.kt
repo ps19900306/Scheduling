@@ -92,6 +92,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     delay(normalClickInterval)
                 }
             }
+        }else{
+            onComplete.invoke()
         }
     }
 

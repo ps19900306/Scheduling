@@ -101,6 +101,8 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 }
             }
             dailyGiftPack()
+        } else {
+            onComplete.invoke()
         }
     }
 

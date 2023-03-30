@@ -69,7 +69,13 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     //这个是
     suspend fun intoGame(): Boolean {
-        do {
+        val t = TimeUtils.getDelayStart()
+        if (t > 0) {
+            delay(t)
+        }
+        var flag = true
+        var count = 40
+        while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return false
@@ -85,7 +91,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.hasIntoGame()) {
                 return true
             }
-        } while (runSwitch)
+        }
         return false
     }
 

@@ -1,5 +1,7 @@
 package com.nwq.function.scheduling.utils
 
+import com.nwq.function.scheduling.core_code.Constant
+import kotlinx.coroutines.delay
 import java.util.*
 
 object TimeUtils {
@@ -31,4 +33,16 @@ object TimeUtils {
         }
         return false
     }
+
+    fun getDelayStart(): Long {
+        val calendar = Calendar.getInstance();
+        val day = calendar.get(Calendar.DAY_OF_WEEK)
+        if (day == Calendar.THURSDAY) {
+            if (calendar.get(Calendar.HOUR_OF_DAY) == 8) {
+                return ((2 + Math.random() * 0.1) * Constant.Hour).toLong()
+            }
+        }
+        return 0
+    }
+
 }
