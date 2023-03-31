@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.utils.sp
 
 import com.nwq.function.scheduling.utils.sp.SpConstant.FIGHT_MODEL
+import com.nwq.function.scheduling.utils.sp.SpConstant.NORMAL
 
 class SPRepoPrefix(val prefix: String) {
 
@@ -18,6 +19,10 @@ class SPRepoPrefix(val prefix: String) {
 
     val nowSelectModeSP = SP(prefix + SpConstant.NOW_SELECT_MODE, FIGHT_MODEL)
     var nowSelectMode by nowSelectModeSP
+
+    var lastStatus by SP(prefix + SpConstant.RUN_STATE, NORMAL)
+
+
     var dailytaskstime by SP(prefix + SpConstant.DAILY_TASKS_TIME, 0L)
 
     //战斗的

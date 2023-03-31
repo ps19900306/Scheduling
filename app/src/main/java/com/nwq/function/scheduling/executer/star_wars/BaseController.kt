@@ -200,9 +200,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     //卸载货物
     suspend fun unloadingCargo(normal: Boolean = true) {
-        click(constant.getTopMenuArea(1))
-        delay(tripleClickInterval)
-
+        ensureOpenMenuArea(cangkuPosition)
+        delay(normalClickInterval)
         if (normal) click(constant.generalWarehouseArea)
         else click(constant.mineralWarehouseArea)
 
@@ -258,7 +257,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                     click(constant.eraseWarningArea)
                 } else if (visual.isOpenPositionMenu()) {
                     flag = false
-                    if (!visual.isDefaultCoordinateMenu()) click(constant.defaultCoordinateMenuArea)
+                    if (!visual.isDefaultCoordinateMenu())
+                        click(constant.defaultCoordinateMenuArea)
                 }
             } else {
                 click(constant.eraseWarningArea)
@@ -330,38 +330,23 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun bloodVolumeMonitoring(
         needCheckOpenList: MutableList<Int>, needCheckCloseList: MutableList<Int>
     ) {
-//        if (System.currentTimeMillis() - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
-//            return
-//        }
         if (isShieldResistance) {
             if (visual.shieldTooLow()) {
                 needCheckOpenList.add(maintenanceDevicePosition)
-                maintenanceTimeStartStamp = System.currentTimeMillis()
             }
-//            else if (visual.shieldFull()) {
-//                needCheckCloseList.add(maintenanceDevicePosition)
-//            }
         } else {
             if (visual.armorTooLow()) {
                 needCheckOpenList.add(maintenanceDevicePosition)
             }
-
-//            else if (visual.armorFull()) {
-//                needCheckCloseList.add(maintenanceDevicePosition)
-//            }
         }
     }
 
-    fun needBack(): Boolean {
-        val result = if (isShieldResistance) {
+    suspend fun needBack(): Boolean {
+        return if (isShieldResistance) {
             visual.armorTooLow()
         } else {
             visual.structuralDamage()
         }
-        if (result) {
-            Timber.d("结构受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
-        }
-        return result
     }
 
 
@@ -440,4 +425,56 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
 
+    val cangkuPosition = 1
+    val JiyuPosition = 2
+    val CaiPosition = 3
+    suspend fun ensureOpenMenuArea(index: Int) {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isOpenBigMenu()) {
+                when (index) {
+                    cangkuPosition -> {
+                        if (visual.isOpenStorehouseMenu()) {
+                            flag = false
+                        }
+                    }
+                    JiyuPosition -> {
+                        if (visual.isOpenJiYuBigMenu()) {
+                            flag = false
+                        }
+                    }
+                    CaiPosition -> {
+                        if (visual.isOpenVegetableMenu()) {
+                            flag = false
+                        }
+                    }
+                }
+                if (flag) {
+                    click(constant.closeBigMenuArea)
+                }
+            } else if (visual.isOpenWallet()) {
+                click(constant.closeWalletArea)
+            } else if (visual.isOpenLeftMenu()) {
+                when (index) {
+                    cangkuPosition -> {
+                        click(constant.leftCangKuMenu)
+                    }
+                    JiyuPosition -> {
+                        click(constant.leftJiYuMenu)
+                    }
+                    CaiPosition -> {
+                        click(constant.leftCaiMenu)
+                    }
+                }
+            } else {
+                click(constant.getTopMenuArea(index))
+            }
+            count--
+        }
+    }
 }
