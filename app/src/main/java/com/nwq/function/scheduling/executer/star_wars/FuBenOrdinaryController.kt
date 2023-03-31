@@ -94,7 +94,7 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
         nowStep++
         var flag = true
         var count = 40
-        click(constant.preparationDungeonArea)
+        click(constant.preparationDungeonArea, doubleClickInterval)
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
@@ -113,82 +113,79 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
 
 
     suspend fun combatMonitoring() {
+        //打开选中第一个条目进行接近
+        ensureOpenEyeMenu()
+        click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
+        click(constant.getTransitionArea(0), doubleClickInterval)
+        clickEquipArray(wholeBattleOpenList)
+
         var flag = true
-        var count = 10
-        clickEquipArray(openCheckEquipTimes(2, wholeBattleOpenList))
+        var count = 1200
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
-                count--
+                runSwitch = false
+                return
+            }
+            if (visual.isInSpaceStation()) {
+                nowStep = IN_SPACE_STATION
+                flag = false
                 continue
             }
-            count = 10
-            if (visual.hasGroupLock()) {
-                click(constant.lockTargetGroupArea)
+            if (visual.isDungeonComplete()) {
+                click(constant.completeDungeonArea)
                 continue
             }
 
-            val nowTargetCount = visual.getTagNumber()
-            if (nowTargetCount <= 0) {
-                if (isHasPropeller) {
-                    val list = checkEquipTimes(2, listOf(weaponPosition), listOf(propellerPosition))
-                    if (list.contains(weaponPosition) && list.contains(propellerPosition)) {
-                        clickEquipArray(listOf(propellerPosition))
+            if (visual.hasGroupLock()) {
+                click(constant.lockTargetGroupArea)
+                if (spReo.isCatchFoodF) {
+                    if (targetCount <= 0) {
+                        targetReduceTime = System.currentTimeMillis()
+                        hasNewLock = true
+                    } else if (hasNewLock && targetCount > 4) {
+                        openDecelerationNet()
+                        targetReduceTime = System.currentTimeMillis()
                     }
                 }
-                hasNewLock = true
-                hasOpenCatch = false
+                continue
+            }
+            val nowTarget = visual.getTagNumber()
+            if (nowTarget <= 0) {
+                targetCount = nowTarget
                 continue
             }
 
             val needCheckOpenList = mutableListOf<Int>()
-            val needCheckCloseList = mutableListOf<Int>(propellerPosition)
-            if (nowTargetCount > 0) {
-                if (catchFoodList.isNullOrEmpty()) {//这里就需要判断是否需要开启网子
-                } else if (nowTargetCount > targetCount && hasNewLock) {
-                    targetCount = nowTargetCount
-                } else if (nowTargetCount < targetCount) {
-                    targetReduceTime = System.currentTimeMillis()
-                    if (hasNewLock) {
+            needCheckOpenList.addAll(wholeBattleOpenList)
+            needCheckOpenList.addAll(roundBattleOpenList)
+            val needCheckCloseList = mutableListOf<Int>()
+            if (spReo.isCatchFoodF) {
+                if (targetCount >= nowTarget) {
+                    if (hasNewLock && System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 2) {
                         hasNewLock = false
+                        targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
-                    } else if (isAttackSmallShip()) {
-                        needCheckOpenList.addAll(catchFoodList)
-                    }
-                    targetCount = nowTargetCount
-                } else if (isAttackSmallShip()) {
-                    needCheckOpenList.addAll(catchFoodList)
-                    hasNewLock = false
-                } else if (!hasNewLock) {
-                    if ((System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL && nowTargetCount >= targetCount)) {
-                        targetReduceTime = System.currentTimeMillis() - DESTROY_INTERVAL / 2
+                    } else if (!hasNewLock && System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL) {
+                        targetReduceTime = System.currentTimeMillis()
                         needCheckOpenList.addAll(catchFoodList)
                     }
-                }
-
-
-                //这里是为了一块检测
-                needCheckOpenList.addAll(wholeBattleOpenList)
-                needCheckOpenList.addAll(roundBattleOpenList)
-                needCheckOpenList.add(weaponPosition)
-
-                //打开定时开启的
-                checkTimingOnList(needCheckOpenList)
-
-                //这个是判断是否需要开关维修
-                bloodVolumeMonitoring(needCheckOpenList, needCheckCloseList)
-
-                //这里是判断点击
-                clickEquipArray(checkEquipTimes(2, needCheckOpenList, needCheckCloseList))
-
-                if (!hasOpenCatch && needCheckOpenList.contains(0) && checkEquipTimes(
-                        2, listOf(), catchFoodList
-                    ).isNotEmpty()
-                ) {
-                    Timber.d("hasOpenCatch:$hasOpenCatch combatMonitoring FightController NWQ_ 2023/3/13");
-                    hasOpenCatch = true
+                } else {
+                    targetReduceTime = System.currentTimeMillis()
                 }
             }
+            targetCount = nowTarget
+
+            //打开定时开启的
+            checkTimingOnList(needCheckOpenList)
+            val list = checkEquipTimes(2, needCheckOpenList, needCheckCloseList)
+            clickEquipArray(list)
+            count--
         }
+        if (count == 0 && flag) {
+            runSwitch = false
+            return
+        }
+
     }
 
 
@@ -291,4 +288,8 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
         return flag
     }
 
+    //战斗开始时候需要开启的
+    private suspend fun openDecelerationNet() {
+        clickEquipArray(openCheckEquipTimes(2, catchFoodList))
+    }
 }

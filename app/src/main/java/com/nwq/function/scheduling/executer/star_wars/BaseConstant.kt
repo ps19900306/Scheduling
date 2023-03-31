@@ -200,8 +200,8 @@ class BaseConstant {
         return Area(1985, 85 + (index * 105), 188, 70)
     }
 
-
     //副本接受按钮
-    val acceptDungeonArea = Area(2004, 331, 111, 59)//打开本地图标
-    val preparationDungeonArea = Area(2004, 331, 111, 59)//打开本地图标
+    val acceptDungeonArea = Area(2004, 331, 111, 59)//接受邀请
+    val preparationDungeonArea = Area(2004, 331, 111, 59)//准备按钮
+    val completeDungeonArea = Area(2004, 331, 111, 59)//完成按钮
 }

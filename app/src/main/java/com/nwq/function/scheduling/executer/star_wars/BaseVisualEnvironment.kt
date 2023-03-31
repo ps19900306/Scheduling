@@ -79,44 +79,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         ) && hasPositionMenu()
     }
 
-
-    fun hasReceivedTask(boolean: Boolean): Boolean {
-        if (boolean) {
-            val list = listOf(
-                verificationTask(1104, 760, AllOver170Rule),
-                verificationTask(1094, 760, AllLess50Rule),
-                verificationTask(1124, 789, AllLess50Rule),
-            )
-            return ImgUtils.performPointsColorVerification(
-                list, screenBitmap, 0
-            )
-        }
-
-        val list = listOf(
-            verificationTask(1424, 787, AllOver200Rule),
-            verificationTask(1492, 785, AllOver200Rule),
-            verificationTask(1628, 789, AllOver200Rule),
-        )
-        val list2 = listOf(
-            verificationTask(1476, 791, AllOver200Rule),
-            verificationTask(1496, 800, AllOver200Rule),
-            verificationTask(1538, 806, AllOver200Rule),
-        )
-        if (ImgUtils.performPointsColorVerification(
-                list, screenBitmap, 0
-            )
-        ) {
-            return false
-        } else if (ImgUtils.performPointsColorVerification(
-                list2, screenBitmap, 0
-            )
-        ) {
-            return false
-        } else {
-            return true
-        }
-    }
-
     fun showNotTask(): Boolean {//这个是基于下面的前往公告版 就是没有接取任务
         val list = listOf(
             verificationTask(1375, 801, QingRule),
@@ -956,6 +918,19 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
 
     fun isDungeonFight(): Boolean {
+        val list1 = listOf(
+            verificationTask(293, 83, AllOver150Rule),
+            verificationTask(294, 65, AllOver150Rule),
+            verificationTask(283, 83, AllLess50Rule),
+            verificationTask(301, 84, AllLess50Rule),
+            verificationTask(293, 60, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
+
+    fun isDungeonComplete(): Boolean {
         val list1 = listOf(
             verificationTask(293, 83, AllOver150Rule),
             verificationTask(294, 65, AllOver150Rule),
