@@ -425,9 +425,9 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
 
-    val cangkuPosition = 0
-    val JiyuPosition = 1
-    val CaiPosition = 2
+    val cangkuPosition = 1
+    val JiyuPosition = 2
+    val CaiPosition = 3
     suspend fun ensureOpenMenuArea(index: Int) {
         var flag = true
         var count = 10
@@ -438,17 +438,17 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             }
             if (visual.isOpenBigMenu()) {
                 when (index) {
-                    0 -> {
+                    cangkuPosition -> {
                         if (visual.isOpenStorehouseMenu()) {
                             flag = false
                         }
                     }
-                    1 -> {
+                    JiyuPosition -> {
                         if (visual.isOpenJiYuBigMenu()) {
                             flag = false
                         }
                     }
-                    2 -> {
+                    CaiPosition -> {
                         if (visual.isOpenVegetableMenu()) {
                             flag = false
                         }
@@ -461,13 +461,13 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 click(constant.closeWalletArea)
             } else if (visual.isOpenLeftMenu()) {
                 when (index) {
-                    0 -> {
+                    cangkuPosition -> {
                         click(constant.leftCangKuMenu)
                     }
-                    1 -> {
+                    JiyuPosition -> {
                         click(constant.leftJiYuMenu)
                     }
-                    2 -> {
+                    CaiPosition -> {
                         click(constant.leftCaiMenu)
                     }
                 }
