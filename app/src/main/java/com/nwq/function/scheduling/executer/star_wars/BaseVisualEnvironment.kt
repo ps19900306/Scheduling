@@ -868,16 +868,9 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-
     //是否打开仓库
     fun isOpenStorehouseMenu(): Boolean {
-        val list1 = listOf(
-            verificationTask(293, 57, AllLess70Rule),
-            verificationTask(282, 73, AllOver150Rule),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list1, screenBitmap, 0
-        )
+        return !isOpenVegetableMenu() && !isOpenJiYuBigMenu()
     }
 
     //是否打开收菜仓库
@@ -917,9 +910,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    /****
-     * 下面都是没有确认的
-     */
+
     //打开了大际遇的界面
     fun isOpenJiYuBigMenu(): Boolean {
         val list1 = listOf(
@@ -934,8 +925,9 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
-
-    //打开了大际遇的界面
+    /****
+     * 下面都是没有确认的
+     */
     fun isInviteToDungeon(): Boolean {
         val list1 = listOf(
             verificationTask(293, 83, AllOver150Rule),

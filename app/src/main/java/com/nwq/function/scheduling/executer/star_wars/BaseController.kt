@@ -200,9 +200,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     //卸载货物
     suspend fun unloadingCargo(normal: Boolean = true) {
-        click(constant.getTopMenuArea(1))
-        delay(tripleClickInterval)
-
+        ensureOpenMenuArea(cangkuPosition)
+        delay(normalClickInterval)
         if (normal) click(constant.generalWarehouseArea)
         else click(constant.mineralWarehouseArea)
 
@@ -331,32 +330,22 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun bloodVolumeMonitoring(
         needCheckOpenList: MutableList<Int>, needCheckCloseList: MutableList<Int>
     ) {
-//        if (System.currentTimeMillis() - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
-//            return
-//        }
         if (isShieldResistance) {
             if (visual.shieldTooLow()) {
                 needCheckOpenList.add(maintenanceDevicePosition)
-                maintenanceTimeStartStamp = System.currentTimeMillis()
             }
-            if (visual.armorTooLow()) {
-                Timber.d("装甲受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
-                needBackStation = true
-            }
-//            else if (visual.shieldFull()) {
-//                needCheckCloseList.add(maintenanceDevicePosition)
-//            }
         } else {
             if (visual.armorTooLow()) {
                 needCheckOpenList.add(maintenanceDevicePosition)
             }
-            if (visual.structuralDamage()) {
-                Timber.d("结构受损 bloodVolumeMonitoring BaseController NWQ_ 2023/3/28");
-                needBackStation = true
-            }
-//            else if (visual.armorFull()) {
-//                needCheckCloseList.add(maintenanceDevicePosition)
-//            }
+        }
+    }
+
+    suspend fun needBack(): Boolean {
+        return if (isShieldResistance) {
+            visual.armorTooLow()
+        } else {
+            visual.structuralDamage()
         }
     }
 
@@ -436,4 +425,56 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
 
+    val cangkuPosition = 0
+    val JiyuPosition = 1
+    val CaiPosition = 2
+    suspend fun ensureOpenMenuArea(index: Int) {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isOpenBigMenu()) {
+                when (index) {
+                    0 -> {
+                        if (visual.isOpenStorehouseMenu()) {
+                            flag = false
+                        }
+                    }
+                    1 -> {
+                        if (visual.isOpenJiYuBigMenu()) {
+                            flag = false
+                        }
+                    }
+                    2 -> {
+                        if (visual.isOpenVegetableMenu()) {
+                            flag = false
+                        }
+                    }
+                }
+                if (flag) {
+                    click(constant.closeBigMenuArea)
+                }
+            } else if (visual.isOpenWallet()) {
+                click(constant.closeWalletArea)
+            } else if (visual.isOpenLeftMenu()) {
+                when (index) {
+                    0 -> {
+                        click(constant.leftCangKuMenu)
+                    }
+                    1 -> {
+                        click(constant.leftJiYuMenu)
+                    }
+                    2 -> {
+                        click(constant.leftCaiMenu)
+                    }
+                }
+            } else {
+                click(constant.getTopMenuArea(index))
+            }
+            count--
+        }
+    }
 }

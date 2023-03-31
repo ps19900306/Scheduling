@@ -162,36 +162,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         nowStep = BATTLE_NAVIGATION_MONITORING
 
         //这里要等待打开任务栏目
-        var flag = true
-        var count = 10
-        while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
-                runSwitch = false
-                return
-            }
-            if (visual.isOpenBigMenu()) {
-                if (visual.isOpenJiYuBigMenu()) {
-                    flag = false
-                } else {
-                    click(constant.closeBigMenuArea)
-                }
-            } else if (visual.isOpenWallet()) {
-                click(constant.closeWalletArea)
-            } else if (visual.isOpenLeftMenu()) {
-                click(constant.leftJiYuMenu)
-            } else {
-                click(constant.getTopMenuArea(2))
-            }
-            count--
-        }
-
-        if (count == 0) {
-            Timber.d("打开任务失败 pickUpTask FightController NWQ_ 2023/3/29");
-        }
+        ensureOpenMenuArea(JiyuPosition)
 
         //等待进入接取任务的
-        flag = true
-        count = 3
+        var flag = true
+        var count = 3
         var hasTask = false
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(normalClickInterval)) {
