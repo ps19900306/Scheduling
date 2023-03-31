@@ -72,8 +72,12 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
         var count = 40
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
-                runSwitch = false
-                return
+                if (count < 30) {
+                    runSwitch = false
+                    return
+                } else {
+                    continue
+                }
             }
             if (visual.isDungeonWaiting()) {
                 false
