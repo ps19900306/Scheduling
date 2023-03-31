@@ -3,6 +3,7 @@ package com.nwq.function.scheduling.executer.star_wars
 import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
+import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -22,6 +23,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     private var hasLaunch = false
     var resourcesBaseLocationSP = spReo.resourcesBaseLocation
+
 
     val list by lazy {
         JsonUtil.anyToJsonObject(spReo.celestialResources) ?: mutableListOf<Int>()
@@ -69,8 +71,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     }
 
 
-
     private suspend fun launchAllVegetables() {
+        spReo.lastStatus = SpConstant.UNUSUAL
         if (list.isEmpty()) {
             onComplete.invoke()
             return
@@ -181,6 +183,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 delay(normalClickInterval)
                 changeTrainShip()
                 delay(doubleClickInterval)
+                spReo.lastStatus = SpConstant.NORMAL
                 runSwitch = false //结束掉收菜
             } else {
                 nowStep = LAUNCH_RESOURCE_LAUNCH

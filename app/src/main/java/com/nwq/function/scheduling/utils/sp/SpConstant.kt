@@ -7,6 +7,11 @@ object SpConstant {
     const val FUBEN_MODEL = 3
     const val VEGETABLES_MODEL = 4
 
+    const val RUN_STATE="run_state"
+    const val NORMAL = "正常"
+    const val UNUSUAL = "异常"
+    const val ACCOMPLISH = "完成"
+
     const val LAST_REFRESH_TIME = "last_refresh_time"
     const val LAST_PICKUP_TASK_TIME = "last_pickup_task_time"
 

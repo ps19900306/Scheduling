@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
+
     <Button
         android:id="@+id/testColor"
         android:layout_width="100dp"
@@ -53,6 +54,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.063" />
+    <TextView
+        android:id="@+id/role1StatusTv"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/startRole1"
+        app:layout_constraintStart_toStartOf="@+id/startRole1"
+        app:layout_constraintTop_toBottomOf="@+id/startRole1" />
 
     <Button
         android:id="@+id/startRole2"
@@ -65,7 +73,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.063" />
-
+    <TextView
+        android:id="@+id/role2StatusTv"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/startRole2"
+        app:layout_constraintStart_toStartOf="@+id/startRole2"
+        app:layout_constraintTop_toBottomOf="@+id/startRole2" />
     <Button
         android:id="@+id/closeAll"
         android:layout_width="100dp"
@@ -86,6 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setRole2" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

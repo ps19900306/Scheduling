@@ -4,6 +4,7 @@ package com.nwq.function.scheduling.executer.star_wars
 import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
+import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -79,6 +80,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
      */
     private suspend fun startGame() {
         takeScreen(normalClickInterval)
+        spReo.lastStatus = SpConstant.UNUSUAL
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
@@ -144,6 +146,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     private suspend fun onAllComplete() {
+        spReo.lastStatus = SpConstant.ACCOMPLISH
         if (openHarvestVegetablesSP) {
             theOutCheck()
             if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
@@ -558,14 +561,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             //这里要做异常处理了 这里表示战斗结束了
                             clickTheDialogueClose()
                             closeTheWholeBattle()
-                            if (needBackStation) {
+                            if (needBackStation||needBack()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
                             }
                         } else if (targetReduceTime - System.currentTimeMillis() > Constant.MINUTE) {//防止卡住
                             closeTheWholeBattle()
-                            if (needBackStation) {
+                            if (needBackStation||needBack()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK

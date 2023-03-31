@@ -28,6 +28,13 @@ class MainActivity : AppCompatActivity() {
         bind = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(bind.root)
 
+        SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1).lastStatus.let {
+            bind.role1StatusTv.text = it
+        }
+        SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2).lastStatus.let {
+            bind.role2StatusTv.text = it
+        }
+
         bind.startRole1.singleClick {
             SPRepo.role = SpConstant.PREFIX_ROLE1
             val intent = Intent("schedule.cmd")
@@ -57,8 +64,8 @@ class MainActivity : AppCompatActivity() {
             SelectModelActivity.startSelectSet(SpConstant.PREFIX_ROLE2, this)
         }
         bind.testColor.singleClick {
-            SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1).lastCompleteTime=0L
-            SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2).lastCompleteTime=0L
+            SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1).lastCompleteTime = 0L
+            SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2).lastCompleteTime = 0L
         }
 
         bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext
