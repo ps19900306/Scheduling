@@ -147,13 +147,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun onAllComplete() {
         spReo.lastStatus = SpConstant.ACCOMPLISH
-        if (openHarvestVegetablesSP) {
-            theOutCheck()
-            if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
-                harvestVegetableController.startCollectVegetables()
-            } else {
-                harvestVegetableController.addPlanetaryTime()
-            }
+
+        theOutCheck()
+        if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
+            harvestVegetableController.startCollectVegetables()
+            delay(normalClickInterval)
+        } else if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+            harvestVegetableController.addPlanetaryTime()
             delay(normalClickInterval)
         }
         nowStep = EXIT_OPT
@@ -561,14 +561,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             //这里要做异常处理了 这里表示战斗结束了
                             clickTheDialogueClose()
                             closeTheWholeBattle()
-                            if (needBackStation||needBack()) {
+                            if (needBackStation || needBack()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
                             }
                         } else if (targetReduceTime - System.currentTimeMillis() > Constant.MINUTE) {//防止卡住
                             closeTheWholeBattle()
-                            if (needBackStation||needBack()) {
+                            if (needBackStation || needBack()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
