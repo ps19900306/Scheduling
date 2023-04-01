@@ -209,12 +209,14 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(normalClickInterval)) {
+            if (!takeScreen(quadrupleClickInterval)) {
                 runSwitch = false
                 return
             }
             if (visual.hasPositionMenu() && visual.hasEyesMenu()) {
                 flag = false
+            } else {
+                click(constant.outSpaceArea)
             }
             count--
         }

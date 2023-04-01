@@ -803,7 +803,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
         return !ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
-        )
+        ) && hasPositionMenu() && hasEyesMenu()
     }
 
 
