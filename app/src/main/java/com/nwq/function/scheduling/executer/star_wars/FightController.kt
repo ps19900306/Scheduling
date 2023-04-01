@@ -147,7 +147,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun onAllComplete() {
         spReo.lastStatus = SpConstant.ACCOMPLISH
-
         theOutCheck()
         if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
             harvestVegetableController.startCollectVegetables()
