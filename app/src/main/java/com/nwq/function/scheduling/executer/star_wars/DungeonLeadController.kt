@@ -118,21 +118,20 @@ class DungeonLeadController(p: AccessibilityHelper, c: () -> Boolean) : BaseCont
 
     suspend fun combatMonitoring() {
         //打开选中第一个条目进行接近
-        ensureOpenEyeMenu()
-        click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
-        click(constant.getLockingArea(0), doubleClickInterval)
-        clickEquipArray(wholeBattleOpenList)
-
         var flag = true
         var count = 1200
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
-                runSwitch = false
+                //    runSwitch = false
                 return
             }
+            if (visual.hasPositionMenu() || !visual.isCloseEyesMenu()) {
+                continue
+            }
+
             if (visual.isInSpaceStation()) {
-                nowStep = IN_SPACE_STATION
-                flag = false
+                // nowStep = IN_SPACE_STATION
+                // flag = false
                 continue
             }
             if (visual.isDungeonComplete()) {
