@@ -120,7 +120,7 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
         //打开选中第一个条目进行接近
         ensureOpenEyeMenu()
         click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
-        click(constant.getTransitionArea(0), doubleClickInterval)
+        click(constant.getLockingArea(0), doubleClickInterval)
         clickEquipArray(wholeBattleOpenList)
 
         var flag = true
