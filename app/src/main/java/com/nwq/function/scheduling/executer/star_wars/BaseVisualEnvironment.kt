@@ -910,7 +910,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-
     //打开了大际遇的界面
     fun isOpenJiYuBigMenu(): Boolean {
         val list1 = listOf(
@@ -925,29 +924,13 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
-    /****
-     * 下面都是没有确认的
-     */
-    fun isInviteToDungeon(): Boolean {
-        val list1 = listOf(
-            verificationTask(293, 83, AllOver150Rule),
-            verificationTask(294, 65, AllOver150Rule),
-            verificationTask(283, 83, AllLess50Rule),
-            verificationTask(301, 84, AllLess50Rule),
-            verificationTask(293, 60, AllLess50Rule),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list1, screenBitmap, 0
-        )
-    }
-
     fun isDungeonWaiting(): Boolean {
         val list1 = listOf(
-            verificationTask(293, 83, AllOver150Rule),
-            verificationTask(294, 65, AllOver150Rule),
-            verificationTask(283, 83, AllLess50Rule),
-            verificationTask(301, 84, AllLess50Rule),
-            verificationTask(293, 60, AllLess50Rule),
+            verificationTask(226, 73, AllOver150Rule),
+            verificationTask(183, 73, AllOver150Rule),
+            verificationTask(174, 73, AllLess50Rule),
+            verificationTask(234, 73, AllLess50Rule),
+            verificationTask(205, 57, AllLess50Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
@@ -956,16 +939,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
 
     fun isDungeonFight(): Boolean {
-        val list1 = listOf(
-            verificationTask(293, 83, AllOver150Rule),
-            verificationTask(294, 65, AllOver150Rule),
-            verificationTask(283, 83, AllLess50Rule),
-            verificationTask(301, 84, AllLess50Rule),
-            verificationTask(293, 60, AllLess50Rule),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list1, screenBitmap, 0
-        )
+        return hasEyesMenu() && !hasPositionMenu()
     }
 
     //判断是否是普通异常

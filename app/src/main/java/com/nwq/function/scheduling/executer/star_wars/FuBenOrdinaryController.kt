@@ -78,8 +78,8 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
             if (visual.isDungeonWaiting()) {
                 false
             }
-            if (visual.isInviteToDungeon()) {
-                click(constant.acceptDungeonArea)
+            if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
             }
             count--
         }
@@ -94,7 +94,7 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
         nowStep++
         var flag = true
         var count = 40
-        click(constant.preparationDungeonArea)
+        click(constant.preparationDungeonArea, doubleClickInterval)
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
