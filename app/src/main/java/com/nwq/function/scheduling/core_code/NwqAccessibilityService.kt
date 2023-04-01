@@ -8,9 +8,7 @@ import android.content.IntentFilter
 import android.view.accessibility.AccessibilityEvent
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
-import com.nwq.function.scheduling.executer.star_wars.FightController
-import com.nwq.function.scheduling.executer.star_wars.HarvestVegetableController
-import com.nwq.function.scheduling.executer.star_wars.MinerController
+import com.nwq.function.scheduling.executer.star_wars.*
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SPRepo
@@ -89,6 +87,16 @@ class NwqAccessibilityService : AccessibilityService() {
         } else if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.VEGETABLES_MODEL) {
             Timber.d("启动收菜 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
             val fight = HarvestVegetableController(helper, { true })
+            fight.startOperation()
+            list.add(fight)
+        } else if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.DUNGEON_ORDINARY_MODEL) {
+            Timber.d("启动副本普通 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
+            val fight = DungeonOrdinaryController(helper, { true })
+            fight.startOperation()
+            list.add(fight)
+        } else if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.DUNGEON_LEAD_MODEL) {
+            Timber.d("启动副本领导 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
+            val fight = DungeonLeadController(helper, { true })
             fight.startOperation()
             list.add(fight)
         }

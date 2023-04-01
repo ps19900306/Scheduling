@@ -53,7 +53,7 @@ class SettingModelActivity : AppCompatActivity() {
             SpConstant.FIGHT_MODEL -> {
                 list.addAll(fightList)
             }
-            SpConstant.FUBEN_MODEL -> {
+            SpConstant.DUNGEON_ORDINARY_MODEL -> {
                 list.addAll(fuBentList)
             }
             SpConstant.VEGETABLES_MODEL -> {

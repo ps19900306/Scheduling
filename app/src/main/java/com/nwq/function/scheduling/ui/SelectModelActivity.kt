@@ -5,15 +5,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.nwq.function.scheduling.databinding.ActivitySelectModelBinding
-import com.nwq.function.scheduling.databinding.ActivitySettingModelBinding
 import com.nwq.function.scheduling.ui.adapter.SelectModelAdapter
-import com.nwq.function.scheduling.ui.adapter.SetParameterAdapter
 import com.nwq.function.scheduling.ui.data.SelectModelInfo
-import com.nwq.function.scheduling.ui.data.SetCheckInfo
-import com.nwq.function.scheduling.ui.data.SetIntInfo
-import com.nwq.function.scheduling.ui.data.SetListInfo
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
@@ -59,7 +53,7 @@ class SelectModelActivity : AppCompatActivity() {
         val list = mutableListOf<SelectModelInfo>()
         list.add(SelectModelInfo("际遇模式", SpConstant.FIGHT_MODEL))
         list.add(SelectModelInfo("采矿模式", SpConstant.MINER_MODEL))
-        list.add(SelectModelInfo("副本模式", SpConstant.FUBEN_MODEL))
+        list.add(SelectModelInfo("副本模式", SpConstant.DUNGEON_ORDINARY_MODEL))
         list.add(SelectModelInfo("收菜模式", SpConstant.VEGETABLES_MODEL))
         return list
     }

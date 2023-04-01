@@ -11,7 +11,7 @@ Function description:
 普通成员
  */
 
-class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
+class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
 
     val isHasPropeller = spReo.isHasPropellerF
 

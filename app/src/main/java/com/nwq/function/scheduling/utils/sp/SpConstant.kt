@@ -4,10 +4,11 @@ object SpConstant {
     const val NOW_SELECT_MODE = "now_select_mode"
     const val FIGHT_MODEL = 1
     const val MINER_MODEL = 2
-    const val FUBEN_MODEL = 3
-    const val VEGETABLES_MODEL = 4
+    const val VEGETABLES_MODEL = 3
+    const val DUNGEON_ORDINARY_MODEL = 4
+    const val DUNGEON_LEAD_MODEL = 5
 
-    const val RUN_STATE="run_state"
+    const val RUN_STATE = "run_state"
     const val NORMAL = "正常"
     const val UNUSUAL = "异常"
     const val ACCOMPLISH = "完成"
