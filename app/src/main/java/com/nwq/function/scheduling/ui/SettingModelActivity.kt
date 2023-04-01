@@ -13,6 +13,7 @@ import com.nwq.function.scheduling.ui.data.SetListInfo
 import com.nwq.function.scheduling.ui.data.SetIntInfo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
+import com.nwq.function.scheduling.utils.sp.SpConstant.DUNGEON_LEAD_MODEL
 
 
 class SettingModelActivity : AppCompatActivity() {
@@ -53,7 +54,7 @@ class SettingModelActivity : AppCompatActivity() {
             SpConstant.FIGHT_MODEL -> {
                 list.addAll(fightList)
             }
-            SpConstant.DUNGEON_ORDINARY_MODEL -> {
+            SpConstant.DUNGEON_ORDINARY_MODEL,DUNGEON_LEAD_MODEL -> {
                 list.addAll(fuBentList)
             }
             SpConstant.VEGETABLES_MODEL -> {
