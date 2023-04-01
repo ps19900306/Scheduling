@@ -2,7 +2,6 @@ package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
-import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -23,11 +22,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     private var hasLaunch = false
     var resourcesBaseLocationSP = spReo.resourcesBaseLocation
-
-
-    val list by lazy {
-        JsonUtil.anyToJsonObject(spReo.celestialResources) ?: mutableListOf<Int>()
-    }
 
 
     suspend fun addPlanetaryTime() {
@@ -73,7 +67,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
 
     private suspend fun launchAllVegetables() {
         spReo.lastStatus = SpConstant.UNUSUAL
-        if (list.isEmpty()) {
+        if (celestialList.isEmpty()) {
             onComplete.invoke()
             return
         }
@@ -91,14 +85,14 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         spReo.resourcesAddTime = System.currentTimeMillis()
         delay(normalClickInterval)
 
-        launchResources(list[nowCelestialCount], normalClickInterval)
+        launchResources(celestialList[nowCelestialCount], normalClickInterval)
         takeScreen(normalClickInterval)
         ensureCloseDetermine()
         val startTime = System.currentTimeMillis()
         var flag = true
         while (flag && System.currentTimeMillis() - startTime < 20 * 60 * 1000) {
             takeScreen(quadrupleClickInterval)
-            if (visual.judeIsLaunchComplete(list[nowCelestialCount])) {
+            if (visual.judeIsLaunchComplete(celestialList[nowCelestialCount])) {
                 Timber.d("发射完成 startCollectVegetables HarvestVegetableController NWQ_ 2023/3/14");
                 flag = false
             } else {
@@ -130,7 +124,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             Timber.d(" 到底目的 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
             click(constant.collectButtonArea1, normalClickInterval)
             lastCollectTime = System.currentTimeMillis()
-            if (nowCelestialCount >= list.size) {//结束了
+            if (nowCelestialCount >= celestialList.size) {//结束了
                 Timber.d("完成 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
                 spReo.resourcesCollectTime = System.currentTimeMillis()
                 spReo.lastBackSpaceStation = System.currentTimeMillis()

@@ -39,7 +39,9 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected var neeForceRefresh = false
     protected var needBackStation = false
     protected var needExit = false
-
+    protected val celestialList by lazy {
+        JsonUtil.anyToJsonObject(spReo.celestialResources) ?: mutableListOf<Int>()
+    }
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
         val isOpen = spReo.openHarvestVegetables
@@ -89,6 +91,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
+
                 return true
             }
         }

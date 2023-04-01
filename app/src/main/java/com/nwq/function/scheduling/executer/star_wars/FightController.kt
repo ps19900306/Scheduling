@@ -89,7 +89,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = COMBAT_MONITORING
             } else {
                 nowStep = PICK_UP_TASK
-                if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+                if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
                     harvestVegetableController.addPlanetaryTime()
                     delay(normalClickInterval)
                 }
