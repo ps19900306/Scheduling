@@ -331,7 +331,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = LOOKING_FOR_PLANETARY_GROUPS
                 flag = false
             }
-            if (count > 1 && lastTargetCount > count) {
+            if (lastTargetCount > count) {
                 click(constant.getTopClickArea(0))
                 click(constant.getTopSurroundArea(0), normalClickInterval)
             }
