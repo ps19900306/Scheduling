@@ -82,8 +82,8 @@ class FuBenOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : BaseCo
             if (visual.isDungeonWaiting()) {
                 false
             }
-            if (visual.isInviteToDungeon()) {
-                click(constant.acceptDungeonArea)
+            if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
             }
             count--
         }
