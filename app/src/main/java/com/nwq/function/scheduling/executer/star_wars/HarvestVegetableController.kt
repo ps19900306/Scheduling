@@ -66,7 +66,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
 
 
     private suspend fun launchAllVegetables() {
-        spReo.lastStatus = SpConstant.UNUSUAL
+        spReo.lastStatus = SpConstant.VEGETABLE
         if (celestialList.isEmpty()) {
             onComplete.invoke()
             return
@@ -177,7 +177,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 delay(normalClickInterval)
                 changeTrainShip()
                 delay(doubleClickInterval)
-                spReo.lastStatus = SpConstant.NORMAL
+                spReo.lastStatus = SpConstant.VEGETABLES
                 runSwitch = false //结束掉收菜
             } else {
                 nowStep = LAUNCH_RESOURCE_LAUNCH
@@ -209,23 +209,5 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     }
 
 
-    //开始驾驶二号船 默认就只有二个船
-    suspend fun changeTrainShip() {
-        if (!spReo.transferShip)
-            return
-        ensureOpenMenuArea(cangkuPosition)
-        delay(tripleClickInterval)
-        //点击机库
-        click(constant.jikuArea)
-        delay(doubleClickInterval)
 
-        //第二个船
-        click(constant.theTwoArea)
-        delay(doubleClickInterval)
-
-        //点击激活
-        click(constant.jiHuoArea)
-        delay(quadrupleClickInterval)
-        theOutCheck()
-    }
 }

@@ -28,9 +28,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private val COMBAT_MONITORING = 3 //战斗监控阶段
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
     private val ALL_COMPLETE = 9//返回空间站监听
+    private val CHECK_SHIP = 10//检查船只
+
     private val ABNORMAL_STATE = 1000 //异常状态
     private val EXIT_OPT = 10000 //异常状态
-
 
     private val STATUS_DETERMINATION = 1000000//这个是进行状态判定
     private val receiveAdvancedTasks = false //是否接受高级任务
@@ -80,7 +81,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
      */
     private suspend fun startGame() {
         takeScreen(normalClickInterval)
-        spReo.lastStatus = SpConstant.UNUSUAL
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
@@ -88,11 +88,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
                 nowStep = COMBAT_MONITORING
             } else {
-                nowStep = PICK_UP_TASK
                 if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
                     harvestVegetableController.addPlanetaryTime()
                     delay(normalClickInterval)
                 }
+                nowStep = CHECK_SHIP
             }
         } else {
             onComplete.invoke()
@@ -141,7 +141,46 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     runSwitch = false
                     exitGame()
                 }
+                CHECK_SHIP -> {
+                    checkShip()
+                }
             }
+        }
+    }
+
+    private suspend fun checkShip() {
+        if (spReo.lastStatus != SpConstant.VEGETABLE && spReo.lastStatus != SpConstant.VEGETABLES) {
+            nowStep = PICK_UP_TASK
+            spReo.lastStatus = SpConstant.UNUSUAL
+            return
+        }
+
+        if (!visual.isInSpaceStation()) {
+            if (visual.isDamage()) {
+                needChangeShip = true
+                clickJumpCollectionAddress(warehouseIndex)
+                nowStep = MONITORING_RETURN_STATUS
+            } else {
+                nowStep = PICK_UP_TASK
+            }
+            spReo.lastStatus = SpConstant.UNUSUAL
+            return
+        }
+
+        if (outSpaceStation()) {
+            if (visual.isDamage()) {
+                needChangeShip = true
+                clickJumpCollectionAddress(warehouseIndex)
+                nowStep = MONITORING_RETURN_STATUS
+            } else {
+                nowStep = PICK_UP_TASK
+            }
+            spReo.lastStatus = SpConstant.UNUSUAL
+        } else {
+            nowStep = EXIT_OPT
+            spReo.lastStatus = SpConstant.DAMAGE
+            Timber.d("已经损毁 lookingForMineralStars MinerController NWQ_ 2023/3/10");
+            return
         }
     }
 
@@ -368,6 +407,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {
                 if (visual.isDamage()) {
                     nowStep = EXIT_OPT
+                    return
                 }
                 count--
             } else if (!spReo.hasLegionnaires && System.currentTimeMillis() - spReo.lastPickUpTaskTime > constant.NAVIGATING_EXCEPTION) {
@@ -598,11 +638,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             spReo.lastBackSpaceStation = System.currentTimeMillis()
             nowStep = COMBAT_MONITORING
         } else if (visual.isInSpaceStation()) {
-            if (isPickupBox) {
-                unloadingCargo()
+            if (needChangeShip) {
+                needChangeShip = false
+                changeTrainShip()
+                nowStep = CHECK_SHIP
+            } else {
+                if (isPickupBox) {
+                    unloadingCargo()
+                }
+                needBackStation = false
+                nowStep = PICK_UP_TASK
             }
-            needBackStation = false
-            nowStep = PICK_UP_TASK
         } else if (needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()) {
             clickTheDialogueClose(4)
         } else if (visual.isOpenBigMenu()) {

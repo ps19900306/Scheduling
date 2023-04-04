@@ -12,6 +12,10 @@ object SpConstant {
     const val NORMAL = "正常"
     const val UNUSUAL = "异常"
     const val ACCOMPLISH = "完成"
+    const val VEGETABLE = "开始收菜"
+    const val VEGETABLES = "结束收菜"
+    const val DAMAGE = "损毁"
+
 
     const val LAST_REFRESH_TIME = "last_refresh_time"
     const val LAST_PICKUP_TASK_TIME = "last_pickup_task_time"

@@ -5,6 +5,11 @@ import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.TimeUtils
+import com.nwq.function.scheduling.utils.sp.SpConstant.DAMAGE
+import com.nwq.function.scheduling.utils.sp.SpConstant.NORMAL
+import com.nwq.function.scheduling.utils.sp.SpConstant.UNUSUAL
+import com.nwq.function.scheduling.utils.sp.SpConstant.VEGETABLE
+import com.nwq.function.scheduling.utils.sp.SpConstant.VEGETABLES
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -125,6 +130,9 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 }
             }
             if (visual.isInSpaceStation() && visual.hasPositionMenu()) {
+                if (needChangeShip) {
+                    changeTrainShip()
+                }
                 delay(doubleClickInterval)
                 unloadingCargo(false)
                 delay(doubleClickInterval)
@@ -167,7 +175,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         if (lastIsSafe) {
             if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
                 harvestVegetableController.startCollectVegetables()
-            } else if (celestialList.isNotEmpty()&& System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+            } else if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
                 harvestVegetableController.addPlanetaryTime()
             }
         }
@@ -205,25 +213,25 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //这里处理出战，包括飞点等，这里先只做简单流程
     private suspend fun outSpace() {
-        click(constant.outSpaceArea)
-        var flag = true
-        var count = 10
-        while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(quadrupleClickInterval)) {
-                runSwitch = false
+        if (outSpaceStation()) {
+            if (visual.isDamageM()) {
+                if (spReo.lastStatus == VEGETABLES || spReo.lastStatus == VEGETABLE) {
+                    needChangeShip = true
+                    clickJumpCollectionAddress(warehouseIndex)
+                    nowStep = MONITORING_RETURN_STATUS
+                    spReo.lastStatus = NORMAL
+                } else {
+                    nowStep = EXIT_OPT
+                    spReo.lastStatus = DAMAGE
+                    Timber.d("已经损毁 lookingForMineralStars MinerController NWQ_ 2023/3/10");
+                }
                 return
             }
-            if (visual.hasPositionMenu() && visual.hasEyesMenu()) {
-                flag = false
-                if (visual.isDamageM()) {
-                    nowStep = EXIT_OPT
-                    Timber.d("已经损毁 lookingForMineralStars MinerController NWQ_ 2023/3/10");
-                    return
-                }
-            } else {
-                click(constant.outSpaceArea)
-            }
-            count--
+        } else {
+            nowStep = EXIT_OPT
+            spReo.lastStatus = UNUSUAL
+            Timber.d("已经损毁 lookingForMineralStars MinerController NWQ_ 2023/3/10");
+            return
         }
         ensureOpenPositionMenu()
         nowStep = LOOKING_FOR_PLANETARY_GROUPS

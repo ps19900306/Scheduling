@@ -38,10 +38,11 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected var needCancel = false
     protected var neeForceRefresh = false
     protected var needBackStation = false
-    protected var needExit = false
+    protected var needChangeShip = false
     protected val celestialList by lazy {
         JsonUtil.anyToJsonObject(spReo.celestialResources) ?: mutableListOf<Int>()
     }
+
     //这些是收菜的
     val openHarvestVegetablesSP: Boolean by lazy {//是否开启收菜
         val isOpen = spReo.openHarvestVegetables
@@ -222,7 +223,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
     }
 
-    suspend fun clickJumpCollectionAddress(index: Int, determine: Boolean) {
+    suspend fun clickJumpCollectionAddress(index: Int, determine: Boolean=false) {
         ensureOpenPositionMenu()
         var flag = true
         var count = 4
@@ -481,6 +482,75 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
     }
 
+    //这里处理出战，包括飞点等，这里先只做简单流程
+    protected suspend fun outSpaceStation(): Boolean {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (visual.hasPositionMenu() && visual.hasEyesMenu()) {
+                return true
+            } else if (visual.isInSpaceStation()) {
+                click(constant.outSpaceArea)
+            }
+            count--
+        }
+        return false
+    }
+
+    //开始驾驶二号船 默认就只有二个船
+    suspend fun changeTrainShip() {
+        if (!spReo.transferShip)
+            return
+        ensureOpenMenuArea(cangkuPosition)
+        delay(tripleClickInterval)
+        //点击机库
+        click(constant.jikuArea)
+        delay(doubleClickInterval)
+
+        //第二个船
+        click(constant.theTwoArea)
+        delay(doubleClickInterval)
+
+        //点击激活
+        click(constant.jiHuoArea)
+        delay(quadrupleClickInterval)
+        theOutCheck()
+    }
+
+
+    //停止船
+    protected suspend fun stopShip() {
+
+    }
+
+    //点亮过低
+    protected suspend fun isLowbattery() {
+
+    }
+
+    //电量足够 这里过半就可以了
+    protected suspend fun isEnoughPower() {
+
+    }
+
+    //条目一是最近的目标
+    protected suspend fun isNearestNumberOne() {
+
+    }
+
+    //副本选择重要目标
+    protected suspend fun selectRightImportTarget() {
+
+    }
+
+    //副本选择撤离目标
+    protected suspend fun selectRightEvacuationTarget() {
+
+    }
 
 
 }
