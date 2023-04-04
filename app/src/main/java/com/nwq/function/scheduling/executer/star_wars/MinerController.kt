@@ -4,7 +4,6 @@ import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
-import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SpConstant.DAMAGE
 import com.nwq.function.scheduling.utils.sp.SpConstant.NORMAL
 import com.nwq.function.scheduling.utils.sp.SpConstant.UNUSUAL
@@ -50,12 +49,17 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         JsonUtil.anyToJsonObject(spReo.miningStabilizerList) ?: listOf<Int>()
     }//放圣光
 
+
     // 这个放皮球的
-    override var BASIC_COMBAT_INTERVAL_1 = 60 * 1000L
-
+    val Inertia_INTERVAL = 60 * 1000L
     // 放圣光
-    override var BASIC_COMBAT_INTERVAL_3 = 70 * 1000L
+    val Stabilizer_INTERVAL = 70 * 1000L
 
+    // 默认是武器的
+    var InertiaStamp = 0L
+
+    // 默认是转速的
+    var StabilizerStamp = 0L
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
@@ -371,22 +375,22 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         if (checkTimeOn(
                 miningInertiaList,
                 nowTime,
-                CombatStamp_3,
-                BASIC_COMBAT_INTERVAL_3,
+                StabilizerStamp,
+                Stabilizer_INTERVAL,
                 needCheckOpenList
             )
         ) {
-            CombatStamp_3 = nowTime
+            StabilizerStamp = nowTime
         }
         if (checkTimeOn(
                 miningStabilizerList,
                 nowTime,
-                CombatStamp_1,
-                BASIC_COMBAT_INTERVAL_1,
+                InertiaStamp,
+                Inertia_INTERVAL,
                 needCheckOpenList
             )
         ) {
-            CombatStamp_1 = nowTime
+            InertiaStamp = nowTime
         }
     }
 
