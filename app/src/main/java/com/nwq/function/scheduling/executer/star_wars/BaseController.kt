@@ -1,10 +1,12 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import android.icu.text.Transliterator
 import android.text.TextUtils
 import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.executer.base.TravelController
+import com.nwq.function.scheduling.executer.star_wars.data.OptSlotInfo
 import com.nwq.function.scheduling.utils.JsonUtil
 import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
@@ -223,7 +225,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
     }
 
-    suspend fun clickJumpCollectionAddress(index: Int, determine: Boolean=false) {
+    suspend fun clickJumpCollectionAddress(index: Int, determine: Boolean = false) {
         ensureOpenPositionMenu()
         var flag = true
         var count = 4
@@ -519,6 +521,33 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         click(constant.jiHuoArea)
         delay(quadrupleClickInterval)
         theOutCheck()
+    }
+
+
+    protected fun checkTimeOn(
+        nowtime: Long,
+        positionList: List<OptSlotInfo>,
+        needCheckOpenList: MutableList<Int>,
+    ) {
+        var lastOpenedTime = 0L
+        positionList.forEach { d ->
+            if (d.offset == 0) {
+                if (nowtime - d.lastOpenedTime > d.interval) {
+                    needCheckOpenList.add(d.slotPosition)
+                    d.lastOpenedTime = nowtime
+                    return
+                } else {
+                    lastOpenedTime = d.lastOpenedTime
+                }
+            } else {
+                val intervalTime = nowtime - lastOpenedTime
+                if (d.offset * d.offsetInterval < intervalTime && intervalTime < (d.offset + 1) * d.offsetInterval && nowtime - d.lastOpenedTime > d.interval) {
+                    needCheckOpenList.add(d.slotPosition)
+                    d.lastOpenedTime = nowtime
+                    return
+                }
+            }
+        }
     }
 
 

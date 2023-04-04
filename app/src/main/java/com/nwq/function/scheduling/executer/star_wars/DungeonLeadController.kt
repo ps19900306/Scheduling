@@ -1,6 +1,7 @@
 package com.nwq.function.scheduling.executer.star_wars
 
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.executer.star_wars.data.OptSlotInfo
 import com.nwq.function.scheduling.utils.JsonUtil
 import timber.log.Timber
 
@@ -37,14 +38,23 @@ class DungeonLeadController(p: AccessibilityHelper, c: () -> Boolean) : BaseCont
         if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
         else listOf<Int>()
     }
-    private val timeOnOpenList1 by lazy {
-        JsonUtil.anyToJsonObject(spReo.timeOnList1F) ?: listOf<Int>()
+
+
+    private val mOptSlotInfoList1 by lazy {
+        JsonUtil.anyToJsonObject<List<Int>>(spReo.timeOnList1)?.mapIndexed { p, d ->
+            OptSlotInfo(d, constant.listInterval1, 0, p, constant.offsetInterval * 30)
+        } ?: listOf<OptSlotInfo>()
     }
-    private val timeOnOpenList2 by lazy {
-        JsonUtil.anyToJsonObject(spReo.timeOnList2F) ?: listOf<Int>()
+
+    private val mOptSlotInfoList2 by lazy {
+        JsonUtil.anyToJsonObject<List<Int>>(spReo.timeOnList2)?.mapIndexed { p, d ->
+            OptSlotInfo(d, constant.listInterval2, 0, p, constant.offsetInterval * 30)
+        } ?: listOf<OptSlotInfo>()
     }
-    private val timeOnOpenList3 by lazy {
-        JsonUtil.anyToJsonObject(spReo.timeOnList3F) ?: listOf<Int>()
+    private val mOptSlotInfoList3 by lazy {
+        JsonUtil.anyToJsonObject<List<Int>>(spReo.timeOnList3)?.mapIndexed { p, d ->
+            OptSlotInfo(d, constant.listInterval3, 0, p, constant.offsetInterval * 15)
+        } ?: listOf<OptSlotInfo>()
     }
 
     private val COMBAT_MONITORING = 1 //战斗监控阶段
@@ -245,51 +255,11 @@ class DungeonLeadController(p: AccessibilityHelper, c: () -> Boolean) : BaseCont
             return
         }
         var nowTime = System.currentTimeMillis()
-        if (checkTimeOn(
-                timeOnOpenList3, nowTime, CombatStamp_3, BASIC_COMBAT_INTERVAL_3, needCheckOpenList
-            )
-        ) {
-            CombatStamp_3 = nowTime
-        }
-        if (checkTimeOn(
-                timeOnOpenList2, nowTime, CombatStamp_2, BASIC_COMBAT_INTERVAL_2, needCheckOpenList
-            )
-        ) {
-            CombatStamp_2 = nowTime
-        }
-        if (checkTimeOn(
-                timeOnOpenList1, nowTime, CombatStamp_1, BASIC_COMBAT_INTERVAL_1, needCheckOpenList
-            )
-        ) {
-            CombatStamp_1 = nowTime
-        }
+        checkTimeOn(nowTime, mOptSlotInfoList1, needCheckOpenList)
+        checkTimeOn(nowTime, mOptSlotInfoList2, needCheckOpenList)
+        checkTimeOn(nowTime, mOptSlotInfoList3, needCheckOpenList)
     }
 
-
-    private fun checkTimeOn(
-        list: List<Int>,
-        nowtime: Long,
-        lastTime: Long,
-        combatInterval: Long,
-        needCheckOpenList: MutableList<Int>
-    ): Boolean {
-        var flag = false
-        if (list.isNullOrEmpty()) { //true
-            return flag
-        }
-        val intervalTime = nowtime - lastTime
-        list.forEachIndexed { i, d ->
-            if (i == 0) {
-                if (intervalTime > combatInterval) {
-                    needCheckOpenList.add(0, d)
-                    flag = true
-                }
-            } else if (i * Equipment_Interval < intervalTime && intervalTime < (i + 1) * Equipment_Interval) {
-                needCheckOpenList.add(0, d)
-            }
-        }
-        return flag
-    }
 
     //战斗开始时候需要开启的
     private suspend fun openDecelerationNet() {
