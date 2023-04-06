@@ -905,17 +905,55 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
     fun isDungeonComplete(): Boolean {
-        val list1 = listOf(
-            verificationTask(293, 83, AllOver150Rule),
-            verificationTask(294, 65, AllOver150Rule),
-            verificationTask(283, 83, AllLess50Rule),
-            verificationTask(301, 84, AllLess50Rule),
-            verificationTask(293, 60, AllLess50Rule),
+        return isClosePositionMenuGray()
+    }
+
+
+    //能量过低
+    fun isLowbattery(): Boolean {
+        val list = listOf(
+            verificationTask(1276, 963, SimpleRule.getSimple(73, 139, 161), 1),
+            verificationTask(1281, 965, SimpleRule.getSimple(73, 139, 161), 1),
+            verificationTask(1285, 966, SimpleRule.getSimple(73, 139, 161), 1),
         )
-        return ImgUtils.performPointsColorVerification(
-            list1, screenBitmap, 0
+        return !ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
         )
     }
+
+    //电量足够 这里过半就可以了
+    fun isEnoughPower(): Boolean {
+        val list = listOf(
+            verificationTask(1281, 924, SimpleRule.getSimple(73, 139, 161), 1),
+            verificationTask(1289, 921, SimpleRule.getSimple(73, 139, 161), 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    //条目一是最近的目标
+    fun isNearestNumberOne(): Boolean {
+        val list = listOf(
+            TwoPointTask(2081, 183, 2081, 190, AllGreater15Comparison),
+            TwoPointTask(2103, 183, 2103, 190, AllGreater15Comparison),
+            TwoPointTask(2133, 183, 2133, 190, AllGreater15Comparison),
+        )
+        return ImgUtils.performTwoPointTask(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isOpenCheckRightMenu(): Boolean {
+        val list = listOf(
+            verificationTask(1987, 180, AllOver150Rule, 1),
+            verificationTask(1987, 205, AllOver150Rule, 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
 
     //判断是否是普通异常
     fun isCommonUnusual() {

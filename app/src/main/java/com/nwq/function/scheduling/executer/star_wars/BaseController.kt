@@ -250,8 +250,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                     click(constant.eraseWarningArea)
                 } else if (visual.isOpenPositionMenu()) {
                     flag = false
-                    if (!visual.isDefaultCoordinateMenu())
-                        click(constant.defaultCoordinateMenuArea)
+                    if (!visual.isDefaultCoordinateMenu()) click(constant.defaultCoordinateMenuArea)
                 }
             } else {
                 click(constant.eraseWarningArea)
@@ -267,8 +266,19 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
     suspend fun ensureOpenEyeMenu() {
-        if (visual.isCloseEyesMenu()) {
-            click(constant.openEyeMenuArea, normalClickInterval)
+        var flag = true
+        var count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isCloseEyesMenu()) {
+                click(constant.openEyeMenuArea, normalClickInterval)
+            } else {
+                flag = false
+            }
+            count--
         }
     }
 
@@ -492,8 +502,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     //开始驾驶二号船 默认就只有二个船
     suspend fun changeTrainShip() {
-        if (!spReo.transferShip)
-            return
+        if (!spReo.transferShip) return
         ensureOpenMenuArea(cangkuPosition)
         delay(tripleClickInterval)
         //点击机库
@@ -540,32 +549,50 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     //停止船
     protected suspend fun stopShip() {
-
+        click(constant.stopShipArea)
+        click(constant.stopShipArea, doubleClickInterval)
     }
 
-    //点亮过低
-    protected suspend fun isLowbattery() {
 
-    }
-
-    //电量足够 这里过半就可以了
-    protected suspend fun isEnoughPower() {
-
-    }
-
-    //条目一是最近的目标
-    protected suspend fun isNearestNumberOne() {
+    protected suspend fun switchEyesMenu(index: Int) {
+        ensureOpenEyeMenu()
+        var flag = true
+        var count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isOpenCheckRightMenu()) {
+                flag = false
+            }
+            count--
+        }
+        flag = true
+        count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (!visual.isOpenCheckRightMenu()) {
+                flag = false
+            } else {
+                click(constant.switchEyesMenuItemArea(index))
+            }
+            count--
+        }
 
     }
 
     //副本选择重要目标
     protected suspend fun selectRightImportTarget() {
-
+        switchEyesMenu(4)
     }
 
     //副本选择撤离目标
     protected suspend fun selectRightEvacuationTarget() {
-
+        switchEyesMenu(5)
     }
 
 

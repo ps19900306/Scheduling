@@ -204,9 +204,14 @@ class BaseConstant {
         return Area(1985, 85 + (index * 105), 188, 70)
     }
 
+    fun switchEyesMenuItemArea(index: Int): Area {
+        return Area(1930, 140 + (index * 107), 378, 103)
+    }
 
     //副本接受按钮
     val preparationDungeonArea = Area(1131, 445, 135, 139)//打开本地图标
     val acceptDungeonArea = Area(2004, 331, 111, 59)//打开本地图标
     val completeDungeonArea = Area(2004, 331, 111, 59)//完成按钮
+
+    val stopShipArea = Area(1164, 514, 72, 51)//停止按钮
 }

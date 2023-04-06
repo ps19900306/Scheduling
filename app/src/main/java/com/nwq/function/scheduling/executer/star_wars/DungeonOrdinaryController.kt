@@ -20,6 +20,7 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
     private val IN_PREPARATION_INTERFACE = 1 //在准备界面
     private val BATTLE_NAVIGATION_MONITORING = 2//战斗监控阶段
 
+
     var nowStep = IN_SPACE_STATION
     var targetCount = 0;
     var hasNewLock = true
