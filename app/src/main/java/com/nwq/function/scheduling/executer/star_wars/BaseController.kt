@@ -208,6 +208,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             click(constant.warehouseMoveArea)
             delay(normalClickInterval)
             click(constant.warehouseAllArea)
+            delay(doubleClickInterval)
             theOutCheck()
         }
     }
@@ -504,17 +505,12 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun changeTrainShip() {
         if (!spReo.transferShip) return
         ensureOpenMenuArea(cangkuPosition)
-        delay(tripleClickInterval)
         //点击机库
-        click(constant.jikuArea)
-        delay(doubleClickInterval)
-
+        click(constant.jikuArea, tripleClickInterval)
         //第二个船
-        click(constant.theTwoArea)
-        delay(doubleClickInterval)
-
+        click(constant.theTwoArea, doubleClickInterval)
         //点击激活
-        click(constant.jiHuoArea)
+        click(constant.jiHuoArea, doubleClickInterval)
         delay(quadrupleClickInterval)
         theOutCheck()
     }

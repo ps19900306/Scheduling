@@ -19,9 +19,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
 
     private var nowCelestialCount = 0
-    private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
+    private var nowStep = LAUNCH_RESOURCE_LAUNCH
     private var hasLaunch = false
-    var resourcesBaseLocationSP = spReo.resourcesBaseLocation
 
 
     suspend fun addPlanetaryTime() {
@@ -41,7 +40,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         if (visual.isInSpaceStation()) {
             nowStep = LAUNCH_RESOURCE_LAUNCH
         } else {
-            clickJumpCollectionAddress(resourcesBaseLocationSP, false)
+            clickJumpCollectionAddress(spReo.resourcesBaseLocation, false)
             nowStep = MONITORING_RETURN_STATUS
         }
         generalControlMethod()
@@ -73,117 +72,134 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         }
         changeTrainShip()
         unloadingCargo()
-        theOutCheck()
 
         ensureOpenMenuArea(CaiPosition)
         selectEntryItem(nowCelestialCount, doubleClickInterval)
         delay(normalClickInterval)
 
-        click(constant.addTimeArea, doubleClickInterval)
-        takeScreen(doubleClickInterval)
-        ensureCloseDetermine()
-        spReo.resourcesAddTime = System.currentTimeMillis()
-        delay(normalClickInterval)
+        if (System.currentTimeMillis() - spReo.resourcesAddTime > (spReo.addInterval * Constant.Hour) / 2) {//增加种菜时间
+            click(constant.addTimeArea, normalClickInterval)
+            takeScreen(normalClickInterval)
+            ensureCloseDetermine()
+            spReo.resourcesAddTime = System.currentTimeMillis()
+        }
 
         launchResources(celestialList[nowCelestialCount], normalClickInterval)
         takeScreen(normalClickInterval)
         ensureCloseDetermine()
-        val startTime = System.currentTimeMillis()
+
+        click(constant.setTargetArea, doubleClickInterval)
         var flag = true
-        while (flag && System.currentTimeMillis() - startTime < 20 * 60 * 1000) {
-            takeScreen(quadrupleClickInterval)
+        var count = 20 * 20
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
             if (visual.judeIsLaunchComplete(celestialList[nowCelestialCount])) {
                 Timber.d("发射完成 startCollectVegetables HarvestVegetableController NWQ_ 2023/3/14");
                 flag = false
-            } else {
-                Timber.d("等待发射 startCollectVegetables HarvestVegetableController NWQ_ 2023/3/14");
             }
+            count--
         }
-        click(constant.setTargetArea)
+
         theOutCheck()
-        delay(doubleClickInterval)
-        click(constant.eraseWarningArea)
-        takeScreen(doubleClickInterval)
-        ensureCloseDetermine()
-        takeScreen(doubleClickInterval)
-        ensureCloseDetermine()
+        click(constant.eraseWarningArea, normalClickInterval)
         hasLaunch = true
-        lastCollectTime = System.currentTimeMillis()
         nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     }
 
 
-    var lastCollectTime = 0L
+    private suspend fun chooseADestination() {
+        ensureOpenMenuArea(CaiPosition)
+        selectEntryItem(nowCelestialCount, doubleClickInterval)
+        delay(normalClickInterval)
+        click(constant.setTargetArea, normalClickInterval)
+        theOutCheck()
+        click(constant.eraseWarningArea, normalClickInterval)
+    }
+
 
     private suspend fun goCollectNavigationMonitoring() {
-        takeScreen(quadrupleClickInterval)
-        if (visual.isOpenBigMenu() && !visual.hasPositionMenu() && !visual.hasEyesMenu()) {
-            click(constant.closeBigMenuArea)
-        }
-        if (System.currentTimeMillis() - lastCollectTime > 10 * Constant.MINUTE || visual.arriveReceivingPoint()) {
-            Timber.d(" 到底目的 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-            click(constant.collectButtonArea1, normalClickInterval)
-            lastCollectTime = System.currentTimeMillis()
-            if (nowCelestialCount >= celestialList.size) {//结束了
-                Timber.d("完成 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-                spReo.resourcesCollectTime = System.currentTimeMillis()
-                spReo.lastBackSpaceStation = System.currentTimeMillis()
-                clickJumpCollectionAddress(resourcesBaseLocationSP, false)
-                nowStep = MONITORING_RETURN_STATUS
-            } else {
-                Timber.d("继续 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-                ensureOpenMenuArea(CaiPosition)
-                selectEntryItem(nowCelestialCount, doubleClickInterval)
-                delay(normalClickInterval)
-                click(constant.setTargetArea, normalClickInterval)
-                theOutCheck()
-                if (visual.isOpenPositionMenu()) {
-                    click(constant.eraseWarningArea, normalClickInterval)
-                } else {
-                    Timber.d("未开始导航 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/27");
-                    ensureOpenMenuArea(CaiPosition)
-                    selectEntryItem(nowCelestialCount, doubleClickInterval)
-                    delay(normalClickInterval)
-                    click(constant.setTargetArea, normalClickInterval)
-                    theOutCheck()
-                    click(constant.eraseWarningArea, normalClickInterval)
-                }
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
             }
-            nowCelestialCount++
-        } else if (visual.hasEyesMenu() && visual.isOpenPositionMenu() && !visual.isSailing() && !visual.isInSpaceStation()) {//导航停止了
-            Timber.d("导航停止了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-            click(constant.eraseWarningArea)
-        } else if (visual.isInSpaceStation() && visual.isOpenPositionMenu() && !visual.isSailing()) {//炸了
-            Timber.d("//炸了 goCollectNavigationMonitoring HarvestVegetableController NWQ_ 2023/3/14");
-            clickJumpCollectionAddress(resourcesBaseLocationSP, false)
-            nowStep = MONITORING_RETURN_STATUS
+            if (visual.arriveReceivingPoint()) {
+                click(constant.collectButtonArea1, normalClickInterval)
+                nowCelestialCount++
+                if (nowCelestialCount >= celestialList.size) {
+                    spReo.resourcesCollectTime = System.currentTimeMillis()
+                    clickJumpCollectionAddress(spReo.resourcesBaseLocation, false)
+                    nowStep = MONITORING_RETURN_STATUS
+                } else {
+                    chooseADestination()
+                }
+                return  //这里要进入第下一轮
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
+            } else if (visual.isOpenPositionMenu()) {
+                if (visual.hasEyesMenu() || visual.isInSpaceStation()) {
+                    if (visual.isSailing()) {
+                        count = 30
+                    } else {
+                        count--
+                        if (count == 20 || count == 10) {
+                            click(constant.eraseWarningArea, normalClickInterval)
+                        }
+                    }
+                }
+            } else if (visual.isCloseEyesMenu()) {
+                count--
+            }
         }
-
+        if (count == 0 && flag) {//这里大概率菜被偷了
+            nowCelestialCount++
+            chooseADestination()
+            return
+        }
     }
 
 
     private suspend fun monitoringReturnStatus() {
-        takeScreen(quadrupleClickInterval * 2)
-        if (System.currentTimeMillis() - spReo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
-            spReo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
-            if (!visual.isSailing()) {
-                clickJumpCollectionAddress(resourcesBaseLocationSP, false)
+        var flag = true
+        var count = 300
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
             }
+            if (visual.isInSpaceStation()) {
+                if (hasLaunch) {
+                    unloadingCargo()
+                    delay(normalClickInterval)
+                    changeTrainShip()
+                    delay(doubleClickInterval)
+                    spReo.lastStatus = SpConstant.VEGETABLES
+                    runSwitch = false //结束掉收菜
+                } else {
+                    nowStep = LAUNCH_RESOURCE_LAUNCH
+                    return
+                }
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
+            } else if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+            } else if (count == 100) {
+                if (!visual.isSailing()) {
+                    clickJumpCollectionAddress(spReo.resourcesBaseLocation, false)
+                }
+            }
+            count--
+        }
+
+        if (count == 0 && flag) {
+            runSwitch = false
+            spReo.lastStatus = SpConstant.UNUSUAL
             return
-        } else if (visual.isInSpaceStation()) {
-            if (hasLaunch) {
-                unloadingCargo()
-                theOutCheck()
-                delay(normalClickInterval)
-                changeTrainShip()
-                delay(doubleClickInterval)
-                spReo.lastStatus = SpConstant.VEGETABLES
-                runSwitch = false //结束掉收菜
-            } else {
-                nowStep = LAUNCH_RESOURCE_LAUNCH
-            }
-        } else if (visual.isOpenBigMenu()) {
-            click(constant.closeBigMenuArea)
         }
     }
 
@@ -207,7 +223,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             click(constant.resourceLocation(position), quadrupleClickInterval)
         }
     }
-
 
 
 }
