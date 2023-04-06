@@ -153,7 +153,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             list, screenBitmap, 0
         ) || ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
-        ) || isClosePositionMenuGray()
+        )
     }
 
 

@@ -57,7 +57,7 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
 
     private val mOptSlotInfoList3 by lazy {
         JsonUtil.anyToJsonObject<List<Int>>(spReo.timeOnList3F)?.mapIndexed { p, d ->
-            OptSlotInfo(d, constant.listInterval3, 0, p, constant.offsetInterval * 30)
+            OptSlotInfo(d, constant.listInterval3, 0, p, constant.offsetInterval * 12)
         } ?: listOf<OptSlotInfo>()
     }
 
@@ -143,7 +143,7 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
             clickEquipArray(listOf(propellerPosition))
         } else if (completedCount == 2 && aWaveOfRat == 0) {
             needStopShip = true
-            click(constant.clickEyesMenuItemArea(4), doubleClickInterval)
+            click(constant.clickEyesMenuItemArea(spReo.lastAttackPosition), doubleClickInterval)
             click(constant.getLockingArea(0), doubleClickInterval)
             clickEquipArray(listOf(propellerPosition))
         }
@@ -226,53 +226,6 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
             runSwitch = false
             return
         }
-    }
-
-
-    var judgeSmallShipTargetCount = 0
-    var lastJudgeIsSmallShip = 0L
-    var newLockAttackPosition = 0
-    var newLockTargetCount = 0
-    private fun isAttackSmallShip(): Boolean {
-        if (targetCount <= 0) return false
-        var position = getNowAttackPosition()
-        if (position > 0) {
-            if (hasNewLock) {
-                newLockTargetCount = targetCount
-                newLockAttackPosition = targetCount
-                return false
-            } else {
-                if (newLockTargetCount == targetCount + 1 && newLockAttackPosition + 1 >= targetCount && position < newLockAttackPosition) {
-                    Timber.d("position:$position result:锁定目标改变，且开始锁定为最大位置所以  isAttackSmallShip FightController NWQ_ 2023/3/11");
-                    newLockAttackPosition = -100
-                    return true
-                } else {
-                    judgeSmallShipTargetCount = targetCount
-                    var result = visual.judgeIsSmall(position)
-                    lastJudgeIsSmallShip = System.currentTimeMillis()
-                    Timber.d("position:$position result:$result  isAttackSmallShip FightController NWQ_ 2023/3/11");
-                    return result
-                }
-            }
-        } else {
-            if (!hasOpenCatch && !hasNewLock && judgeSmallShipTargetCount == targetCount && System.currentTimeMillis() - lastJudgeIsSmallShip > 30 * 1000L) {
-                lastJudgeIsSmallShip = System.currentTimeMillis()
-                Timber.d("无法识别船 认定位小船  isAttackSmallShip FightController NWQ_ 2023/3/11");
-                return true
-            }
-            lastJudgeIsSmallShip = System.currentTimeMillis()
-            judgeSmallShipTargetCount = targetCount
-            return false
-        }
-    }
-
-    private fun getNowAttackPosition(): Int {
-        for (index in targetCount - 1 downTo 0) {
-            if (visual.judgeNowAttackPosition(index)) {
-                return index
-            }
-        }
-        return -1
     }
 
 

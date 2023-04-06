@@ -34,7 +34,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val weaponPosition = BotOfst + 3
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
-    protected val propellerPosition = BotOfst + 6
+    protected val propellerPosition = BotOfst + 1
     val isShieldResistance = if (spReo.nowSelectMode == SpConstant.FIGHT_MODEL) spReo.resistanceMode
     else spReo.resistanceModeF
     protected var needCancel = false
