@@ -54,7 +54,7 @@ class SettingModelActivity : AppCompatActivity() {
             SpConstant.FIGHT_MODEL -> {
                 list.addAll(fightList)
             }
-            SpConstant.DUNGEON_ORDINARY_MODEL,DUNGEON_LEAD_MODEL -> {
+            SpConstant.DUNGEON_ORDINARY_MODEL, DUNGEON_LEAD_MODEL -> {
                 list.addAll(fuBentList)
             }
             SpConstant.VEGETABLES_MODEL -> {
@@ -87,8 +87,9 @@ class SettingModelActivity : AppCompatActivity() {
             SetListInfo("整个战斗", repo.wholeBattleListFSP),
             SetListInfo("单个回合", repo.roundBattleListFSP),
             SetListInfo("List1:165", repo.timeOnList1FSP),
-            SetListInfo("List2:1700", repo.timeOnList2FSP),
+            SetListInfo("List2:170", repo.timeOnList2FSP),
             SetListInfo("List3:75", repo.timeOnList3FSP),
+            SetIntInfo("最后一个攻击目标", repo.lastAttackPositionSP),
         )
     }
 
@@ -100,7 +101,7 @@ class SettingModelActivity : AppCompatActivity() {
             SetIntInfo("收集间隔/hour", repo.collectIntervalSP),
             SetIntInfo("添加间隔/hour", repo.addIntervalSP),
             SetListInfo("收菜行星列表", repo.celestialResourcesSP),
-            )
+        )
     }
 
     val minerList by lazy {

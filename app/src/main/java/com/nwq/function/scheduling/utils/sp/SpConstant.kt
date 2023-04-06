@@ -55,6 +55,7 @@ object SpConstant {
     const val MINING_INERTIA_LIST = "mining_inertia_list"
     const val MINING_STABILIZER_LIST = "mining_stabilizer_list"
 
+
     const val F_IS_CATCH_FOOD = "f_is_catch_food"
     const val F_IS_HAS_propeller = "f_is_has_propeller"//是否带推子
     const val F_TIME_ON_LIST1 = "f_time_on_list1"
@@ -63,5 +64,5 @@ object SpConstant {
     const val F_WHOLE_BATTLE_LIST = "f_whole_battle_list"
     const val F_ROUND_BATTLE_LIST = "f_round_battle_list"
     const val F_CRESISTANCE_MODE = "f_cresistance_mode"
-
+    const val F_LAST_ATTACK_POSITION = "f_last_attack_position"
 }

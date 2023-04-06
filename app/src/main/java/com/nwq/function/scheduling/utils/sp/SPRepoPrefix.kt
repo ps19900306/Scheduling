@@ -136,4 +136,8 @@ class SPRepoPrefix(val prefix: String) {
     var roundBattleListF by roundBattleListFSP
 
 
+    val lastAttackPositionSP = SP(prefix + SpConstant.F_LAST_ATTACK_POSITION, 3)
+    var lastAttackPosition by lastAttackPositionSP
+
+
 }

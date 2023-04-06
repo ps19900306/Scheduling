@@ -16,16 +16,19 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
 
     val isHasPropeller = spReo.isHasPropellerF
 
+    private var completedCount = 0 //记录激活了几塔
+    private var aWaveOfRat = 0//记录第几波怪
+    private var needStopShip = false
     private val IN_SPACE_STATION = 0  //在空间站
     private val IN_PREPARATION_INTERFACE = 1 //在准备界面
     private val BATTLE_NAVIGATION_MONITORING = 2//战斗监控阶段
-
 
     var nowStep = IN_SPACE_STATION
     var targetCount = 0;
     var hasNewLock = true
     var targetReduceTime = 0L //这个是上次目标减少的时间
     var hasOpenCatch = false
+
 
     //后面这里由外部读取数据进行初始化
     private val wholeBattleOpenList by lazy {
@@ -128,16 +131,29 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
 
 
     suspend fun combatMonitoring() {
-        //打开选中第一个条目进行接近
-        ensureOpenEyeMenu()
-        click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
-        click(constant.getLockingArea(0), doubleClickInterval)
-        clickEquipArray(wholeBattleOpenList)
+        if (completedCount == 0 && aWaveOfRat == 0) {
+            selectRightEvacuationTarget()
+            click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
+            click(constant.getTransitionArea(0), doubleClickInterval)
+            selectRightImportTarget()
+            clickEquipArray(listOf(propellerPosition))
+        } else if (completedCount == 1 && aWaveOfRat == 0) {
+            click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
+            click(constant.getLockingArea(0), doubleClickInterval)
+            clickEquipArray(listOf(propellerPosition))
+        } else if (completedCount == 2 && aWaveOfRat == 0) {
+            needStopShip = true
+            click(constant.clickEyesMenuItemArea(4), doubleClickInterval)
+            click(constant.getLockingArea(0), doubleClickInterval)
+            clickEquipArray(listOf(propellerPosition))
+        }
 
+        //打开选中第一个条目进行接近
         var flag = true
         var count = 1200
+        var hasIntoAction = false//是否已经进入战斗
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
+            if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
                 return
             }
@@ -166,14 +182,23 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
             }
             val nowTarget = visual.getTagNumber()
             if (nowTarget <= 0) {
+                if (hasIntoAction) {
+                    aWaveOfRat++
+                    if (aWaveOfRat == 2) {
+                        aWaveOfRat = 0
+                        completedCount++
+                    }
+                    flag = false //进入下一轮
+                }
                 targetCount = nowTarget
                 continue
             }
 
+            hasIntoAction = true
             val needCheckOpenList = mutableListOf<Int>()
             needCheckOpenList.addAll(wholeBattleOpenList)
             needCheckOpenList.addAll(roundBattleOpenList)
-            val needCheckCloseList = mutableListOf<Int>()
+            val needCheckCloseList = mutableListOf(propellerPosition)
             if (spReo.isCatchFoodF) {
                 if (targetCount >= nowTarget) {
                     if (hasNewLock && System.currentTimeMillis() - targetReduceTime > DESTROY_INTERVAL * 2) {
@@ -189,18 +214,18 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
                 }
             }
             targetCount = nowTarget
-
             //打开定时开启的
             checkTimingOnList(needCheckOpenList)
             val list = checkEquipTimes(2, needCheckOpenList, needCheckCloseList)
             clickEquipArray(list)
             count--
         }
+
+
         if (count == 0 && flag) {
             runSwitch = false
             return
         }
-
     }
 
 
