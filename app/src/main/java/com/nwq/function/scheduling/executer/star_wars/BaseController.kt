@@ -417,9 +417,9 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun dailyGiftPack() {
         if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
             Timber.d("领取每日礼包 dailyGiftPack BaseController NWQ_ 2023/3/21");
-            click(constant.libaoArea1, doubleClickInterval)
-            click(constant.libaoArea2, doubleClickInterval)
-            click(constant.libaoArea3, doubleClickInterval)
+            click(constant.libaoArea1, normalClickInterval)
+            click(constant.libaoArea2, tripleClickInterval)
+            click(constant.libaoArea3, normalClickInterval)
             takeScreen(doubleClickInterval)
             if (!visual.hasIntoGame()) {
                 click(constant.libaoArea3, normalClickInterval)
