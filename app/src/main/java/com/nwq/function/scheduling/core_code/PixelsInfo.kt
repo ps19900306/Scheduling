@@ -15,9 +15,12 @@ data class PixelsInfo(
     val offset: Int = 0
 ) {
     companion object {
-        fun buildPixelsInfo(coordinate: Coordinate, range: Int = 0): PixelsInfo {
-            val startX = coordinate.x.toInt() - range
-            val startY = coordinate.y.toInt() - range
+        fun buildPixelsInfo(
+            coordinate: Coordinate, range: Int = 0,
+            offsetX: Int = 0, offsetY: Int = 0,
+        ): PixelsInfo {
+            val startX = coordinate.x.toInt() - range + offsetX
+            val startY = coordinate.y.toInt() - range + offsetY
             val width = range * 2 + 1
             val height = range * 2 + 1
             return PixelsInfo(startX, startY, width, height, width, 0)

@@ -642,15 +642,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //通过颜色去找颜色最接近的点
     fun findPointByColor(
         data: FindPointByColorTask,
-        colorRule: String,
-        tolerance: Int = 255,
-    ): Coordinate? {
-        return ImgUtils.findPointByColor(screenBitmap, data, colorRule, tolerance)
-    }
-
-    //通过颜色去找颜色最接近的点
-    fun findPointByColor(
-        data: FindPointByColorTask,
         colorList: List<Int>,
         tolerance: Int = 255,
     ): Coordinate? {

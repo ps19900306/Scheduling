@@ -22,8 +22,7 @@ sealed class PointColorVerification() {
         val coordinate: Coordinate,
         val rule: ColorIdentificationRule,
         val range: Int = 0,
-    ) :
-        PointColorVerification()
+    ) : PointColorVerification()
 
     //二点对比找颜色
     data class TwoPointTask(
@@ -40,6 +39,5 @@ sealed class PointColorVerification() {
         ) : this(
             Coordinate(x, y), Coordinate(x1, y1), twoPointComparison
         )
-
     }
 }

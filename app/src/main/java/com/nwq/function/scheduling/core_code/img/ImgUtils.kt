@@ -12,15 +12,6 @@ import kotlin.math.abs
 
 object ImgUtils {
 
-    //通过颜色去找颜色最接近的点
-    fun findPointByColor(
-        bitmap: Bitmap,
-        data: FindPointByColorTask,
-        colorRule: String,
-        tolerance: Int = 25,
-    ): Coordinate? {
-        return findPointByColor(data.toPixelsInfo(), bitmap, colorRule, tolerance)
-    }
 
     //通过颜色去找颜色最接近的点
     fun findPointByColor(
@@ -38,6 +29,122 @@ object ImgUtils {
             tolerance
         )
     }
+
+    //通过颜色去找颜色最接近的点
+    suspend fun findImgByColor(
+        bitmap: Bitmap,
+        task: FindImgTask,
+    ): Boolean {
+        return if (task.pixelsInfo.width == 1 || task.pixelsInfo.height == 1) {
+            findImgByColorLinear(bitmap, task)
+        } else {
+            findImgByColorBig(bitmap, task)
+        }
+    }
+
+
+    private fun findImgByColorBig(
+        bitmap: Bitmap,
+        task: FindImgTask
+    ): Boolean {
+        val pixelsInfo = task.pixelsInfo
+        val pixelsArray = mutableListOf<IntArray>()
+        for (i in 0 until pixelsInfo.height) {
+            val pixels = IntArray(pixelsInfo.width)
+            bitmap.getPixels(
+                pixels,
+                pixelsInfo.offset,
+                pixelsInfo.stride,
+                pixelsInfo.startX,
+                pixelsInfo.startY + i,
+                pixelsInfo.width,
+                1
+            )
+            pixelsArray.add(pixels)
+        }
+
+        pixelsArray.forEachIndexed { offsetY, pixels ->
+            pixels.forEachIndexed { offsetX, colorInt ->
+                val deviationValue = judgeColorSqrt(
+                    Color.red(colorInt),
+                    Color.blue(colorInt),
+                    Color.green(colorInt),
+                    task.colorList.getOrNull(0) ?: 0,
+                    task.colorList.getOrNull(1) ?: 0,
+                    task.colorList.getOrNull(2) ?: 0
+                )
+
+                if (deviationValue <= task.tolerance) {
+                    val oX = (pixelsInfo.startX + offsetX - task.baseCoordinate.x).toInt()
+                    val oY = (pixelsInfo.startY + offsetY - task.baseCoordinate.y).toInt()
+                    if (performPointsColorVerification(
+                            task.verifyList,
+                            bitmap,
+                            0,
+                            oX,
+                            oY
+                        )
+                    ) {
+                        task.clickArea.x = task.clickArea.x + oX
+                        task.clickArea.y = task.clickArea.y + oY
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    private fun findImgByColorLinear(
+        bitmap: Bitmap,
+        task: FindImgTask
+    ): Boolean {
+        val pixelsInfo = task.pixelsInfo
+        val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
+        bitmap.getPixels(
+            pixels,
+            pixelsInfo.offset,
+            pixelsInfo.stride,
+            pixelsInfo.startX,
+            pixelsInfo.startY,
+            pixelsInfo.width,
+            pixelsInfo.height
+        )
+        pixels.forEachIndexed { offset, colorInt ->
+            val deviationValue = judgeColorSqrt(
+                Color.red(colorInt),
+                Color.blue(colorInt),
+                Color.green(colorInt),
+                task.colorList.getOrNull(0) ?: 0,
+                task.colorList.getOrNull(1) ?: 0,
+                task.colorList.getOrNull(2) ?: 0
+            )
+
+            if (deviationValue <= task.tolerance) {
+                var oX = (pixelsInfo.startX - task.baseCoordinate.x).toInt()
+                var oY = (pixelsInfo.startY - task.baseCoordinate.y).toInt()
+                if (pixelsInfo.width == 1) {
+                    oY = +offset
+                } else {
+                    oX = +offset
+                }
+                if (performPointsColorVerification(
+                        task.verifyList,
+                        bitmap,
+                        0,
+                        oX,
+                        oY
+                    )
+                ) {
+                    task.clickArea.x = task.clickArea.x + oX
+                    task.clickArea.y = task.clickArea.y + oY
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
 
     /**
      * 区块找颜色 找到颜色则返回true
@@ -77,10 +184,12 @@ object ImgUtils {
         data: List<PointColorVerification>,
         bitmap: Bitmap,
         toleranceErrorNumber: Int = 0,//能够容忍几个点颜色不一致
+        offsetX: Int = 0,
+        offsetY: Int = 0,
     ): Boolean {
         var nowErrorCount = 0
         data.forEach {
-            if (!performPointColorVerification(it, bitmap)) {
+            if (!performPointColorVerification(it, bitmap, offsetX, offsetY)) {
                 nowErrorCount++
             }
             if (nowErrorCount > toleranceErrorNumber)
@@ -93,28 +202,37 @@ object ImgUtils {
     //单点单规则判断
     private fun performPointColorVerification(
         data: PointColorVerification,
-        bitmap: Bitmap
+        bitmap: Bitmap,
+        offsetX: Int = 0,
+        offsetY: Int = 0,
     ): Boolean {
         return if (data is PointColorVerification.CoordinateColor) {
             if (data.range > 0) {
                 findColorLike(
-                    PixelsInfo.buildPixelsInfo(data.coordinate, data.range),
+                    PixelsInfo.buildPixelsInfo(data.coordinate, data.range, offsetX, offsetY),
                     bitmap,
                     data.colorRule,
                     data.tolerance
                 )
             } else {
-                judgeColorLike(data.coordinate, bitmap, data.colorRule, data.tolerance)
+                judgeColorLike(
+                    data.coordinate,
+                    bitmap,
+                    data.colorRule,
+                    data.tolerance,
+                    offsetX,
+                    offsetY
+                )
             }
         } else if (data is PointColorVerification.CoordinateRule) {
             if (data.range > 0) {
                 findColorRule(
-                    PixelsInfo.buildPixelsInfo(data.coordinate, data.range),
+                    PixelsInfo.buildPixelsInfo(data.coordinate, data.range, offsetX, offsetY),
                     bitmap,
                     data.rule
                 )
             } else {
-                judgeColorRule(data.coordinate, bitmap, data.rule)
+                judgeColorRule(data.coordinate, bitmap, data.rule, offsetX, offsetY)
             }
         } else if (data is PointColorVerification.TwoPointTask) {
             return performTwoPointTask(data, bitmap)
@@ -143,9 +261,11 @@ object ImgUtils {
         coordinate: Coordinate,
         bitmap: Bitmap,
         colorRule: String,
-        tolerance: Int = 0
+        tolerance: Int = 0,
+        offsetX: Int = 0,
+        offsetY: Int = 0,
     ): Boolean {
-        val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
+        val color = bitmap.getPixel(coordinate.x.toInt() + offsetX, coordinate.y.toInt() + offsetY)
         val baseColor = Color.parseColor(colorRule)
         return checkColor(
             baseColor,
@@ -160,9 +280,11 @@ object ImgUtils {
     private fun judgeColorRule(
         coordinate: Coordinate,
         bitmap: Bitmap,
-        colorRule: ColorIdentificationRule
+        colorRule: ColorIdentificationRule,
+        offsetX: Int = 0,
+        offsetY: Int = 0,
     ): Boolean {
-        val color = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
+        val color = bitmap.getPixel(coordinate.x.toInt() + offsetX, coordinate.y.toInt() + offsetY)
         Timber.d(
             "x:${coordinate.x}  y:${coordinate.y} red: ${Color.red(color)}  , green: ${
                 Color.green(
@@ -174,7 +296,6 @@ object ImgUtils {
     }
 
 
-
     /**
      * 区块找颜色 找到颜色则返回true
      */
@@ -182,7 +303,7 @@ object ImgUtils {
         pixelsInfo: PixelsInfo,
         bitmap: Bitmap,
         colorRule: String,
-        tolerance: Int = 0
+        tolerance: Int = 0,
     ): Boolean {
         val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
         val baseColor = Color.parseColor(colorRule)
@@ -220,6 +341,7 @@ object ImgUtils {
         return findPointByColor(pixelsInfo, bitmap, baseRed, baseBlue, baseGreen, tolerance)
     }
 
+    //通过颜色找坐标
     private fun findPointByColor(
         pixelsInfo: PixelsInfo,
         bitmap: Bitmap,
@@ -259,7 +381,7 @@ object ImgUtils {
         return if (lastIndex > 0) {
             if (pixelsInfo.width > 1 && pixelsInfo.height > 1) {
                 val x = pixelsInfo.startX + lastIndex % pixelsInfo.width
-                val y = pixelsInfo.startX + lastIndex / pixelsInfo.width
+                val y = pixelsInfo.startY + lastIndex / pixelsInfo.width
                 Coordinate(x.toFloat(), y.toFloat())
             } else if (pixelsInfo.width > 1 && pixelsInfo.height == 1) {
                 val x = pixelsInfo.startX + lastIndex
