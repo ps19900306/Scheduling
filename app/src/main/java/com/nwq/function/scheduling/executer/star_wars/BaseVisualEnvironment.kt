@@ -737,8 +737,8 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         val list1 = listOf(
             verificationTask(1800 - 130 * index, 101, AllOver150Rule),
             verificationTask(1798 - 130 * index, 99, AllOver150Rule),
-            verificationTask(1787 - 130 * index, 98, AllLess50Rule),
-            verificationTask(1797 - 130 * index, 79, AllLess70Rule),
+            verificationTask(1785 - 130 * index, 106, AllLess50Rule),
+            verificationTask(1801 - 130 * index, 92, AllLess70Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list1, screenBitmap, 0
