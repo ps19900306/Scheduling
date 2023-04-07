@@ -40,7 +40,10 @@ class NwqAccessibilityService : AccessibilityService() {
     }
 
     private val onCompleteLister = {
-        SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
+        if(SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL )
+        {
+            SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
+        }
         Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
         if (SPRepo.continueToTheNext) {
             val spReo = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
@@ -66,13 +69,6 @@ class NwqAccessibilityService : AccessibilityService() {
         //每次启动都刷新任务数目
         list.forEach { it.close() }
         list.clear()
-//        if (outGame) {
-////            if ((helper.screenBitmap?.width ?: 0) > (helper.screenBitmap?.height
-////                    ?: 0)
-////            ) helper.pressHomeBtn()
-////        } else {
-////            helper.pressHomeBtn()
-////        }
         helper.pressHomeBtn()
         if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
             Timber.d("启动任务 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
