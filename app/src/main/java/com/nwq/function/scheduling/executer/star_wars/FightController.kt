@@ -98,7 +98,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
                 nowStep = COMBAT_MONITORING
             } else {
-                if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+                if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
+                    harvestVegetableController.startCollectVegetables()
+                    delay(normalClickInterval)
+                } else if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
                     harvestVegetableController.addPlanetaryTime()
                     delay(normalClickInterval)
                 }
@@ -197,10 +200,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun onAllComplete() {
         spReo.lastStatus = SpConstant.ACCOMPLISH
         theOutCheck()
-        if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
-            harvestVegetableController.startCollectVegetables()
-            delay(normalClickInterval)
-        } else if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+        if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
             harvestVegetableController.addPlanetaryTime()
             delay(normalClickInterval)
         }

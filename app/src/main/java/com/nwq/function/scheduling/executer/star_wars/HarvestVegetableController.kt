@@ -14,12 +14,13 @@ Function description:
 
 class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
 
-    private val LAUNCH_RESOURCE_LAUNCH = 0//等待资源发射
+    private val START_GAME = 0//等待资源发射
+    private val LAUNCH_RESOURCE_LAUNCH = 1//等待资源发射
     private val GO_TO_COLLECT_NAVIGATION_MONITORING = 2//收菜导航
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
 
     private var nowCelestialCount = 0
-    private var nowStep = LAUNCH_RESOURCE_LAUNCH
+    private var nowStep = START_GAME
     private var hasLaunch = false
 
 
@@ -50,6 +51,9 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
     override suspend fun generalControlMethod() {
         while (runSwitch) {
             when (nowStep) {
+                START_GAME -> {
+                    startGame()
+                }
                 LAUNCH_RESOURCE_LAUNCH -> {
                     launchAllVegetables()
                 }
@@ -60,6 +64,19 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                     monitoringReturnStatus()
                 }
             }
+        }
+    }
+
+
+    private suspend fun startGame() {
+        takeScreen(normalClickInterval)
+        delay(2000)
+        click(constant.getAppArea())
+        delay(doubleClickInterval * 2)
+        if (intoGame()) {
+            nowStep = LAUNCH_RESOURCE_LAUNCH
+        } else {
+            onComplete.invoke()
         }
     }
 
@@ -82,6 +99,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             takeScreen(normalClickInterval)
             ensureCloseDetermine()
             spReo.resourcesAddTime = System.currentTimeMillis()
+            delay(normalClickInterval)
         }
 
         launchResources(celestialList[nowCelestialCount], normalClickInterval)
