@@ -309,6 +309,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 click(constant.closeWalletArea)
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
+            } else if (visual.isOpenLiaoTian()) {
+                click(constant.closeLiaoTianArea)
             } else if (count == 5) {
                 pressBackBtn()
             } else if (count <= 0) {

@@ -89,8 +89,8 @@ class BaseConstant {
     var collectButtonArea2 = Area(683, 879, 279, 109)//收集按钮2
 
     var jikuArea = Area(118, 409, 433, 84)//点击机库
-    var theTwoArea = Area(1066, 207, 158, 114)//第二个船
-    var jiHuoArea = Area(2050, 320, 342, 110)//点击激活
+    var theTwoArea = Area(1023, 192, 141, 203)//第二个船
+    var jiHuoArea = Area(1956, 321, 342, 110)//点击激活
 
     var libaoArea1 = Area(111, 518, 66, 65)//点击激活
     var libaoArea2 = Area(451, 731, 315, 51)//点击激活
@@ -214,4 +214,5 @@ class BaseConstant {
     val completeDungeonArea = Area(2004, 331, 111, 59)//完成按钮
 
     val stopShipArea = Area(1164, 514, 72, 51)//停止按钮
+    val closeLiaoTianArea = Area(797, 6, 63, 68)//停止按钮
 }

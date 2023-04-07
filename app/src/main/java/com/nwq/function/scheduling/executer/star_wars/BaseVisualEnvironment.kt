@@ -974,6 +974,19 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
+    fun isOpenLiaoTian(): Boolean {
+        val list = listOf(
+            verificationTask(165, 920, AllOver150Rule),
+            verificationTask(177, 920, AllOver150Rule),
+            verificationTask(170, 927, AllLess50Rule),
+            verificationTask(170, 915, AllLess50Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
     //判断是否是普通异常
     fun isCommonUnusual() {
 
