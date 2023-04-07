@@ -34,7 +34,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     protected val weaponPosition = BotOfst + 3
     protected val cellPosition = BotOfst + 5
     protected val pickUpPosition = BotOfst + 6
-    protected val propellerPosition = BotOfst + 6
+    protected val propellerPosition = BotOfst + 1
     val isShieldResistance = if (spReo.nowSelectMode == SpConstant.FIGHT_MODEL) spReo.resistanceMode
     else spReo.resistanceModeF
     protected var needCancel = false
@@ -417,9 +417,9 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun dailyGiftPack() {
         if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
             Timber.d("领取每日礼包 dailyGiftPack BaseController NWQ_ 2023/3/21");
-            click(constant.libaoArea1, doubleClickInterval)
-            click(constant.libaoArea2, doubleClickInterval)
-            click(constant.libaoArea3, doubleClickInterval)
+            click(constant.libaoArea1, normalClickInterval)
+            click(constant.libaoArea2, tripleClickInterval)
+            click(constant.libaoArea3, normalClickInterval)
             takeScreen(doubleClickInterval)
             if (!visual.hasIntoGame()) {
                 click(constant.libaoArea3, normalClickInterval)

@@ -117,26 +117,26 @@ class SPRepoPrefix(val prefix: String) {
     val isHasPropellerFSP = SP(prefix + SpConstant.F_IS_HAS_propeller, true)
     var isHasPropellerF by isHasPropellerFSP
 
-    val isCatchFoodFSP = SP(prefix + SpConstant.F_IS_CATCH_FOOD, true)
+    val isCatchFoodFSP = SP(prefix + SpConstant.F_IS_CATCH_FOOD, false)
     var isCatchFoodF by isCatchFoodFSP
 
-    val timeOnList1FSP = SP(prefix + SpConstant.F_TIME_ON_LIST1, "[11,12]")
+    val timeOnList1FSP = SP(prefix + SpConstant.F_TIME_ON_LIST1, "[]")
     var timeOnList1F by timeOnList1FSP
 
     val timeOnList2FSP = SP(prefix + SpConstant.F_TIME_ON_LIST2, "")
     var timeOnList2F by timeOnList2FSP
 
-    val timeOnList3FSP = SP(prefix + SpConstant.F_TIME_ON_LIST3, "[10]")
+    val timeOnList3FSP = SP(prefix + SpConstant.F_TIME_ON_LIST3, "[7,8,10,11,12]")
     var timeOnList3F by timeOnList3FSP
 
-    val wholeBattleListFSP = SP(prefix + SpConstant.F_WHOLE_BATTLE_LIST, "[1,8]")
+    val wholeBattleListFSP = SP(prefix + SpConstant.F_WHOLE_BATTLE_LIST, "[]")
     var wholeBattleListF by wholeBattleListFSP
 
-    val roundBattleListFSP = SP(prefix + SpConstant.F_ROUND_BATTLE_LIST, "[4,5]")
+    val roundBattleListFSP = SP(prefix + SpConstant.F_ROUND_BATTLE_LIST, "[1,3,4,5]")
     var roundBattleListF by roundBattleListFSP
 
 
-    val lastAttackPositionSP = SP(prefix + SpConstant.F_LAST_ATTACK_POSITION, 3)
+    val lastAttackPositionSP = SP(prefix + SpConstant.F_LAST_ATTACK_POSITION, 4)
     var lastAttackPosition by lastAttackPositionSP
 
 
