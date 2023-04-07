@@ -5,7 +5,7 @@ import com.nwq.function.scheduling.core_code.PixelsInfo
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.core_code.img.ImgUtils
-import com.nwq.function.scheduling.core_code.img.TwoPointTask
+import com.nwq.function.scheduling.core_code.img.PointColorVerification.TwoPointTask
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
 import com.nwq.function.scheduling.executer.star_wars.rule.*
 import timber.log.Timber
@@ -26,7 +26,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             TwoPointTask(1439, 675, 1443, 682, HasLockComparison),
             TwoPointTask(1439, 689, 1437, 692, HasLockComparison),
         )
-        return ImgUtils.performTwoPointTask(
+        return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }
@@ -38,7 +38,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             TwoPointTask(1424, 568, 1429, 568, AllGreater15Comparison),
             TwoPointTask(1425, 546, 1430, 546, AllGreater15Comparison),
         )
-        return ImgUtils.performTwoPointTask(
+        return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1
         )
     }
@@ -967,7 +967,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             TwoPointTask(2103, 183, 2103, 190, AllGreater15Comparison),
             TwoPointTask(2133, 183, 2133, 190, AllGreater15Comparison),
         )
-        return ImgUtils.performTwoPointTask(
+        return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }

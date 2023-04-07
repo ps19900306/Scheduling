@@ -39,36 +39,27 @@ object ImgUtils {
         )
     }
 
-    //多点多规则颜色判断
-    fun performTwoPointTask(
-        data: List<TwoPointTask>,
+    /**
+     * 区块找颜色 找到颜色则返回true
+     */
+    fun findColorRule(
+        pixelsInfo: PixelsInfo,
         bitmap: Bitmap,
-        toleranceErrorNumber: Int = 0,//能够容忍几个点颜色不一致
+        colorRule: ColorIdentificationRule
     ): Boolean {
-        var nowErrorCount = 0
-        data.forEach {
-            if (!performTwoPointTask(it, bitmap)) {
-                nowErrorCount++
-            }
-            if (nowErrorCount > toleranceErrorNumber)
-                return false
-        }
-        return true
-    }
-
-
-    //多点多规则颜色判断
-    fun performTwoPointTask(
-        data: TwoPointTask,
-        bitmap: Bitmap,
-    ): Boolean {
-        val pixel = bitmap.getPixel(data.coordinate1.x.toInt(), data.coordinate1.y.toInt())
-        val pixel1 = bitmap.getPixel(data.coordinate2.x.toInt(), data.coordinate2.y.toInt())
-        return data.twoPointComparison.optInt(
-            pixel,
-            pixel1
+        val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
+        bitmap.getPixels(
+            pixels,
+            pixelsInfo.offset,
+            pixelsInfo.stride,
+            pixelsInfo.startX,
+            pixelsInfo.startY,
+            pixelsInfo.width,
+            pixelsInfo.height
         )
+        return pixels.find { colorRule.optInt(it) } != null
     }
+
 
     //多个点找一个颜色 如果一个符合则返回True
     fun performPointsColorVerificationV2(
@@ -100,7 +91,7 @@ object ImgUtils {
 
 
     //单点单规则判断
-    fun performPointColorVerification(
+    private fun performPointColorVerification(
         data: PointColorVerification,
         bitmap: Bitmap
     ): Boolean {
@@ -125,15 +116,30 @@ object ImgUtils {
             } else {
                 judgeColorRule(data.coordinate, bitmap, data.rule)
             }
+        } else if (data is PointColorVerification.TwoPointTask) {
+            return performTwoPointTask(data, bitmap)
         } else {
             false
         }
     }
 
+    //多点多规则颜色判断
+    private fun performTwoPointTask(
+        data: PointColorVerification.TwoPointTask,
+        bitmap: Bitmap,
+    ): Boolean {
+        val pixel = bitmap.getPixel(data.coordinate1.x.toInt(), data.coordinate1.y.toInt())
+        val pixel1 = bitmap.getPixel(data.coordinate2.x.toInt(), data.coordinate2.y.toInt())
+        return data.twoPointComparison.optInt(
+            pixel,
+            pixel1
+        )
+    }
+
     /**
      * 单点颜色判断 相似度
      */
-    fun judgeColorLike(
+    private fun judgeColorLike(
         coordinate: Coordinate,
         bitmap: Bitmap,
         colorRule: String,
@@ -151,7 +157,7 @@ object ImgUtils {
     /**
      * 单点颜色判断 规则约束
      */
-    fun judgeColorRule(
+    private fun judgeColorRule(
         coordinate: Coordinate,
         bitmap: Bitmap,
         colorRule: ColorIdentificationRule
@@ -168,33 +174,11 @@ object ImgUtils {
     }
 
 
-    /**
-     * 区块找颜色 找到颜色则返回true
-     */
-    fun findColorRule(
-        pixelsInfo: PixelsInfo,
-        bitmap: Bitmap,
-        colorRule: ColorIdentificationRule
-    ): Boolean {
-        val pixels = IntArray(pixelsInfo.width * pixelsInfo.height)
-        bitmap.getPixels(
-            pixels,
-            pixelsInfo.offset,
-            pixelsInfo.stride,
-            pixelsInfo.startX,
-            pixelsInfo.startY,
-            pixelsInfo.width,
-            pixelsInfo.height
-        )
-        return pixels.find {
-            colorRule.optInt(it)
-        } != null
-    }
 
     /**
      * 区块找颜色 找到颜色则返回true
      */
-    fun findColorLike(
+    private fun findColorLike(
         pixelsInfo: PixelsInfo,
         bitmap: Bitmap,
         colorRule: String,

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import com.nwq.function.scheduling.databinding.ActivityAutoCodeBinding
 
 class AutoCodeActivity : AppCompatActivity() {
@@ -16,4 +17,13 @@ class AutoCodeActivity : AppCompatActivity() {
         bind = ActivityAutoCodeBinding.inflate(LayoutInflater.from(this))
         setContentView(bind.root)
     }
+
+
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        return super.dispatchTouchEvent(ev)
+    }
+
+
+
 }
