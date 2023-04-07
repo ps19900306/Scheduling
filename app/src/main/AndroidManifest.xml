@@ -19,6 +19,18 @@
         android:theme="@style/Theme.Scheduling"
         tools:targetApi="31">
         <activity
+            android:name=".auto_code.FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_fullscreen"
+            android:theme="@style/Theme.Scheduling.Fullscreen" />
+        <activity
+            android:name=".auto_code.AutoCodeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:label="@string/title_activity_fullscreen"
+            android:theme="@style/Theme.Scheduling.Fullscreen"/>
+        <activity
             android:name=".ui.SelectModelActivity"
             android:exported="false" />
         <activity
