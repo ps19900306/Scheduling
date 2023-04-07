@@ -120,7 +120,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             }
             count--
         }
-
         theOutCheck()
         click(constant.eraseWarningArea, normalClickInterval)
         hasLaunch = true
@@ -164,10 +163,10 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
             } else if (visual.isOpenPositionMenu()) {
                 if (visual.hasEyesMenu() || visual.isInSpaceStation()) {
                     if (visual.isSailing()) {
-                        count = 30
+                        count = 10
                     } else {
                         count--
-                        if (count == 20 || count == 10) {
+                        if (count == 5) {
                             click(constant.eraseWarningArea, normalClickInterval)
                         }
                     }
