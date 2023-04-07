@@ -94,13 +94,13 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
         selectEntryItem(nowCelestialCount, doubleClickInterval)
         delay(normalClickInterval)
 
-        if (System.currentTimeMillis() - spReo.resourcesAddTime > (spReo.addInterval * Constant.Hour) / 2) {//增加种菜时间
-            click(constant.addTimeArea, normalClickInterval)
-            takeScreen(normalClickInterval)
-            ensureCloseDetermine()
-            spReo.resourcesAddTime = System.currentTimeMillis()
-            delay(normalClickInterval)
-        }
+
+        click(constant.addTimeArea, normalClickInterval)
+        takeScreen(normalClickInterval)
+        ensureCloseDetermine()
+        spReo.resourcesAddTime = System.currentTimeMillis()
+        delay(normalClickInterval)
+
 
         launchResources(celestialList[nowCelestialCount], normalClickInterval)
         takeScreen(normalClickInterval)
@@ -159,6 +159,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 return  //这里要进入第下一轮
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
+            } else if (visual.isOpenWallet()) {
+                click(constant.closeWalletArea)
             } else if (visual.isOpenPositionMenu()) {
                 if (visual.hasEyesMenu() || visual.isInSpaceStation()) {
                     if (visual.isSailing()) {
@@ -206,6 +208,8 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 click(constant.dialogDetermineArea)
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
+            } else if (visual.isOpenWallet()) {
+                click(constant.closeWalletArea)
             } else if (count == 100) {
                 if (!visual.isSailing()) {
                     clickJumpCollectionAddress(spReo.resourcesBaseLocation, false)

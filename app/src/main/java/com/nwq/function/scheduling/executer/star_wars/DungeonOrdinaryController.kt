@@ -180,7 +180,7 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
                 }
                 continue
             }
-            val nowTarget = visual.getOreTargetNumber()
+            val nowTarget = visual.getOpenTargetNumber()
             if (nowTarget <= 0) {
                 if (hasIntoAction) {
                     aWaveOfRat++

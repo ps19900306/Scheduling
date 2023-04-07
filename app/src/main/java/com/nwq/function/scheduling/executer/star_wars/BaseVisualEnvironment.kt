@@ -726,6 +726,34 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
+
+    fun getOpenTargetNumber(): Int {
+        var number = -1
+        for (i in 7 downTo 0) {
+            if (getOpenTargetNumber(i)) {
+                number = i + 1
+                Timber.d("$number getMiniTarget FightVisualEnvironment NWQ_ 2023/3/11");
+                return number
+            }
+        }
+        Timber.d("$number getMiniTarget FightVisualEnvironment NWQ_ 2023/3/11");
+        return number
+    }
+
+    //是否具有开采的行星目标 这个判断是资源条(从右边数第一个)
+    //判断是否存在一个黑圈 通过色差判定
+    fun getOpenTargetNumber(index: Int): Boolean {
+        val list1 = listOf(
+            verificationTask(1800 - 130 * index, 101, AllOver150Rule),
+            verificationTask(1798 - 130 * index, 99, AllOver150Rule),
+            verificationTask(1787 - 130 * index, 98, AllLess50Rule),
+            verificationTask(1797 - 130 * index, 79, AllLess70Rule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list1, screenBitmap, 0
+        )
+    }
+
     //右侧菜单是否有条目
     fun hasEyeItem(): Boolean {
         val info = PixelsInfo(1954, 86, 1, 90, 1, 0)
