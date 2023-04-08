@@ -562,7 +562,10 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 return
             }
             if (visual.isOpenCheckRightMenu()) {
+                Timber.d("isOpenCheckRightMenu  switchEyesMenu BaseController NWQ_ 2023/4/8");
                 flag = false
+            }else {
+                click(constant.openSwitchEyesMenuArea)
             }
             count--
         }

@@ -17,8 +17,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         SP.init(this, "nwq_schedule")
-
-//      Timber.plant(Timber.DebugTree())
+        Timber.plant(Timber.DebugTree())
 //
 //        if (!FileUtils.orcExists()) {
 //            Timber.d("拷贝文件 onCreate App NWQ_ 2023/3/29");

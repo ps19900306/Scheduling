@@ -210,7 +210,7 @@ class BaseConstant {
 
     //副本接受按钮
     val preparationDungeonArea = Area(1131, 445, 135, 139)//打开本地图标
-    val acceptDungeonArea = Area(2004, 331, 111, 59)//打开本地图标
+    val openSwitchEyesMenuArea = Area(1962, 16, 188, 55)//打开本地图标
     val completeDungeonArea = Area(2004, 331, 111, 59)//完成按钮
 
     val stopShipArea = Area(1164, 514, 72, 51)//停止按钮

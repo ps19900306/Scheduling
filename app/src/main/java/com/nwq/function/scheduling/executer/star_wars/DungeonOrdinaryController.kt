@@ -3,6 +3,7 @@ package com.nwq.function.scheduling.executer.star_wars
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.star_wars.data.OptSlotInfo
 import com.nwq.function.scheduling.utils.JsonUtil
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 /**
@@ -85,6 +86,7 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
         var flag = true
         var count = 40
         while (flag && count > 0 && runSwitch) {
+            Timber.d("stationMonitoring DungeonOrdinaryController NWQ_ 2023/4/8");
             if (!takeScreen(doubleClickInterval)) {
                 if (count < 30) {
                     runSwitch = false
@@ -94,7 +96,10 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
                 }
             }
             if (visual.isDungeonWaiting()) {
-                false
+                flag = false
+            } else if (visual.isDungeonFight()) {
+                nowStep++
+                flag = false
             }
             if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
@@ -114,12 +119,13 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
         var count = 40
         click(constant.preparationDungeonArea, doubleClickInterval)
         while (flag && count > 0 && runSwitch) {
+            Timber.d("stationMonitoring DungeonOrdinaryController NWQ_ 2023/4/8");
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return
             }
             if (visual.isDungeonFight()) {
-                false
+                flag = false
             }
             count--
         }
@@ -131,10 +137,12 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
 
 
     suspend fun combatMonitoring() {
+        Timber.d("  combatMonitoring DungeonOrdinaryController NWQ_ 2023/4/8");
         if (completedCount == 0 && aWaveOfRat == 0) {
             selectRightEvacuationTarget()
             click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
             click(constant.getTransitionArea(0), doubleClickInterval)
+            delay(doubleClickInterval)
             selectRightImportTarget()
             clickEquipArray(listOf(propellerPosition))
         } else if (completedCount == 1 && aWaveOfRat == 0) {
