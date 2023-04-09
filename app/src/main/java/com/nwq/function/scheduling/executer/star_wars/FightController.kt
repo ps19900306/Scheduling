@@ -571,9 +571,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
                     //这里是判断点击
                     val list = checkEquipTimes(2, needCheckOpenList, needCheckCloseList)
-                    if (isPickupBox && !needBackStation && visual.warehouseIsFull()) {
-                        needBackStation = true
-                    }
+
                     clickEquipArray(list)
 
                     if (!hasOpenCatch && needCheckOpenList.contains(0) && checkEquipTimes(
@@ -610,14 +608,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             //这里要做异常处理了 这里表示战斗结束了
                             clickTheDialogueClose()
                             closeTheWholeBattle()
-                            if (needBackStation || needBack()) {
+                            if (needBackStation || needBack()||isWarehouseIsFull()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
                             }
                         } else if (targetReduceTime - System.currentTimeMillis() > Constant.MINUTE) {//防止卡住
                             closeTheWholeBattle()
-                            if (needBackStation || needBack()) {
+                            if (needBackStation || needBack()||isWarehouseIsFull()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
@@ -628,6 +626,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
         }
     }
+
+    fun isWarehouseIsFull(): Boolean {
+        return isPickupBox && !needBackStation && visual.warehouseIsFull()
+    }
+
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     private suspend fun monitoringReturnStatus() {

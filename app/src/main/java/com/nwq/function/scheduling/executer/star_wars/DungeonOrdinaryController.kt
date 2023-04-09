@@ -152,7 +152,7 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
         } else if (completedCount == 2 && aWaveOfRat == 0) {
             needStopShip = true
             click(constant.clickEyesMenuItemArea(spReo.lastAttackPosition), doubleClickInterval)
-            click(constant.getLockingArea(0), doubleClickInterval)
+            click(constant.getLockingArea(spReo.lastAttackPosition), doubleClickInterval)
             clickEquipArray(listOf(propellerPosition))
         }
 
