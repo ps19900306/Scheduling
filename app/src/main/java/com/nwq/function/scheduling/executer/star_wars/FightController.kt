@@ -588,11 +588,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         if (maintenanceTimeStartStamp - nowTime < MAINTENANCE_INTERVAL) {
                             maintenanceOpenCount-- //表示上次没有开启成功
                         } else {
-                            maintenanceOpenCount = 3
+                            maintenanceOpenCount = 5
                         }
                         if (maintenanceOpenCount <= 0) {
                             Timber.d("开启失败需要返回 cmbatMonitoring FightController NWQ_ 2023/3/30");
-                            maintenanceOpenCount = 3
+                            maintenanceOpenCount = 5
                             needBackStation = true
                         }
                         maintenanceTimeStartStamp = System.currentTimeMillis()

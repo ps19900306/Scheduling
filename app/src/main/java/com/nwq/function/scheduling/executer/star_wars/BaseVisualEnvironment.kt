@@ -987,6 +987,27 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
+    fun isCompleteGoalOne(): Boolean {
+        val list = listOf(
+            verificationTask(132, 45, SimpleRule.getSimple(228, 195, 150), 1),
+            verificationTask(129, 47, SimpleRule.getSimple(226, 195, 149), 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isCompleteGoalTwo(): Boolean {
+        val list = listOf(
+            verificationTask(222, 45, SimpleRule.getSimple(228, 195, 150), 1),
+            verificationTask(219, 47, SimpleRule.getSimple(226, 195, 149), 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
     //判断是否是普通异常
     fun isCommonUnusual() {
 

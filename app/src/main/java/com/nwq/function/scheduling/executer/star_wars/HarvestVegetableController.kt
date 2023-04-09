@@ -14,7 +14,7 @@ Function description:
 
 class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
 
-    private val START_GAME = 0//等待资源发射
+    private val START_GAME = 0//开始游戏
     private val LAUNCH_RESOURCE_LAUNCH = 1//等待资源发射
     private val GO_TO_COLLECT_NAVIGATION_MONITORING = 2//收菜导航
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
