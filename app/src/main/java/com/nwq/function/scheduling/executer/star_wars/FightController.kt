@@ -282,7 +282,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var pickSuccess = false
         var hasPickUpTask = false
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
+            if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
                 return
             }

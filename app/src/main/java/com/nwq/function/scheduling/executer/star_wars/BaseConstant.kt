@@ -95,6 +95,9 @@ class BaseConstant {
     var libaoArea1 = Area(111, 518, 66, 65)//点击激活
     var libaoArea2 = Area(451, 731, 315, 51)//点击激活
     var libaoArea3 = Area(1906, 152, 56, 58)//点击激活
+
+    var openJiYuMenu = Area(565, 178, 181, 91)//这个是编辑机遇类型菜单
+
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
     }

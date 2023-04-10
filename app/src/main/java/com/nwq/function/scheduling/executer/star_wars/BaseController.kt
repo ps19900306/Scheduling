@@ -438,7 +438,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
+            if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
                 return
             }
