@@ -4,12 +4,6 @@ package com.nwq.function.scheduling.auto_code.task
 import com.nwq.function.scheduling.auto_code.data.SinglePointColorValue
 import com.nwq.function.scheduling.auto_code.data.TwoPointColorValue
 import com.nwq.function.scheduling.core_code.Area
-import com.nwq.function.scheduling.core_code.img.ImgUtils
-import com.nwq.function.scheduling.core_code.img.PointColorVerification
-import com.nwq.function.scheduling.executer.star_wars.rule.AllOver200Rule
-import com.nwq.function.scheduling.executer.star_wars.rule.QingRuleN
-import com.nwq.function.scheduling.executer.star_wars.rule.SimpleRule
-import timber.log.Timber
 import java.lang.StringBuilder
 
 /**
@@ -64,12 +58,15 @@ class MultiPointColorTask(val methodName: String) {
         stringBuilder.append(" if (visual.${getColorMethod}()) {")
         stringBuilder.append(" flag = false")
         stringBuilder.append("  }else {")
-        stringBuilder.append(" click(constant.${getAreaMethod})")
+        if (clickArea != null)
+            stringBuilder.append(" click(constant.${getAreaMethod})")
+
         stringBuilder.append(" }\n")
 
         stringBuilder.append("count--\n")
         stringBuilder.append(" }\n")
 
+        stringBuilder.append("return count != 0")
 
         stringBuilder.append(" }\n")
     }
