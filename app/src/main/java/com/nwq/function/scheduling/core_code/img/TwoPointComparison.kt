@@ -8,6 +8,7 @@ import androidx.core.graphics.red
 create by: 86136
 create time: 2023/3/2 10:49
 Function description:
+这个是能用于发现边框等
  */
 
 interface TwoPointComparison {

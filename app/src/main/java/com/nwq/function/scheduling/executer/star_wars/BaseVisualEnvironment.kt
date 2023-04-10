@@ -935,9 +935,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(1281, 965, SimpleRule.getSimple(73, 139, 161), 1),
             verificationTask(1285, 966, SimpleRule.getSimple(73, 139, 161), 1),
         )
-        return !ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
-        )
+        return !ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
     }
 
     //电量足够 这里过半就可以了
@@ -946,9 +944,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             verificationTask(1281, 924, SimpleRule.getSimple(73, 139, 161), 1),
             verificationTask(1289, 921, SimpleRule.getSimple(73, 139, 161), 1),
         )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
-        )
+        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
     }
 
     //条目一是最近的目标

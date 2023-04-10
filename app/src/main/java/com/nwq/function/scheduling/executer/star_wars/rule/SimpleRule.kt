@@ -9,7 +9,6 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int 
     companion object {
         val list = mutableListOf<SimpleRule>()
 
-
         fun getSimple(red: Int, green: Int, blue: Int, range: Int = 3): SimpleRule {
             return list.find { it.redB == red && it.greenB == green && it.blueB == blue }
                 ?: SimpleRule(red, green, blue, range).apply {
