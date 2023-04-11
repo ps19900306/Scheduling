@@ -1027,7 +1027,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isOpenYunShu(): Boolean {
         val list = listOf(
-            verificationTask(529, 522, JiYuItemOpenRule, 1),
+            verificationTask(528, 523, JiYuItemOpenRule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -1046,7 +1046,7 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun isOpenDiAn(): Boolean {
         val list = listOf(
-            verificationTask(881, 529, JiYuItemOpenRule, 1),
+            verificationTask(879, 530, JiYuItemOpenRule, 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -1071,9 +1071,8 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //未完成的
     fun isSubmitGoods(): Boolean {
         val list = listOf(
-            verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174, 5)),
-            verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176, 5)),
-            verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174, 5)),
+            verificationTask(142, 613, SimpleRule.getSimple(63, 182, 152, 5),1),
+            verificationTask(142, 711, SimpleRule.getSimple(63, 182, 152, 5),1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
