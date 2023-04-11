@@ -294,8 +294,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         neeForceRefresh = false
                         spReo.lastRefreshTime = System.currentTimeMillis()
                         count = 6
-                        changSpecialJiYu()
-                        spReo.specificStatus = true
+                        if (!spReo.specificStatus) {
+                            changSpecialJiYu()
+                            spReo.specificStatus = true
+                        }
                     } else if (count == 1) {
                         (System.currentTimeMillis() + constant.REFRESH_INTERVAL - spReo.lastRefreshTime).let {
                             if (it > 0) {
@@ -304,18 +306,24 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             click(constant.refreshTaskListArea)
                             spReo.lastRefreshTime = System.currentTimeMillis()
                             count = 6
-                            changSpecialJiYu()
-                            spReo.specificStatus = true
+                            if (!spReo.specificStatus) {
+                                changSpecialJiYu()
+                                spReo.specificStatus = true
+                            }
                         }
                         neeForceRefresh = false
                     }
                 } else if (needRefreshTask() && positon > 0) {
                     click(constant.refreshTaskListArea)
-                    count = 6
-                    changSpecialJiYu()
-                    spReo.specificStatus = true
                     spReo.lastRefreshTime = System.currentTimeMillis()
-                } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())
+                    count = 6
+                    if (!spReo.specificStatus) {
+                        changSpecialJiYu()
+                        spReo.specificStatus = true
+                    }
+
+                } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL())
+                    || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())
                     || (spReo.specificStatus && (visual.hasLeftDialogue() || visual.hasRightDialogue() || visual.isShowDetermine()))
                 ) {
                     //这里表示接取任务成功
@@ -328,6 +336,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     spReo.specificStatus = false
                 } else if (visual.isShowTaskOpt()) {
                     click(constant.openTaskDetermineArea, fastClickInterval)
+                    if (spReo.specificStatus) {
+                        count = 4
+                    }
                 } else {
                     when (positon) {
                         1 -> {
@@ -335,12 +346,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                                 click(constant.pickUpTask1Area)
                                 delay(normalClickInterval)//这样做是为了保证最多点击二次
                                 hasPickUpTask = true
-                                if (count > 2) count = 2
+
+                                if (count > 3) count = 3
+
                             } else {
                                 click(constant.pickUpTask1AreaV2)
                                 delay(normalClickInterval)//这样做是为了保证最多点击二次
                                 hasPickUpTask = true
-                                if (count > 2) count = 2
+                                if (count > 3) count = 3
                             }
                         }
                         2 -> {
@@ -415,7 +428,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
         //这里为点开流程
         if (!pickSuccess) {//全部的任务已经完成
-            if (hasPickUpTask) {
+            if (spReo.specificStatus && (visual.hasLeftDialogue() || visual.hasRightDialogue() || visual.isShowDetermine())) {//接取运输任务后 需要监听空间站导航
+                clickTheDialogueCloseYunShu(4)
+                nowStep = MONITORING_RETURN_STATUS
+            } else if (hasPickUpTask) {
                 Timber.d("ALL_COMPLETE  pickUpTask FightController NWQ_ 2023/3/25");
                 nowStep = ALL_COMPLETE
                 return
@@ -425,6 +441,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 return
             }
         }
+
+
         if (spReo.specificStatus) {//接取运输任务后 需要监听空间站导航
             clickTheDialogueCloseYunShu(4)
             nowStep = MONITORING_RETURN_STATUS
@@ -727,6 +745,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     private suspend fun monitoringReturnStatus() {
+        Timber.d("monitoringReturnStatus FightController NWQ_ 2023/4/11");
         var flag = true
         val maxCount = 15 * 60
         var unSailingCount = 10
