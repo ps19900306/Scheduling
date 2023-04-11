@@ -332,6 +332,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             count--
         }
 
+
         //这里为点开流程
         if (!pickSuccess) {//全部的任务已经完成
             if (hasPickUpTask) {
@@ -604,11 +605,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     }
 
                 } else {
-//                    needCheckOpenList.addAll(wholeBattleOpenList)
-//                    needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
                     needCheckOpenList.add(cellPosition)
-
                     val closeList = checkEquipTimes(2, needCheckOpenList, null)
                     if (closeList.contains(weaponPosition) && closeList.contains(cellPosition)) {//这里表示已经关闭的
                         if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
@@ -882,8 +880,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     //determine 是否需要点击确定按钮，一般出舱是需要的
-
-
     //战斗开始时候需要开启的
     private fun closeTheWholeBattle() {
         intoCount = 3
@@ -892,5 +888,127 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         DESTROY_INTERVAL = 50 * 1000
     }
 
+    //这里切换到普通际遇模式
+    private suspend fun changCommonJiYu(): Boolean {
+        var flag = true
+        var count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (visual.isOpenGaoAn()) {
+                flag = false
+            } else {
+                click(constant.openJiYuMenu)
+            }
+            count--
+        }
+        if (count == 0) {
+            return false
+        }
 
+        flag = true
+        count = 6
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (!visual.isOpenYunShu() && !visual.isOpenDiAn() && visual.isOpenZhanDou()) {
+                flag = false
+            }
+            if (visual.isOpenYunShu()) {
+                click(constant.YunShuMenuArea)
+            }
+            if (visual.isOpenDiAn()) {
+                click(constant.DiAnMenuArea)
+            }
+            if (!visual.isOpenZhanDou()) {
+                click(constant.ZhanDouMenuArea)
+            }
+            count--
+        }
+        if (count == 0) {
+            return false
+        }
+
+        flag = true
+        count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (!visual.isOpenGaoAn()) {
+                return true
+            } else {
+                click(constant.openJiYuMenu)
+            }
+            count--
+        }
+        return false
+    }
+
+    //这里切换到运输际遇模式
+    private suspend fun changSpecialJiYu(): Boolean {
+        var flag = true
+        var count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (visual.isOpenGaoAn()) {
+                flag = false
+            } else {
+                click(constant.openJiYuMenu)
+            }
+            count--
+        }
+        if (count == 0) {
+            return false
+        }
+
+        flag = true
+        count = 6
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (visual.isOpenYunShu() && visual.isOpenDiAn() && !visual.isOpenZhanDou()) {
+                flag = false
+            }
+            if (!visual.isOpenYunShu()) {
+                click(constant.YunShuMenuArea)
+            }
+            if (!visual.isOpenDiAn()) {
+                click(constant.DiAnMenuArea)
+            }
+            if (visual.isOpenZhanDou()) {
+                click(constant.ZhanDouMenuArea)
+            }
+            count--
+        }
+        if (count == 0) {
+            return false
+        }
+
+        flag = true
+        count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (!visual.isOpenGaoAn()) {
+                return true
+            } else {
+                click(constant.openJiYuMenu)
+            }
+            count--
+        }
+        return false
+    }
 }

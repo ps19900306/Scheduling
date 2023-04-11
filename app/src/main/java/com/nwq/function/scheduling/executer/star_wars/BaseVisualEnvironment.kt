@@ -175,6 +175,17 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
+    //是否已经加载了任务
+    fun hasLoadTask(flag: Boolean): Boolean {
+        return if (flag) {
+            hasSpecialTask() || checkIsCommonTask() > 0
+        } else {
+            checkIsCommonTask() > 0
+        }
+
+    }
+
+
     fun checkIsCommonTask(): Int {
         var list = listOf(
             verificationTask(628, 342, BaiQingRule, 1),
@@ -1056,7 +1067,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-
     //未完成的
     fun isSubmitGoods(): Boolean {
         val list = listOf(
@@ -1068,7 +1078,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             list, screenBitmap, 0
         )
     }
-
 
 
 }
