@@ -81,7 +81,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
-
+                dailyGiftPack()
                 return true
             }
         }
@@ -422,14 +422,39 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     //领取每日礼物
     suspend fun dailyGiftPack() {
         if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
-            Timber.d("领取每日礼包 dailyGiftPack BaseController NWQ_ 2023/3/21");
-            click(constant.libaoArea1, normalClickInterval)
-            click(constant.libaoArea2, tripleClickInterval)
-            click(constant.libaoArea3, normalClickInterval)
-            takeScreen(doubleClickInterval)
-            if (!visual.hasIntoGame()) {
-                click(constant.libaoArea3, normalClickInterval)
+            //开
+            var flag = true
+            var count = 10
+            while (flag && count > 0 && runSwitch) {
+                if (!takeScreen(normalClickInterval)) {
+                    runSwitch = false
+                    return
+                }
+                if (visual.isOpenGifMenu()) {
+                    runSwitch = false
+                    return
+                } else if (!visual.hasGrayPositionMenu()) {
+                    click(constant.libaoArea1, normalClickInterval)
+                }
             }
+            //领取
+            click(constant.libaoArea2, normalClickInterval)
+
+            flag = true
+            count = 10
+            while (flag && count > 0 && runSwitch) {
+                if (!takeScreen(normalClickInterval)) {
+                    runSwitch = false
+                    return
+                }
+                if (!visual.isOpenGifMenu()) {
+                    runSwitch = false
+                    return
+                } else if (visual.hasGrayPositionMenu()) {
+                    click(constant.libaoArea3, normalClickInterval)
+                }
+            }
+
             spReo.dailytaskstime = System.currentTimeMillis()
         }
     }
@@ -568,7 +593,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             if (visual.isOpenCheckRightMenu()) {
                 Timber.d("isOpenCheckRightMenu  switchEyesMenu BaseController NWQ_ 2023/4/8");
                 flag = false
-            }else {
+            } else {
                 click(constant.openSwitchEyesMenuArea)
             }
             count--

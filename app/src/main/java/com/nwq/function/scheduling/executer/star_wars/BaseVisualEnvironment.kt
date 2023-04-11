@@ -1071,13 +1071,33 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //未完成的
     fun isSubmitGoods(): Boolean {
         val list = listOf(
-            verificationTask(142, 613, SimpleRule.getSimple(63, 182, 152, 5),1),
-            verificationTask(142, 711, SimpleRule.getSimple(63, 182, 152, 5),1),
+            verificationTask(142, 613, SimpleRule.getSimple(63, 182, 152, 5), 1),
+            verificationTask(142, 711, SimpleRule.getSimple(63, 182, 152, 5), 1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         )
     }
 
+    //点击一号位置是可以点接受的
+    fun jiYuTask1canAccpet(): Boolean {
+        val list = listOf(
+            verificationTask(970, 681, QianQingRule)
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    //未完成的
+    fun isOpenGifMenu(): Boolean {
+        val list = listOf(
+            verificationTask(522, 756, SimpleRule.getSimple(209, 170, 93, 5)),
+            verificationTask(724, 748, RedRule),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
 
 }

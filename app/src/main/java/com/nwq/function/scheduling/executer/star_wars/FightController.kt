@@ -114,7 +114,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun exitGame() {
         theOutCheck()
-        dailyGiftPack()
         clickJumpCollectionAddress(warehouseIndex, false)
         delay(doubleClickInterval)
 //        pressBackBtn()
@@ -317,7 +316,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     spReo.specificStatus = true
                     spReo.lastRefreshTime = System.currentTimeMillis()
                 } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())
-                    || (spReo.specificStatus && (visual.hasLeftDialogue() || visual.hasRightDialogue()))
+                    || (spReo.specificStatus && (visual.hasLeftDialogue() || visual.hasRightDialogue() || visual.isShowDetermine()))
                 ) {
                     //这里表示接取任务成功
                     Timber.d("接取任务成功  pickUpTask FightController NWQ_ 2023/3/25");
@@ -332,10 +331,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 } else {
                     when (positon) {
                         1 -> {
-                            click(constant.pickUpTask1Area)
-                            delay(normalClickInterval)//这样做是为了保证最多点击二次
-                            hasPickUpTask = true
-                            if (count > 2) count = 2
+                            if (visual.jiYuTask1canAccpet()) {
+                                click(constant.pickUpTask1Area)
+                                delay(normalClickInterval)//这样做是为了保证最多点击二次
+                                hasPickUpTask = true
+                                if (count > 2) count = 2
+                            } else {
+                                click(constant.pickUpTask1AreaV2)
+                                delay(normalClickInterval)//这样做是为了保证最多点击二次
+                                hasPickUpTask = true
+                                if (count > 2) count = 2
+                            }
                         }
                         2 -> {
                             click(constant.pickUpTask2Area)
@@ -383,10 +389,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 } else {
                     when (positon) {
                         1 -> {
-                            click(constant.pickUpTask1Area)
-                            delay(normalClickInterval)//这样做是为了保证最多点击二次
-                            hasPickUpTask = true
-                            if (count > 2) count = 2
+                            if (visual.jiYuTask1canAccpet()) {
+                                click(constant.pickUpTask1Area)
+                                delay(normalClickInterval)//这样做是为了保证最多点击二次
+                                hasPickUpTask = true
+                                if (count > 2) count = 2
+                            } else {
+                                click(constant.pickUpTask1AreaV2)
+                                delay(normalClickInterval)//这样做是为了保证最多点击二次
+                                hasPickUpTask = true
+                                if (count > 2) count = 2
+                            }
                         }
                         2 -> {
                             click(constant.pickUpTask2Area)
@@ -400,7 +413,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
         }
 
-
         //这里为点开流程
         if (!pickSuccess) {//全部的任务已经完成
             if (hasPickUpTask) {
@@ -413,12 +425,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 return
             }
         }
-
         if (spReo.specificStatus) {//接取运输任务后 需要监听空间站导航
             clickTheDialogueCloseYunShu(4)
             nowStep = MONITORING_RETURN_STATUS
             return
         }
+
+
 
 
         if (!spReo.hasLegionnaires && visual.isHighTaskRight())//如果右边是高级任务也进行取消
@@ -854,7 +867,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 flag = count
             } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
-                return false
             } else if (visual.isSubmitGoods()) {
                 click(constant.submitGoodsArea)
                 return true
@@ -995,9 +1007,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
             if (visual.isOpenYunShu()) {
                 click(constant.YunShuMenuArea)
+                delay(fastClickInterval)
             }
             if (visual.isOpenDiAn()) {
                 click(constant.DiAnMenuArea)
+                delay(fastClickInterval)
             }
             if (!visual.isOpenZhanDou()) {
                 click(constant.ZhanDouMenuArea)
@@ -1057,9 +1071,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
             if (!visual.isOpenYunShu()) {
                 click(constant.YunShuMenuArea)
+                delay(fastClickInterval)
             }
             if (!visual.isOpenDiAn()) {
                 click(constant.DiAnMenuArea)
+                delay(fastClickInterval)
             }
             if (visual.isOpenZhanDou()) {
                 click(constant.ZhanDouMenuArea)

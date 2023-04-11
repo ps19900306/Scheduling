@@ -109,7 +109,6 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     nowStep = MONITORING_RETURN_STATUS
                 }
             }
-            dailyGiftPack()
         } else {
             onComplete.invoke()
         }

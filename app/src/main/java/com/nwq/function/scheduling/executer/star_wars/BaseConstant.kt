@@ -64,6 +64,7 @@ class BaseConstant {
 
 
     var pickUpTask1Area = Area(570, 668, 444, 25)
+    var pickUpTask1AreaV2 = Area(807, 298, 203, 231)
     var pickUpTask2Area = Area(1031, 666, 444, 25)
 
     var lockTargetGroupArea = Area(1395, 639, 92, 94)
@@ -92,9 +93,9 @@ class BaseConstant {
     var theTwoArea = Area(1023, 192, 141, 203)//第二个船
     var jiHuoArea = Area(1956, 321, 342, 110)//点击激活
 
-    var libaoArea1 = Area(111, 518, 66, 65)//点击激活
-    var libaoArea2 = Area(451, 731, 315, 51)//点击激活
-    var libaoArea3 = Area(1906, 152, 56, 58)//点击激活
+    var libaoArea1 = Area(111, 518, 66, 65)//打开
+    var libaoArea2 = Area(451, 731, 315, 51)//领取
+    var libaoArea3 = Area(1906, 152, 56, 58)//关闭
 
     var openJiYuMenu = Area(565, 178, 181, 91)//这个是编辑机遇类型菜单
 
@@ -225,7 +226,6 @@ class BaseConstant {
 
     val stopShipArea = Area(1164, 514, 72, 51)//停止按钮
     val closeLiaoTianArea = Area(797, 6, 63, 68)//
-
 
 
 }
