@@ -176,13 +176,12 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
     //是否已经加载了任务
-    fun hasLoadTask(flag: Boolean): Boolean {
+    fun checkIsCommonTaskV2(flag: Boolean): Int {
         return if (flag) {
-            hasSpecialTask() || checkIsCommonTask() > 0
+            hasSpecialTask()
         } else {
-            checkIsCommonTask() > 0
+            checkIsCommonTask()
         }
-
     }
 
 
@@ -1055,15 +1054,17 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    fun hasSpecialTask(): Boolean {
+    fun hasSpecialTask(): Int {
         val list = listOf(
             verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174, 5)),
             verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176, 5)),
             verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174, 5)),
         )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
-        )
+        return if (ImgUtils.performPointsColorVerification(
+                list, screenBitmap, 0
+            )
+        ) 1
+        else -1
     }
 
 

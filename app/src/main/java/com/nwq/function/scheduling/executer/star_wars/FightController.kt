@@ -276,60 +276,128 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         //下面是走没有任务的流程
         //打开新闻公告版本
         click(constant.newTaskListArea(spReo.hasLegionnaires || count == 0))
+
         flag = true
         count = 6
         var positon = -1
         var pickSuccess = false
         var hasPickUpTask = false
-        while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(normalClickInterval)) {
-                runSwitch = false
-                return
-            }
-            positon = visual.checkIsCommonTask()
-            if (neeForceRefresh) {
-                if (visual.canRefresh()) {
-                    click(constant.refreshTaskListArea)
-                    spReo.lastRefreshTime = System.currentTimeMillis()
-                    neeForceRefresh = false
-                } else if (count == 1) {
-                    (System.currentTimeMillis() + constant.REFRESH_INTERVAL - spReo.lastRefreshTime).let {
-                        if (it > 0) {
-                            delay(it)
+        if (spReo.receiveSpecificTask) { //这个是接取特殊任务
+            while (flag && count > 0 && runSwitch) {
+                if (!takeScreen(normalClickInterval)) {
+                    runSwitch = false
+                    return
+                }
+                positon = visual.checkIsCommonTaskV2(spReo.specificStatus)
+                if (neeForceRefresh) {
+                    if (visual.canRefresh()) {
+                        click(constant.refreshTaskListArea)
+                        neeForceRefresh = false
+                        spReo.lastRefreshTime = System.currentTimeMillis()
+                        count = 6
+                        changSpecialJiYu()
+                        spReo.specificStatus = true
+                    } else if (count == 1) {
+                        (System.currentTimeMillis() + constant.REFRESH_INTERVAL - spReo.lastRefreshTime).let {
+                            if (it > 0) {
+                                delay(it)
+                            }
+                            click(constant.refreshTaskListArea)
+                            spReo.lastRefreshTime = System.currentTimeMillis()
+                            count = 6
+                            changSpecialJiYu()
+                            spReo.specificStatus = true
                         }
+                        neeForceRefresh = false
+                    }
+                } else if (needRefreshTask() && positon > 0) {
+                    click(constant.refreshTaskListArea)
+                    count = 6
+                    changSpecialJiYu()
+                    spReo.specificStatus = true
+                    spReo.lastRefreshTime = System.currentTimeMillis()
+                } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())
+                    || (spReo.specificStatus && (visual.hasLeftDialogue() || visual.hasRightDialogue()))
+                ) {
+                    //这里表示接取任务成功
+                    Timber.d("接取任务成功  pickUpTask FightController NWQ_ 2023/3/25");
+                    flag = false
+                    pickSuccess = true
+                } else if (spReo.specificStatus && count == 2) {
+                    count = 6
+                    changCommonJiYu()
+                    spReo.specificStatus = false
+                } else if (visual.isShowTaskOpt()) {
+                    click(constant.openTaskDetermineArea, fastClickInterval)
+                } else {
+                    when (positon) {
+                        1 -> {
+                            click(constant.pickUpTask1Area)
+                            delay(normalClickInterval)//这样做是为了保证最多点击二次
+                            hasPickUpTask = true
+                            if (count > 2) count = 2
+                        }
+                        2 -> {
+                            click(constant.pickUpTask2Area)
+                            delay(normalClickInterval)
+                            hasPickUpTask = true
+                            if (count > 2) count = 2
+                        }
+                    }
+                }
+                count--
+            }
+        } else {
+            while (flag && count > 0 && runSwitch) {
+                if (!takeScreen(normalClickInterval)) {
+                    runSwitch = false
+                    return
+                }
+                positon = visual.checkIsCommonTask()
+                if (neeForceRefresh) {
+                    if (visual.canRefresh()) {
                         click(constant.refreshTaskListArea)
                         spReo.lastRefreshTime = System.currentTimeMillis()
+                        neeForceRefresh = false
+                    } else if (count == 1) {
+                        (System.currentTimeMillis() + constant.REFRESH_INTERVAL - spReo.lastRefreshTime).let {
+                            if (it > 0) {
+                                delay(it)
+                            }
+                            click(constant.refreshTaskListArea)
+                            spReo.lastRefreshTime = System.currentTimeMillis()
+                        }
+                        neeForceRefresh = false
                     }
-                    neeForceRefresh = false
+                } else if (needRefreshTask() && positon > 0) {
+                    count = 4
+                    click(constant.refreshTaskListArea)
+                    spReo.lastRefreshTime = System.currentTimeMillis()
+                } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())) {
+                    //这里表示接取任务成功
+                    Timber.d("接取任务成功  pickUpTask FightController NWQ_ 2023/3/25");
+                    flag = false
+                    pickSuccess = true
+                } else if (visual.isShowTaskOpt()) {
+                    click(constant.openTaskDetermineArea, fastClickInterval)
+                } else {
+                    when (positon) {
+                        1 -> {
+                            click(constant.pickUpTask1Area)
+                            delay(normalClickInterval)//这样做是为了保证最多点击二次
+                            hasPickUpTask = true
+                            if (count > 2) count = 2
+                        }
+                        2 -> {
+                            click(constant.pickUpTask2Area)
+                            delay(normalClickInterval)
+                            hasPickUpTask = true
+                            if (count > 2) count = 2
+                        }
+                    }
                 }
-            } else if (needRefreshTask() && positon > 0) {
-                count = 4
-                click(constant.refreshTaskListArea)
-                spReo.lastRefreshTime = System.currentTimeMillis()
-            } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())) {
-                //这里表示接取任务成功
-                Timber.d("接取任务成功  pickUpTask FightController NWQ_ 2023/3/25");
-                flag = false
-                pickSuccess = true
-            } else if (visual.isShowTaskOpt()) {
-                click(constant.openTaskDetermineArea, fastClickInterval)
-            } else {
-                when (positon) {
-                    1 -> {
-                        click(constant.pickUpTask1Area)
-                        delay(normalClickInterval)//这样做是为了保证最多点击二次
-                        hasPickUpTask = true
-                        if (count > 2) count = 2
-                    }
-                    2 -> {
-                        click(constant.pickUpTask2Area)
-                        delay(normalClickInterval)
-                        hasPickUpTask = true
-                        if (count > 2) count = 2
-                    }
-                }
+                count--
             }
-            count--
         }
 
 
@@ -345,6 +413,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 return
             }
         }
+
+        if (spReo.specificStatus) {//接取运输任务后 需要监听空间站导航
+            clickTheDialogueCloseYunShu(4)
+            nowStep = MONITORING_RETURN_STATUS
+            return
+        }
+
 
         if (!spReo.hasLegionnaires && visual.isHighTaskRight())//如果右边是高级任务也进行取消
         {
@@ -669,7 +744,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         needBackStation = false
                         nowStep = PICK_UP_TASK
                     }
-                    if (count == maxCount - 2) {//过快抵达这里条状
+                    if (count == maxCount - 2) {//过快抵达这里再次接取
                         nowStep = PICK_UP_TASK
                     }
                 } else {
