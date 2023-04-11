@@ -86,7 +86,7 @@ class BaseConstant {
     var addTimeArea = Area(2113, 169, 73, 75)//增加时间的
     var setTargetArea = Area(1923, 903, 355, 115)//行星开采设置终点的位置
     var collectButtonArea1 = Area(344, 881, 682, 107)//收集按钮1
-    var collectButtonArea2 = Area(683, 879, 279, 109)//收集按钮2
+    var closetAlert = Area(1289,189,400,137)//这个是关闭长按导致的信息
 
     var jikuArea = Area(118, 409, 433, 84)//点击机库
     var theTwoArea = Area(1023, 192, 141, 203)//第二个船

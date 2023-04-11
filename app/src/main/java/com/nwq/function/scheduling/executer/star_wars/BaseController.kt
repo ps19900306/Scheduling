@@ -139,13 +139,17 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
     }
 
+    /**
+     * closeData 是关闭需要打开的
+     * openData  是开启的需要关闭的
+     */
     suspend fun checkEquipTimes(
         times: Int, closeData: List<Int>?, openData: List<Int>?
     ): MutableList<Int> {
         var list = mutableListOf<Int>()
         var list2 = mutableListOf<Int>()
         for (i in 0 until times) {
-            takeScreen(normalClickInterval)
+            takeScreen(doubleClickInterval)
             closeData?.let {
                 val result = checkEquipStatusClose(closeData)
                 list = if (i == 0) {

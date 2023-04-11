@@ -16,6 +16,7 @@ class MultiPointColorTask(val methodName: String) {
     val singlePointList = mutableListOf<SinglePointColorValue>()
     val twoPointColorValue = mutableListOf<TwoPointColorValue>()
     var clickArea: Area? = null
+    var descriptiveInformation: String? = null//这里是信息描述
 
     val getColorMethod = "${methodName}Color"
     val getAreaMethod = "${methodName}Area"
@@ -23,6 +24,9 @@ class MultiPointColorTask(val methodName: String) {
     fun builderString() {
         val stringBuilder = StringBuilder()
 
+        descriptiveInformation?.let {
+            stringBuilder.append("// $descriptiveInformation \n")
+        }
         //这里构造颜色判断
         stringBuilder.append("fun $getColorMethod():Boolean { \n")
         stringBuilder.append("val list1 = listOf(\n")
@@ -50,7 +54,7 @@ class MultiPointColorTask(val methodName: String) {
         stringBuilder.append("while (flag && count > 0 && runSwitch) \n")
         stringBuilder.append("{ \n")
 
-        stringBuilder.append("if (!takeScreen(doubleClickInterval)) {\n")
+        stringBuilder.append("if (!takeScreen(normalClickInterval)) {\n")
         stringBuilder.append(" runSwitch = false\n")
         stringBuilder.append("return\n")
         stringBuilder.append(" }\n")
@@ -60,7 +64,6 @@ class MultiPointColorTask(val methodName: String) {
         stringBuilder.append("  }else {")
         if (clickArea != null)
             stringBuilder.append(" click(constant.${getAreaMethod})")
-
         stringBuilder.append(" }\n")
 
         stringBuilder.append("count--\n")

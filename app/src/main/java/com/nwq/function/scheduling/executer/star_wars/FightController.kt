@@ -459,6 +459,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         if (ensureCloseDetermine()) {//这里大概率用不到了
             return
         }
+        if (visual.isClosePositionMenuGray()) {///这个是关闭长按导致的信息
+            click(constant.closetAlert)
+            return
+        }
         if (!mEnterCombatStatus) {
             if (visual.hasGroupLock()) {
                 ensureCloseEyeMenu()
@@ -599,23 +603,25 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     }
 
                 } else {
-                    needCheckOpenList.addAll(wholeBattleOpenList)
-                    needCheckOpenList.addAll(roundBattleOpenList)
+//                    needCheckOpenList.addAll(wholeBattleOpenList)
+//                    needCheckOpenList.addAll(roundBattleOpenList)
                     needCheckOpenList.add(weaponPosition)
+                    needCheckOpenList.add(cellPosition)
+
                     val closeList = checkEquipTimes(2, needCheckOpenList, null)
                     if (closeList.contains(weaponPosition) && closeList.contains(cellPosition)) {//这里表示已经关闭的
                         if (visual.hasLeftDialogue() || visual.hasRightDialogue()) {
                             //这里要做异常处理了 这里表示战斗结束了
                             clickTheDialogueClose()
                             closeTheWholeBattle()
-                            if (needBackStation || needBack()||isWarehouseIsFull()) {
+                            if (needBackStation || needBack() || isWarehouseIsFull()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
                             }
                         } else if (targetReduceTime - System.currentTimeMillis() > Constant.MINUTE) {//防止卡住
                             closeTheWholeBattle()
-                            if (needBackStation || needBack()||isWarehouseIsFull()) {
+                            if (needBackStation || needBack() || isWarehouseIsFull()) {
                                 nowStep = ABNORMAL_STATE
                             } else {
                                 nowStep = PICK_UP_TASK
@@ -628,7 +634,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     fun isWarehouseIsFull(): Boolean {
-        return isPickupBox && !needBackStation && visual.warehouseIsFull()
+        return isPickupBox && visual.warehouseIsFull()
     }
 
 
