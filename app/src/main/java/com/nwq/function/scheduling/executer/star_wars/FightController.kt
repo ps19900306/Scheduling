@@ -589,7 +589,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     //如果多次开修失败
                     if (list.contains(maintenanceDevicePosition)) {
                         val nowTime = System.currentTimeMillis()
-                        if (maintenanceTimeStartStamp - nowTime < MAINTENANCE_INTERVAL) {
+                        if (nowTime - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
                             maintenanceOpenCount-- //表示上次没有开启成功
                         } else {
                             maintenanceOpenCount = 3

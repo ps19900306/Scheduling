@@ -601,9 +601,11 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun warehouseIsFull(): Boolean {
         val list = listOf(
-            verificationTask(142, 144, WarehouseIsFullRule1,1),
-            verificationTask(169, 178, WarehouseIsFullRule1,1),
-            verificationTask(158, 153, WarehouseIsFullRule2),
+            verificationTask(142, 144, WarehouseIsFullRule1, 1),
+            verificationTask(169, 178, WarehouseIsFullRule1, 1),
+            verificationTask(142, 144, AllOver40Rule),
+            verificationTask(169, 178, AllOver40Rule),
+            verificationTask(158, 153, AllOver40Rule),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0

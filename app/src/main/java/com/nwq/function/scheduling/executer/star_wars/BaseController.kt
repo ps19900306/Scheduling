@@ -334,7 +334,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         return false
     }
 
-    var maintenanceOpenCount = 3
+    var maintenanceOpenCount = 5
     var maintenanceTimeStartStamp = 0L
     var MAINTENANCE_INTERVAL = Constant.MINUTE //维修间隔
     suspend fun bloodVolumeMonitoring(
