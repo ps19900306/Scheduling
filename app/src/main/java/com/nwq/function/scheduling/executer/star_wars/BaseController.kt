@@ -431,7 +431,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                     return
                 }
                 if (visual.isOpenGifMenu()) {
-                    runSwitch = false
+                    flag = false
                     return
                 } else if (!visual.hasGrayPositionMenu()) {
                     click(constant.libaoArea1, normalClickInterval)
@@ -448,7 +448,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                     return
                 }
                 if (!visual.isOpenGifMenu()) {
-                    runSwitch = false
+                    flag = false
                     return
                 } else if (visual.hasGrayPositionMenu()) {
                     click(constant.libaoArea3, normalClickInterval)
