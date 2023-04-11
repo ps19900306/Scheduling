@@ -367,6 +367,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 count--
             }
         } else {
+            if (spReo.specificStatus) {
+                spReo.specificStatus = false
+                changCommonJiYu()
+            }
             while (flag && count > 0 && runSwitch) {
                 if (!takeScreen(normalClickInterval)) {
                     runSwitch = false
