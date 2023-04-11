@@ -18,13 +18,14 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
     val isHasPropeller = spReo.isHasPropellerF
 
     private var completedCount = 0 //记录激活了几塔
-    private var aWaveOfRat = 0//记录第几波怪
+    private var needTargetOpt = true //是否许需要操作目标
     private var needStopShip = false
-    private val IN_SPACE_STATION = 0  //在空间站
-    private val IN_PREPARATION_INTERFACE = 1 //在准备界面
-    private val BATTLE_NAVIGATION_MONITORING = 2//战斗监控阶段
+    private val START_GAME = 0//开始游戏
+    private val IN_SPACE_STATION = 1  //在空间站
+    private val IN_PREPARATION_INTERFACE = 2 //在准备界面
+    private val BATTLE_NAVIGATION_MONITORING = 3//战斗监控阶段
 
-    var nowStep = IN_SPACE_STATION
+    var nowStep = START_GAME
     var targetCount = 0;
     var hasNewLock = true
     var targetReduceTime = 0L //这个是上次目标减少的时间
@@ -80,11 +81,20 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
         }
     }
 
+    private suspend fun startGame() {
+        takeScreen(normalClickInterval)
+        delay(2000)
+        click(constant.getAppArea())
+        delay(doubleClickInterval * 2)
+        nowStep = IN_SPACE_STATION
+    }
 
     suspend fun stationMonitoring() {
         nowStep++
         var flag = true
         var count = 40
+        completedCount = 0
+        needTargetOpt = true
         while (flag && count > 0 && runSwitch) {
             Timber.d("stationMonitoring DungeonOrdinaryController NWQ_ 2023/4/8");
             if (!takeScreen(doubleClickInterval)) {
@@ -137,19 +147,21 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
 
 
     suspend fun combatMonitoring() {
-        Timber.d("  combatMonitoring DungeonOrdinaryController NWQ_ 2023/4/8");
-        if (completedCount == 0 && aWaveOfRat == 0) {
+        if (completedCount == 0 && needTargetOpt) {
+            needTargetOpt = false
             selectRightEvacuationTarget()
             click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
             click(constant.getTransitionArea(0), doubleClickInterval)
             delay(doubleClickInterval)
             selectRightImportTarget()
             clickEquipArray(listOf(propellerPosition))
-        } else if (completedCount == 1 && aWaveOfRat == 0) {
+        } else if (completedCount == 1 && needTargetOpt) {
+            needTargetOpt = false
             click(constant.clickEyesMenuItemArea(0), doubleClickInterval)
             click(constant.getLockingArea(0), doubleClickInterval)
             clickEquipArray(listOf(propellerPosition))
-        } else if (completedCount == 2 && aWaveOfRat == 0) {
+        } else if (completedCount == 2 && needTargetOpt) {
+            needTargetOpt = false
             needStopShip = true
             click(constant.clickEyesMenuItemArea(spReo.lastAttackPosition), doubleClickInterval)
             click(constant.getLockingArea(spReo.lastAttackPosition), doubleClickInterval)
@@ -170,9 +182,14 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
                 flag = false
                 continue
             }
-            if (visual.isDungeonComplete()) {
-                click(constant.completeDungeonArea)
-                continue
+//            if (visual.isDungeonComplete()) {
+//                click(constant.completeDungeonArea)
+//                continue
+//            }
+
+            if (completedCount == 2 && visual.isNearestNumberOne()) {
+                stopShip()
+                needStopShip = false
             }
 
             if (visual.hasGroupLock()) {
@@ -189,12 +206,19 @@ class DungeonOrdinaryController(p: AccessibilityHelper, c: () -> Boolean) : Base
                 continue
             }
             val nowTarget = visual.getOpenTargetNumber()
+            Timber.d("目标数量:$nowTarget  combatMonitoring DungeonOrdinaryController NWQ_ 2023/4/9");
             if (nowTarget <= 0) {
                 if (hasIntoAction) {
-                    aWaveOfRat++
-                    if (aWaveOfRat == 2) {
-                        aWaveOfRat = 0
-                        completedCount++
+                    if (completedCount == 0) {
+                        if (visual.isCompleteGoalOne()) {
+                            needTargetOpt = true
+                            completedCount = 1
+                        }
+                    } else if (completedCount == 1) {
+                        if (visual.isCompleteGoalTwo()) {
+                            needTargetOpt = true
+                            completedCount = 2
+                        }
                     }
                     flag = false //进入下一轮
                 }

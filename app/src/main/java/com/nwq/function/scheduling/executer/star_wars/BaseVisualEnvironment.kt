@@ -985,6 +985,77 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
+    fun isCompleteGoalOne(): Boolean {
+        val list = listOf(
+            verificationTask(132, 45, SimpleRule.getSimple(228, 195, 150), 1),
+            verificationTask(129, 47, SimpleRule.getSimple(226, 195, 149), 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isCompleteGoalTwo(): Boolean {
+        val list = listOf(
+            verificationTask(222, 45, SimpleRule.getSimple(228, 195, 150), 1),
+            verificationTask(219, 47, SimpleRule.getSimple(226, 195, 149), 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    fun isOpenZhanDou(): Boolean {
+        val list = listOf(
+            verificationTask(528, 430, JiYuItemOpenRule, 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isOpenYunShu(): Boolean {
+        val list = listOf(
+            verificationTask(529, 522, JiYuItemOpenRule, 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    //这个可以用于判断是否打开了编辑菜单
+    fun isOpenGaoAn(): Boolean {
+        val list = listOf(
+            verificationTask(881, 434, JiYuItemOpenRule, 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+    fun isOpenDiAn(): Boolean {
+        val list = listOf(
+            verificationTask(881, 529, JiYuItemOpenRule, 1),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
+    fun hasSpecialTask(): Boolean {
+        val list = listOf(
+            verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174,5)),
+            verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176,5)),
+            verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174,5)),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
+
+
     //判断是否是普通异常
     fun isCommonUnusual() {
 

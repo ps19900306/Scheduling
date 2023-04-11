@@ -282,7 +282,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         var pickSuccess = false
         var hasPickUpTask = false
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
+            if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
                 return
             }
@@ -592,11 +592,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         if (nowTime - maintenanceTimeStartStamp < MAINTENANCE_INTERVAL) {
                             maintenanceOpenCount-- //表示上次没有开启成功
                         } else {
-                            maintenanceOpenCount = 3
+                            maintenanceOpenCount = 5
                         }
                         if (maintenanceOpenCount <= 0) {
                             Timber.d("开启失败需要返回 cmbatMonitoring FightController NWQ_ 2023/3/30");
-                            maintenanceOpenCount = 3
+                            maintenanceOpenCount = 5
                             needBackStation = true
                         }
                         maintenanceTimeStartStamp = System.currentTimeMillis()
