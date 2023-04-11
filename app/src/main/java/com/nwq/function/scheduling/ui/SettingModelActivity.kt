@@ -76,7 +76,8 @@ class SettingModelActivity : AppCompatActivity() {
             SetListInfo("List2:1700", repo.timeOnList2SP),
             SetListInfo("List3:75", repo.timeOnList3SP),
             SetCheckInfo("是否有军团任务", repo.hasLegionnairesSP),
-        )
+            SetCheckInfo("是否接取特殊任务", repo.receiveSpecificTaskSP),
+            )
     }
 
     val fuBentList by lazy {

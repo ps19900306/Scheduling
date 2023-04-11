@@ -42,7 +42,8 @@ object SpConstant {
     const val TIME_ON_LIST3 = "time_on_list3"
     const val WHOLE_BATTLE_LIST = "whole_battle_list"
     const val ROUND_BATTLE_LIST = "round_battle_list"
-
+    const val RECEIVE_SPECIFIC_TASKS = "receive_specific_tasks"
+    const val SPECIFIC_STATUS = "specific_status"
 
     const val RESOURCES_BASE_LOCATION = "RESOURCES_BASE_LOCATION"//这个是收菜的基地坐标
     const val OPEN_HARVEST_VEGETABLES = "OPEN_HARVEST_VEGETABLES"//这个是是否开启收菜

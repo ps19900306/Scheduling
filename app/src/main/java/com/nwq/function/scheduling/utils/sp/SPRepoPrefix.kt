@@ -62,12 +62,17 @@ class SPRepoPrefix(val prefix: String) {
     val lastPickUpTaskTimeSP = SP(prefix + SpConstant.LAST_PICKUP_TASK_TIME, 0L)//上次截取任务
     var lastPickUpTaskTime by lastPickUpTaskTimeSP
 
+    //这个字段没用到了
     val lastBackSpaceStationSP = SP(prefix + SpConstant.LAST_PICKUP_TASK_TIME, 0L)
     var lastBackSpaceStation by lastBackSpaceStationSP
 
     val hasLegionnairesSP = SP(prefix + SpConstant.HAS_LEGIONNAIRES, false)
     var hasLegionnaires by hasLegionnairesSP
 
+    val receiveSpecificTaskSP = SP(prefix + SpConstant.RECEIVE_SPECIFIC_TASKS, false)//是否接取特殊任务
+    var receiveSpecificTask by receiveSpecificTaskSP
+
+    var specificStatus by SP(prefix + SpConstant.SPECIFIC_STATUS, false) //是否切换到特殊任务下
 
     //收菜的
     val celestialResourcesSP = SP(prefix + SpConstant.CELESTIAL_RESOURCES_LIST, "")

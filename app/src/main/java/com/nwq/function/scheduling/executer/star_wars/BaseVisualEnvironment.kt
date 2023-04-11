@@ -1046,9 +1046,9 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun hasSpecialTask(): Boolean {
         val list = listOf(
-            verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174,5)),
-            verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176,5)),
-            verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174,5)),
+            verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174, 5)),
+            verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176, 5)),
+            verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174, 5)),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
@@ -1056,9 +1056,19 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
-    //判断是否是普通异常
-    fun isCommonUnusual() {
 
+    //未完成的
+    fun isSubmitGoods(): Boolean {
+        val list = listOf(
+            verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174, 5)),
+            verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176, 5)),
+            verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174, 5)),
+        )
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
     }
+
+
 
 }

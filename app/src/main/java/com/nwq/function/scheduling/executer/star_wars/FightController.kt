@@ -460,6 +460,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             return
         }
         if (visual.isClosePositionMenuGray()) {///这个是关闭长按导致的信息
+            Timber.d("长按导致的信息 combatMonitoring FightController NWQ_ 2023/4/11");
             click(constant.closetAlert)
             return
         }
@@ -640,38 +641,66 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //监听是否已经抵达空间战  numberCount是循环监听次数  failedCode是失败时候执行的命令码  successCode是成功过时候执行的命令码
     private suspend fun monitoringReturnStatus() {
-        if (!takeScreen(quadrupleClickInterval * 2)) {
+        var flag = true
+        val maxCount = 15 * 60
+        var unSailingCount = 10
+        var count = maxCount
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
+            } else if (needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()) {
+                if (spReo.receiveSpecificTask && spReo.specificStatus) {
+                    clickTheDialogueCloseYunShu(4)
+                } else {
+                    clickTheDialogueClose(4)
+                }
+            } else if (visual.getTagNumber() > 2 || visual.hasGroupLock()) {
+                nowStep = COMBAT_MONITORING
+                flag = false
+            } else if (visual.isInSpaceStation()) {
+                flag = false //抵达结束 开启下一轮
+                if (spReo.receiveSpecificTask && spReo.specificStatus) {
+                    if (clickTheDialogueCloseYunShu(4)) {
+                        needCancel = false
+                        needBackStation = false
+                        nowStep = PICK_UP_TASK
+                    }
+                    if (count == maxCount - 2) {//过快抵达这里条状
+                        nowStep = PICK_UP_TASK
+                    }
+                } else {
+                    if (needChangeShip) {
+                        needChangeShip = false
+                        changeTrainShip()
+                        nowStep = CHECK_SHIP
+                    } else {
+                        if (isPickupBox) {
+                            unloadingCargo()
+                        }
+                        needBackStation = false
+                        nowStep = PICK_UP_TASK
+                    }
+                }
+            } else if (!visual.isSailing() && visual.hasPositionMenu() && visual.hasEyesMenu()) {
+                unSailingCount--
+                if (count <= 0) {
+                    nowStep = ABNORMAL_STATE
+                    flag = false
+                }
+            } else {
+                unSailingCount = 10
+            }
+            count--
+        }
+        if (count == 0 && flag) {
             runSwitch = false
             return
-        }
-        if (System.currentTimeMillis() - spReo.lastBackSpaceStation > constant.MAX_BATTLE_TIME * 2) {
-            if (visual.isSailing()) {
-                spReo.lastBackSpaceStation = System.currentTimeMillis() - constant.MAX_BATTLE_TIME
-            } else {
-                spReo.lastBackSpaceStation = System.currentTimeMillis()
-                nowStep = ABNORMAL_STATE
-            }
-            return
-        }
-        if (visual.getTagNumber() > 2 || visual.hasGroupLock()) {
-            spReo.lastBackSpaceStation = System.currentTimeMillis()
-            nowStep = COMBAT_MONITORING
-        } else if (visual.isInSpaceStation()) {
-            if (needChangeShip) {
-                needChangeShip = false
-                changeTrainShip()
-                nowStep = CHECK_SHIP
-            } else {
-                if (isPickupBox) {
-                    unloadingCargo()
-                }
-                needBackStation = false
-                nowStep = PICK_UP_TASK
-            }
-        } else if (needCancel && visual.isClosePositionMenu() && visual.hasRightDialogue()) {
-            clickTheDialogueClose(4)
-        } else if (visual.isOpenBigMenu()) {
-            click(constant.closeBigMenuArea)
         }
     }
 
@@ -718,16 +747,13 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         while (flag > 0 && runSwitch) {
             takeScreen(fastClickInterval)
             if (visual.hasLeftDialogue()) {
-                Timber.d("hasLeftDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.leftDialogueArea)
                 flag = count
             } else if (visual.hasRightDialogue()) {
-                Timber.d("hasRightDialogue clickTheDialogueClose NWQ_ 2023/3/10");
                 click(constant.rightDialogueArea)
                 rightClickTimes++
                 flag = count
             } else {
-                Timber.d("Nothing clickTheDialogueClose NWQ_ 2023/3/10");
                 flag--
             }
         }
@@ -738,6 +764,34 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
         return hasClickConversation
     }
+
+    //pickUp 是否是接取任务
+    private suspend fun clickTheDialogueCloseYunShu(count: Int = 2): Boolean {
+        var hasClickConversation = false
+        var flag = count
+
+        Timber.d("clickTheDialogueClose clickTheDialogueCloseYunShu NWQ_ 2023/3/10");
+        while (flag > 0 && runSwitch) {
+            takeScreen(fastClickInterval)
+            if (visual.hasLeftDialogue()) {
+                click(constant.leftDialogueArea)
+                flag = count
+            } else if (visual.hasRightDialogue()) {
+                click(constant.rightDialogueArea)
+                flag = count
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
+                return false
+            } else if (visual.isSubmitGoods()) {
+                click(constant.submitGoodsArea)
+                return true
+            } else {
+                flag--
+            }
+        }
+        return hasClickConversation
+    }
+
 
     private fun needRefreshTask(): Boolean {
         return System.currentTimeMillis() - spReo.lastRefreshTime > constant.REFRESH_INTERVAL && visual.canRefresh()
@@ -823,7 +877,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         theOutCheck()
         needCancel = true
         needBackStation = true
-        spReo.lastBackSpaceStation = System.currentTimeMillis()
         clickJumpCollectionAddress(warehouseIndex, false)
         nowStep = MONITORING_RETURN_STATUS
     }
