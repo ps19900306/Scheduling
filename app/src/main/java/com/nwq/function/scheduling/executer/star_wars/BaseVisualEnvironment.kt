@@ -178,8 +178,10 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //是否已经加载了任务
     fun checkIsCommonTaskV2(flag: Boolean): Int {
         return if (flag) {
+            Timber.d("hasSpecialTask checkIsCommonTaskV2 BaseVisualEnvironment NWQ_ 2023/4/11");
             hasSpecialTask()
         } else {
+            Timber.d("checkIsCommonTask checkIsCommonTaskV2 BaseVisualEnvironment NWQ_ 2023/4/11");
             checkIsCommonTask()
         }
     }
@@ -1056,9 +1058,9 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
 
     fun hasSpecialTask(): Int {
         val list = listOf(
-            verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174, 5)),
-            verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176, 5)),
-            verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174, 5)),
+            verificationTask(640, 340, SimpleRule.getSimple(251, 232, 174, 10)),
+            verificationTask(627, 331, SimpleRule.getSimple(251, 232, 176, 10)),
+            verificationTask(620, 343, SimpleRule.getSimple(251, 232, 174, 10)),
         )
         return if (ImgUtils.performPointsColorVerification(
                 list, screenBitmap, 0

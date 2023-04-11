@@ -104,7 +104,7 @@ class BaseConstant {
     var DiAnMenuArea = Area(847, 510, 48, 48)//
 
 
-    val submitGoodsArea = Area(116, 852, 838, 78)//提交货物
+    val submitGoodsArea = Area(114, 580, 845, 78)//提交货物
 
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
