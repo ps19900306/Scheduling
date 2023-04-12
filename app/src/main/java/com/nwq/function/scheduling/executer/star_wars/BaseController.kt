@@ -432,7 +432,6 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 }
                 if (visual.isOpenGifMenu()) {
                     flag = false
-                    return
                 } else if (!visual.hasGrayPositionMenu()) {
                     click(constant.libaoArea1, normalClickInterval)
                 }
@@ -449,12 +448,10 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 }
                 if (!visual.isOpenGifMenu()) {
                     flag = false
-                    return
                 } else if (visual.hasGrayPositionMenu()) {
                     click(constant.libaoArea3, normalClickInterval)
                 }
             }
-
             spReo.dailytaskstime = System.currentTimeMillis()
         }
     }
