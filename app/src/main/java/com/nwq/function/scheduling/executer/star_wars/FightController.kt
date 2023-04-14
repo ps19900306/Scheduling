@@ -321,24 +321,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                         changSpecialJiYu()
                         spReo.specificStatus = true
                     }
-
-                } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL())
-                    || (!spReo.hasLegionnaires && visual.hasPickUpSuccess())
-                    || (spReo.specificStatus && (visual.hasLeftDialogue() || visual.hasRightDialogue() || visual.isShowDetermine()))
-                ) {
+                } else if ((spReo.hasLegionnaires && visual.hasPickUpSuccessL()) || (!spReo.hasLegionnaires && visual.hasPickUpSuccess()) || (visual.hasLeftDialogue() || visual.hasRightDialogue() || visual.isShowDetermine())) {
                     //这里表示接取任务成功
                     Timber.d("接取任务成功  pickUpTask FightController NWQ_ 2023/3/25");
                     flag = false
                     pickSuccess = true
-                } else if (spReo.specificStatus && count == 2) {
+                } else if (spReo.specificStatus && count == 3 && !hasPickUpTask && !visual.canRefresh()) {
                     count = 6
                     changCommonJiYu()
                     spReo.specificStatus = false
                 } else if (visual.isShowTaskOpt()) {
                     click(constant.openTaskDetermineArea, fastClickInterval)
-                    if (spReo.specificStatus) {
-                        count = 4
-                    }
                 } else {
                     when (positon) {
                         1 -> {
@@ -346,7 +339,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                                 click(constant.pickUpTask1Area)
                                 delay(normalClickInterval)//这样做是为了保证最多点击二次
                                 hasPickUpTask = true
-
                                 if (count > 3) count = 3
 
                             } else {
@@ -430,6 +422,23 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
         }
 
+        if (spReo.specificStatus) {//接取运输任务后 需要监听空间站导航
+            flag = true
+            count = 4
+            while (flag && count > 0 && runSwitch) {
+                if (!takeScreen(fastClickInterval)) {
+                    runSwitch = false
+                    return
+                }
+                if (visual.hasLeftDialogue() || visual.hasRightDialogue() || visual.isShowDetermine()) {
+                    clickTheDialogueCloseYunShu(4)
+                    nowStep = MONITORING_RETURN_STATUS
+                    return
+                }
+                count--
+            }
+        }
+
         //这里为点开流程
         if (!pickSuccess) {//全部的任务已经完成
             if (spReo.specificStatus && (visual.hasLeftDialogue() || visual.hasRightDialogue() || visual.isShowDetermine())) {//接取运输任务后 需要监听空间站导航
@@ -447,11 +456,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
 
 
-        if (spReo.specificStatus) {//接取运输任务后 需要监听空间站导航
-            clickTheDialogueCloseYunShu(4)
-            nowStep = MONITORING_RETURN_STATUS
-            return
-        }
+
 
 
 
@@ -875,7 +880,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     //pickUp 是否是接取任务
-    private suspend fun clickTheDialogueCloseYunShu(count: Int = 2): Boolean {
+    private suspend fun clickTheDialogueCloseYunShu(count: Int = 4): Boolean {
         var hasClickConversation = false
         var flag = count
 
@@ -892,7 +897,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 click(constant.dialogDetermineArea)
             } else if (visual.isSubmitGoods()) {
                 click(constant.submitGoodsArea)
-                return true
+                hasClickConversation = true
+                flag = count
             } else {
                 flag--
             }

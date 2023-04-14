@@ -94,7 +94,7 @@ class BaseConstant {
     var jiHuoArea = Area(1956, 321, 342, 110)//点击激活
 
     var libaoArea1 = Area(111, 518, 66, 65)//打开
-    var libaoArea2 = Area(451, 731, 315, 51)//领取
+    var libaoArea2 = Area(441, 722, 337, 57)//领取
     var libaoArea3 = Area(1906, 152, 56, 58)//关闭
 
     var openJiYuMenu = Area(565, 178, 181, 91)//这个是编辑机遇类型菜单
@@ -104,7 +104,7 @@ class BaseConstant {
     var DiAnMenuArea = Area(847, 510, 48, 48)//
 
 
-    val submitGoodsArea = Area(116, 852, 838, 78)//提交货物
+    val submitGoodsArea = Area(114, 580, 845, 78)//提交货物
 
     fun getTopEquipArea(index: Int): Area {
         return Area(1640 + 109 * index, 832, 95, 96)
