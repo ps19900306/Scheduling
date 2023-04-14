@@ -1,4 +1,4 @@
-package com.nwq.function.scheduling.auto_code
+package com.nwq.function.scheduling.auto_code.ui
 
 import android.content.Context
 import android.graphics.Canvas
@@ -20,12 +20,14 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
 
 
     constructor (context: Context) : this(context, null)
+
     private val mDotPaint: Paint  //用来画点的
     private val oblongPaint: Paint //用来画长方形的
     private val dotSize: Float
     private val dotList = mutableListOf<Coordinate>()
     private var oblongArea: Area? = null
     private var showFlag = true
+
 
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.OperateUiView)

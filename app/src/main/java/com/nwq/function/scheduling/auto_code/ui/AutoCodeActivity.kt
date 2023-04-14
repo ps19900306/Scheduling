@@ -3,19 +3,16 @@ package com.nwq.function.scheduling.auto_code.ui
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.*
 import android.view.MotionEvent.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.blue
-import androidx.core.graphics.green
-import androidx.core.graphics.red
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.*
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.nwq.function.scheduling.auto_code.task.MultiPointColorTask
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.databinding.ActivityAutoCodeBinding
@@ -28,6 +25,16 @@ class AutoCodeActivity : AppCompatActivity() {
     lateinit var bind: ActivityAutoCodeBinding
     private lateinit var mBitmap: Bitmap
     private lateinit var mBitmapName: String
+    private var nowMode = normalMode
+    private var mMultiPointColorTask: MultiPointColorTask? = null
+
+    companion object {
+        val normalMode = 1   //普通模式
+        val previewMode = 2   //预览模式
+        val singlePonitMode = 11  //单点模式
+        val twoPonitMode = 12     //双点对比模式
+        val alongMode = 13       //边框模式
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,37 +76,108 @@ class AutoCodeActivity : AppCompatActivity() {
             controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
             controller.hide(WindowInsetsCompat.Type.navigationBars())
         }
+
+
+        bind.startBtn.singleClick {
+            val methodName = bind.methodEdit.text.toString().trim()
+            val describeInfo = bind.describeEdit.text.toString().trim()
+            if (TextUtils.isEmpty(methodName)) {
+                return@singleClick
+            }
+            mMultiPointColorTask = MultiPointColorTask(methodName, mBitmapName, describeInfo)
+            nowMode = previewMode
+            bind.normalUiGroup.isGone = true
+            bind.previewUiGroup.isVisible = true
+        }
+
+
+        bind.singleBtn.singleClick {
+            bind.operateUiView.setShowFlag(true)
+            nowMode = singlePonitMode
+            bind.previewUiGroup.isGone = true
+        }
+
+        bind.twoBtn.singleClick {
+            bind.operateUiView.setShowFlag(true)
+            nowMode = twoPonitMode
+            bind.previewUiGroup.isGone = true
+        }
+
+        bind.areaBtn.singleClick {
+            bind.operateUiView.setShowFlag(true)
+            nowMode = alongMode
+            bind.previewUiGroup.isGone = true
+        }
+
+        bind.accomplishBtn.singleClick {
+            bind.previewUiGroup.isGone = true
+            bind.normalUiGroup.isVisible = true
+            nowMode = normalMode
+            bind.operateUiView.setShowFlag(false)
+            mMultiPointColorTask?.buildResultString()?.let {
+                bind.resultTv.text =it
+                Timber.d("$it ResultString AutoCodeActivity NWQ_ 2023/4/14");
+            }
+        }
     }
+
+
+    override fun onBackPressed() {
+        if (nowMode in 10..20) {
+            nowMode = previewMode
+            bind.previewUiGroup.isVisible = true
+            bind.operateUiView.setShowFlag(false)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
     }
 
-
     private var starX = 1F
     private var starY = 1F
     private var isFirst = true
 
-
     override fun onTouchEvent(ev: MotionEvent): Boolean {
-        if (isFirst) {
-            if (ev.action == ACTION_DOWN) {
-                starX = ev.x
-                starY = ev.y
-                isFirst = false
+        when (nowMode) {
+            singlePonitMode -> {
+                if (ev.action == ACTION_UP) {
+                    val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
+                    val coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    bind.operateUiView.addDot(coordinate)
+                    mMultiPointColorTask?.addSinglePoint(coordinate, int)
+                }
             }
-        } else {
-            if (ev.action == ACTION_MOVE) {
-                bind.operateUiView.setArea(Area(starX, starY, ev.x, ev.y))
-            } else if (ev.action == ACTION_UP) {
-                bind.operateUiView.setArea(Area(starX, starY, ev.x, ev.y))
-                isFirst = true
+            twoPonitMode -> {
+                if (ev.action == ACTION_UP) {
+                    val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
+                    val coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    bind.operateUiView.addDot(coordinate)
+                    mMultiPointColorTask?.addTwoPoint(coordinate, int)
+                }
+            }
+            alongMode -> {
+                if (isFirst) {
+                    if (ev.action == ACTION_DOWN) {
+                        starX = ev.x
+                        starY = ev.y
+                        isFirst = false
+                    }
+                } else {
+                    if (ev.action == ACTION_MOVE) {
+                        bind.operateUiView.setArea(Area(starX, starY, ev.x, ev.y))
+                    } else if (ev.action == ACTION_UP) {
+                        val area = Area(starX, starY, ev.x, ev.y)
+                        bind.operateUiView.setArea(area)
+                        isFirst = true
+                        mMultiPointColorTask?.clickArea = area
+                    }
+                }
             }
         }
-
-//        val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
-//        Timber.d("x:${ev.x} y:${ev.y}   red:${int.red}  green:${int.green}  blue:${int.blue} onTouchEvent AutoCodeActivity NWQ_ 2023/4/14");
-//        bind.operateUiView.addDot(Coordinate(ev.x.toInt(), ev.y.toInt()))
         return super.onTouchEvent(ev)
     }
 

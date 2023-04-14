@@ -12,10 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.nwq.function.scheduling.auto_code.OperateUiView
+    <com.nwq.function.scheduling.auto_code.ui.OperateUiView
         android:id="@+id/operateUiView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-27dp" />
 
     <Button
         android:id="@+id/selectedImgBtn"
@@ -34,5 +36,99 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/startBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始任务"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/methodEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="方法名称"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectedImgBtn" />
+
+    <EditText
+        android:id="@+id/describeEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="描述信息"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/methodEdit" />
+
+    <TextView
+        android:id="@+id/resultTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:text="结果"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/describeEdit" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/normalUiGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="selectedImgBtn,fullButton,startBtn,methodEdit,describeEdit,resultTv" />
+
+    <Button
+        android:id="@+id/singleBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单点颜色"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/twoBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="二点颜色"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/areaBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击区域"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/accomplishBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="完成"
+        app:layout_constraintBottom_toBottomOf="@+id/negativeImg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/accomplishBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/twoBtn" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/previewUiGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="singleBtn,twoBtn,areaBtn,accomplishBtn,recycler" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,8 +40,7 @@ class NwqAccessibilityService : AccessibilityService() {
     }
 
     private val onCompleteLister = {
-        if(SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL )
-        {
+        if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
             SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
         }
         Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
@@ -128,8 +127,6 @@ class NwqAccessibilityService : AccessibilityService() {
         Timber.d("onServiceConnected NwqAccessibilityService NWQ_ 2023/3/12");
         registerReceiver()
         ContextUtil.context = this
-
-
     }
 
     private fun registerReceiver() {
