@@ -21,11 +21,12 @@ Timber.d("${} $methodName$ $className$ NWQ_ $date$");
 
 object FileUtils {
 
-    const val FileDir = "Schedule"
+    const val FileDir = "autoCode"
     var LastImageName = ""
     private val TextFileDir =
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-    val orcFileFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/orc"
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).absolutePath + "/schedule"
+    val orcFileFolder =
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/orc"
     const val language = "chi_sim"
     const val languageAllName = "chi_sim.traineddata"
 
@@ -66,10 +67,12 @@ object FileUtils {
 
     fun writeFile(msg: String) {
         try {
+            val folderFile = File(TextFileDir)
+            if (!folderFile.exists()) {
+                folderFile.mkdirs()
+            }
             val file = File(TextFileDir, "${FileDir}.text")
-            if (!file.exists())
-                file.mkdirs()
-            val writer = FileWriter(file)
+            val writer = FileWriter(file, true)
             writer.write(msg);
             writer.close();
         } catch (e: Exception) {
@@ -83,9 +86,7 @@ object FileUtils {
             return fileWriter
         return try {
             val file = File(TextFileDir, "${FileDir}.text")
-            if (!file.exists())
-                file.mkdirs()
-            fileWriter = FileWriter(file)
+            fileWriter = FileWriter(file, true)
             fileWriter
         } catch (e: Exception) {
             Timber.d("$e getFileWrite FileUtils NWQ_ 2023/3/9");

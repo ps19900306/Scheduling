@@ -16,6 +16,7 @@ import com.nwq.function.scheduling.auto_code.task.MultiPointColorTask
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.databinding.ActivityAutoCodeBinding
+import com.nwq.function.scheduling.utils.FileUtils
 import com.nwq.function.scheduling.utils.singleClick
 import timber.log.Timber
 
@@ -115,7 +116,8 @@ class AutoCodeActivity : AppCompatActivity() {
             nowMode = normalMode
             bind.operateUiView.setShowFlag(false)
             mMultiPointColorTask?.buildResultString()?.let {
-                bind.resultTv.text =it
+                bind.resultTv.text = it
+                FileUtils.writeFile(it)
                 Timber.d("$it ResultString AutoCodeActivity NWQ_ 2023/4/14");
             }
         }
