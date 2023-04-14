@@ -2,22 +2,18 @@ package com.nwq.function.scheduling.ui
 
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import com.nwq.function.scheduling.R
+import com.nwq.function.scheduling.auto_code.ui.AutoCodeActivity
 import com.nwq.function.scheduling.core_code.CmdType
 import com.nwq.function.scheduling.core_code.Constant
-import com.nwq.function.scheduling.databinding.ActivityGetColorBinding
 import com.nwq.function.scheduling.databinding.ActivityMainBinding
-import com.nwq.function.scheduling.utils.BroadcastUtils
 import com.nwq.function.scheduling.utils.singleClick
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
-import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +21,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var bind: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        val controller = WindowInsetsControllerCompat(window, window.decorView)
+//        controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
+//        controller.hide(WindowInsetsCompat.Type.navigationBars())
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        val params = window.attributes
+//        params.layoutInDisplayCutoutMode =
+//            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+//        window.attributes = params
+
         bind = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(bind.root)
 
@@ -71,6 +77,10 @@ class MainActivity : AppCompatActivity() {
         bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext
         bind.continueToTheNextCb.setOnCheckedChangeListener { compoundButton, b ->
             SPRepo.continueToTheNext = b
+        }
+
+        bind.autoBtn.singleClick {
+            startActivity(Intent(this, AutoCodeActivity::class.java))
         }
     }
 }

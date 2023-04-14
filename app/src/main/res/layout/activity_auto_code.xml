@@ -4,11 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".auto_code.AutoCodeActivity">
+    android:background="@color/light_blue_600"
+    tools:context=".auto_code.ui.AutoCodeActivity">
+
     <ImageView
         android:id="@+id/negativeImg"
         android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.nwq.function.scheduling.auto_code.OperateUiView
+        android:id="@+id/operateUiView"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <Button
+        android:id="@+id/selectedImgBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择图片"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/fullButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="全屏幕"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,7 @@ class MultiPointColorTask(val methodName: String) {
     val getColorMethod = "${methodName}Color"
     val getAreaMethod = "${methodName}Area"
 
+
     fun builderString() {
         val stringBuilder = StringBuilder()
 

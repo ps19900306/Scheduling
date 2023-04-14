@@ -5,4 +5,22 @@ data class Coordinate(val x: Float, val y: Float) {
     {
 
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Coordinate) return false
+
+        if (x != other.x) return false
+        if (y != other.y) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = x.hashCode()
+        result = 31 * result + y.hashCode()
+        return result
+    }
+
+
 }
