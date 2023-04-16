@@ -53,14 +53,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectedImgBtn" />
 
-    <EditText
-        android:id="@+id/describeEdit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="描述信息"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/methodEdit" />
+    <!--    <EditText-->
+    <!--        android:id="@+id/describeEdit"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:hint="描述信息"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/methodEdit" />-->
 
     <TextView
         android:id="@+id/resultTv"
@@ -72,39 +72,58 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/describeEdit" />
+        app:layout_constraintTop_toBottomOf="@+id/methodEdit" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/normalUiGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:constraint_referenced_ids="selectedImgBtn,fullButton,startBtn,methodEdit,describeEdit,resultTv" />
+        tools:visibility="visible"
+        app:constraint_referenced_ids="selectedImgBtn,fullButton,startBtn,methodEdit,resultTv" />
 
     <Button
         android:id="@+id/singleBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="单点颜色"
+        android:text="单点单值颜色"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/singleBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单点全值颜色"
+        app:layout_constraintStart_toEndOf="@+id/singleBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/singleBtn3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单点低值颜色"
+        app:layout_constraintStart_toEndOf="@+id/singleBtn2"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/twoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="二点颜色"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="二点灰度"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/singleBtn" />
+
 
     <Button
         android:id="@+id/areaBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
         android:text="点击区域"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/twoBtn" />
 
     <Button
         android:id="@+id/accomplishBtn"
@@ -130,5 +149,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="singleBtn,twoBtn,areaBtn,accomplishBtn,recycler" />
+        app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,areaBtn,accomplishBtn,recycler"
+        tools:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editTextNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="找寻范围"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/singleBtn3"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

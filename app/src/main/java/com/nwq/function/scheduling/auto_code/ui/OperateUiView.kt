@@ -33,13 +33,11 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.OperateUiView)
         dotSize = typedArray.getDimension(R.styleable.OperateUiView_dotSize, 1F)
         val dotColor = typedArray.getColor(
-            R.styleable.OperateUiView_dotColor,
-            ContextCompat.getColor(context, R.color.red)
+            R.styleable.OperateUiView_dotColor, ContextCompat.getColor(context, R.color.red)
         )
         val oblongSize = typedArray.getDimension(R.styleable.OperateUiView_oblongSize, 1F)
         val oblongColor = typedArray.getColor(
-            R.styleable.OperateUiView_oblongColor,
-            ContextCompat.getColor(context, R.color.black)
+            R.styleable.OperateUiView_oblongColor, ContextCompat.getColor(context, R.color.black)
         )
         mDotPaint = Paint()
         mDotPaint.color = dotColor
@@ -65,6 +63,11 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
+    fun clearAllData() {
+        dotList.clear()
+        oblongArea = null
+    }
+
     fun setArea(area: Area?) {
         oblongArea = area
         invalidate()
@@ -88,7 +91,8 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
         oblongArea?.let {
             canvas.drawRect(
                 it.x.toFloat(),
-                it.y.toFloat(), (it.x + it.with).toFloat(),
+                it.y.toFloat(),
+                (it.x + it.with).toFloat(),
                 (it.y + it.height).toFloat(),
                 oblongPaint
             )

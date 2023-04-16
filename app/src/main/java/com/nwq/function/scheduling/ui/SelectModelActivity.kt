@@ -56,6 +56,7 @@ class SelectModelActivity : AppCompatActivity() {
         list.add(SelectModelInfo("收菜模式", SpConstant.VEGETABLES_MODEL))
         list.add(SelectModelInfo("副本普通成员模式", SpConstant.DUNGEON_ORDINARY_MODEL))
         list.add(SelectModelInfo("副本领导模式", SpConstant.DUNGEON_LEAD_MODEL))
+        list.add(SelectModelInfo("天龙八部模式", SpConstant.BUDDHA_DEVELOP_MODEL))
         return list
     }
 }

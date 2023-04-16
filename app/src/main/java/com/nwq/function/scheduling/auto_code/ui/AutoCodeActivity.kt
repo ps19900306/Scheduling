@@ -1,18 +1,27 @@
 package com.nwq.function.scheduling.auto_code.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.ContactsContract.Contacts
 import android.text.TextUtils
 import android.view.*
 import android.view.MotionEvent.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.*
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.nwq.function.scheduling.auto_code.adapter.SinglePointAdapter
+import com.nwq.function.scheduling.auto_code.adapter.TwoPointAdapter
 import com.nwq.function.scheduling.auto_code.task.MultiPointColorTask
+import com.nwq.function.scheduling.auto_code.utils.AutoUtils
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.databinding.ActivityAutoCodeBinding
@@ -27,14 +36,24 @@ class AutoCodeActivity : AppCompatActivity() {
     private lateinit var mBitmap: Bitmap
     private lateinit var mBitmapName: String
     private var nowMode = normalMode
+
+    val mSinglePointAdapter = SinglePointAdapter()
+    val mTwoPointAdapter = TwoPointAdapter()
+    val mConcatAdapter = ConcatAdapter(mSinglePointAdapter, mTwoPointAdapter)
+
     private var mMultiPointColorTask: MultiPointColorTask? = null
+    val manager: ClipboardManager by lazy {
+        getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    }
 
     companion object {
         val normalMode = 1   //普通模式
         val previewMode = 2   //预览模式
-        val singlePonitMode = 11  //单点模式
-        val twoPonitMode = 12     //双点对比模式
-        val alongMode = 13       //边框模式
+        val singlePonitHighestSingleMode = 11  //单点单值色值最高模式
+        val singlePonitHighestAllMode = 12  //单点全部色值最高模式
+        val singlePonitLowestAllMode = 13  //单点全部色值最低模式
+        val twoPonitMode = 20    //双点对比模式
+        val alongMode = 30       //边框模式
     }
 
 
@@ -53,8 +72,7 @@ class AutoCodeActivity : AppCompatActivity() {
         setContentView(bind.root)
 
         bind.selectedImgBtn.singleClick {
-            PictureSelector.create(this)
-                .openSystemGallery(SelectMimeType.ofImage())
+            PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
                 .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
                     override fun onResult(result: ArrayList<LocalMedia?>?) {
                         result?.getOrNull(0)?.let {
@@ -81,11 +99,12 @@ class AutoCodeActivity : AppCompatActivity() {
 
         bind.startBtn.singleClick {
             val methodName = bind.methodEdit.text.toString().trim()
-            val describeInfo = bind.describeEdit.text.toString().trim()
             if (TextUtils.isEmpty(methodName)) {
                 return@singleClick
             }
-            mMultiPointColorTask = MultiPointColorTask(methodName, mBitmapName, describeInfo)
+            mMultiPointColorTask = MultiPointColorTask(methodName, mBitmapName, null)
+            mSinglePointAdapter.setData(mMultiPointColorTask!!.singlePointList)
+            mTwoPointAdapter.setData(mMultiPointColorTask!!.twoPointColorValue)
             nowMode = previewMode
             bind.normalUiGroup.isGone = true
             bind.previewUiGroup.isVisible = true
@@ -94,9 +113,24 @@ class AutoCodeActivity : AppCompatActivity() {
 
         bind.singleBtn.singleClick {
             bind.operateUiView.setShowFlag(true)
-            nowMode = singlePonitMode
+            nowMode = singlePonitHighestSingleMode
             bind.previewUiGroup.isGone = true
         }
+
+        bind.singleBtn2.singleClick {
+            bind.operateUiView.setShowFlag(true)
+            nowMode = singlePonitHighestAllMode
+            bind.previewUiGroup.isGone = true
+        }
+
+        bind.singleBtn3.singleClick {
+            bind.operateUiView.setShowFlag(true)
+            nowMode = singlePonitLowestAllMode
+            bind.previewUiGroup.isGone = true
+        }
+
+        bind.recycler.adapter = mConcatAdapter
+        bind.recycler.layoutManager = LinearLayoutManager(this)
 
         bind.twoBtn.singleClick {
             bind.operateUiView.setShowFlag(true)
@@ -117,7 +151,9 @@ class AutoCodeActivity : AppCompatActivity() {
             bind.operateUiView.setShowFlag(false)
             mMultiPointColorTask?.buildResultString()?.let {
                 bind.resultTv.text = it
-                FileUtils.writeFile(it)
+                val clipData = ClipData.newPlainText("autoCode", it)
+                manager.setPrimaryClip(clipData)
+                bind.operateUiView.clearAllData()
                 Timber.d("$it ResultString AutoCodeActivity NWQ_ 2023/4/14");
             }
         }
@@ -129,6 +165,11 @@ class AutoCodeActivity : AppCompatActivity() {
             nowMode = previewMode
             bind.previewUiGroup.isVisible = true
             bind.operateUiView.setShowFlag(false)
+            mMultiPointColorTask?.let {
+                mSinglePointAdapter.setData(it.singlePointList)
+                mTwoPointAdapter.setData(it.twoPointColorValue)
+            }
+
         } else {
             super.onBackPressed()
         }
@@ -145,12 +186,37 @@ class AutoCodeActivity : AppCompatActivity() {
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (nowMode) {
-            singlePonitMode -> {
+            singlePonitHighestSingleMode -> {
+                if (ev.action == ACTION_UP) {
+                    var coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    val resultCoordinate =
+                        AutoUtils.findPointByHighestSingle(coordinate, mBitmap, getRange())
+                            ?: coordinate
+                    Timber.d("coordinate: ${coordinate.x.toInt()} ${coordinate.y.toInt()} resultCoordinate: ${resultCoordinate.x.toInt()} ${resultCoordinate.y.toInt()}   onTouchEvent AutoCodeActivity NWQ_ 2023/4/16");
+                    bind.operateUiView.addDot(resultCoordinate)
+                    mMultiPointColorTask?.addSinglePoint(resultCoordinate, mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()))
+                }
+            }
+            singlePonitHighestAllMode -> {
                 if (ev.action == ACTION_UP) {
                     val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
-                    val coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
-                    bind.operateUiView.addDot(coordinate)
-                    mMultiPointColorTask?.addSinglePoint(coordinate, int)
+                    var coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    val resultCoordinate =
+                        AutoUtils.findPointByHighestAll(coordinate, mBitmap, getRange())
+                            ?: coordinate
+                    bind.operateUiView.addDot(resultCoordinate)
+                    mMultiPointColorTask?.addSinglePoint(resultCoordinate, int)
+                }
+            }
+            singlePonitLowestAllMode -> {
+                if (ev.action == ACTION_UP) {
+                    val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
+                    var coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    val resultCoordinate =
+                        AutoUtils.findPointByLowestAll(coordinate, mBitmap, getRange())
+                            ?: coordinate
+                    bind.operateUiView.addDot(resultCoordinate)
+                    mMultiPointColorTask?.addSinglePoint(resultCoordinate, int)
                 }
             }
             twoPonitMode -> {
@@ -181,6 +247,10 @@ class AutoCodeActivity : AppCompatActivity() {
             }
         }
         return super.onTouchEvent(ev)
+    }
+
+    fun getRange(): Int {
+        return bind.editTextNumber.text.toString().toIntOrNull() ?: 2
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {

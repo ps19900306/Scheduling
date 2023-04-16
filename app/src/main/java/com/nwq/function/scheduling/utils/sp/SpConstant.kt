@@ -7,6 +7,7 @@ object SpConstant {
     const val VEGETABLES_MODEL = 3
     const val DUNGEON_ORDINARY_MODEL = 4
     const val DUNGEON_LEAD_MODEL = 5
+    const val BUDDHA_DEVELOP_MODEL = 6
 
     const val RUN_STATE = "run_state"
     const val NORMAL = "正常"

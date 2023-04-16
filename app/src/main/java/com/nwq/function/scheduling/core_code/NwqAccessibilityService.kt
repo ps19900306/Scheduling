@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.view.accessibility.AccessibilityEvent
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
+import com.nwq.function.scheduling.executer.buddha.DevelopController
 import com.nwq.function.scheduling.executer.star_wars.*
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
@@ -92,6 +93,11 @@ class NwqAccessibilityService : AccessibilityService() {
         } else if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.DUNGEON_LEAD_MODEL) {
             Timber.d("启动副本领导 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
             val fight = DungeonLeadController(helper, { true })
+            fight.startOperation()
+            list.add(fight)
+        } else if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.BUDDHA_DEVELOP_MODEL) {
+            Timber.d("启动副本领导 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
+            val fight = DevelopController(helper, { true })
             fight.startOperation()
             list.add(fight)
         }

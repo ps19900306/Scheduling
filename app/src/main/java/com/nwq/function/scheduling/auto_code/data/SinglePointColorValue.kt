@@ -6,4 +6,10 @@ create time: 2023/4/10 11:30
 Function description:
  */
 
-data class SinglePointColorValue(val x:Int,val y:Int,val red:Int,val green:Int,val blue:Int)
+data class SinglePointColorValue(val x:Int,val y:Int,val red:Int,val green:Int,val blue:Int) {
+    override fun toString(): String {
+        return "x=$x,y=$y,red=$red,green=$green,blue=$blue"
+    }
+}
+
+

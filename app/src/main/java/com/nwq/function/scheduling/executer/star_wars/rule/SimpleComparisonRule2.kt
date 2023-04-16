@@ -2,17 +2,17 @@ package com.nwq.function.scheduling.executer.star_wars.rule
 
 import com.nwq.function.scheduling.core_code.img.TwoPointComparison
 
-class SimpleComparisonRule(
+class SimpleComparisonRule2(
     val red: Int, val green: Int, val blue: Int, val difference: Int
 )//difference 是因为颜色灰度导致的差值
     : TwoPointComparison {
 
     companion object {
         private const val range = 0.6
-        val list = mutableListOf<SimpleComparisonRule>()
+        val list = mutableListOf<SimpleComparisonRule2>()
         fun getSimpleComparison(
             red: Int, green: Int, blue: Int, red2: Int, green2: Int, blue2: Int
-        ): SimpleComparisonRule {
+        ): SimpleComparisonRule2 {
             val redD = red - red2
             val greenD = green - green2
             val blueD = blue - blue2
@@ -26,9 +26,9 @@ class SimpleComparisonRule(
             if (blueD < difference) {
                 difference = blueD
             }
-            difference= (difference*0.7).toInt()
+
             return list.find { it.red == red && it.green == green && it.blue == blue && it.difference == difference }
-                ?: SimpleComparisonRule(red, green, blue, difference).apply {
+                ?: SimpleComparisonRule2(red, green, blue, difference).apply {
                     list.add(this)
                 }
         }
