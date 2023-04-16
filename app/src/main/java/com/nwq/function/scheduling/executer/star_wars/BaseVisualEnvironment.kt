@@ -1092,14 +1092,21 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
     //未完成的
-    fun isOpenGifMenu(): Boolean {
+    fun isOpenGiftColor(): Boolean {
         val list = listOf(
-            verificationTask(522, 756, SimpleRule.getSimple(209, 170, 93, 5)),
-            verificationTask(724, 748, RedRule),
+            buildSinglePointTask(1086, 165, 252, 207, 122),
+            buildSinglePointTask(1147, 164, 252, 207, 124),
+            buildSinglePointTask(1242, 163, 251, 206, 121),
+            buildSinglePointTask(1294, 160, 251, 206, 121),
         )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
-        )
+        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
     }
 
+    fun isGiftLoadColor():Boolean {
+        val list = listOf(
+            buildSinglePointTask(521,749,209, 170, 93),
+            buildSinglePointTask(686,753,209, 170, 93),
+            buildSinglePointTask(726,746,178, 38, 25),
+        )
+        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)}
 }

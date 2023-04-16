@@ -315,6 +315,8 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 click(constant.dialogDetermineArea)
             } else if (visual.isOpenLiaoTian()) {
                 click(constant.closeLiaoTianArea)
+            } else if (visual.isOpenGiftColor()) {
+                click(constant.closeGiftArea)
             } else if (count == 5) {
                 pressBackBtn()
             } else if (count <= 0) {
@@ -422,38 +424,69 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     //领取每日礼物
     suspend fun dailyGiftPack() {
         if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
-            //开
-            var flag = true
-            var count = 10
-            while (flag && count > 0 && runSwitch) {
-                if (!takeScreen(normalClickInterval)) {
-                    runSwitch = false
-                    return
-                }
-                if (visual.isOpenGifMenu()) {
-                    flag = false
-                } else if (!visual.hasGrayPositionMenu()) {
-                    click(constant.libaoArea1, normalClickInterval)
-                }
+            if (!isOpenGift()) {
+                return
             }
-            //领取
-            click(constant.libaoArea2, normalClickInterval)
-
-            flag = true
-            count = 10
-            while (flag && count > 0 && runSwitch) {
-                if (!takeScreen(normalClickInterval)) {
-                    runSwitch = false
-                    return
-                }
-                if (!visual.isOpenGifMenu()) {
-                    flag = false
-                } else if (visual.hasGrayPositionMenu()) {
-                    click(constant.libaoArea3, normalClickInterval)
-                }
-            }
+            isGiftLoad()
+            isCloseGift()
             spReo.dailytaskstime = System.currentTimeMillis()
         }
+    }
+
+    suspend fun isOpenGift(): Boolean {
+        var flag = true
+        var count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (visual.isOpenGiftColor()) {
+                Timber.d("isOpenGiftColor MultiPointColorTask NWQ_ 2023/4/16")
+                flag = false
+            } else {
+                click(constant.isOpenGiftArea)
+            }
+            count--
+        }
+        return count != 0
+    }
+
+    suspend fun isCloseGift(): Boolean {
+        var flag = true
+        var count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (!visual.isOpenGiftColor()) {
+                Timber.d("isOpenGiftColor MultiPointColorTask NWQ_ 2023/4/16")
+                flag = false
+            } else {
+                click(constant.closeGiftArea)
+            }
+            count--
+        }
+        return count != 0
+    }
+
+    suspend fun isGiftLoad(): Boolean {
+        var flag = true
+        var count = 40
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (visual.isGiftLoadColor()) {
+                Timber.d("isGiftLoadColor MultiPointColorTask NWQ_ 2023/4/16")
+                click(constant.isGiftLoadArea)
+                flag = false
+            }
+            count--
+        }
+        return count != 0
     }
 
 

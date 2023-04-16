@@ -105,7 +105,7 @@ class MultiPointColorTask(
         stringBuilder.append(" }\n")
 
         stringBuilder.append(" if (visual.${getColorMethod}()) {")
-        stringBuilder.append(" Timber.d(\$$getColorMethod MultiPointColorTask NWQ_ 2023/4/16\")")//这里为了添加注释
+        stringBuilder.append(" Timber.d(\"$getColorMethod MultiPointColorTask NWQ_ 2023/4/16\")\n")//这里为了添加注释
         stringBuilder.append(" flag = false")
         stringBuilder.append("  }else {")
         if (clickArea != null) stringBuilder.append(" click(constant.${getAreaMethod})")

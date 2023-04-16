@@ -161,7 +161,7 @@ class AutoCodeActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        if (nowMode in 10..20) {
+        if (nowMode in 10..40) {
             nowMode = previewMode
             bind.previewUiGroup.isVisible = true
             bind.operateUiView.setShowFlag(false)
