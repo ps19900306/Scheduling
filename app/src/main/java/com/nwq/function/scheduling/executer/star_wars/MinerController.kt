@@ -4,6 +4,10 @@ import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.utils.JsonUtil
+import com.nwq.function.scheduling.utils.TimeUtils
+import com.nwq.function.scheduling.utils.sp.SPRepo
+import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
+import com.nwq.function.scheduling.utils.sp.SpConstant
 import com.nwq.function.scheduling.utils.sp.SpConstant.DAMAGE
 import com.nwq.function.scheduling.utils.sp.SpConstant.NORMAL
 import com.nwq.function.scheduling.utils.sp.SpConstant.UNUSUAL
@@ -52,6 +56,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     // 这个放皮球的
     val Inertia_INTERVAL = 60 * 1000L
+
     // 放圣光
     val Stabilizer_INTERVAL = 70 * 1000L
 
@@ -60,6 +65,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     // 默认是转速的
     var StabilizerStamp = 0L
+
+    //
+    val startTime = System.currentTimeMillis()
+    val maxTime = Constant.Hour * 8
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
@@ -132,6 +141,23 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     checkTimingOnList(needOpenList)
                 }
             }
+            if (System.currentTimeMillis() - startTime > maxTime) {
+                val spReo = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+                    SPRepo.role = SpConstant.PREFIX_ROLE2
+                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2)
+                } else {
+                    SPRepo.role = SpConstant.PREFIX_ROLE1
+                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1)
+                }
+                if (spReo.nowSelectMode == SpConstant.MINER_MODEL || TimeUtils.isNewTaskDay(spReo.lastCompleteTime)) {
+                    nowStep = EXIT_OPT
+                    return
+                }
+            } else if (System.currentTimeMillis() - startTime > maxTime * 1.4) {
+                nowStep = EXIT_OPT
+                return
+            }
+
             if (visual.isInSpaceStation() && visual.hasPositionMenu()) {
                 if (needChangeShip) {
                     changeTrainShip()
