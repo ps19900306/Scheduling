@@ -55,11 +55,7 @@ class NwqAccessibilityService : AccessibilityService() {
             }
             if (spReo.nowSelectMode == SpConstant.MINER_MODEL || TimeUtils.isNewTaskDay(spReo.lastCompleteTime)) {
                 startOpt(true)
-            } else {
-                helper.pressHomeBtn()
             }
-        } else {
-            helper.pressHomeBtn()
         }
         true
     }
@@ -69,7 +65,9 @@ class NwqAccessibilityService : AccessibilityService() {
         //每次启动都刷新任务数目
         list.forEach { it.close() }
         list.clear()
-        helper.pressHomeBtn()
+        if (!outGame) {
+            helper.pressHomeBtn()
+        }
         if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
             Timber.d("启动任务 startOpt NwqAccessibilityService NWQ_ 2023/3/20");
             val fight = FightController(helper, onCompleteLister)

@@ -114,14 +114,10 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun exitGame() {
         theOutCheck()
+        if(!visual.isInSpaceStation())
         clickJumpCollectionAddress(warehouseIndex, false)
         delay(doubleClickInterval)
-//        pressBackBtn()
-//        delay(helper.defultClickDuration * 2)
-//        click((1371 - 20).toFloat(), (708 - 20).toFloat(), 40, 40)
-//        takeScreen(doubleClickInterval)
-        runSwitch = false
-        onComplete.invoke()
+        optExitGame()
     }
 
     override suspend fun generalControlMethod() {
@@ -150,7 +146,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     onAllComplete()
                 }
                 EXIT_OPT -> {
-                    runSwitch = false
                     exitGame()
                 }
                 CHECK_SHIP -> {

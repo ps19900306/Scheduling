@@ -1094,19 +1094,53 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //未完成的
     fun isOpenGiftColor(): Boolean {
         val list = listOf(
-            buildSinglePointTask(1086, 165, 252, 207, 122),
-            buildSinglePointTask(1147, 164, 252, 207, 124),
-            buildSinglePointTask(1242, 163, 251, 206, 121),
-            buildSinglePointTask(1294, 160, 251, 206, 121),
+            buildSinglePointTask(1186, 181, 251, 206, 123),
+            buildSinglePointTask(1119, 180, 251, 206, 121),
+            buildSinglePointTask(1820, 187, 230, 199, 134),
+            buildSinglePointTask(1837, 190, 229, 206, 139),
+        )
+        val list1 = listOf(
+            buildSinglePointTask(1108,186,251, 206, 123),
+            buildSinglePointTask(1183,186,252, 207, 122),
+            buildSinglePointTask(1255,186,252, 207, 124),
+            buildSinglePointTask(1330,177,251, 206, 121),
+        )
+
+
+        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
+                ||ImgUtils.performPointsColorVerification(list1, screenBitmap, 0)
+    }
+
+    fun isGiftLoadColor(): Boolean {
+        val list = listOf(
+            buildSinglePointTask(521, 749, 209, 170, 93),
+            buildSinglePointTask(686, 753, 209, 170, 93),
+            buildSinglePointTask(726, 746, 178, 38, 25),
         )
         return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
     }
 
-    fun isGiftLoadColor():Boolean {
+
+    fun optExitGameColor(): Boolean {
         val list = listOf(
-            buildSinglePointTask(521,749,209, 170, 93),
-            buildSinglePointTask(686,753,209, 170, 93),
-            buildSinglePointTask(726,746,178, 38, 25),
+            buildSinglePointTask(1236, 437, 82, 230, 172),
+            buildSinglePointTask(1070, 391, 167, 228, 255),
+            buildSinglePointTask(1217, 343, 130, 165, 255),
+            buildSinglePointTask(1430, 873, 53, 179, 253),
+            buildSinglePointTask(1071, 623, 0, 0, 0),
         )
-        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)}
+        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
+    }
+
+    fun optExitGame1Color(): Boolean {
+        val list = listOf(
+            buildSinglePointTask(1055, 390, 206, 206, 206),
+            buildSinglePointTask(1508, 347, 146, 177, 169),
+            buildSinglePointTask(1062, 557, 251, 251, 251),
+            buildSinglePointTask(1020, 709, 224, 239, 236),
+        )
+        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
+    }
+
+
 }
