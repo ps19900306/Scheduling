@@ -3,7 +3,7 @@ package com.nwq.function.scheduling.executer.star_wars.rule
 import com.nwq.function.scheduling.core_code.img.TwoPointComparison
 
 class SimpleComparisonRule(
-    val red: Int, val green: Int, val blue: Int, val difference: Int, val checkPoint: Boolean = true
+    val red: Int, val green: Int, val blue: Int, val difference: Int, private val checkPoint: Boolean = true
 )//difference 是因为颜色灰度导致的差值
     : TwoPointComparison {
 
