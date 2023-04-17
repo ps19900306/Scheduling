@@ -5,9 +5,7 @@ import android.graphics.Color
 import com.nwq.function.scheduling.core_code.Coordinate
 import timber.log.Timber
 
-
 object AutoUtils {
-
 
     //这里找周围单值颜色最高店用于颜色判断
     fun findPointByHighestSingle(
@@ -68,6 +66,7 @@ object AutoUtils {
             null
         }
     }
+
 
     //这里找周围全部值颜色最高店用于颜色判断
     fun findPointByHighestAll(

@@ -279,7 +279,7 @@ class AutoCodeActivity : AppCompatActivity() {
         return super.onTouchEvent(ev)
     }
 
-    fun getRange(): Int {
+    private fun getRange(): Int {
         return bind.editTextNumber.text.toString().toIntOrNull() ?: 2
     }
 

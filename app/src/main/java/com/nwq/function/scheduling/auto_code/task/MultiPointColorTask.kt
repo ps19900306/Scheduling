@@ -42,7 +42,7 @@ class MultiPointColorTask(
     var lastSinglePointColorValue: SinglePointColorValue? = null
 
 
-    fun addTwoPoint(coordinate: Coordinate, int: Int, transparent: Boolean) {
+    fun addTwoPoint(coordinate: Coordinate, int: Int, checkPoint1: Boolean) {
         if (lastSinglePointColorValue == null) {
             lastSinglePointColorValue = SinglePointColorValue(
                 coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
@@ -52,7 +52,7 @@ class MultiPointColorTask(
             val data = SinglePointColorValue(
                 coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
             )
-            val two = TwoPointColorValue(lastSinglePointColorValue!!, data, transparent)
+            val two = TwoPointColorValue(lastSinglePointColorValue!!, data, checkPoint1)
             lastSinglePointColorValue = null
             twoPointColorValue.add(two)
             ToastHelper.showToast("添加对比点 二")
@@ -65,8 +65,9 @@ class MultiPointColorTask(
 
         descriptiveInformation?.let {
             stringBuilder.append("// $descriptiveInformation \n")
+        }?.let {
+            stringBuilder.append("// $pictureName \n")
         }
-        stringBuilder.append("// $pictureName \n")
         //这里构造颜色判断
         stringBuilder.append("fun $getColorMethod():Boolean { \n")
         stringBuilder.append("val list = listOf(\n")
@@ -77,7 +78,7 @@ class MultiPointColorTask(
             stringBuilder.append("buildTwoPointTask(${it.point1.x},${it.point1.y},${it.point1.red}, ${it.point1.green}, ${it.point1.blue} , ${it.point2.x},${it.point2.y},${it.point2.red}, ${it.point2.green}, ${it.point2.blue}, ${it.checkPoint1} ),\n")
         }
         stringBuilder.append(") \n")
-        stringBuilder.append("return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)")
+        stringBuilder.append("return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)\n")
         stringBuilder.append("} \n")
 
         stringBuilder.append("\n")
@@ -102,17 +103,17 @@ class MultiPointColorTask(
         stringBuilder.append("return  false\n")
         stringBuilder.append(" }\n")
 
-        stringBuilder.append(" if (visual.${getColorMethod}()) {")
+        stringBuilder.append(" if (visual.${getColorMethod}()) { \n")
         stringBuilder.append(" Timber.d(\"$getColorMethod MultiPointColorTask NWQ_ 2023/4/16\")\n")//这里为了添加注释
-        stringBuilder.append(" flag = false")
-        stringBuilder.append("  }else {")
-        if (clickArea != null) stringBuilder.append(" click(constant.${getAreaMethod})")
+        stringBuilder.append(" flag = false \n")
+        stringBuilder.append("  }else { \n")
+        if (clickArea != null) stringBuilder.append(" click(constant.${getAreaMethod}) \n")
         stringBuilder.append(" }\n")
 
         stringBuilder.append("count--\n")
         stringBuilder.append(" }\n")
 
-        stringBuilder.append("return count != 0")
+        stringBuilder.append("return count != 0 \n")
 
         stringBuilder.append(" }\n")
 

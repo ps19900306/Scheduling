@@ -21,9 +21,6 @@ class DevelopController(p: AccessibilityHelper, c: () -> Boolean) : TravelContro
                 count--
                 continue
             }
-//            if (visual.inAutomaticCombatColor()) {
-//
-//            }
             else if (visual.needAutomaticCombatColor()) {//需要点击自动
                 click(constant.needAutomaticCombatArea)
             } else if (visual.needStartMainColor()) {//开启主线追踪
