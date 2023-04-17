@@ -24,7 +24,6 @@ import com.nwq.function.scheduling.auto_code.utils.AutoUtils
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.databinding.ActivityAutoCodeBinding
-import com.nwq.function.scheduling.utils.FileUtils
 import com.nwq.function.scheduling.utils.singleClick
 import timber.log.Timber
 
@@ -137,6 +136,11 @@ class AutoCodeActivity : AppCompatActivity() {
             nowMode = twoPonitGrayscaleMode
             bind.previewUiGroup.isGone = true
         }
+        bind.twoBtn2.singleClick {
+            bind.operateUiView.setShowFlag(true)
+            nowMode = twoPonitTransparentMode
+            bind.previewUiGroup.isGone = true
+        }
 
         bind.areaBtn.singleClick {
             bind.operateUiView.setShowFlag(true)
@@ -235,7 +239,7 @@ class AutoCodeActivity : AppCompatActivity() {
                     bind.operateUiView.addDot(coordinate)
                     mMultiPointColorTask?.addTwoPoint(
                         coordinate,
-                        mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt())
+                        mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()),true
                     )
                 }
             }
@@ -249,7 +253,7 @@ class AutoCodeActivity : AppCompatActivity() {
                     mMultiPointColorTask?.addTwoPoint(
                         coordinate,
                         mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()),
-                        true
+                        false
                     )
                 }
             }

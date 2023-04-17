@@ -4,14 +4,11 @@ package com.nwq.function.scheduling.auto_code.task
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import com.google.android.material.internal.ContextUtils
-import com.luck.picture.lib.utils.ToastUtils
-import com.nwq.function.scheduling.App
+
 import com.nwq.function.scheduling.auto_code.data.SinglePointColorValue
 import com.nwq.function.scheduling.auto_code.data.TwoPointColorValue
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
-import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.ToastHelper
 import java.lang.StringBuilder
 
@@ -45,7 +42,7 @@ class MultiPointColorTask(
     var lastSinglePointColorValue: SinglePointColorValue? = null
 
 
-    fun addTwoPoint(coordinate: Coordinate, int: Int, transparent: Boolean = false) {
+    fun addTwoPoint(coordinate: Coordinate, int: Int, transparent: Boolean) {
         if (lastSinglePointColorValue == null) {
             lastSinglePointColorValue = SinglePointColorValue(
                 coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
@@ -77,7 +74,7 @@ class MultiPointColorTask(
             stringBuilder.append("buildSinglePointTask(${it.x},${it.y},${it.red}, ${it.green}, ${it.blue}),\n")
         }
         twoPointColorValue.forEach {
-            stringBuilder.append("buildTwoPointTask(${it.point1.x},${it.point1.y},${it.point1.red}, ${it.point1.green}, ${it.point1.blue} , ${it.point2.x},${it.point2.y},${it.point2.red}, ${it.point2.green}, ${it.point2.blue} ),\n")
+            stringBuilder.append("buildTwoPointTask(${it.point1.x},${it.point1.y},${it.point1.red}, ${it.point1.green}, ${it.point1.blue} , ${it.point2.x},${it.point2.y},${it.point2.red}, ${it.point2.green}, ${it.point2.blue}, ${it.checkPoint1} ),\n")
         }
         stringBuilder.append(") \n")
         stringBuilder.append("return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)")

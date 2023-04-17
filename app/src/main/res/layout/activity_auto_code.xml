@@ -111,11 +111,18 @@
         android:id="@+id/twoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="二点灰度"
+        android:text="二点校验点一"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/singleBtn" />
 
-
+    <Button
+        android:id="@+id/twoBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="二点只插值"
+        app:layout_constraintStart_toEndOf="@+id/twoBtn"
+        app:layout_constraintTop_toTopOf="@+id/twoBtn"
+        />
     <Button
         android:id="@+id/areaBtn"
         android:layout_width="wrap_content"
@@ -149,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,areaBtn,accomplishBtn,recycler"
+        app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,twoBtn2,areaBtn,accomplishBtn,recycler"
         tools:visibility="gone" />
 
     <EditText

@@ -6,4 +6,4 @@ create time: 2023/4/10 11:30
 Function description:
  */
 
-data class TwoPointColorValue(val point1:SinglePointColorValue,val point2:SinglePointColorValue,val transparent:Boolean=false)
+data class TwoPointColorValue(val point1:SinglePointColorValue,val point2:SinglePointColorValue,val checkPoint1:Boolean=true)
