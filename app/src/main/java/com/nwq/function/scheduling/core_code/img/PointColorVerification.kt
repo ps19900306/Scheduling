@@ -29,15 +29,17 @@ sealed class PointColorVerification() {
         val coordinate1: Coordinate,
         val coordinate2: Coordinate,
         val twoPointComparison: TwoPointComparison,
+        val range: Int = 0,
     ) : PointColorVerification() {
         constructor(
             x: Int,
             y: Int,
             x1: Int,
             y1: Int,
-            twoPointComparison: TwoPointComparison
+            twoPointComparison: TwoPointComparison,
+            range: Int = 0,
         ) : this(
-            Coordinate(x, y), Coordinate(x1, y1), twoPointComparison
+            Coordinate(x, y), Coordinate(x1, y1), twoPointComparison,range
         )
     }
 }

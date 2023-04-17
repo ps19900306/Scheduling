@@ -241,17 +241,46 @@ object ImgUtils {
         }
     }
 
+
     //多点多规则颜色判断
     private fun performTwoPointTask(
         data: PointColorVerification.TwoPointTask,
         bitmap: Bitmap,
     ): Boolean {
-        val pixel = bitmap.getPixel(data.coordinate1.x.toInt(), data.coordinate1.y.toInt())
-        val pixel1 = bitmap.getPixel(data.coordinate2.x.toInt(), data.coordinate2.y.toInt())
-        return data.twoPointComparison.optInt(
-            pixel,
-            pixel1
-        )
+        if (data.range > 0) {
+            val width = data.range * 2 + 1
+            val height = data.range * 2 + 1
+
+            val startX1 = (data.coordinate1.x - data.range).toInt()
+            val startY1 = (data.coordinate1.y - data.range).toInt()
+
+            val startX2 = (data.coordinate2.x - data.range).toInt()
+            val startY2 = (data.coordinate2.y - data.range).toInt()
+
+            val pixels1 = IntArray(width * height)
+            val pixels2 = IntArray(width * height)
+
+            bitmap.getPixels(pixels1, 0, width, startX1, startY1, width, height)
+            bitmap.getPixels(pixels2, 0, width, startX2, startY2, width, height)
+
+            for (i in pixels1.indices) {
+                if (data.twoPointComparison.optInt(
+                        pixels1[i],
+                        pixels1[i]
+                    )
+                ) {
+                    return true
+                }
+            }
+            return false
+        } else {
+            val pixel = bitmap.getPixel(data.coordinate1.x.toInt(), data.coordinate1.y.toInt())
+            val pixel1 = bitmap.getPixel(data.coordinate2.x.toInt(), data.coordinate2.y.toInt())
+            return data.twoPointComparison.optInt(
+                pixel,
+                pixel1
+            )
+        }
     }
 
     /**
