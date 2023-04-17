@@ -423,7 +423,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     //领取每日礼物
     suspend fun dailyGiftPack() {
-        if (TimeUtils.isNewTaskDay(spReo.dailytaskstime) || true) {
+        if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
             isOpenGift()
             isGiftLoad()
             isCloseGift()
