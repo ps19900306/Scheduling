@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.ContactsContract.Contacts
 import android.text.TextUtils
 import android.view.*
 import android.view.MotionEvent.*
@@ -52,7 +51,8 @@ class AutoCodeActivity : AppCompatActivity() {
         val singlePonitHighestSingleMode = 11  //单点单值色值最高模式
         val singlePonitHighestAllMode = 12  //单点全部色值最高模式
         val singlePonitLowestAllMode = 13  //单点全部色值最低模式
-        val twoPonitMode = 20    //双点对比模式
+        val twoPonitGrayscaleMode = 21    //双点对比模式
+        val twoPonitTransparentMode = 22    //双点对比模式
         val alongMode = 30       //边框模式
     }
 
@@ -134,7 +134,7 @@ class AutoCodeActivity : AppCompatActivity() {
 
         bind.twoBtn.singleClick {
             bind.operateUiView.setShowFlag(true)
-            nowMode = twoPonitMode
+            nowMode = twoPonitGrayscaleMode
             bind.previewUiGroup.isGone = true
         }
 
@@ -194,37 +194,63 @@ class AutoCodeActivity : AppCompatActivity() {
                             ?: coordinate
                     Timber.d("coordinate: ${coordinate.x.toInt()} ${coordinate.y.toInt()} resultCoordinate: ${resultCoordinate.x.toInt()} ${resultCoordinate.y.toInt()}   onTouchEvent AutoCodeActivity NWQ_ 2023/4/16");
                     bind.operateUiView.addDot(resultCoordinate)
-                    mMultiPointColorTask?.addSinglePoint(resultCoordinate, mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()))
+                    mMultiPointColorTask?.addSinglePoint(
+                        resultCoordinate,
+                        mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt())
+                    )
                 }
             }
             singlePonitHighestAllMode -> {
                 if (ev.action == ACTION_UP) {
-                    val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
                     var coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
                     val resultCoordinate =
                         AutoUtils.findPointByHighestAll(coordinate, mBitmap, getRange())
                             ?: coordinate
                     bind.operateUiView.addDot(resultCoordinate)
-                    mMultiPointColorTask?.addSinglePoint(resultCoordinate, int)
+                    mMultiPointColorTask?.addSinglePoint(
+                        resultCoordinate,
+                        mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt())
+                    )
                 }
             }
             singlePonitLowestAllMode -> {
                 if (ev.action == ACTION_UP) {
-                    val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
                     var coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
                     val resultCoordinate =
                         AutoUtils.findPointByLowestAll(coordinate, mBitmap, getRange())
                             ?: coordinate
                     bind.operateUiView.addDot(resultCoordinate)
-                    mMultiPointColorTask?.addSinglePoint(resultCoordinate, int)
+                    mMultiPointColorTask?.addSinglePoint(
+                        resultCoordinate,
+                        mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt())
+                    )
                 }
             }
-            twoPonitMode -> {
+            twoPonitGrayscaleMode -> {
                 if (ev.action == ACTION_UP) {
-                    val int = mBitmap.getPixel(ev.x.toInt(), ev.y.toInt())
-                    val coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    var coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    val resultCoordinate =
+                        AutoUtils.findPointByHighestSingle(coordinate, mBitmap, getRange())
+                            ?: coordinate
                     bind.operateUiView.addDot(coordinate)
-                    mMultiPointColorTask?.addTwoPoint(coordinate, int)
+                    mMultiPointColorTask?.addTwoPoint(
+                        coordinate,
+                        mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt())
+                    )
+                }
+            }
+            twoPonitTransparentMode -> {
+                if (ev.action == ACTION_UP) {
+                    var coordinate = Coordinate(ev.x.toInt(), ev.y.toInt())
+                    val resultCoordinate =
+                        AutoUtils.findPointByHighestSingle(coordinate, mBitmap, getRange())
+                            ?: coordinate
+                    bind.operateUiView.addDot(coordinate)
+                    mMultiPointColorTask?.addTwoPoint(
+                        coordinate,
+                        mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()),
+                        true
+                    )
                 }
             }
             alongMode -> {

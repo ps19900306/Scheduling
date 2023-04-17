@@ -45,7 +45,7 @@ class MultiPointColorTask(
     var lastSinglePointColorValue: SinglePointColorValue? = null
 
 
-    fun addTwoPoint(coordinate: Coordinate, int: Int) {
+    fun addTwoPoint(coordinate: Coordinate, int: Int, transparent: Boolean = false) {
         if (lastSinglePointColorValue == null) {
             lastSinglePointColorValue = SinglePointColorValue(
                 coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
@@ -55,12 +55,13 @@ class MultiPointColorTask(
             val data = SinglePointColorValue(
                 coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
             )
-            val two = TwoPointColorValue(lastSinglePointColorValue!!, data)
+            val two = TwoPointColorValue(lastSinglePointColorValue!!, data, transparent)
             lastSinglePointColorValue = null
             twoPointColorValue.add(two)
             ToastHelper.showToast("添加对比点 二")
         }
     }
+
 
     fun buildResultString(): String {
         val stringBuilder = StringBuilder()
