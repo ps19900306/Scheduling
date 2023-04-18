@@ -17,5 +17,5 @@ data class FindImgTask(
     val colorList: List<Int>,
     val tolerance: Int = 3,
     val verifyList: List<PointColorVerification>,
-    val clickArea: Area
+    val clickArea: List<Area>
 )

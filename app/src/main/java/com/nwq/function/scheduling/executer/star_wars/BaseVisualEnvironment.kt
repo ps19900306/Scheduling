@@ -1,8 +1,10 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import android.graphics.Bitmap
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.core_code.img.FindImgTask
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.PointColorVerification.TwoPointTask
@@ -1102,11 +1104,17 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
     }
 
-    fun isGiftLoadColor():Boolean {
+    fun isGiftLoadColor(): Boolean {
         val list = listOf(
-            buildSinglePointTask(521,749,209, 170, 93),
-            buildSinglePointTask(686,753,209, 170, 93),
-            buildSinglePointTask(726,746,178, 38, 25),
+            buildSinglePointTask(521, 749, 209, 170, 93),
+            buildSinglePointTask(686, 753, 209, 170, 93),
+            buildSinglePointTask(726, 746, 178, 38, 25),
         )
-        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)}
+        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
+    }
+
+
+    suspend fun findImgByColor(task: FindImgTask): Boolean {
+        return ImgUtils.findImgByColor(screenBitmap, task)
+    }
 }

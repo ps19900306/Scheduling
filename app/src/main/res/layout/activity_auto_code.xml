@@ -79,8 +79,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        tools:visibility="visible"
-        app:constraint_referenced_ids="selectedImgBtn,fullButton,startBtn,methodEdit,resultTv" />
+        app:constraint_referenced_ids="selectedImgBtn,fullButton,startBtn,methodEdit,resultTv"
+        tools:visibility="gone" />
 
     <Button
         android:id="@+id/singleBtn"
@@ -121,16 +121,24 @@
         android:layout_height="wrap_content"
         android:text="二点只插值"
         app:layout_constraintStart_toEndOf="@+id/twoBtn"
-        app:layout_constraintTop_toTopOf="@+id/twoBtn"
-        />
+        app:layout_constraintTop_toTopOf="@+id/twoBtn" />
+
+    <Button
+        android:id="@+id/searchScopeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="寻找范围"
+        app:layout_constraintStart_toEndOf="@+id/twoBtn2"
+        app:layout_constraintTop_toTopOf="@+id/twoBtn2" />
+
     <Button
         android:id="@+id/areaBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
         android:text="点击区域"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/twoBtn" />
+        app:layout_constraintStart_toEndOf="@+id/searchScopeBtn"
+        app:layout_constraintTop_toTopOf="@+id/searchScopeBtn" />
+
 
     <Button
         android:id="@+id/accomplishBtn"
@@ -157,7 +165,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,twoBtn2,areaBtn,accomplishBtn,recycler"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <EditText
         android:id="@+id/editTextNumber"

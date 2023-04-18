@@ -85,8 +85,10 @@ object ImgUtils {
                             oY
                         )
                     ) {
-                        task.clickArea.x = task.clickArea.x + oX
-                        task.clickArea.y = task.clickArea.y + oY
+                        task.clickArea.forEach {
+                            it.x = it.x + oX
+                            it.y = it.y + oY
+                        }
                         return true
                     }
                 }
@@ -136,8 +138,10 @@ object ImgUtils {
                         oY
                     )
                 ) {
-                    task.clickArea.x = task.clickArea.x + oX
-                    task.clickArea.y = task.clickArea.y + oY
+                    task.clickArea.forEach {
+                        it.x = it.x + oX
+                        it.y = it.y + oY
+                    }
                     return true
                 }
             }

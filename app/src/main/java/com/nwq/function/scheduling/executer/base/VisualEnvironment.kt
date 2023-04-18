@@ -98,13 +98,13 @@ abstract class VisualEnvironment(val helper: AccessibilityHelper) {
         blue2: Int,
         checkPoint: Boolean = true
     ): PointColorVerification {
-
         return PointColorVerification.TwoPointTask(
             Coordinate(x1, y1), Coordinate(x2, y2),
             SimpleComparisonRule.getSimpleComparison(red1, green1, blue1, red2, green2, blue2,checkPoint),
             if (checkPoint) 1 else 0
         )
-
-
     }
+
+
+
 }

@@ -52,7 +52,9 @@ class AutoCodeActivity : AppCompatActivity() {
         val singlePonitLowestAllMode = 13  //单点全部色值最低模式
         val twoPonitGrayscaleMode = 21    //双点对比模式
         val twoPonitTransparentMode = 22    //双点对比模式
-        val alongMode = 30       //边框模式
+        val searchScopeMode = 31       //点击区域边框模式
+        val alongMode = 32      //点击区域边框模式
+
     }
 
 
@@ -255,6 +257,24 @@ class AutoCodeActivity : AppCompatActivity() {
                         mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()),
                         false
                     )
+                }
+            }
+            searchScopeMode -> {
+                if (isFirst) {
+                    if (ev.action == ACTION_DOWN) {
+                        starX = ev.x
+                        starY = ev.y
+                        isFirst = false
+                    }
+                } else {
+                    if (ev.action == ACTION_MOVE) {
+                        bind.operateUiView.setArea(Area(starX, starY, ev.x, ev.y))
+                    } else if (ev.action == ACTION_UP) {
+                        val area = Area(starX, starY, ev.x, ev.y)
+                        bind.operateUiView.setArea(area)
+                        isFirst = true
+                        mMultiPointColorTask?.searchScopeArea = area
+                    }
                 }
             }
             alongMode -> {
