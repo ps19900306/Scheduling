@@ -50,11 +50,13 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
         oblongPaint.setStyle(Paint.Style.STROKE)
     }
 
-    fun addDot(coordinate: Coordinate) {
+    fun addDot(coordinate: Coordinate):Boolean {
         if (!dotList.contains(coordinate)) {
             dotList.add(coordinate)
             invalidate()
+            return true
         }
+        return false
     }
 
     fun removeDot(coordinate: Coordinate) {

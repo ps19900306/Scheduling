@@ -40,6 +40,7 @@ class MultiPointColorTask(
         val data = SinglePointColorValue(
             coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
         )
+        if(singlePointList.contains(data))
         singlePointList.add(data)
         ToastHelper.showToast("添加单点 一")
     }
@@ -72,6 +73,7 @@ class MultiPointColorTask(
             builderFindImg()
         }
     }
+
 
     private fun builderFindImg(): String {
         val stringBuilder = StringBuilder()
