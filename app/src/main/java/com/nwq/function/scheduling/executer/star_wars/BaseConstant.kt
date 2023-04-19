@@ -226,4 +226,9 @@ class BaseConstant {
     var isOpenGiftArea = Area(113, 518, 64, 64)
     var isGiftLoadArea = Area(443, 723, 334, 54)
     var closeGiftArea = Area(1902, 148, 61, 61)
+
+
+    var optExitGameArea = Area(716, 792, 482, 149)
+    var optExitGame1Area = Area(1216, 651, 311, 106)
+
 }

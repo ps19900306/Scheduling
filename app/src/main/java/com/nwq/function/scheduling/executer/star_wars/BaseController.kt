@@ -424,9 +424,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     //领取每日礼物
     suspend fun dailyGiftPack() {
         if (TimeUtils.isNewTaskDay(spReo.dailytaskstime)) {
-            if (!isOpenGift()) {
-                return
-            }
+            isOpenGift()
             isGiftLoad()
             isCloseGift()
             spReo.dailytaskstime = System.currentTimeMillis()
@@ -435,9 +433,9 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     suspend fun isOpenGift(): Boolean {
         var flag = true
-        var count = 4
+        var count = 5
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(normalClickInterval)) {
+            if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return false
             }
@@ -456,7 +454,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var flag = true
         var count = 4
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(normalClickInterval)) {
+            if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return false
             }
@@ -473,7 +471,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
 
     suspend fun isGiftLoad(): Boolean {
         var flag = true
-        var count = 40
+        var count = 4
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
@@ -655,5 +653,30 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         switchEyesMenu(5)
     }
 
+
+    suspend fun optExitGame(): Boolean {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                onComplete.invoke()
+                return false
+            }
+            if (visual.optExitGameColor()) {
+                Timber.d("optExitGameColor MultiPointColorTask NWQ_ 2023/4/16")
+                click(constant.optExitGameArea)
+            } else if (visual.optExitGame1Color()) {
+                Timber.d("optExitGame1Color MultiPointColorTask NWQ_ 2023/4/16")
+                click(constant.optExitGame1Area)
+            } else if (count > 4) {
+                helper.pressBackBtn()
+            } else {
+                helper.pressHomeBtn()
+            }
+            count--
+        }
+        return count != 0
+    }
 
 }

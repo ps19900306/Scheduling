@@ -441,8 +441,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun exitGame() {
         theOutCheck()
         clickJumpCollectionAddress(warehouseIndex, false)
-        delay(helper.defultClickDuration * 2)
-        pressHomeBtn()
-        runSwitch = false
+        delay(doubleClickInterval)
+        optExitGame()
     }
 }
