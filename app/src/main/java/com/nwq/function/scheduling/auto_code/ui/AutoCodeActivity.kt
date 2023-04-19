@@ -150,6 +150,12 @@ class AutoCodeActivity : AppCompatActivity() {
             bind.previewUiGroup.isGone = true
         }
 
+        bind.searchScopeBtn.singleClick {
+            bind.operateUiView.setShowFlag(true)
+            nowMode = searchScopeMode
+            bind.previewUiGroup.isGone = true
+        }
+
         bind.accomplishBtn.singleClick {
             bind.previewUiGroup.isGone = true
             bind.normalUiGroup.isVisible = true
