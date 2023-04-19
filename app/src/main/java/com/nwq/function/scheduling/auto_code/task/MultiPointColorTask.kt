@@ -9,6 +9,9 @@ import com.nwq.function.scheduling.auto_code.data.SinglePointColorValue
 import com.nwq.function.scheduling.auto_code.data.TwoPointColorValue
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
+import com.nwq.function.scheduling.core_code.PixelsInfo
+import com.nwq.function.scheduling.core_code.img.ImgUtils
+import com.nwq.function.scheduling.core_code.img.PointColorVerification
 import com.nwq.function.scheduling.utils.ToastHelper
 import java.lang.StringBuilder
 
@@ -25,7 +28,9 @@ class MultiPointColorTask(
 ) {
     val singlePointList = mutableListOf<SinglePointColorValue>()
     val twoPointColorValue = mutableListOf<TwoPointColorValue>() //点灰度图
+
     var clickArea: Area? = null
+    var searchScopeArea: Area? = null
 
     val getColorMethod = "${methodName}Color"
     val getAreaMethod = "${methodName}Area"
@@ -35,6 +40,7 @@ class MultiPointColorTask(
         val data = SinglePointColorValue(
             coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
         )
+        if(singlePointList.contains(data))
         singlePointList.add(data)
         ToastHelper.showToast("添加单点 一")
     }
@@ -61,6 +67,54 @@ class MultiPointColorTask(
 
 
     fun buildResultString(): String {
+        return if (searchScopeArea == null) {
+            builderNormal()
+        } else {
+            builderFindImg()
+        }
+    }
+
+
+    private fun builderFindImg(): String {
+        val stringBuilder = StringBuilder()
+        val area = searchScopeArea!!
+        val tolerance = 6
+        stringBuilder.append("fun ${getColorMethod}Task():Boolean { \n")
+
+        stringBuilder.append("val pixelsInfo = PixelsInfo(${area.x}, ${area.y}, ${area.with}, ${area.height}) \n")
+        stringBuilder.append("val coordinate = Coordinate(${singlePointList[0].x} ,${singlePointList[0].y}) \n")
+        stringBuilder.append("val colorList = listOf(${singlePointList[0].red}, ${singlePointList[0].green}, ${singlePointList[0].blue}) \n")
+
+        stringBuilder.append("val list = listOf(\n")
+        singlePointList.forEach {
+            stringBuilder.append("buildSinglePointTask(${it.x},${it.y},${it.red}, ${it.green}, ${it.blue}),\n")
+        }
+        stringBuilder.append(") \n")
+
+        clickArea?.let {
+            stringBuilder.append("var area = Area(${area.x}, ${area.y}, ${area.with}, ${area.height})\n")
+            stringBuilder.append("var areaList = listOf(area)\n")
+        } ?: let {
+            stringBuilder.append("var areaList = listOf()\n")
+        }
+
+        stringBuilder.append("var areaList = FindImgTask(pixelsInfo,coordinate,colorList,$tolerance,list,areaList)\n")
+        stringBuilder.append("return areaList  \n")
+        stringBuilder.append(" }\n")
+
+
+        stringBuilder.append("fun ${getColorMethod}():Boolean { \n")
+        stringBuilder.append("constant.${getColorMethod}Task().apply { \n")
+        stringBuilder.append(" if(ImgUtils.findImgByColor(screenBitmap,this)){ \n")
+        stringBuilder.append(" return true \n")
+        stringBuilder.append(" } \n")
+        stringBuilder.append(" } \n")
+        stringBuilder.append("return false \n")
+        stringBuilder.append(" } \n")
+        return stringBuilder.toString()
+    }
+
+    private fun builderNormal(): String {
         val stringBuilder = StringBuilder()
 
         descriptiveInformation?.let {

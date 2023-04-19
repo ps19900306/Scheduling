@@ -85,8 +85,10 @@ object ImgUtils {
                             oY
                         )
                     ) {
-                        task.clickArea.x = task.clickArea.x + oX
-                        task.clickArea.y = task.clickArea.y + oY
+                        task.clickArea.forEach {
+                            it.x = it.x + oX
+                            it.y = it.y + oY
+                        }
                         return true
                     }
                 }
@@ -136,8 +138,10 @@ object ImgUtils {
                         oY
                     )
                 ) {
-                    task.clickArea.x = task.clickArea.x + oX
-                    task.clickArea.y = task.clickArea.y + oY
+                    task.clickArea.forEach {
+                        it.x = it.x + oX
+                        it.y = it.y + oY
+                    }
                     return true
                 }
             }
@@ -426,6 +430,16 @@ object ImgUtils {
         } else {
             null
         }
+    }
+
+    fun judeLength(list: List<Coordinate>, rule: ColorIdentificationRule, bitmap: Bitmap): Int {
+        list.forEachIndexed { index, coordinate ->
+            val pixel = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
+            if (rule.optInt(pixel)) {
+                return index
+            }
+        }
+        return list.size
     }
 
 

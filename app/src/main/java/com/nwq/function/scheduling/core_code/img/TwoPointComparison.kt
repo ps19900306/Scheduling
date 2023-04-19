@@ -30,4 +30,12 @@ interface TwoPointComparison {
     fun verificationRule(
         red: Int, green: Int, blue: Int, red2: Int, green2: Int, blue2: Int
     ): Boolean
+
+
+    fun checkColor(rule: List<Int>, red: Int, green: Int, blue: Int, range: Int = 15): Boolean {
+        val result1 = (rule[0] - range) <= red && red <= (rule[0] + range)
+        val result2 = (rule[1] - range) <= green && green <= (rule[1] + range)
+        val result3 = (rule[2] - range) <= blue && blue <= (rule[2] + range)
+        return result1 && result2 && result3
+    }
 }

@@ -26,6 +26,7 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val dotSize: Float
     private val dotList = mutableListOf<Coordinate>()
     private var oblongArea: Area? = null
+    private var searchScopeArea: Area? = null
     private var showFlag = true
 
 
@@ -49,11 +50,13 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
         oblongPaint.setStyle(Paint.Style.STROKE)
     }
 
-    fun addDot(coordinate: Coordinate) {
+    fun addDot(coordinate: Coordinate):Boolean {
         if (!dotList.contains(coordinate)) {
             dotList.add(coordinate)
             invalidate()
+            return true
         }
+        return false
     }
 
     fun removeDot(coordinate: Coordinate) {
@@ -73,6 +76,12 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
         invalidate()
     }
 
+    fun setSearchScopeArea(area: Area?) {
+        searchScopeArea = area
+        invalidate()
+    }
+
+
     fun setShowFlag(boolean: Boolean) {
         if (boolean != showFlag) {
             showFlag = boolean
@@ -89,6 +98,15 @@ class OperateUiView(context: Context, attrs: AttributeSet?) : View(context, attr
             canvas.drawCircle(it.x, it.y, dotSize, mDotPaint)
         }
         oblongArea?.let {
+            canvas.drawRect(
+                it.x.toFloat(),
+                it.y.toFloat(),
+                (it.x + it.with).toFloat(),
+                (it.y + it.height).toFloat(),
+                oblongPaint
+            )
+        }
+        searchScopeArea?.let {
             canvas.drawRect(
                 it.x.toFloat(),
                 it.y.toFloat(),

@@ -231,4 +231,5 @@ class BuddhaEnvironment(helper: AccessibilityHelper) : VisualEnvironment(helper)
             buildSinglePointTask(593,187,227, 222, 203),
         )
         return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)}
+
 }
