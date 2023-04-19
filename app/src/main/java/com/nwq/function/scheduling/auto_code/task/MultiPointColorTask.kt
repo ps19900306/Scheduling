@@ -10,6 +10,7 @@ import com.nwq.function.scheduling.auto_code.data.TwoPointColorValue
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
+import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.PointColorVerification
 import com.nwq.function.scheduling.utils.ToastHelper
 import java.lang.StringBuilder
@@ -65,8 +66,11 @@ class MultiPointColorTask(
 
 
     fun buildResultString(): String {
-        val stringBuilder = StringBuilder()
-        return stringBuilder.toString()
+        return if (searchScopeArea == null) {
+            builderNormal()
+        } else {
+            builderFindImg()
+        }
     }
 
     private fun builderFindImg(): String {
@@ -95,6 +99,16 @@ class MultiPointColorTask(
         stringBuilder.append("var areaList = FindImgTask(pixelsInfo,coordinate,colorList,$tolerance,list,areaList)\n")
         stringBuilder.append("return areaList  \n")
         stringBuilder.append(" }\n")
+
+
+        stringBuilder.append("fun ${getColorMethod}():Boolean { \n")
+        stringBuilder.append("constant.${getColorMethod}Task().apply { \n")
+        stringBuilder.append(" if(ImgUtils.findImgByColor(screenBitmap,this)){ \n")
+        stringBuilder.append(" return true \n")
+        stringBuilder.append(" } \n")
+        stringBuilder.append(" } \n")
+        stringBuilder.append("return false \n")
+        stringBuilder.append(" } \n")
         return stringBuilder.toString()
     }
 

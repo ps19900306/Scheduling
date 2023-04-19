@@ -432,6 +432,16 @@ object ImgUtils {
         }
     }
 
+    fun judeLength(list: List<Coordinate>, rule: ColorIdentificationRule, bitmap: Bitmap): Int {
+        list.forEachIndexed { index, coordinate ->
+            val pixel = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
+            if (rule.optInt(pixel)) {
+                return index
+            }
+        }
+        return list.size
+    }
+
 
     /******  下面的都是私有方法 ******************/
     private fun checkColor(pixelsInt: Int, ColorInt: Int, tolerance: Int): Boolean {
