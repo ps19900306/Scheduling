@@ -109,7 +109,7 @@ class MultiPointColorTask(
 
         stringBuilder.append("val ${getTaskMethod} =\n")
         stringBuilder.append(" { \n")
-        stringBuilder.append("val rule = SimpleRuleV2.getSimple($redMin, $redMax, $greenMin, $greenMax, $blueMin,$blueMax) \n")
+        stringBuilder.append("val rule = SimpleRuleV2.getSimple(${redMin-10}, ${redMax+10}, ${greenMin-10}, ${greenMax+10}, ${blueMin-10},${blueMax+10}) \n")
         stringBuilder.append("val result = ImgUtils.judeLengthStatus($getListName, rule, screenBitmap) \n")
         stringBuilder.append(" PositionLength($getListName.size - result, $getListName.size) \n")
         stringBuilder.append("   } \n")
