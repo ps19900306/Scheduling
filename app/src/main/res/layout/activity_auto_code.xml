@@ -173,7 +173,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,twoBtn2,areaBtn,accomplishBtn,searchScopeBtn,recycler"
+        app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,twoBtn2,areaBtn,accomplishBtn,searchScopeBtn,accomplishBtn2,recycler"
         tools:visibility="visible" />
 
     <EditText
