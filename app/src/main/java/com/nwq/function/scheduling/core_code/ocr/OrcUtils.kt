@@ -24,14 +24,14 @@ object OrcUtils {
 
     suspend fun startOcr(bitmap: Bitmap): String? {
         val result = startOCR(bitmap)
-        return withContext(Dispatchers.Main) {
+        return withContext(Dispatchers.Default) {
             result
         }
     }
 
     suspend fun startOcr(bitmap: Bitmap, x: Int, y: Int, width: Int, height: Int): String? {
         val result = startOCR(bitmap, x, y, width, height)
-        return withContext(Dispatchers.Main) {
+        return withContext(Dispatchers.Default) {
             result
         }
     }
@@ -44,13 +44,13 @@ object OrcUtils {
         bpl: Int = bpp * width
     ): String? {
         val result = startOCR(imagedata, width, height, bpp, bpl)
-        return withContext(Dispatchers.Main) {
+        return withContext(Dispatchers.Default) {
             result
         }
     }
 
     private suspend fun startOCR(bitmap: Bitmap): String {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.Default) {
             val tessBaseApi = TessBaseAPI()
             tessBaseApi.init(orcFileFolder, language)
             tessBaseApi.setImage(bitmap)
@@ -61,7 +61,7 @@ object OrcUtils {
     }
 
     private suspend fun startOCR(bitmap: Bitmap, x: Int, y: Int, width: Int, height: Int): String? {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.Default) {
             val tessBaseApi = TessBaseAPI()
             tessBaseApi.init(orcFileFolder, language)
             val resultBitmap = Bitmap.createBitmap(bitmap, x, y, width, height)
@@ -81,7 +81,7 @@ object OrcUtils {
         bpp: Int = defaultBpp,
         bpl: Int = bpp * width
     ): String {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.Default) {
             val tessBaseApi = TessBaseAPI()
             tessBaseApi.init(orcFileFolder, language)
             tessBaseApi.setImage(imagedata, width, height, bpp, bpl)

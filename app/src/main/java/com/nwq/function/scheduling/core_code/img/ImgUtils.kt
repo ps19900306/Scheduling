@@ -43,7 +43,7 @@ object ImgUtils {
     }
 
 
-    private fun findImgByColorBig(
+    private suspend  fun findImgByColorBig(
         bitmap: Bitmap,
         task: FindImgTask
     ): Boolean {

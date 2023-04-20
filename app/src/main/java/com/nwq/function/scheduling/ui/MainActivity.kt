@@ -2,18 +2,23 @@ package com.nwq.function.scheduling.ui
 
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import com.googlecode.tesseract.android.TessBaseAPI
 import com.nwq.function.scheduling.auto_code.ui.AutoCodeActivity
 import com.nwq.function.scheduling.core_code.CmdType
 import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.databinding.ActivityMainBinding
+import com.nwq.function.scheduling.utils.FileUtils
 import com.nwq.function.scheduling.utils.singleClick
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
+import kotlinx.coroutines.*
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -72,6 +77,17 @@ class MainActivity : AppCompatActivity() {
         bind.testColor.singleClick {
             SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1).lastCompleteTime = 0L
             SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2).lastCompleteTime = 0L
+
+//            Timber.d("Thread Main: ${Thread.currentThread().name}")
+//            GlobalScope.launch {
+//                Timber.d("Thread GlobalScope: ${Thread.currentThread().name}")
+//                for (i in 1..5){
+//                    val result= startOCR()
+//                    withContext(Dispatchers.Default){
+//                        Timber.d("Thread GlobalScope:$result ${Thread.currentThread().name}")
+//                    }
+//                }
+//            }
         }
 
         bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext
@@ -81,6 +97,14 @@ class MainActivity : AppCompatActivity() {
 
         bind.autoBtn.singleClick {
             startActivity(Intent(this, AutoCodeActivity::class.java))
+        }
+    }
+
+    private suspend fun startOCR(): String {
+        return withContext(Dispatchers.IO) {
+            delay(2000)
+            Timber.d("Thread startOCR: ${Thread.currentThread().name}")
+            "sdf"
         }
     }
 }

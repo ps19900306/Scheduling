@@ -13,7 +13,20 @@ create time: 2023/2/24 15:58
 Function description:
  */
 
-object ClickUtils {
+object MoveUtils {
+
+    const val DIRECTLY_LEFT = 1
+    const val DIRECTLY_Top = 2
+    const val DIRECTLY_RIGHT = 3
+    const val DIRECTLY_DOWN = 4
+    const val DOWN_LEFT = 5
+    const val DOWN_RIGHT = 6
+    const val Top_LEFT = 7
+    const val Top_RIGHT = 8
+
+    var isComplete = true
+    var lastType = DIRECTLY_LEFT
+
 
     suspend fun optSlideTask(aService: AccessibilityService, slideScreenTask: SlideScreenTask) {
         optClickTasks(aService, slideScreenTask.convertToClick())
@@ -55,10 +68,6 @@ object ClickUtils {
             }, null
         )
     }
-
-
-
-
 
 
 }

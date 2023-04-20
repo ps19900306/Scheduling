@@ -51,6 +51,7 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
     fun startOperation() {
         GlobalScope.launch {
             Timber.d("  startOperation TravelController NWQ_ 2023/3/12");
+            println("Thread : ${Thread.currentThread().name}")
             helper.takeScreen()
             generalControlMethod()
         }
