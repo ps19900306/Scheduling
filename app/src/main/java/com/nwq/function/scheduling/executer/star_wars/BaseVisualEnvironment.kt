@@ -1,8 +1,11 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
+import com.nwq.function.scheduling.core_code.PositionLength
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.core_code.img.FindImgTask
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.PointColorVerification.TwoPointTask
@@ -1100,15 +1103,15 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
             buildSinglePointTask(1837, 190, 229, 206, 139),
         )
         val list1 = listOf(
-            buildSinglePointTask(1108,186,251, 206, 123),
-            buildSinglePointTask(1183,186,252, 207, 122),
-            buildSinglePointTask(1255,186,252, 207, 124),
-            buildSinglePointTask(1330,177,251, 206, 121),
+            buildSinglePointTask(1108, 186, 251, 206, 123),
+            buildSinglePointTask(1183, 186, 252, 207, 122),
+            buildSinglePointTask(1255, 186, 252, 207, 124),
+            buildSinglePointTask(1330, 177, 251, 206, 121),
         )
 
 
         return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
-                ||ImgUtils.performPointsColorVerification(list1, screenBitmap, 0)
+                || ImgUtils.performPointsColorVerification(list1, screenBitmap, 0)
     }
 
     fun isGiftLoadColor(): Boolean {
@@ -1143,7 +1146,40 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     }
 
 
+    //这个知识个例子
+    val findImgTask by lazy {
+        val pixelsInfo = PixelsInfo(354, 556, 432, 646)
+        val coordinate = Coordinate(455, 1117)
+        val colorList = listOf(113, 178, 77)
+        val list = listOf(
+            buildSinglePointTask(455, 1117, 113, 178, 77),
+            buildSinglePointTask(162, 1467, 111, 36, 70),
+            buildSinglePointTask(827, 893, 109, 162, 158),
+            buildSinglePointTask(483, 1678, 10, 86, 48),
+            buildSinglePointTask(834, 1374, 44, 104, 80),
+        )
+        var area = Area(354, 556, 432, 646)
+        var areaList = listOf(area)
+        FindImgTask(pixelsInfo, coordinate, colorList, 6, list, areaList)
+    }
 
 
+    val nnlist = listOf(
+        Coordinate(192, 348),
+        Coordinate(1696, 600),
+        Coordinate(220, 602),
+        Coordinate(1440, 495),
+        Coordinate(219, 439),
+        Coordinate(1376, 496),
+        Coordinate(1308, 578),
+        Coordinate(154, 480),
+        Coordinate(1999, 369),
+    )
+
+    val nnTask = {
+        val rule = SimpleRuleV2.getSimple(19, 66, 18, 92, 16, 91)
+        val result = ImgUtils.judeLengthStatus(nnlist, rule, screenBitmap)
+        PositionLength(nnlist.size - result, nnlist.size)
+    }
 
 }

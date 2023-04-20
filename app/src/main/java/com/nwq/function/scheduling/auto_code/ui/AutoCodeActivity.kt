@@ -168,6 +168,20 @@ class AutoCodeActivity : AppCompatActivity() {
                 Timber.d("$it ResultString AutoCodeActivity NWQ_ 2023/4/14");
             }
         }
+
+        bind.accomplishBtn2.singleClick {
+            bind.previewUiGroup.isGone = true
+            bind.normalUiGroup.isVisible = true
+            nowMode = normalMode
+            bind.operateUiView.setShowFlag(false)
+            mMultiPointColorTask?.buildJudeLengthStr()?.let {
+                bind.resultTv.text = it
+                val clipData = ClipData.newPlainText("autoCode", it)
+                manager.setPrimaryClip(clipData)
+                bind.operateUiView.clearAllData()
+                Timber.d("$it ResultString AutoCodeActivity NWQ_ 2023/4/14");
+            }
+        }
     }
 
 

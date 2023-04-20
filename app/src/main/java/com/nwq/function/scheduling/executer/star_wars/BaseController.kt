@@ -682,6 +682,18 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     }
 
 
+    suspend fun findImgTask(): Boolean {
+        visual.findImgTask.let {
+            if (ImgUtils.findImgByColor(screenBitmap, it)) {
+                it.clickArea.forEach {
+                    click(it, doubleClickInterval)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
 
 
 

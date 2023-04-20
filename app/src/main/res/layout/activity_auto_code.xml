@@ -150,6 +150,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+
+    <Button
+        android:id="@+id/accomplishBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="完成血条长度判断"
+        app:layout_constraintBottom_toBottomOf="@+id/negativeImg"
+        app:layout_constraintStart_toStartOf="parent" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="0dp"
@@ -164,7 +173,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,twoBtn2,areaBtn,accomplishBtn,recycler"
+        app:constraint_referenced_ids="singleBtn,singleBtn2,singleBtn3,editTextNumber,twoBtn,twoBtn2,areaBtn,accomplishBtn,searchScopeBtn,recycler"
         tools:visibility="visible" />
 
     <EditText
