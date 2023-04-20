@@ -54,7 +54,6 @@ class AutoCodeActivity : AppCompatActivity() {
         val twoPonitTransparentMode = 22    //双点对比模式
         val searchScopeMode = 31       //点击区域边框模式
         val alongMode = 32      //点击区域边框模式
-
     }
 
 

@@ -10,8 +10,10 @@ import com.nwq.function.scheduling.auto_code.data.TwoPointColorValue
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
+import com.nwq.function.scheduling.core_code.PositionLength
 import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.PointColorVerification
+import com.nwq.function.scheduling.executer.star_wars.rule.SimpleRuleV2
 import com.nwq.function.scheduling.utils.ToastHelper
 import java.lang.StringBuilder
 
@@ -34,14 +36,14 @@ class MultiPointColorTask(
 
     val getColorMethod = "${methodName}Color"
     val getAreaMethod = "${methodName}Area"
-
+    val getTaskMethod = "${methodName}Task"
 
     fun addSinglePoint(coordinate: Coordinate, int: Int) {
         val data = SinglePointColorValue(
             coordinate.x.toInt(), coordinate.y.toInt(), int.red, int.green, int.blue
         )
-        if(singlePointList.contains(data))
-        singlePointList.add(data)
+        if (singlePointList.contains(data))
+            singlePointList.add(data)
         ToastHelper.showToast("添加单点 一")
     }
 
@@ -72,6 +74,50 @@ class MultiPointColorTask(
         } else {
             builderFindImg()
         }
+    }
+
+
+    fun buildJudeLengthStr(): String {
+        var redMin = 255
+        var redMax = 0
+        var greenMin = 255
+        var greenMax = 0
+        var blueMin = 255
+        var blueMax = 0
+
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("val ${getTaskMethod} =\n")
+        stringBuilder.append(" { \n")
+        stringBuilder.append(" val list = listOf( \n")
+
+        singlePointList.forEach {
+            stringBuilder.append(" Coordinate(${it.x}, ${it.y}),\n")
+            if (it.red < redMin) {
+                redMin = it.red
+            }
+            if (it.red > redMax) {
+                redMax = it.red
+            }
+            if (it.green < greenMin) {
+                greenMin = it.green
+            }
+            if (it.green > greenMax) {
+                greenMax = it.green
+            }
+            if (it.blue < blueMin) {
+                blueMin = it.blue
+            }
+            if (it.blue > blueMax) {
+                blueMax = it.blue
+            }
+        }
+
+        stringBuilder.append(" ) \n")
+        stringBuilder.append("val rule = SimpleRuleV2.getSimple($redMin, $redMax, $greenMin, $greenMax, $blueMin,$blueMax) \n")
+        stringBuilder.append("val result = ImgUtils.judeLengthStatus(list, rule, screenBitmap) \n")
+        stringBuilder.append(" PositionLength(list.size - result, list.size) \n")
+        stringBuilder.append("   } \n")
+        return stringBuilder.toString()
     }
 
 

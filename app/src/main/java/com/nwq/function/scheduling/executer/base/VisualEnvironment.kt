@@ -2,11 +2,14 @@ package com.nwq.function.scheduling.executer.base
 
 import android.telecom.CallRedirectionService
 import com.nwq.function.scheduling.core_code.Coordinate
+import com.nwq.function.scheduling.core_code.PositionLength
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.ColorIdentificationRule
+import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.PointColorVerification
 import com.nwq.function.scheduling.executer.star_wars.rule.SimpleComparisonRule
 import com.nwq.function.scheduling.executer.star_wars.rule.SimpleRule
+import com.nwq.function.scheduling.executer.star_wars.rule.SimpleRuleV2
 
 /**
 create by: 86136
@@ -79,7 +82,7 @@ abstract class VisualEnvironment(val helper: AccessibilityHelper) {
     ): PointColorVerification {
         return PointColorVerification.CoordinateRule(
             Coordinate(x1, y1),
-            SimpleRule.getSimple(red1, green1, blue1,15),
+            SimpleRule.getSimple(red1, green1, blue1, 15),
             range
         )
     }
@@ -100,11 +103,30 @@ abstract class VisualEnvironment(val helper: AccessibilityHelper) {
     ): PointColorVerification {
         return PointColorVerification.TwoPointTask(
             Coordinate(x1, y1), Coordinate(x2, y2),
-            SimpleComparisonRule.getSimpleComparison(red1, green1, blue1, red2, green2, blue2,checkPoint),
+            SimpleComparisonRule.getSimpleComparison(
+                red1,
+                green1,
+                blue1,
+                red2,
+                green2,
+                blue2,
+                checkPoint
+            ),
             if (checkPoint) 1 else 0
         )
     }
 
+    val positionLengthEx =
+        {
+            val list = listOf(
+                Coordinate(1, 2),
+            )
+            val rule = SimpleRuleV2.getSimple(1, 2, 3, 4, 5,5)
+            val result = ImgUtils.judeLengthStatus(list, rule, screenBitmap)
+            PositionLength(list.size-result,list.size)
+        }
 
-
+   fun p发(){
+       positionLengthEx.invoke()
+   }
 }

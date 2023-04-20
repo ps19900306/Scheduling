@@ -432,7 +432,8 @@ object ImgUtils {
         }
     }
 
-    fun judeLength(list: List<Coordinate>, rule: ColorIdentificationRule, bitmap: Bitmap): Int {
+    //判断长度血条位置
+    fun judeLengthStatus(list: List<Coordinate>, rule: ColorIdentificationRule, bitmap: Bitmap): Int {
         list.forEachIndexed { index, coordinate ->
             val pixel = bitmap.getPixel(coordinate.x.toInt(), coordinate.y.toInt())
             if (rule.optInt(pixel)) {
