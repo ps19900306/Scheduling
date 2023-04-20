@@ -128,10 +128,11 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
 
         val list2 = listOf(
-            verificationTask(1105, 591, RedRule),
-            verificationTask(1095, 591, AllLess50Rule),
-            verificationTask(1124, 591, AllLess50Rule),
+            verificationTask(1052, 600, RedRule, 1),
+            verificationTask(1157, 582, RedRule, 1),
+            verificationTask(1104, 593, AllOver170Rule),
         )
+
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 0
         ) || ImgUtils.performPointsColorVerification(
@@ -1097,21 +1098,13 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
     //未完成的
     fun isOpenGiftColor(): Boolean {
         val list = listOf(
-            buildSinglePointTask(1186, 181, 251, 206, 123),
-            buildSinglePointTask(1119, 180, 251, 206, 121),
-            buildSinglePointTask(1820, 187, 230, 199, 134),
-            buildSinglePointTask(1837, 190, 229, 206, 139),
+            buildSinglePointTask(732, 123, 210, 166, 103),
+            buildSinglePointTask(1156, 123, 210, 166, 103),
+            buildSinglePointTask(1534, 123, 210, 166, 103),
         )
-        val list1 = listOf(
-            buildSinglePointTask(1108, 186, 251, 206, 123),
-            buildSinglePointTask(1183, 186, 252, 207, 122),
-            buildSinglePointTask(1255, 186, 252, 207, 124),
-            buildSinglePointTask(1330, 177, 251, 206, 121),
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
         )
-
-
-        return ImgUtils.performPointsColorVerification(list, screenBitmap, 0)
-                || ImgUtils.performPointsColorVerification(list1, screenBitmap, 0)
     }
 
     fun isGiftLoadColor(): Boolean {

@@ -82,7 +82,7 @@ abstract class VisualEnvironment(val helper: AccessibilityHelper) {
     ): PointColorVerification {
         return PointColorVerification.CoordinateRule(
             Coordinate(x1, y1),
-            SimpleRule.getSimple(red1, green1, blue1, 15),
+            SimpleRule.getSimple(red1, green1, blue1,15),
             range
         )
     }

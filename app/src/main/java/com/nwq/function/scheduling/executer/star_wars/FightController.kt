@@ -114,8 +114,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun exitGame() {
         theOutCheck()
-        if(!visual.isInSpaceStation())
-        clickJumpCollectionAddress(warehouseIndex, false)
+        if(!visual.isInSpaceStation()){
+            clickJumpCollectionAddress(warehouseIndex, false)
+        }
         delay(doubleClickInterval)
         optExitGame()
     }
@@ -212,7 +213,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         //等待进入接取任务的
         var flag = true
         var count = 3
-        var hasTask = false
+        var hasTask = true
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
