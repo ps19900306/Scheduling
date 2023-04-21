@@ -77,17 +77,6 @@ class MainActivity : AppCompatActivity() {
         bind.testColor.singleClick {
             SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1).lastCompleteTime = 0L
             SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2).lastCompleteTime = 0L
-
-//            Timber.d("Thread Main: ${Thread.currentThread().name}")
-//            GlobalScope.launch {
-//                Timber.d("Thread GlobalScope: ${Thread.currentThread().name}")
-//                for (i in 1..5){
-//                    val result= startOCR()
-//                    withContext(Dispatchers.Default){
-//                        Timber.d("Thread GlobalScope:$result ${Thread.currentThread().name}")
-//                    }
-//                }
-//            }
         }
 
         bind.continueToTheNextCb.isChecked = SPRepo.continueToTheNext
@@ -99,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, AutoCodeActivity::class.java))
         }
     }
+
 
     private suspend fun startOCR(): String {
         return withContext(Dispatchers.IO) {
