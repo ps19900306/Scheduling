@@ -123,6 +123,8 @@ object MoveUtils {
                     estimateCompleteTime = nowTime + cosTime
                     optClickTasks(clickTask)
                     _channelRefreshList.trySend(nowTime)
+                } else if (lastType != nowType && counter > 0) {
+
                 }
             }
         }
