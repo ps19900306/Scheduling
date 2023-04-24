@@ -9,6 +9,9 @@ data class Coordinate(val x: Float, val y: Float) {
 
     }
 
+
+
+
     private val xI
         get() = x.toInt()
 
@@ -31,6 +34,9 @@ data class Coordinate(val x: Float, val y: Float) {
         return result
     }
 
+    override fun toString(): String {
+        return "Coordinate(x=$x, y=$y)"
+    }
 
 
 }

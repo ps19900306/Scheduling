@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.accessibility.AccessibilityNodeInfo
 import com.nwq.function.scheduling.core_code.SwipeArea
 import com.nwq.function.scheduling.core_code.click.DirectionType
+import com.nwq.function.scheduling.core_code.click.MoveUtils
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 
@@ -20,12 +24,41 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
 
 
     override suspend fun generalControlMethod() {
-        testGetColor()
+        //testGetColor()
+        randMoveTest()
+
+        withContext(Dispatchers.IO){
+
+        }
+
+
     }
 
     suspend fun moveLeft() {
+        flow {
+            emit(10)
+        }.flowOn(Dispatchers.IO)
+            .onStart {
+
+            }.catch {
+
+            }.onCompletion{
+
+            }.onEach {
+
+            }
 
     }
+
+    suspend fun randMoveTest() {
+        MoveUtils.aService = helper.acService
+        delay(5000)
+        for (i in 0..3) {
+            MoveUtils.moveCommand((Math.random() * 8 + 1).toInt(), 10)
+            delay(10000)
+        }
+    }
+
 
     suspend fun randClickTest() {
         helper.takeScreen()
@@ -134,4 +167,6 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
             delay(500)
         }
     }
+
+
 }

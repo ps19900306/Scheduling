@@ -19,6 +19,7 @@ import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
 import com.nwq.function.scheduling.utils.sp.SpConstant
 import kotlinx.coroutines.*
 import timber.log.Timber
+import kotlin.system.measureTimeMillis
 
 
 class MainActivity : AppCompatActivity() {
@@ -85,8 +86,53 @@ class MainActivity : AppCompatActivity() {
         }
 
         bind.autoBtn.singleClick {
-            startActivity(Intent(this, AutoCodeActivity::class.java))
+            test2()
+            // startActivity(Intent(this, AutoCodeActivity::class.java))
         }
+    }
+
+
+    fun test2() {
+        GlobalScope.launch {
+            Timber.d("launch start: ${Thread.currentThread().name}")
+            for(i in  0 ..3 ){
+                asyncTest2()
+            }
+            Timber.d("launch end ${Thread.currentThread().name}")
+        }
+    }
+
+
+    suspend fun asyncTest2() {
+        Timber.d("Thread start: ${Thread.currentThread().name}")
+        withContext(Dispatchers.Default) {
+            val time = measureTimeMillis { //计算执行时间
+                val deferredOne: Deferred<Int> = async(Dispatchers.IO) {
+                    delay(2000)
+                    Timber.d("Thread asyncOne: ${Thread.currentThread().name}")
+                    100//这里返回值为100
+                }
+
+                val deferredTwo: Deferred<Int> = async(Dispatchers.IO) {
+                    delay(3000)
+                    Timber.d("Thread asyncTwo: ${Thread.currentThread().name}")
+                    200//这里返回值为200
+                }
+
+                val deferredThr: Deferred<Int> = async(Dispatchers.IO) {
+                    delay(4000)
+                    Timber.d("Thread asyncThr: ${Thread.currentThread().name}")
+                    300//这里返回值为300
+                }
+
+
+                //等待所有需要结果的协程完成获取执行结果
+                val result = deferredOne.await() + deferredTwo.await() + deferredThr.await()
+                Timber.d("Thread result == $result ms ${Thread.currentThread().name}")
+            }
+            Timber.d("Thread 耗时 $time ms ${Thread.currentThread().name}")
+        }
+        Timber.d("Thread end ${Thread.currentThread().name}")
     }
 
 
