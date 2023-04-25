@@ -218,4 +218,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
             SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL
     }
 
+
+
+
 }

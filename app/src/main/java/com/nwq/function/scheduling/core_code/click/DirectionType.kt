@@ -25,13 +25,15 @@ import java.lang.annotation.RetentionPolicy
 annotation class DirectionType() {
     companion object {
         const val LEFT = 1
-        const val RIGHT = 2
+        const val TOP_LEFT = 2
         const val TOP = 3
-        const val BOTTOM = 4
-        const val TOP_LEFT = 5
-        const val TOP_RIGHT = 6
-        const val BOTTOM_LEFT = 7
-        const val BOTTOM_RIGHT = 8
+        const val TOP_RIGHT = 4
+        const val RIGHT = 5
+        const val BOTTOM_RIGHT = 6
+        const val BOTTOM = 7
+        const val BOTTOM_LEFT = 8
         const val NONE = -1
     }
 }
+
+

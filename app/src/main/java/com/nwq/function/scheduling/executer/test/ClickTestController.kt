@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.accessibility.AccessibilityNodeInfo
 import com.nwq.function.scheduling.core_code.SwipeArea
 import com.nwq.function.scheduling.core_code.click.DirectionType
-import com.nwq.function.scheduling.core_code.click.MoveUtils
+import com.nwq.function.scheduling.core_code.click.MoveClickUtils
+import com.nwq.function.scheduling.core_code.click.MoveDirection
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,7 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
         //testGetColor()
         randMoveTest()
 
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
 
         }
 
@@ -42,7 +43,7 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
 
             }.catch {
 
-            }.onCompletion{
+            }.onCompletion {
 
             }.onEach {
 
@@ -51,11 +52,16 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
     }
 
     suspend fun randMoveTest() {
-        MoveUtils.aService = helper.acService
+        MoveClickUtils.aService = helper.acService
         delay(5000)
-        for (i in 0..3) {
-            MoveUtils.moveCommand((Math.random() * 8 + 1).toInt(), 10)
-            delay(10000)
+        for (i in 0..20) {
+            MoveClickUtils.publishMoveDirection(
+                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 8 + 1).toInt()),
+                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 8 + 1).toInt()),
+                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 8 + 1).toInt()),
+                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 8 + 1).toInt()),
+            )
+            delay(3000)
         }
     }
 

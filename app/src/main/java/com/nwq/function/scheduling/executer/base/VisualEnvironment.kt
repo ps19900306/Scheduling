@@ -116,17 +116,4 @@ abstract class VisualEnvironment(val helper: AccessibilityHelper) {
         )
     }
 
-    val positionLengthEx =
-        {
-            val list = listOf(
-                Coordinate(1, 2),
-            )
-            val rule = SimpleRuleV2.getSimple(1, 2, 3, 4, 5,5)
-            val result = ImgUtils.judeLengthStatus(list, rule, screenBitmap)
-            PositionLength(list.size-result,list.size)
-        }
-
-   fun p发(){
-       positionLengthEx.invoke()
-   }
 }

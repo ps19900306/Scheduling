@@ -94,13 +94,25 @@ class MainActivity : AppCompatActivity() {
 
     fun test2() {
         GlobalScope.launch {
-            Timber.d("launch start: ${Thread.currentThread().name}")
-            for(i in  0 ..3 ){
-                asyncTest2()
+            //Timber.d("launch start: ${Thread.currentThread().name}")
+
+
+            for(i in  0 ..10 ){
+                val y = Math.random()*100-50
+                val x = Math.random()*100-50
+                val atan2 =Math.atan2(y, x)
+                val tan   =Math.atan(y/x)
+                Timber.d("x:$x  y:$y atan2:$atan2 tan:$tan   test2 MainActivity NWQ_ 2023/4/25");
+            //    asyncTest2()
             }
-            Timber.d("launch end ${Thread.currentThread().name}")
+           // Timber.d("launch end ${Thread.currentThread().name}")
         }
+
+
     }
+
+
+
 
 
     suspend fun asyncTest2() {
