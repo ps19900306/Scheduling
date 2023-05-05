@@ -54,15 +54,16 @@ class ClickTestController(helper: AccessibilityHelper) : TravelController(helper
     suspend fun randMoveTest() {
         MoveClickUtils.aService = helper.acService
         delay(5000)
-        for (i in 0..20) {
-            MoveClickUtils.publishMoveDirection(
-                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
-                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
-                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
-                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
-            )
-            delay(1000)
-        }
+        MoveClickUtils.test()
+//        for (i in 0..2) {
+//            MoveClickUtils.publishMoveDirection(
+//                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
+//                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
+//                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
+//                MoveDirection((Math.random() * 8 + 1).toInt(), (Math.random() * 1 + 1).toInt()),
+//            )
+//            delay(5000)
+//        }
     }
 
 

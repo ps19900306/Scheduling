@@ -210,6 +210,24 @@ class AutoCodeActivity : AppCompatActivity() {
     private var isFirst = true
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.action) {
+            ACTION_UP -> {
+                Timber.d("ACTION_UP onTouchEvent AutoCodeActivity NWQ_ 2023/5/4");
+            }
+            ACTION_SCROLL -> {
+                Timber.d("ACTION_SCROLL onTouchEvent AutoCodeActivity NWQ_ 2023/5/4");
+            }
+            ACTION_DOWN -> {
+                Timber.d("ACTION_DOWN onTouchEvent AutoCodeActivity NWQ_ 2023/5/4");
+            }
+            ACTION_MOVE -> {
+                Timber.d("ACTION_MOVE onTouchEvent AutoCodeActivity NWQ_ 2023/5/4");
+            }
+            else->{
+                Timber.d("else ${ev.action} onTouchEvent AutoCodeActivity NWQ_ 2023/5/4");
+            }
+        }
+
         when (nowMode) {
             singlePonitHighestSingleMode -> {
                 if (ev.action == ACTION_UP) {
@@ -262,10 +280,13 @@ class AutoCodeActivity : AppCompatActivity() {
                     val resultCoordinate =
                         AutoUtils.findPointByHighestSingle(coordinate, mBitmap, getRange())
                             ?: coordinate
-                    if(bind.operateUiView.addDot(coordinate)){
+                    if (bind.operateUiView.addDot(coordinate)) {
                         mMultiPointColorTask?.addTwoPoint(
                             coordinate,
-                            mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()),
+                            mBitmap.getPixel(
+                                resultCoordinate.x.toInt(),
+                                resultCoordinate.y.toInt()
+                            ),
                             true
                         )
                     }
@@ -277,10 +298,13 @@ class AutoCodeActivity : AppCompatActivity() {
                     val resultCoordinate =
                         AutoUtils.findPointByHighestSingle(coordinate, mBitmap, getRange())
                             ?: coordinate
-                    if(bind.operateUiView.addDot(coordinate)){
+                    if (bind.operateUiView.addDot(coordinate)) {
                         mMultiPointColorTask?.addTwoPoint(
                             coordinate,
-                            mBitmap.getPixel(resultCoordinate.x.toInt(), resultCoordinate.y.toInt()),
+                            mBitmap.getPixel(
+                                resultCoordinate.x.toInt(),
+                                resultCoordinate.y.toInt()
+                            ),
                             false
                         )
                     }

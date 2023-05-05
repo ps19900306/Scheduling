@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         bind.autoBtn.singleClick {
-            test2()
-            // startActivity(Intent(this, AutoCodeActivity::class.java))
+            //test2()
+             startActivity(Intent(this, AutoCodeActivity::class.java))
         }
     }
 

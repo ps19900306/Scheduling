@@ -1,21 +1,18 @@
 package com.nwq.function.scheduling.core_code.click
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.AccessibilityService.GestureResultCallback
 import android.accessibilityservice.GestureDescription
+import android.accessibilityservice.GestureDescription.StrokeDescription
 import android.annotation.SuppressLint
 import android.graphics.Path
-import android.util.Half.round
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import kotlin.system.measureTimeMillis
 
 
 /**
@@ -45,16 +42,18 @@ object MoveClickUtils {
         clear: Boolean = false,
         interrupt: Boolean = false
     ) {
-        if (clear)
-            directionList.clear()
+        test()
 
-        Timber.d(" publishMoveDirection MoveClickUtils NWQ_ 2023/4/26");
-        directionList.addAll(moveDirection)
-        if (interrupt) {
-            editPushInstruction()
-        } else {
-            _channelRefreshList.trySend(System.currentTimeMillis())
-        }
+//        if (clear)
+//            directionList.clear()
+//
+//        Timber.d(" publishMoveDirection MoveClickUtils NWQ_ 2023/4/26");
+//        directionList.addAll(moveDirection)
+//        if (interrupt) {
+//            editPushInstruction()
+//        } else {
+//            _channelRefreshList.trySend(System.currentTimeMillis())
+//        }
     }
 
     init {
@@ -127,9 +126,15 @@ object MoveClickUtils {
                 val c = getEndCoordinate(data.directionType, startCoordinate, slidingLength)
 
                 coordinateList.add(c)
-                if(lastType == type ||lastType == DirectionType.NONE ){
-                    for (i in 0 .. (Math.random()*10 +20).toInt()){
-                        coordinateList.add(getEndCoordinate(data.directionType, startCoordinate, slidingLength))
+                if (lastType == type || lastType == DirectionType.NONE) {
+                    for (i in 0..(Math.random() * 1 + 2).toInt()) {
+                        coordinateList.add(
+                            getEndCoordinate(
+                                data.directionType,
+                                startCoordinate,
+                                slidingLength
+                            )
+                        )
                     }
                 }
 
@@ -225,6 +230,77 @@ object MoveClickUtils {
     }
 
 
+    fun test() {
+        val path = Path()
+        path.moveTo(200f, 200f)
+        path.lineTo(400f, 200f)
+        val sd = StrokeDescription(path, 0, 500, true)
+        val path2 = Path()
+        path2.moveTo(400f, 200f)
+        path2.lineTo(400f, 400f)
+        val sd2 = sd.continueStroke(path2, 0, 500, false)
+        aService.dispatchGesture(
+            GestureDescription.Builder().addStroke(sd).build(),
+            object : GestureResultCallback() {
+                override fun onCompleted(gestureDescription: GestureDescription) {
+                    super.onCompleted(gestureDescription)
+                    aService.dispatchGesture(
+                        GestureDescription.Builder().addStroke(sd2).build(), null, null
+                    )
+                }
+
+                override fun onCancelled(gestureDescription: GestureDescription) {
+                    super.onCancelled(gestureDescription)
+                }
+            },
+            null
+        )
+
+
+
+//        val builder = GestureDescription.Builder()
+//        var path1 = Path()
+//        path1.moveTo(100f, 200f)
+//        path1.lineTo(200f, 300f)
+//        val stroke = GestureDescription.StrokeDescription(
+//            path1, 0, 500, true
+//        )
+//        var path2 = Path()
+//        path2.moveTo(200f, 300f)
+//        path2.lineTo(100f, 200f)
+//        var path3 = Path()
+//        path3.moveTo(100f, 200f)
+//        path3.lineTo(200f, 300f)
+//     //   stroke.continueStroke(path2, 500, 500, true)
+//        val stroke3 = stroke.continueStroke(path3, 0, 500, false)
+//        builder.addStroke(stroke)
+//        val gesture = builder.build()
+//        aService.dispatchGesture(
+//            gesture, object : AccessibilityService.GestureResultCallback() {
+//                override fun onCancelled(gestureDescription: GestureDescription) {
+//                    super.onCancelled(gestureDescription)
+//                    isComplete = true
+//                    _channelRefreshList.trySend(System.currentTimeMillis())
+//                    Timber.d("执行结果 onCancelled MoveUtils NWQ_ 2023/4/23");
+//                }
+//
+//                override fun onCompleted(gestureDescription: GestureDescription) {
+//                    super.onCompleted(gestureDescription)
+//                    _channelRefreshList.trySend(System.currentTimeMillis())
+//                    Timber.d("执行结果 onCompleted MoveUtils NWQ_ 2023/4/23");
+//                    aService.dispatchGesture(
+//                        GestureDescription.Builder().addStroke(stroke3).build(), null, null
+//                    )
+//                    isComplete = true
+//                }
+//            }, null
+//        )
+//        if (isComplete) {
+//            Timber.d("发布失败 dispatchGesture MoveUtils NWQ_ 2023/4/23");
+//            _channelRefreshList.trySend(System.currentTimeMillis())
+//        }
+    }
+
     private fun executeClickTasks(moveList: List<ClickTask>, clickList: List<ClickTask>) {
         val builder = GestureDescription.Builder()
         var timeTemp = 0L
@@ -239,10 +315,10 @@ object MoveClickUtils {
             }
             builder.addStroke(
                 GestureDescription.StrokeDescription(
-                    path, task.delayTime + timeTemp + 100, task.duration
+                    path, task.delayTime + timeTemp, task.duration
                 )
             )
-            timeTemp += task.delayTime + task.duration + 100
+            timeTemp += task.delayTime + task.duration
         }
 
         timeTemp = 0L
