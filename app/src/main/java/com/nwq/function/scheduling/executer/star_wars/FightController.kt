@@ -114,7 +114,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     private suspend fun exitGame() {
         theOutCheck()
-        if(!visual.isInSpaceStation()){
+        if (!visual.isInSpaceStation()) {
             clickJumpCollectionAddress(warehouseIndex, false)
         }
         delay(doubleClickInterval)
@@ -863,6 +863,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 click(constant.rightDialogueArea)
                 rightClickTimes++
                 flag = count
+            } else if (visual.isShowDetermine()) {
+                click(constant.dialogDetermineArea)
+                flag = 0
             } else {
                 flag--
             }

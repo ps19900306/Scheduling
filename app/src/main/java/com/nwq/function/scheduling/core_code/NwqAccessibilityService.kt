@@ -63,10 +63,6 @@ class NwqAccessibilityService : AccessibilityService() {
 
 
     private fun startOpt(outGame: Boolean = false) {
-
-        ClickTestController(helper).startOperation()
-        return
-
         //每次启动都刷新任务数目
         list.forEach { it.close() }
         list.clear()
