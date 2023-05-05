@@ -70,12 +70,11 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         return -1
     }
 
-    //是否已经进入空间站 TODO 需要优化取点过多
     fun isInSpaceStation(): Boolean {
         val list = listOf(
-            verificationTask(2038, 360, InSpaceStationRule),
-            verificationTask(2066, 360, InSpaceStationRule),
-            verificationTask(2054, 360, InSpaceStationRule),
+            verificationTask(2038, 360, InSpaceStationRule,1),
+            verificationTask(2066, 360, InSpaceStationRule,1),
+            verificationTask(2054, 360, InSpaceStationRule,1),
         )
         return ImgUtils.performPointsColorVerification(
             list, screenBitmap, 1

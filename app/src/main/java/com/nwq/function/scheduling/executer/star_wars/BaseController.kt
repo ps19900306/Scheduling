@@ -229,7 +229,10 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 runSwitch = false
                 return
             }
-            if (!visual.hasPositionMenu() || visual.isSailing()) {
+            if (!visual.hasPositionMenu() || visual.isSailing() || visual.isInSpaceStation()) {
+                flag = false
+            }else if(visual.isShowDetermine()){
+                click(constant.dialogDetermineArea)
                 flag = false
             } else {
                 click(constant.getAddressArea(index))
@@ -693,8 +696,6 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
         return false
     }
-
-
 
 
 }
