@@ -154,7 +154,7 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
         swipeArea: SwipeArea,
         midPoint: Int = 0
     ) {
-        val task = swipeArea.toClickTask(midPoint)
+        val task = swipeArea.toClickTask(0)
         Timber.d("${JsonUtil.objectToString(task)} swipe TravelController NWQ_ 2023/3/14");
         helper.swipe(task)
     }
