@@ -103,6 +103,7 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
 
 
         launchResources(celestialList[nowCelestialCount], normalClickInterval)
+        spReo.resourcesCollectTime = System.currentTimeMillis()
         takeScreen(normalClickInterval)
         ensureCloseDetermine()
 
@@ -149,7 +150,6 @@ class HarvestVegetableController(p: AccessibilityHelper, c: () -> Boolean) : Bas
                 click(constant.collectButtonArea1, normalClickInterval)
                 nowCelestialCount++
                 if (nowCelestialCount >= celestialList.size) {
-                    spReo.resourcesCollectTime = System.currentTimeMillis()
                     clickJumpCollectionAddress(spReo.resourcesBaseLocation, false)
                     nowStep = MONITORING_RETURN_STATUS
                 } else {
