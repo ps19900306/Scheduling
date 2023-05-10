@@ -22,7 +22,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
 
     var screenBitmap: Bitmap? = null
     val defultClickDuration
-        get() = ((Math.random() * 0.2 + 0.3) * 300).toLong()
+        get() = ((Math.random() * 0.2 + 0.3) * 200).toLong()
     val delayClickIntervalMeath
         get() = { ((Math.random() * 0.5 + 1) * 600).toLong() }
 

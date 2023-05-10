@@ -231,7 +231,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             }
             if (!visual.hasPositionMenu() || visual.isSailing() || visual.isInSpaceStation()) {
                 flag = false
-            }else if(visual.isShowDetermine()){
+            } else if (visual.isShowDetermine()) {
                 click(constant.dialogDetermineArea)
                 flag = false
             } else {
@@ -436,50 +436,29 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
     }
 
-    suspend fun isOpenGift(): Boolean {
-        var flag = true
-        var count = 5
-        while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
-                runSwitch = false
-                return false
-            }
-            if (visual.isOpenGiftColor()) {
-                flag = false
-            } else {
-                click(constant.isOpenGiftArea)
-            }
-            count--
-        }
-        return count != 0
-    }
-
-    suspend fun isCloseGift(): Boolean {
+    suspend fun isOpenGift() {
         var flag = true
         var count = 4
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
-                return false
             }
-            if (!visual.isOpenGiftColor()) {
+            if (visual.isOpenGiftColor() && !visual.hasPositionMenu()) {
                 Timber.d("isOpenGiftColor MultiPointColorTask NWQ_ 2023/4/16")
                 flag = false
-            } else {
-                click(constant.closeGiftArea)
+            } else if (visual.hasPositionMenu()) {
+                click(constant.isOpenGiftArea)
             }
             count--
         }
-        return count != 0
     }
 
-    suspend fun isGiftLoad(): Boolean {
+    suspend fun isGiftLoad() {
         var flag = true
         var count = 4
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
-                return false
             }
             if (visual.isGiftLoadColor()) {
                 Timber.d("isGiftLoadColor MultiPointColorTask NWQ_ 2023/4/16")
@@ -488,7 +467,26 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             }
             count--
         }
-        return count != 0
+        if (count == 0) {
+            click(constant.isGiftLoadArea)
+        }
+    }
+
+    suspend fun isCloseGift() {
+        var flag = true
+        var count = 4
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+            }
+            if (visual.hasPositionMenu()) {
+                Timber.d("isOpenGiftColor MultiPointColorTask NWQ_ 2023/4/16")
+                flag = false
+            } else {
+                click(constant.closeGiftArea)
+            }
+            count--
+        }
     }
 
 
