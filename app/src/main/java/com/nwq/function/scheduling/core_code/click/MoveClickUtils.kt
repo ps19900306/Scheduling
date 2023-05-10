@@ -213,18 +213,8 @@ object MoveClickUtils {
             }
         }
 
-
         val x = startPs.x + offsetX * slidingLength
         val y = startPs.y + offsetY * slidingLength
-
-        val z = Math.sqrt(offsetX * offsetX + offsetY * offsetY)
-
-        val asin = Math.asin(offsetY / z) / Math.PI * 180
-        val cos = Math.cos(offsetX / z) / Math.PI * 180
-
-        val atan2 = Math.atan2(offsetY * slidingLength, offsetX * slidingLength)
-        val tan = Math.atan((offsetY * slidingLength) / (offsetX * slidingLength))
-        // Timber.d(" ${offsetY / offsetX}  atan2:$atan2 tan:$tan asin:$asin cos:$cos test2 MainActivity NWQ_ 2023/4/25");
 
         return Coordinate(x, y)
     }

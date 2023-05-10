@@ -445,7 +445,6 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
                 return false
             }
             if (visual.isOpenGiftColor()) {
-                Timber.d("isOpenGiftColor MultiPointColorTask NWQ_ 2023/4/16")
                 flag = false
             } else {
                 click(constant.isOpenGiftArea)
