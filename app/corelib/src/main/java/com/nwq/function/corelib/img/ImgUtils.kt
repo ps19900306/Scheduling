@@ -24,5 +24,6 @@ object ImgUtils {
         } else {
 
         }
+        return true
     }
 }
