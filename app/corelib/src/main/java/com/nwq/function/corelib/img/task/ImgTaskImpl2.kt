@@ -8,6 +8,7 @@ import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 create by: 86136
 create time: 2023/5/13 14:22
 Function description:
+范围找图，成功后会记录偏差值，以完成后续操作
  */
 
 class ImgTaskImpl2(
@@ -21,6 +22,10 @@ class ImgTaskImpl2(
     fun isCorrect(): Boolean {
         return hasCorrect
     }
+
+    var offsetX: Int = 0 //发现图片成功的时候X偏差值
+    var offsetY: Int = 0 //发现图片成功的时候Y偏差值
+
 
     //这里是为了修正寻找的区域防止下标越界
     fun correctArea(imgWidth: Int, imgHeight: Int) {
