@@ -6,7 +6,7 @@ create time: 2023/5/5 10:43
 Function description:
 这里不用INT,这样生成的坐标带小数，触发点击更好用
  */
-class CoordinatePoint(val x: Float, val y: Float) {
+class CoordinatePoint(var x: Float, var y: Float) {
 
     constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat()) {
 
@@ -16,17 +16,17 @@ class CoordinatePoint(val x: Float, val y: Float) {
 
     }
 
-    private val xI
+    val xI
         get() = x.toInt()
 
-    private val yI
+    val yI
         get() = y.toInt()
 
 
-    private val xD
+    val xD
         get() = x.toDouble()
 
-    private val yD
+    val yD
         get() = y.toDouble()
 
     override fun equals(other: Any?): Boolean {

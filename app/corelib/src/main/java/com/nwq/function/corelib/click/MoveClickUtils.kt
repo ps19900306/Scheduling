@@ -8,6 +8,8 @@ import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.area.DirectionType
 import com.nwq.function.corelib.area.MoveDirection
+import com.nwq.function.corelib.click.task.ClickTask
+import com.nwq.function.corelib.click.task.ContinuousClickTask
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest

@@ -1,4 +1,4 @@
-package com.nwq.function.corelib.click
+package com.nwq.function.corelib.click.task
 
 import com.nwq.function.corelib.area.CoordinateArea
 

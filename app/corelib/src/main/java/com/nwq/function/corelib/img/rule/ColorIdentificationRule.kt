@@ -1,4 +1,4 @@
-package com.nwq.function.corelib.img
+package com.nwq.function.corelib.img.rule
 
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
@@ -12,5 +12,6 @@ interface ColorIdentificationRule {
     }
 
     fun verificationRule(red: Int, green: Int, blue: Int): Boolean
+
 
 }

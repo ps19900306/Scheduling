@@ -3,6 +3,7 @@ package com.nwq.function.corelib.click
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
+import com.nwq.function.corelib.click.task.ClickTask
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
