@@ -18,7 +18,6 @@ class ImgFeatureExtractionFunction(
     val imgArray: List<IntArray>
 ) : FunctionBlock {
 
-
     private var targetColorMap = hashMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
