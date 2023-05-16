@@ -40,6 +40,16 @@ class FeatureCoordinatePoint(
     var startY = 0
     var sequenceNumber = 0
 
+
+    fun setStartPosition() {
+        hasContinuousSet = true
+        hasFindRound = true
+        startX = x
+        startY = x
+        sequenceNumber = 0
+    }
+
+
     fun continuePath(p: FeatureCoordinatePoint): FeatureCoordinatePoint? {
         if (!hasContinuousSet) {
             hasContinuousSet = true
