@@ -7,4 +7,5 @@ Function description:
  */
 
 class PresentationEffectView {
+
 }
