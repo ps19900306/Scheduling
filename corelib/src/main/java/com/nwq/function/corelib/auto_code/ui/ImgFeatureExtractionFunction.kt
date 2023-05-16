@@ -81,75 +81,82 @@ class ImgFeatureExtractionFunction(
         }
     }
 
-    //获取是边界的位置
-    fun markBoundary(originalList: MutableList<FeatureCoordinatePoint>) {
+    //标记每个点的位置,标记为内部点或者是边界点
+    fun markBoundaryInternal(originalList: MutableList<FeatureCoordinatePoint>) {
         originalList.forEach { point ->
-            var isBoundary = false
-
-            //left
-            if (!isBoundary && point.x > 0) {
-                val leftPoint = featureArray[point.y][point.x - 1]
-                if (!originalList.contains(leftPoint)) {
-                    isBoundary = true
-                    point.setBoundary()
+            if (!point.hasJudeType()) {
+                var isBoundary = false
+                //left
+                if (!isBoundary && point.x > 0) {
+                    val leftPoint = featureArray[point.y][point.x - 1]
+                    if (!originalList.contains(leftPoint)) {
+                        isBoundary = true
+                        point.setBoundary()
+                    }
                 }
-            }
 
-            //top
-            if (!isBoundary && point.y > 0) {
-                val topPoint = featureArray[point.y - 1][point.x]
-                if (!originalList.contains(topPoint)) {
-                    isBoundary = true
-                    point.setBoundary()
+                //top
+                if (!isBoundary && point.y > 0) {
+                    val topPoint = featureArray[point.y - 1][point.x]
+                    if (!originalList.contains(topPoint)) {
+                        isBoundary = true
+                        point.setBoundary()
+                    }
                 }
-            }
 
-            //right
-            if (!isBoundary && point.x < with) {
-                val rightPoint = featureArray[point.y][point.x + 1]
-                if (!originalList.contains(rightPoint)) {
-                    isBoundary = true
-                    point.setBoundary()
+                //right
+                if (!isBoundary && point.x < with) {
+                    val rightPoint = featureArray[point.y][point.x + 1]
+                    if (!originalList.contains(rightPoint)) {
+                        isBoundary = true
+                        point.setBoundary()
+                    }
                 }
-            }
 
-            //bottom
-            if (!isBoundary && point.y < height) {
-                val bottomPoint = featureArray[point.y + 1][point.x]
-                if (!originalList.contains(bottomPoint)) {
-                    isBoundary = true
-                    point.setBoundary()
+                //bottom
+                if (!isBoundary && point.y < height) {
+                    val bottomPoint = featureArray[point.y + 1][point.x]
+                    if (!originalList.contains(bottomPoint)) {
+                        isBoundary = true
+                        point.setBoundary()
+                    }
                 }
-            }
 
-            if (!isBoundary) {
-                point.setInternal()
+                if (!isBoundary) {
+                    point.setInternal()
+                }
             }
         }
     }
 
-
-    fun obtainFeaturePoints(originalList: MutableList<FeatureCoordinatePoint>) {
+    //获取特征点，这里建议使用边界点
+    fun obtainFeaturePoints(
+        originalList: MutableList<FeatureCoordinatePoint>,
+        pickingInterval: Int = 20
+    ): List<FeatureCoordinatePoint> {
+        val list = mutableListOf<FeatureCoordinatePoint>()
         var startPoint = originalList.find { it.hasContinuousSet }
         while (startPoint != null) {
             startPoint.setStartPosition()
-
-
+            val extremePoints = groupBlock(startPoint, originalList, pickingInterval)
+            list.addAll(extremePoints)
             startPoint = originalList.find { it.hasContinuousSet }
         }
+        return list
     }
 
     //对组进行分块
     fun groupBlock(
         startPoint: FeatureCoordinatePoint,
-        originalList: MutableList<FeatureCoordinatePoint>
-    ) {
+        originalList: MutableList<FeatureCoordinatePoint>,
+        pickingInterval: Int = 20
+    ): List<FeatureCoordinatePoint> {
         val blockList = mutableListOf<FeatureCoordinatePoint>()
-        var step = 0
+        var step = 0 //这里用于记录最大步数
         val oldList = mutableListOf(startPoint)
         val newList = mutableListOf<FeatureCoordinatePoint>()
         val extremePoints = mutableListOf<FeatureCoordinatePoint>()//端点，就是找不延续的点了
-
+        val endList = mutableListOf<FeatureCoordinatePoint>()
         while (!oldList.isEmpty()) {
             step++
             newList.clear()
@@ -161,11 +168,60 @@ class ImgFeatureExtractionFunction(
                     newList.addAll(result)
                 }
             }
+            if (newList.isEmpty()) {
+                endList.addAll(oldList)
+            }
             oldList.clear()
             oldList.addAll(newList)
+            filterExtremePoint(extremePoints, newList)
         }
 
+        //过滤掉一些端点
+        filterExtremePoint(extremePoints, extremePoints)
+        filterExtremePoint(extremePoints, listOf(startPoint))
 
+        var point = step / pickingInterval //取点数目
+        if (point < 4) { //一块至少取点四个
+            point = 4
+        }
+
+        oldList.getOrNull(0)?.let {
+            //增加首尾点
+            extremePoints.add(startPoint)
+            extremePoints.add(it)
+
+            val part = it.sequenceNumber / 4
+            var data = it
+            var i = point - 1
+            var number = part * i
+            while (data.previousPoint != null && i > 0) {
+                data = data.previousPoint!!
+                if (data.sequenceNumber == number) {
+                    extremePoints.add(data)
+                    i--
+                    number = part * i
+                }
+            }
+        }
+        return extremePoints
+    }
+
+
+    //这里是为了优化过滤掉端点，去掉一些不必要的点
+    private fun filterExtremePoint(
+        originalList: MutableList<FeatureCoordinatePoint>,
+        filterList: List<FeatureCoordinatePoint>
+    ) {
+        val iterator = originalList.iterator()
+        while (iterator.hasNext()) {//去除近的端点
+            val item = iterator.next()
+            if (filterList.find {
+                    (it.x != item.x || it.y != item.y) //保证不是同一个点
+                            && (Math.abs(it.x - item.x) < 3 && Math.abs(it.x - item.x) < 3)//发现二点过近
+                } != null) {
+                iterator.remove()
+            }
+        }
     }
 
 

@@ -49,9 +49,11 @@ class FeatureCoordinatePoint(
         sequenceNumber = 0
     }
 
+    var previousPoint: FeatureCoordinatePoint? = null
 
     fun continuePath(p: FeatureCoordinatePoint): FeatureCoordinatePoint? {
         if (!hasContinuousSet) {
+            previousPoint = p
             hasContinuousSet = true
             startX = p.startY
             startY = p.startY
@@ -65,7 +67,9 @@ class FeatureCoordinatePoint(
         }
     }
 
+
     var positionType: Int = NONE //是否是在组的边界点上
+
     fun hasJudeType(): Boolean {
         return positionType != NONE
     }
