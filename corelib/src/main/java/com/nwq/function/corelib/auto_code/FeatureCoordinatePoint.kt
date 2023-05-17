@@ -33,6 +33,8 @@ class FeatureCoordinatePoint(
         colorInt.blue
     )
 
+    var isIdentificationKey = false //是否作为识别的关键点
+
     //这里又来排顺序的
     var hasContinuousSet = false //是否被设置
     var hasFindRound = false     //是否被找寻

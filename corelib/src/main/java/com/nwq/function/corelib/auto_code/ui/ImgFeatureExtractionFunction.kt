@@ -1,5 +1,8 @@
 package com.nwq.function.corelib.auto_code.ui
 
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.nwq.function.corelib.auto_code.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.FeaturePointKey
 import com.nwq.function.corelib.auto_code.FunctionBlock
@@ -19,6 +22,7 @@ class ImgFeatureExtractionFunction(
 ) : FunctionBlock {
 
     private var targetColorMap = hashMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
+
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
@@ -61,9 +65,28 @@ class ImgFeatureExtractionFunction(
     }
 
 
-    //对外暴露的方法
+    //单点选取平均色
     fun addFeatureKey(colorInt: Int) {
         targetColorMap.put(FeaturePointKey(colorInt), mutableListOf())
+    }
+
+    //多点选择平均色
+    fun addFeatureKey(colorInt: IntArray) {
+        var redTotal = 0
+        var greenTotal = 0
+        var blueTotal = 0
+        colorInt.forEach {
+            redTotal += it.red
+            greenTotal += it.green
+            blueTotal += it.blue
+        }
+        targetColorMap.put(
+            FeaturePointKey(
+                redTotal / colorInt.size,
+                greenTotal / colorInt.size,
+                blueTotal / colorInt.size
+            ), mutableListOf()
+        )
     }
 
 
