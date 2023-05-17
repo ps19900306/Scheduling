@@ -39,6 +39,13 @@
         app:layout_constraintStart_toEndOf="@+id/deleteKeyBtn"
         app:layout_constraintTop_toTopOf="@+id/deleteKeyBtn" />
 
+    <CheckBox
+        android:id="@+id/showIdentification"
+        style="@style/normalTitleTv"
+        android:text="@string/feature"
+        app:layout_constraintBottom_toBottomOf="@+id/showBoundary"
+        app:layout_constraintStart_toEndOf="@+id/showBoundary"
+        app:layout_constraintTop_toTopOf="@+id/showBoundary" />
 
     <Button
         android:id="@+id/expandBtn"
@@ -63,5 +70,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/deletePointBtn"
         app:layout_constraintStart_toEndOf="@+id/deletePointBtn"
         app:layout_constraintTop_toTopOf="@+id/deletePointBtn" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
