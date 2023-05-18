@@ -15,6 +15,7 @@ Function description:
 object ImgUtils {
 
     fun verifyTheImageRule(bitmap: Bitmap, imgTask: ImgTask): Boolean {
+
         if (imgTask is ImgTaskImpl1) {
 
         } else if (imgTask is ImgTaskImpl2) {
