@@ -39,6 +39,8 @@ class FeaturePointKey(var colorInt: Int) {
     var maxGToG = gToB * 1.1
     var minGToG = gToB * 0.9
 
+    var isExpend = false //这个给Adapter使用的
+    var isChecked = false //这个给Adapter使用的
 
     constructor(
         red: Int,

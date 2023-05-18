@@ -6,6 +6,7 @@ import androidx.core.graphics.red
 import com.nwq.function.corelib.auto_code.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.FeaturePointKey
 import com.nwq.function.corelib.auto_code.FunctionBlock
+import com.nwq.function.corelib.databinding.PartImgFeatureBinding
 
 /**
 create by: 86136
@@ -19,6 +20,7 @@ class ImgFeatureExtractionFunction(
     val with: Int,
     val height: Int,
     val imgArray: List<IntArray>,
+    val binding: PartImgFeatureBinding
 ) : FunctionBlock {
 
     private var targetColorMap = hashMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
