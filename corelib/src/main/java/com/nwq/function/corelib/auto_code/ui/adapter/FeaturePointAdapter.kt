@@ -3,8 +3,7 @@ package com.nwq.function.corelib.auto_code.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nwq.function.corelib.auto_code.FeatureCoordinatePoint
-import com.nwq.function.corelib.auto_code.FeaturePointKey
+import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.databinding.ItemFeatureKeyBinding
 
 /**

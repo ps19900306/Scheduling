@@ -1,4 +1,4 @@
-package com.nwq.function.corelib.auto_code
+package com.nwq.function.corelib.auto_code.ui.data
 
 import android.graphics.Color
 import androidx.core.graphics.blue

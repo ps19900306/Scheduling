@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.nwq.function.corelib.auto_code.FeatureCoordinatePoint
-import com.nwq.function.corelib.auto_code.FeaturePointKey
+import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
+import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.databinding.ItemFeatureKeyBinding
 import com.nwq.function.corelib.utils.singleClick
 

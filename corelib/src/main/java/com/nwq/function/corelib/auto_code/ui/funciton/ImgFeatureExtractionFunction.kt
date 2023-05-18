@@ -1,10 +1,10 @@
-package com.nwq.function.corelib.auto_code.ui
+package com.nwq.function.corelib.auto_code.ui.funciton
 
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import com.nwq.function.corelib.auto_code.FeatureCoordinatePoint
-import com.nwq.function.corelib.auto_code.FeaturePointKey
+import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
+import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.auto_code.FunctionBlock
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
 
@@ -44,9 +44,9 @@ class ImgFeatureExtractionFunction(
             }
         }
         if (autoDiscoverFeature) {
-            targetColorMap.put(brightestKey, mutableListOf())
-            targetColorMap.put(differenceKey, mutableListOf())
-            targetColorMap.put(darkestKey, mutableListOf())
+            targetColorMap[brightestKey] = mutableListOf()
+            targetColorMap[differenceKey] = mutableListOf()
+            targetColorMap[darkestKey] = mutableListOf()
             brightestKey.update()
             differenceKey.update()
             darkestKey.update()
