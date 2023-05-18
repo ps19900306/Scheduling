@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">coreLib</string>
     <string name="delete">删除</string>
+    <string name="delete_point">删除点</string>
     <string name="boundary">边界</string>
     <string name="expand">展开</string>
     <string name="add">添加</string>
+    <string name="add_point">添加点</string>
     <string name="feature">特点</string>
+    <string name="auto_exc">全自动</string>
+    <string name="preview">预览</string>
+
 </resources>

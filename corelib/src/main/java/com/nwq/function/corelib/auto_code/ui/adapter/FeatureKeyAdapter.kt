@@ -2,14 +2,13 @@ package com.nwq.function.corelib.auto_code.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.nwq.function.corelib.auto_code.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.FeaturePointKey
 import com.nwq.function.corelib.databinding.ItemFeatureKeyBinding
-import com.nwq.function.corelib.databinding.PartImgFeatureBinding
-import com.nwq.function.scheduling.utils.singleClick
+import com.nwq.function.corelib.utils.singleClick
+
 
 /**
 create by: 86136
