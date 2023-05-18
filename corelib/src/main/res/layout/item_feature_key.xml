@@ -32,22 +32,32 @@
         app:layout_constraintTop_toTopOf="@+id/colorView"
         tools:text=" 12 :37 :19" />
 
+
     <Button
-        android:id="@+id/expandBtn"
+        android:id="@+id/attributeBtn"
         style="@style/normalTitleTv"
-        android:text="@string/expand"
+        android:layout_width="80dp"
+        android:text="@string/attribute"
         app:layout_constraintBottom_toBottomOf="@+id/colorRgbTv"
         app:layout_constraintStart_toEndOf="@+id/colorRgbTv"
         app:layout_constraintTop_toTopOf="@+id/colorRgbTv" />
 
+    <Button
+        android:id="@+id/expandBtn"
+        style="@style/normalTitleTv"
+        android:layout_width="80dp"
+        android:text="@string/expand"
+        app:layout_constraintBottom_toBottomOf="@+id/attributeBtn"
+        app:layout_constraintStart_toEndOf="@+id/attributeBtn"
+        app:layout_constraintTop_toTopOf="@+id/attributeBtn" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pointRecycler"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/keyCb"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/keyCb" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Scheduling">
         <activity
+            android:name=".AutoCodeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
