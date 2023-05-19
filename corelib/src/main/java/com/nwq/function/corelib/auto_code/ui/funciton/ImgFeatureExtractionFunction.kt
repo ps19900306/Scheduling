@@ -6,7 +6,9 @@ import androidx.core.graphics.red
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.auto_code.FunctionBlock
+import com.nwq.function.corelib.auto_code.ui.adapter.FeatureKeyAdapter
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
+import com.nwq.function.corelib.utils.singleClick
 
 /**
 create by: 86136
@@ -29,6 +31,25 @@ class ImgFeatureExtractionFunction(
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
     var autoDiscoverFeature = true //自动寻找特征值
+
+    private lateinit var mFeatureKeyAdapter: FeatureKeyAdapter
+
+    init {
+        mFeatureKeyAdapter = FeatureKeyAdapter(targetColorMap)
+        binding.recycler.adapter = mFeatureKeyAdapter
+        binding.addBtn.singleClick {
+
+        }
+        binding.addPointBtn.singleClick {
+
+        }
+        binding.deletePointBtn.singleClick{
+
+        }
+
+
+    }
+
 
     private val featureArray: Array<Array<FeatureCoordinatePoint>> by lazy {
         val dataList = mutableListOf<Array<FeatureCoordinatePoint>>()
@@ -68,12 +89,12 @@ class ImgFeatureExtractionFunction(
 
 
     //单点选取平均色
-    fun addFeatureKey(colorInt: Int) {
+    override fun addFeatureKey(colorInt: Int) {
         targetColorMap.put(FeaturePointKey(colorInt), mutableListOf())
     }
 
     //多点选择平均色
-    fun addFeatureKey(colorInt: IntArray) {
+    override fun addFeatureKey(colorInt: IntArray) {
         var redTotal = 0
         var greenTotal = 0
         var blueTotal = 0
