@@ -5,6 +5,28 @@ import com.nwq.function.scheduling.core_code.img.ColorIdentificationRule
 class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int = 3) :
     ColorIdentificationRule {
 
+    var redD = range
+    var greenD = range
+    var blueD = range
+
+    var maxRed = redB + redD
+    var minRed = redB - redD
+    var maxGreen = greenB + greenD
+    var minGreen = greenB - greenD
+    var maxBlue = blueB + blueD
+    var minBlue = blueB - blueD
+
+
+    var rToG = redB.toFloat() / greenB.toFloat()
+    var rToB = redB.toFloat() / blueB.toFloat()
+    var gToB = greenB.toFloat() / blueB.toFloat()
+
+    var maxRToG = rToG * 1.2
+    var minRToG = rToG * 0.8
+    var maxRToB = rToB * 1.2
+    var minRToB = rToB * 0.8
+    var maxGToG = gToB * 1.2
+    var minGToG = gToB * 0.8
 
     companion object {
         val list = mutableListOf<SimpleRule>()
@@ -17,7 +39,18 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int 
         }
     }
 
+
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
-        return checkColor(listOf(redB, greenB, blueB), red, green, blue, range)
+        return isInRange(red, green, blue)
     }
+
+    fun isInRange(r: Int, g: Int, b: Int): Boolean {
+        val rToG = redB.toFloat() / greenB.toFloat()
+        val rToB = redB.toFloat() / blueB.toFloat()
+        val gToB = greenB.toFloat() / blueB.toFloat()
+        return r in minRed..maxRed && g in minGreen..maxGreen && b in minBlue..maxBlue
+                && rToG < maxRToG && rToG > minRToG && rToB < maxRToB
+                && rToG > minRToB && gToB < maxGToG && rToG > minGToG
+    }
+
 }

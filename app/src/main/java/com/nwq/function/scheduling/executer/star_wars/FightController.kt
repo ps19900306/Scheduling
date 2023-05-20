@@ -258,6 +258,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     click(constant.optTaskArea)
                     takeScreen(normalClickInterval)
                     if (visual.hasTask() || !visual.isOpenBigMenu() || visual.isShowDetermine() || visual.hasLeftDialogue()) {//这里表示任务没有超时去走战斗导航就可以了
+                        Timber.d("点击打开按钮 点击流程 NWQ_ 2023/3/26");
                         clickTheDialogueClose()
                         return
                     } else {
@@ -521,9 +522,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 nowStep = PICK_UP_TASK
                 flag = false
             } else if (visual.isShowDetermine()) {
+                Timber.d("还有左侧未点击的 startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 click(constant.dialogDetermineArea)
                 count = 20
             } else if (visual.isOpenBigMenu()) {
+                Timber.d("打开任务栏 startNavigationMonitoring FightController NWQ_ 2023/3/10");
                 click(constant.closeBigMenuArea)
                 count = 20
             } else if (visual.isClosePositionMenu() && visual.hasEyesMenu()) {

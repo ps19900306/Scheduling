@@ -83,11 +83,11 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             } else if (visual.isOpenBigMenu()) {
                 click(constant.closeBigMenuArea)
             } else if (visual.hasIntoGame()) {
-                dailyGiftPack()
-                return true
+                flag = false
             }
         }
-        return false
+        if (!flag) dailyGiftPack()
+        return !flag
     }
 
 
@@ -439,11 +439,12 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
     suspend fun isOpenGift() {
         var flag = true
         var count = 4
+        click(constant.isOpenGiftArea)
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
             }
-            if (visual.isOpenGiftColor() && !visual.hasPositionMenu()) {
+            if (visual.isOpenGiftColor()) {
                 Timber.d("isOpenGiftColor MultiPointColorTask NWQ_ 2023/4/16")
                 flag = false
             } else if (visual.hasPositionMenu()) {
