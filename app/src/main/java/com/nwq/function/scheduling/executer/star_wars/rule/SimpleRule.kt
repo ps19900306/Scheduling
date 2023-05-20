@@ -21,12 +21,12 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int 
     var rToB = redB.toFloat() / blueB.toFloat()
     var gToB = greenB.toFloat() / blueB.toFloat()
 
-    var maxRToG = rToG * 1.2
-    var minRToG = rToG * 0.8
-    var maxRToB = rToB * 1.2
-    var minRToB = rToB * 0.8
-    var maxGToG = gToB * 1.2
-    var minGToG = gToB * 0.8
+    var maxRToG = rToG * 1.1
+    var minRToG = rToG * 0.9
+    var maxRToB = rToB * 1.1
+    var minRToB = rToB * 0.9
+    var maxGToG = gToB * 1.1
+    var minGToG = gToB * 0.9
 
     companion object {
         val list = mutableListOf<SimpleRule>()
@@ -49,8 +49,9 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int 
         val rToB = redB.toFloat() / blueB.toFloat()
         val gToB = greenB.toFloat() / blueB.toFloat()
         return r in minRed..maxRed && g in minGreen..maxGreen && b in minBlue..maxBlue
-                && rToG < maxRToG && rToG > minRToG && rToB < maxRToB
-                && rToG > minRToB && gToB < maxGToG && rToG > minGToG
+                && rToG < maxRToG && rToG > minRToG
+                && rToB < maxRToB && rToB > minRToB
+                && gToB < maxGToG && gToB > minGToG
     }
 
 }
