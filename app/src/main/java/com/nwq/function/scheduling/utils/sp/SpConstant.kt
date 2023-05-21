@@ -52,7 +52,6 @@ object SpConstant {
     const val CELESTIAL_RESOURCES_LIST = "celestial_resources_list"
     const val TRANSFER_SHIP = "TRANSFER_SHIP"
 
-
     const val MINING_BASE_LOCATION = "mining_base_location"//这个是收菜的基地坐标
     const val MINING_GUN_LIST = "mining_gun_list"
     const val MINING_INERTIA_LIST = "mining_inertia_list"
