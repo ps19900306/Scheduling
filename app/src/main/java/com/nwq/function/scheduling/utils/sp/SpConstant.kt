@@ -44,7 +44,7 @@ object SpConstant {
     const val WHOLE_BATTLE_LIST = "whole_battle_list"
     const val ROUND_BATTLE_LIST = "round_battle_list"
     const val RECEIVE_SPECIFIC_TASKS = "receive_specific_tasks"
-    const val RECEIVE_SPECIFIC_TASKS1 = "receive_specific_tasks"
+    const val RECEIVE_SPECIFIC_TASKS1 = "receive_specific_tasks1"
     const val SPECIFIC_STATUS = "specific_status"
 
     const val RESOURCES_BASE_LOCATION = "RESOURCES_BASE_LOCATION"//这个是收菜的基地坐标
