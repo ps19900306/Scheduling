@@ -1,6 +1,7 @@
 package com.nwq.function.corelib.img.task
 
 import com.nwq.function.corelib.area.CoordinatePoint
+import com.nwq.function.corelib.img.pcheck.IPR
 import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 
 /**
@@ -10,25 +11,9 @@ Function description:
 固定点找图，成功后会记录偏差值，以优化流程
  */
 class ImgTaskImpl1(
-    pointList: List<CoordinatePoint>,
-    ruleList: List<ColorIdentificationRule>,
+    iprList: List<IPR>,
     range: Int = 0 //初始图片的寻找范围，
-) : ImgTask(pointList, ruleList) {
+) : ImgTask(iprList) {
 
-    private var hasCorrect = range <= 0
-
-    fun isCorrect(): Boolean {
-        return hasCorrect
-    }
-
-    fun correctCoordinate(offsetX: Int, offsetY: Int) {
-        if (!hasCorrect) {
-            hasCorrect = true
-            for (coordinatePoint in pointList) {
-                coordinatePoint.x += offsetX
-                coordinatePoint.y += offsetY
-            }
-        }
-    }
 
 }

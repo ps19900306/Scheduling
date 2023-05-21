@@ -25,7 +25,8 @@ class ColorRuleRatioImpl(
         val greenToBlue = greenF / blueF
 
         return red in minRed..maxRed && green in minGreen..maxGreen && blue in minBlue..maxBlue &&
-                redToGreen in redToGreenMin..redToGreenMax && redToBlue in redToBlueMin..redToBlueMax
+                redToGreen in redToGreenMin..redToGreenMax
+                && redToBlue in redToBlueMin..redToBlueMax
                 && greenToBlue in greenToGreenMin..greenToBlueMax
     }
 

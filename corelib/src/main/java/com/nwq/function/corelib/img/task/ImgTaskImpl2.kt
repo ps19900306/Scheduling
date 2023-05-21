@@ -2,6 +2,7 @@ package com.nwq.function.corelib.img.task
 
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
+import com.nwq.function.corelib.img.pcheck.IPR
 import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 
 /**
@@ -12,43 +13,33 @@ Function description:
  */
 
 class ImgTaskImpl2(
-    pointList: List<CoordinatePoint>,
-    ruleList: List<ColorIdentificationRule>,
-    val findArea: CoordinateArea //初始图片的寻找范围
-) : ImgTask(pointList, ruleList) {
+    iprList: List<IPR>, val findArea: CoordinateArea //初始图片的寻找范围
+) : ImgTask(iprList) {
 
-    private var hasCorrect = false
-
-    fun isCorrect(): Boolean {
-        return hasCorrect
-    }
-
-    var offsetX: Int = 0 //发现图片成功的时候X偏差值
-    var offsetY: Int = 0 //发现图片成功的时候Y偏差值
-
+    private var correctArea = false
 
     //这里是为了修正寻找的区域防止下标越界
     fun correctArea(imgWidth: Int, imgHeight: Int) {
-        if (!hasCorrect) {
-            hasCorrect = true
+        if (!correctArea) {
+            correctArea = true
             var maxX = 0
             var maxY = 0
             var minX = Int.MAX_VALUE
             var minY = Int.MAX_VALUE
-            var firstX = pointList[0].xI
-            var firstY = pointList[0].yI
-            pointList.forEach {
-                if (it.xI > maxX) {
-                    maxX = it.xI
+            var firstX = iprList[0].getCoordinatePoint().xI
+            var firstY = iprList[0].getCoordinatePoint().yI
+            iprList.forEach {
+                if (it.getCoordinatePoint().xI > maxX) {
+                    maxX = it.getCoordinatePoint().xI
                 }
-                if (it.xI < minX) {
-                    minX = it.xI
+                if (it.getCoordinatePoint().xI < minX) {
+                    minX = it.getCoordinatePoint().xI
                 }
-                if (it.yI > maxY) {
-                    maxY = it.yI
+                if (it.getCoordinatePoint().yI > maxY) {
+                    maxY = it.getCoordinatePoint().yI
                 }
-                if (it.yI < minY) {
-                    minY = it.yI
+                if (it.getCoordinatePoint().yI < minY) {
+                    minY = it.getCoordinatePoint().yI
                 }
             }
             val minOfx = findArea.x - (firstX - minX)
@@ -59,8 +50,6 @@ class ImgTaskImpl2(
             if (maxOfx > imgWidth) {
                 findArea.with -= maxOfx - imgWidth
             }
-
-
             val minOfy = findArea.y - (firstY - minY)
             if (minOfy < 0) {
                 findArea.y -= minOfy
