@@ -77,6 +77,7 @@ class SettingModelActivity : AppCompatActivity() {
             SetListInfo("List3:75", repo.timeOnList3SP),
             SetCheckInfo("是否有军团任务", repo.hasLegionnairesSP),
             SetCheckInfo("是否接取特殊任务", repo.receiveSpecificTaskSP),
+            SetCheckInfo("是否接取高级任务", repo.receiveSpecificTaskSP1),
             )
     }
 

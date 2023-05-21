@@ -72,6 +72,9 @@ class SPRepoPrefix(val prefix: String) {
     val receiveSpecificTaskSP = SP(prefix + SpConstant.RECEIVE_SPECIFIC_TASKS, false)//是否接取特殊任务
     var receiveSpecificTask by receiveSpecificTaskSP
 
+    val receiveSpecificTaskSP1 = SP(prefix + SpConstant.RECEIVE_SPECIFIC_TASKS1, true)//是否接取特殊任务
+    var receiveSpecificTask1 by receiveSpecificTaskSP
+
     var specificStatus by SP(prefix + SpConstant.SPECIFIC_STATUS, false) //是否切换到特殊任务下
 
     //收菜的

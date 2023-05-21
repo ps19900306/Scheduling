@@ -67,6 +67,7 @@ class BaseConstant {
     var pickUpTask1Area = Area(570, 668, 444, 25)
     var pickUpTask1AreaV2 = Area(807, 298, 203, 231)
     var pickUpTask2Area = Area(1031, 666, 444, 25)
+    var pickUpTask3Area = Area(1490, 666, 444, 25)
 
     var lockTargetGroupArea = Area(1395, 639, 92, 94)
 

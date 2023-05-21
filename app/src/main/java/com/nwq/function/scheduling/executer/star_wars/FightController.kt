@@ -365,7 +365,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     runSwitch = false
                     return
                 }
-                positon = visual.checkIsCommonTask()
+                positon = visual.checkIsCommonTask(spReo.receiveSpecificTask1)
                 if (neeForceRefresh) {
                     if (visual.canRefresh()) {
                         click(constant.refreshTaskListArea)
@@ -413,11 +413,20 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                             hasPickUpTask = true
                             if (count > 2) count = 2
                         }
+                        3 -> {
+                            click(constant.pickUpTask3Area)
+                            delay(normalClickInterval)
+                            hasPickUpTask = true
+                            if (count > 2) count = 2
+                        }
                     }
                 }
                 count--
             }
         }
+
+
+
 
         if (spReo.specificStatus) {//接取运输任务后 需要监听空间站导航
             flag = true

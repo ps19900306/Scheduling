@@ -8,6 +8,7 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindImgTask
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.core_code.img.ImgUtils
+import com.nwq.function.scheduling.core_code.img.PointColorVerification
 import com.nwq.function.scheduling.core_code.img.PointColorVerification.TwoPointTask
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
 import com.nwq.function.scheduling.executer.star_wars.rule.*
@@ -214,39 +215,46 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         }
     }
 
+    private fun checkList(list: List<PointColorVerification>): Boolean {
+        return ImgUtils.performPointsColorVerification(
+            list, screenBitmap, 0
+        )
+    }
 
-    fun checkIsCommonTask(): Int {
-        var list = listOf(
+    fun checkIsCommonTask(flag: Boolean = true): Int {
+        var list1 = listOf(
             verificationTask(628, 342, BaiQingRule, 1),
             verificationTask(644, 342, QianQingRule, 1),
         )
-
+        if (checkList(list1)) {
+            return 1
+        }
         //23、5、18 临时任务
-        val list2 = listOf(
+        val tList = listOf(
             buildSinglePointTask(635, 344, 252, 233, 175),
             buildSinglePointTask(616, 329, 251, 232, 176),
             buildSinglePointTask(650, 355, 244, 228, 179)
         )
+        if (flag && checkList(tList)) {
+            return 1
+        }
 
-        if ((ImgUtils.performPointsColorVerification(
-                list, screenBitmap, 0
-            ) || ImgUtils.performPointsColorVerification(
-                list2, screenBitmap, 0
-            )) && !isHighTaskRight()
-        ) return 1
-        list = listOf(
+        val list2 = listOf(
             verificationTask(1093, 342, BaiQingRule, 1),
             verificationTask(1109, 342, QianQingRule, 1),
         )
-        if (ImgUtils.performPointsColorVerification(
-                list, screenBitmap, 0
-            ) || isHighTaskRight()//一号任务要是高级任务也进行修改
-        ) return 2
+        if (checkList(list2)) {
+            return 2
+        }
+
+        if (isHighTask() || checkList(tList)) {
+            return 3
+        }
         return -1
     }
 
 
-    fun hasPickUpSuccess(): Boolean {
+    fun hasPickUpSuccess(flag: Boolean = true): Boolean {
         val list = listOf(
             verificationTask(2142, 391, AllOver170Rule),
             verificationTask(2152, 391, AllLess70Rule),
@@ -1198,8 +1206,6 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         var areaList = listOf(area)
         FindImgTask(pixelsInfo, coordinate, colorList, 6, list, areaList)
     }
-
-
 
 
 }
