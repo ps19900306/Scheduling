@@ -5,6 +5,9 @@ import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.img.pcheck.IPR
 import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 
+/**
+ * 不能实列化
+ */
 abstract class ImgTask(val iprList: List<IPR>) : BasicTask {
 
     protected var offsetX: Int = 0 //发现图片成功的时候X偏差值
