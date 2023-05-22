@@ -1,6 +1,7 @@
 package com.nwq.function.corelib.img.task
 
 
+import android.graphics.Bitmap
 import com.nwq.function.corelib.img.pcheck.IPR
 
 /**
@@ -10,8 +11,10 @@ Function description:
 这个用于判断进度条血条的
  */
 class ImgTaskImpl3(
-    iprList: List<IPR>,
-    tag: String,
-) : ImgTask(iprList, tag) {
+    iprList: List<IPR>, tag: String, correctModel: CorrectModel? = null
+) : ImgTask(iprList, tag, correctModel) {
+    override suspend fun verificationRule(bitmap: Bitmap): Boolean {
+        TODO("Not yet implemented")
+    }
 
 }

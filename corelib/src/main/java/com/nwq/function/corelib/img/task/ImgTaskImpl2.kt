@@ -1,5 +1,6 @@
 package com.nwq.function.corelib.img.task
 
+import android.graphics.Bitmap
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.img.pcheck.IPR
@@ -59,6 +60,10 @@ class ImgTaskImpl2(
                 findArea.height -= maxOfy - imgHeight
             }
         }
+    }
+
+    override suspend fun verificationRule(bitmap: Bitmap): Boolean {
+        TODO("Not yet implemented")
     }
 
 
