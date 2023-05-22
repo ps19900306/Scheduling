@@ -3,9 +3,6 @@ package com.nwq.function.corelib.auto_code.ui.funciton
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import com.nwq.function.corelib.auto_code.BaseImgProcess
-import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
-import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.auto_code.FunctionBlock
 import com.nwq.function.corelib.auto_code.ui.adapter.FeatureKeyAdapter
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding

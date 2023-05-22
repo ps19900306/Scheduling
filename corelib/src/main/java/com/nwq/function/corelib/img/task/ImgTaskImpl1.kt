@@ -11,8 +11,10 @@ Function description:
  */
 class ImgTaskImpl1(
     iprList: List<IPR>,
-    range: Int = 0 //初始图片的寻找范围，
-) : ImgTask(iprList) {
+    tag: String,
+    xRange: Int = 0, //初始图片的寻找范围，
+    yRange: Int = 0 //初始图片的寻找范围，
+) : ImgTask(iprList, tag) {
 
-
+    constructor(iprList: List<IPR>, tag: String, range: Int) : this(iprList, tag, range, range)
 }

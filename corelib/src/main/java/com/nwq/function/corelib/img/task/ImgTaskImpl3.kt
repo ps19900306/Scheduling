@@ -11,6 +11,7 @@ Function description:
  */
 class ImgTaskImpl3(
     iprList: List<IPR>,
-) : ImgTask(iprList) {
+    tag: String,
+) : ImgTask(iprList, tag) {
 
 }

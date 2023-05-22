@@ -15,16 +15,18 @@ Function description:
 object ImgIdentifyUtils {
 
     fun verifyTheImageRule(bitmap: Bitmap, imgTask: ImgTask): Boolean {
-
         if (imgTask is ImgTaskImpl1) {
 
         } else if (imgTask is ImgTaskImpl2) {
 
         } else if (imgTask is ImgTaskImpl3) {
 
-        } else {
-
         }
+        return true
+    }
+
+
+    private fun verifyImgTaskImpl1(bitmap: Bitmap, task: ImgTaskImpl1): Boolean {
         return true
     }
 }

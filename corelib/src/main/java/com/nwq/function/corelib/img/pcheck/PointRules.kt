@@ -9,4 +9,6 @@ class PointRules(val point: CoordinatePoint, val rule: List <ColorIdentification
     override fun getCoordinatePoint(): CoordinatePoint {
         return point
     }
+
+
 }

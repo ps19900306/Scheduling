@@ -87,6 +87,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
             }
         }
         if (!flag) dailyGiftPack()
+
         return !flag
     }
 

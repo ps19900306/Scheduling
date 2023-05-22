@@ -34,6 +34,7 @@ class FeatureCoordinatePoint(
     )
 
     var isIdentificationKey = false //是否作为识别的关键点
+    var mFeaturePointKey: FeaturePointKey? = null
 
     //这里又来排顺序的
     var hasContinuousSet = false //是否被设置 边界点或者内部点

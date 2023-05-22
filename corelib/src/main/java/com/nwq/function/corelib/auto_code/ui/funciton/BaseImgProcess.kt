@@ -1,4 +1,4 @@
-package com.nwq.function.corelib.auto_code
+package com.nwq.function.corelib.auto_code.ui.funciton
 
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
@@ -51,9 +51,11 @@ class BaseImgProcess(
     private fun groupPoint(point: FeatureCoordinatePoint, colorInt: Int) {
         val key = featureKeyList.find { it.isInRange(point) }
         if (key != null) {
+            point.mFeaturePointKey = key
             colorMaps[key]?.add(point)
         } else {
             val newKey = FeaturePointKey(colorInt)
+            point.mFeaturePointKey = newKey
             val list = mutableListOf<FeatureCoordinatePoint>()
             list.add(point)
             featureKeyList.add(newKey)
@@ -86,6 +88,7 @@ class BaseImgProcess(
             array.forEach { point ->
                 list.forEach { featureKey ->
                     if (featureKey.isInRange(point)) {
+                        point.mFeaturePointKey = featureKey
                         (colorMaps[featureKey] ?: mutableListOf<FeatureCoordinatePoint>().apply {
                             colorMaps[featureKey] = this
                         }).add(point)
@@ -154,7 +157,7 @@ class BaseImgProcess(
         var startPoint = originalList.find { it.hasContinuousSet }
         while (startPoint != null) {
             startPoint.setStartPosition()
-            val extremePoints = groupBlock(startPoint, originalList, pickingInterval)
+            val extremePoints = groupBlock(startPoint, pickingInterval)
             list.addAll(extremePoints)
             startPoint = originalList.find { it.hasContinuousSet }
         }
@@ -164,7 +167,6 @@ class BaseImgProcess(
     //对相同的特征色值的 根据连接度对组进行分块
     private fun groupBlock(
         startPoint: FeatureCoordinatePoint,
-        originalList: MutableList<FeatureCoordinatePoint>,
         pickingInterval: Int = 20
     ): List<FeatureCoordinatePoint> {
         val blockList = mutableListOf<FeatureCoordinatePoint>()
@@ -177,7 +179,7 @@ class BaseImgProcess(
             step++
             newList.clear()
             oldList.forEach {
-                val result = dynamicSearchAround(it, originalList, blockList)
+                val result = dynamicSearchAround(it, blockList)
                 if (result.isEmpty()) {
                     extremePoints.add(it)
                 } else {
@@ -219,6 +221,9 @@ class BaseImgProcess(
                 }
             }
         }
+        extremePoints.map {
+
+        }
         return extremePoints
     }
 
@@ -244,15 +249,15 @@ class BaseImgProcess(
     //动态向八方进行延展，同时进行排序
     private fun dynamicSearchAround(
         point: FeatureCoordinatePoint,
-        originalList: MutableList<FeatureCoordinatePoint>,
         blockList: MutableList<FeatureCoordinatePoint>,
     ): List<FeatureCoordinatePoint> {
         val list = mutableListOf<FeatureCoordinatePoint>()
         if (point.x > 0) {
             val leftPoint = featureArray[point.y][point.x - 1]
-            if (originalList.contains(leftPoint)) {
-                leftPoint.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(leftPoint)) {
+            if (point.mFeaturePointKey == leftPoint.mFeaturePointKey) {
+                if (leftPoint.continuePath(point)
+                        ?.let { list.add(it) } != null && !blockList.contains(leftPoint)
+                ) {
                     blockList.add(leftPoint)
                 }
             }
@@ -261,9 +266,10 @@ class BaseImgProcess(
         //top
         if (point.y > 0) {
             val topPoint = featureArray[point.y - 1][point.x]
-            if (originalList.contains(topPoint)) {
-                topPoint.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(topPoint)) {
+            if (point.mFeaturePointKey == topPoint.mFeaturePointKey) {
+                if (topPoint.continuePath(point)
+                        ?.let { list.add(it) } != null && !blockList.contains(topPoint)
+                ) {
                     blockList.add(topPoint)
                 }
             }
@@ -273,9 +279,10 @@ class BaseImgProcess(
         //right
         if (point.x < with) {
             val rightPoint = featureArray[point.y][point.x + 1]
-            if (originalList.contains(rightPoint)) {
-                rightPoint.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(rightPoint)) {
+            if (point.mFeaturePointKey == rightPoint.mFeaturePointKey) {
+                if (rightPoint.continuePath(point)
+                        ?.let { list.add(it) } != null && !blockList.contains(rightPoint)
+                ) {
                     blockList.add(rightPoint)
                 }
             }
@@ -284,50 +291,58 @@ class BaseImgProcess(
         //bottom
         if (point.y < height) {
             val bottomPoint = featureArray[point.y + 1][point.x]
-            if (originalList.contains(bottomPoint)) {
-                bottomPoint.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(bottomPoint)) {
+            if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey) {
+                if (bottomPoint.continuePath(point)
+                        ?.let { list.add(it) } != null && !blockList.contains(bottomPoint)
+                ) {
                     blockList.add(bottomPoint)
                 }
             }
         }
 
         if (point.x > 0 && point.y > 0) {
-            val point = featureArray[point.y - 1][point.x - 1]
-            if (originalList.contains(point)) {
-                point.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(point)) {
-                    blockList.add(point)
+            val tPoint = featureArray[point.y - 1][point.x - 1]
+            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
+                if (tPoint.continuePath(point)?.let { list.add(it) } != null &&
+                    !blockList.contains(tPoint)
+                ) {
+                    blockList.add(tPoint)
                 }
             }
         }
 
         if (point.x > 0 && point.y < height) {
-            val point = featureArray[point.y + 1][point.x - 1]
-            if (originalList.contains(point)) {
-                point.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(point)) {
-                    blockList.add(point)
+            val tPoint = featureArray[point.y + 1][point.x - 1]
+            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
+                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
+                        tPoint
+                    )
+                ) {
+                    blockList.add(tPoint)
                 }
             }
         }
 
         if (point.x < with && point.y > 0) {
-            val point = featureArray[point.y - 1][point.x + 1]
-            if (originalList.contains(point)) {
-                point.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(point)) {
-                    blockList.add(point)
+            val tPoint = featureArray[point.y - 1][point.x + 1]
+            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
+                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
+                        tPoint
+                    )
+                ) {
+                    blockList.add(tPoint)
                 }
             }
         }
 
         if (point.x < with && point.y < height) {
-            val point = featureArray[point.y + 1][point.x + 1]
-            if (originalList.contains(point)) {
-                point.continuePath(point)?.let { list.add(it) }
-                if (!blockList.contains(point)) {
-                    blockList.add(point)
+            val tPoint = featureArray[point.y + 1][point.x + 1]
+            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
+                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
+                        tPoint
+                    )
+                ) {
+                    blockList.add(tPoint)
                 }
             }
         }

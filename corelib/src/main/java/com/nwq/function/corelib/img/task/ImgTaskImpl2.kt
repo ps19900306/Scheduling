@@ -13,8 +13,8 @@ Function description:
  */
 
 class ImgTaskImpl2(
-    iprList: List<IPR>, val findArea: CoordinateArea //初始图片的寻找范围
-) : ImgTask(iprList) {
+    iprList: List<IPR>, tag: String,val findArea: CoordinateArea //初始图片的寻找范围
+) : ImgTask(iprList,tag) {
 
     private var correctArea = false
 
