@@ -12,9 +12,16 @@ Function description:
 class ImgTaskImpl1(
     iprList: List<IPR>,
     tag: String,
-    xRange: Int = 0, //初始图片的寻找范围，
-    yRange: Int = 0 //初始图片的寻找范围，
+    val xRange: Int = 0, //初始图片的寻找范围，
+    val yRange: Int = 0, //初始图片的寻找范围，
+    val faultTolerance: Boolean = (xRange > 0 || yRange > 0), //如果全部是内部点的旧不进行容错处理了
 ) : ImgTask(iprList, tag) {
+
+    init {
+        if (xRange == 0 || yRange == 0) {
+            hasCorrect = true
+        }
+    }
 
     constructor(iprList: List<IPR>, tag: String, range: Int) : this(iprList, tag, range, range)
 
