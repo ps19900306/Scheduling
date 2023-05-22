@@ -42,6 +42,9 @@ class FeaturePointKey(var colorInt: Int) {
     var isExpend = false //这个给Adapter使用的
     var isChecked = false //这个给Adapter使用的
 
+    var isKeyMember = false //是否是三大特征值
+
+
     constructor(
         red: Int,
         green: Int,
@@ -82,6 +85,19 @@ class FeaturePointKey(var colorInt: Int) {
     }
 
 
+    fun getBrightest(featurePointKey: FeaturePointKey): FeaturePointKey {
+        val newColorInt = featurePointKey.colorInt
+        val newRed = newColorInt.red
+        val newGreen = newColorInt.green
+        val newBlue = newColorInt.blue
+        return if (red + green + blue < newRed + newGreen + newBlue) {
+            featurePointKey
+        } else {
+            this
+        }
+    }
+
+
     fun getBrightest(newColorInt: Int) {
         val newRed = newColorInt.red
         val newGreen = newColorInt.green
@@ -93,6 +109,23 @@ class FeaturePointKey(var colorInt: Int) {
             colorInt = newColorInt
         }
     }
+
+
+    fun getDifference(featurePointKey: FeaturePointKey): FeaturePointKey {
+        val newColorInt = featurePointKey.colorInt
+        val newRed = newColorInt.red
+        val newGreen = newColorInt.green
+        val newBlue = newColorInt.blue
+        var i1 = Math.abs(red - green) + Math.abs(red - blue) + Math.abs(green - blue)
+        var i2 =
+            Math.abs(newRed - newGreen) + Math.abs(newRed - newBlue) + Math.abs(newGreen - newBlue)
+        return if (i2 > i1) {
+            featurePointKey
+        } else {
+            this
+        }
+    }
+
 
     fun getDifference(newColorInt: Int) {
         val newRed = newColorInt.red
@@ -109,6 +142,19 @@ class FeaturePointKey(var colorInt: Int) {
         }
     }
 
+    fun getDarkest(featurePointKey: FeaturePointKey): FeaturePointKey {
+        val newColorInt = featurePointKey.colorInt
+        val newRed = newColorInt.red
+        val newGreen = newColorInt.green
+        val newBlue = newColorInt.blue
+        return if (red + green + blue > newRed + newGreen + newBlue) {
+            featurePointKey
+        } else {
+            this
+        }
+    }
+
+
     fun getDarkest(newColorInt: Int) {
         val newRed = newColorInt.red
         val newGreen = newColorInt.green
@@ -119,6 +165,10 @@ class FeaturePointKey(var colorInt: Int) {
             blue = newBlue
             colorInt = newColorInt
         }
+    }
+
+    fun isInRange(point: FeatureCoordinatePoint): Boolean {
+        return isInRange(point.red, point.green, point.blue)
     }
 
     fun isInRange(r: Int, g: Int, b: Int): Boolean {

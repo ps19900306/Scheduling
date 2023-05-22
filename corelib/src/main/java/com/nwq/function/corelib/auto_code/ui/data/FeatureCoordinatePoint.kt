@@ -36,8 +36,8 @@ class FeatureCoordinatePoint(
     var isIdentificationKey = false //是否作为识别的关键点
 
     //这里又来排顺序的
-    var hasContinuousSet = false //是否被设置
-    var hasFindRound = false     //是否被找寻
+    var hasContinuousSet = false //是否被设置 边界点或者内部点
+    var hasFindRound = false     //是否被找寻 向四周寻找
     var startX = 0
     var startY = 0
     var sequenceNumber = 0

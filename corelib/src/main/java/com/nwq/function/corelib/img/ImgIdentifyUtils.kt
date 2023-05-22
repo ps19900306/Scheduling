@@ -12,7 +12,7 @@ create time: 2023/5/5 10:36
 Function description:
  */
 
-object ImgUtils {
+object ImgIdentifyUtils {
 
     fun verifyTheImageRule(bitmap: Bitmap, imgTask: ImgTask): Boolean {
 
