@@ -221,8 +221,36 @@ class BaseImgProcess(
                 }
             }
         }
-        extremePoints.map {
 
+        //尽量选择内部点进行判定，这样可以减少一点范围误差
+        extremePoints.map { point ->
+            var result: FeatureCoordinatePoint? = null
+            if (result == null && point.x > 0) {
+                val leftPoint = featureArray[point.y][point.x - 1]
+                if (point.mFeaturePointKey == leftPoint.mFeaturePointKey && leftPoint.isInternal()) {
+                    result = leftPoint
+                }
+            }
+            if (result == null && point.y > 0) {
+                val topPoint = featureArray[point.y - 1][point.x]
+                if (point.mFeaturePointKey == topPoint.mFeaturePointKey && topPoint.isInternal()) {
+                    result = topPoint
+                }
+            }
+            if (result == null && point.x < with) {
+                val rightPoint = featureArray[point.y][point.x + 1]
+                if (point.mFeaturePointKey == rightPoint.mFeaturePointKey && rightPoint.isInternal()) {
+                    result = rightPoint
+                }
+            }
+
+            if (result == null && point.y < height) {
+                val bottomPoint = featureArray[point.y + 1][point.x]
+                if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey && bottomPoint.isInternal()) {
+                    result = bottomPoint
+                }
+            }
+            result ?: point
         }
         return extremePoints
     }

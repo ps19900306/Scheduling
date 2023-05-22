@@ -85,5 +85,8 @@ class FeatureCoordinatePoint(
         positionType = INTERNAL_TYPE
     }
 
+    fun isInternal(): Boolean {
+        return positionType == INTERNAL_TYPE
+    }
 
 }

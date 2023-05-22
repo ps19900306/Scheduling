@@ -17,4 +17,5 @@ class ImgTaskImpl1(
 ) : ImgTask(iprList, tag) {
 
     constructor(iprList: List<IPR>, tag: String, range: Int) : this(iprList, tag, range, range)
+
 }
