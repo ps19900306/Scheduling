@@ -24,6 +24,13 @@ class FeatureCoordinatePoint(
         const val BOUNDARY_TYPE = 4
     }
 
+    constructor(colorInt: Int) : this(
+        0,
+        0,
+        colorInt.red,
+        colorInt.green,
+        colorInt.blue
+    )
 
     constructor(x: Int, y: Int, colorInt: Int) : this(
         x,
@@ -32,6 +39,7 @@ class FeatureCoordinatePoint(
         colorInt.green,
         colorInt.blue
     )
+
 
     var isIdentificationKey = false //是否作为识别的关键点
     var mFeaturePointKey: FeaturePointKey? = null

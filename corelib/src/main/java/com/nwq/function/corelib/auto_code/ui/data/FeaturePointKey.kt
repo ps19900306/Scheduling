@@ -44,6 +44,7 @@ class FeaturePointKey(var colorInt: Int) {
 
     var isKeyMember = false //是否是三大特征值
 
+    var pointCount =0
 
     constructor(
         red: Int,

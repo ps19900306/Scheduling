@@ -1,0 +1,15 @@
+package com.nwq.function.corelib.img.pcheck
+
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
+
+/**
+create by: 86136
+create time: 2023/5/25 20:10
+Function description:
+ */
+
+data class RGBInfo(val r: Int, val g: Int, val b: Int) {
+    constructor(colorInt: Int) : this(colorInt.red, colorInt.green, colorInt.blue)
+}
