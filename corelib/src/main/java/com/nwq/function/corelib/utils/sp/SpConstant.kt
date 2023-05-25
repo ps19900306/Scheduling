@@ -67,4 +67,7 @@ object SpConstant {
     const val F_ROUND_BATTLE_LIST = "f_round_battle_list"
     const val F_CRESISTANCE_MODE = "f_cresistance_mode"
     const val F_LAST_ATTACK_POSITION = "f_last_attack_position"
+
+    const val RECORD_IMG_TASK_DEVIATION = "record_img_task_deviation"//图片识别任务
+
 }

@@ -10,11 +10,15 @@ import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 class TwoAreaRule(
     val area1: CoordinateArea,
     val area2: CoordinateArea,
-    val rule: ColorCompareRule
+    val rule: ColorCompareRule,
+    var removeAcnode: Boolean = true//去除孤点 比如对比亮度差距的时候，去除掉背景透明度下特别的点
 ) : IPR {
 
     override fun getCoordinatePoint(): CoordinatePoint {
         return CoordinatePoint(area1.x, area1.y)
     }
+
+
+
 
 }

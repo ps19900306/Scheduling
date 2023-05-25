@@ -75,6 +75,7 @@ class SPRepoPrefix(val prefix: String) {
 
     var specificStatus by SP(prefix + SpConstant.SPECIFIC_STATUS, false) //是否切换到特殊任务下
 
+
     //收菜的
     val celestialResourcesSP = SP(prefix + SpConstant.CELESTIAL_RESOURCES_LIST, "")
     var celestialResources by celestialResourcesSP
@@ -145,5 +146,9 @@ class SPRepoPrefix(val prefix: String) {
     val lastAttackPositionSP = SP(prefix + SpConstant.F_LAST_ATTACK_POSITION, 4)
     var lastAttackPosition by lastAttackPositionSP
 
+
+    fun getRecordImgTaskDeviation(taskTagStr: String): SP<String> {
+        return SP(prefix + SpConstant.RECORD_IMG_TASK_DEVIATION + taskTagStr, "")
+    }
 
 }
