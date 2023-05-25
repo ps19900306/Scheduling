@@ -12,7 +12,7 @@ class ColorRuleRatioImpl(
     val minGreen: Int, val maxBlue: Int, val minBlue: Int,
     val redToGreenMax: Float, val redToGreenMin: Float,
     val redToBlueMax: Float, val redToBlueMin: Float,
-    val greenToBlueMax: Float, val greenToGreenMin: Float,
+    val greenToBlueMax: Float, val greenToBlueMin: Float,
 ) : ColorIdentificationRule {
 
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
@@ -27,7 +27,7 @@ class ColorRuleRatioImpl(
         return red in minRed..maxRed && green in minGreen..maxGreen && blue in minBlue..maxBlue &&
                 redToGreen in redToGreenMin..redToGreenMax
                 && redToBlue in redToBlueMin..redToBlueMax
-                && greenToBlue in greenToGreenMin..greenToBlueMax
+                && greenToBlue in greenToBlueMin..greenToBlueMax
     }
 
     companion object {
@@ -39,11 +39,11 @@ class ColorRuleRatioImpl(
             maxBlue: Int, minBlue: Int,
             redToGreenMax: Float, redToGreenMin: Float,
             redToBlueMax: Float, redToBlueMin: Float,
-            greenToBlueMax: Float, greenToGreenMin: Float,
+            greenToBlueMax: Float, greenToBlueMin: Float,
         ): ColorRuleRatioImpl {
             return list.find {
                 it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue &&
-                        it.redToGreenMax == redToGreenMax && it.redToGreenMin == redToGreenMin && it.redToBlueMax == redToBlueMax && it.redToBlueMin == redToBlueMin && it.greenToBlueMax == greenToBlueMax && it.greenToGreenMin == greenToGreenMin
+                        it.redToGreenMax == redToGreenMax && it.redToGreenMin == redToGreenMin && it.redToBlueMax == redToBlueMax && it.redToBlueMin == redToBlueMin && it.greenToBlueMax == greenToBlueMax && it.greenToBlueMin == greenToBlueMin
             }
                 ?: ColorRuleRatioImpl(
                     maxRed,
@@ -57,7 +57,7 @@ class ColorRuleRatioImpl(
                     redToBlueMax,
                     redToBlueMin,
                     greenToBlueMax,
-                    greenToGreenMin
+                    greenToBlueMin
                 ).apply {
                     list.add(this)
                 }
