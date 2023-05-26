@@ -7,7 +7,7 @@ import com.nwq.function.corelib.utils.JsonUtil
 import com.nwq.function.corelib.utils.sp.SP
 import com.nwq.function.corelib.utils.sp.SPRepoPrefix
 
-class CorrectPositionModel(
+open class CorrectPositionModel(
     val pointList: List<PointRule>,
     val tag: String,
     val xRange: Int = 0, //初始图片的寻找范围， 必须有一个大于零

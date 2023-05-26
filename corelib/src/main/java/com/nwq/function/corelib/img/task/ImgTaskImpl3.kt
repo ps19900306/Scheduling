@@ -10,7 +10,7 @@ create time: 2023/5/13 14:22
 Function description:
 这个用于判断进度条血条的
  */
-class ImgTaskImpl3(
+open class ImgTaskImpl3(
     iprList: List<IPR>, tag: String, correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 

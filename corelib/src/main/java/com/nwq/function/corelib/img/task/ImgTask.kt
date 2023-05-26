@@ -11,6 +11,7 @@ abstract class ImgTask(
     val iprList: List<IPR>, val tag: String, val correctModel: CorrectPositionModel? = null
 ) : BasicTask {
 
+    //验证是否符合规则
     abstract suspend fun verificationRule(bitmap: Bitmap): Boolean
 
     protected fun checkImgTask(bitmap: Bitmap, offsetX: Int = 0, offsetY: Int = 0): Boolean {

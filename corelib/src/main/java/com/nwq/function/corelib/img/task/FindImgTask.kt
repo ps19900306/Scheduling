@@ -1,6 +1,7 @@
 package com.nwq.function.corelib.img.task
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.img.pcheck.IPR
@@ -12,7 +13,7 @@ create time: 2023/5/13 14:22
 Function description:
 范围找图，成功后会记录偏差值，以完成后续操作
  */
-class FindImgTask(
+open class FindImgTask(
     iprList: List<IPR>, tag: String,val findArea: CoordinateArea //初始图片的寻找范围
 ) : ImgTask(iprList,tag) {
 
@@ -64,6 +65,18 @@ class FindImgTask(
     override suspend fun verificationRule(bitmap: Bitmap): Boolean {
         TODO("Not yet implemented")
     }
+
+
+    fun findImgByColorLinear(bitmap: Bitmap):Boolean{
+        TODO("Not yet implemented")
+    }
+
+    private suspend  fun findImgByColorBig(
+        bitmap: Bitmap,
+    ): Boolean {
+        TODO("Not yet implemented")
+    }
+
 
 
 }

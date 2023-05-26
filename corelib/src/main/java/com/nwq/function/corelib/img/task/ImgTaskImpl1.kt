@@ -1,11 +1,8 @@
 package com.nwq.function.corelib.img.task
 
-
-import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.GestureDescription
 import android.graphics.Bitmap
-import android.graphics.Path
 import com.nwq.function.corelib.img.pcheck.IPR
+import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -15,18 +12,20 @@ create time: 2023/5/13 14:22
 Function description:
 固定点找图，成功后会记录偏差值，以优化流程
  */
-class ImgTaskImpl1(
+open class ImgTaskImpl1(
     iprList: List<IPR>,
     tag: String,
     correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 
     override suspend fun verificationRule(bitmap: Bitmap): Boolean {
-        return if (correctModel == null) {
+        val result = if (correctModel == null) {
             checkImgTask(bitmap)
-        }else{
-            optClickTasks(bitmap,correctModel)
+        } else {
+            optClickTasks(bitmap, correctModel)
         }
+        Timber.d("$tag:$result   NWQ_ 2023/5/26");
+        return result
     }
 
     suspend fun optClickTasks(
@@ -38,10 +37,10 @@ class ImgTaskImpl1(
                 false
             } else {
                 val result = checkImgTask(bitmap, x, y)
-                if(result){
+                if (result) {
                     it.resume(true)
                     true
-                }else{
+                } else {
                     false
                 }
             }

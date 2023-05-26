@@ -74,7 +74,6 @@ class TwoAreaRule(
      * 自动对点进行分组 找到三个特征最高的关键
      */
     private fun groupPoint(array: IntArray): RGBInfo {
-
         val colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
         val featureKeyList = mutableListOf<FeaturePointKey>()
         array.forEach { colorInt ->
