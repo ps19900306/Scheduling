@@ -6,7 +6,7 @@ create time: 2023/5/5 10:47
 Function description:
  */
 
-class CoordinateArea(var x: Int, var y: Int, var with: Int, var height: Int) {
+class CoordinateArea(var x: Int, var y: Int, var width: Int, var height: Int) {
 
 
 

@@ -24,24 +24,24 @@ class TwoAreaRule(
     }
 
     override fun checkIpr(bitmap: Bitmap, offsetX: Int, offsetY: Int): Boolean {
-        val pixels1 = IntArray(area1.with * area1.height)
+        val pixels1 = IntArray(area1.width * area1.height)
         bitmap.getPixels(
             pixels1,
             0,
-            area1.with,
+            area1.width,
             area1.x + offsetX,
             area1.y + offsetY,
-            area1.with,
+            area1.width,
             area1.height
         )
-        val pixels2 = IntArray(area2.with * area2.height)
+        val pixels2 = IntArray(area2.width * area2.height)
         bitmap.getPixels(
             pixels2,
             0,
-            area2.with,
+            area2.width,
             area2.x + offsetX,
             area2.y + offsetY,
-            area2.with,
+            area2.width,
             area2.height
         )
 

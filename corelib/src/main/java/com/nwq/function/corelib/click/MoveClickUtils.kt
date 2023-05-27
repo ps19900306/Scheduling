@@ -187,7 +187,7 @@ object MoveClickUtils {
 
 
     private fun getStartCoordinate(): CoordinatePoint {
-        val x = centerArea.x + centerArea.with * Math.random()
+        val x = centerArea.x + centerArea.width * Math.random()
         val y = centerArea.y + centerArea.height * Math.random()
         return CoordinatePoint(x, y)
     }
