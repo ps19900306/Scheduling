@@ -15,6 +15,19 @@ class ColorRuleRatioImpl(
     val greenToBlueMax: Float, val greenToBlueMin: Float,
 ) : ColorIdentificationRule {
 
+
+    constructor(
+        maxRed: Int, minRed: Int, maxGreen: Int,
+        minGreen: Int, maxBlue: Int, minBlue: Int
+    ) : this(
+        maxRed, minRed, maxGreen,
+        minGreen, maxBlue, minBlue,
+        maxRed.toFloat() / minGreen, minRed.toFloat() / maxGreen,
+        maxRed.toFloat() / minBlue, minRed.toFloat() / maxBlue,
+        maxGreen.toFloat() / minBlue, minGreen.toFloat() / maxBlue,
+    )
+
+
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
         val redF = red.toFloat()
         val greenF = red.toFloat()

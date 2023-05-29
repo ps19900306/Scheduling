@@ -16,7 +16,8 @@ interface ColorCompareRule {
         return verificationRule(colorInt1.r, colorInt1.g, colorInt1.b,colorInt2.r, colorInt2.g, colorInt2.b)
     }
 
-    fun verificationRule(red: Int, green: Int, blue: Int, red1: Int, green1: Int, blue1: Int): Boolean
+    fun verificationRule(red1: Int, green1: Int, blue1: Int, red2: Int, green2: Int, blue2: Int): Boolean
+
 
 
 
