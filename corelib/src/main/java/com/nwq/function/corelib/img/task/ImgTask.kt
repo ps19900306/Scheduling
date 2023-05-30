@@ -21,7 +21,11 @@ abstract class ImgTask(
         return hasFailedPoint == null
     }
 
+   fun getOffsetX():Int{
+       return 0
+   }
 
-
-
+    fun getOffsetY():Int{
+        return 0
+    }
 }

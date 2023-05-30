@@ -16,16 +16,16 @@ object SimpleClickUtils {
 
 
     suspend fun optClickTasks(
-        aService: AccessibilityService, vararg clickTask: ClickTask
+        aService: AccessibilityService, offsetX: Int, offsetY: Int, vararg clickTask: ClickTask
     ): Boolean = suspendCoroutine {
         val builder = GestureDescription.Builder()
         clickTask.forEach { task ->
             val path = Path()
             task.coordinates.forEachIndexed { i, d ->
                 if (i == 0) {
-                    path.moveTo(d.x, d.y)
+                    path.moveTo(d.x + offsetX, d.y + offsetY)
                 } else {
-                    path.lineTo(d.x, d.y)
+                    path.lineTo(d.x + offsetX, d.y + offsetY)
                 }
             }
             builder.addStroke(
@@ -49,7 +49,6 @@ object SimpleClickUtils {
             }, null
         )
     }
-
 
 
 }

@@ -1,5 +1,7 @@
 package com.nwq.function.corelib.area
 
+import com.nwq.function.corelib.click.task.ClickTask
+
 /**
 create by: 86136
 create time: 2023/5/5 10:47
@@ -20,6 +22,12 @@ class CoordinateArea(
         offsetX = ofstX
         offsetY = ofstY
     }
+
+
+    fun toClickTask(): ClickTask {
+        return ClickTask(listOf(coordinate), 0, 0)
+    }
+
 
     val coordinate
         get() = CoordinatePoint(

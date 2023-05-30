@@ -41,7 +41,6 @@ class AccessibilityHelper(val acService: AccessibilityService) {
                     )
                     screenBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                     bitmap?.recycle()
-                    //screenBitmap?.let { it1 -> FileUtils.saveImage29(it1,acService) }
                     Timber.d("setScreenBitmap onSuccess AccessibilityHelper NWQ_ 2023/3/12");
                     it.resume(screenBitmap)
                 }

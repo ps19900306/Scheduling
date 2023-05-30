@@ -1,5 +1,7 @@
 package com.nwq.function.corelib.area
 
+import com.nwq.function.corelib.click.task.ClickTask
+
 /**
 create by: 86136
 create time: 2023/5/5 10:43
@@ -14,6 +16,11 @@ class CoordinatePoint(var x: Float, var y: Float) {
 
     constructor(x: Double, y: Double) : this(x.toFloat(), y.toFloat()) {
 
+    }
+
+
+    fun toClickTask(): ClickTask {
+        return ClickTask(listOf(this), 0, 0)
     }
 
     val xI
