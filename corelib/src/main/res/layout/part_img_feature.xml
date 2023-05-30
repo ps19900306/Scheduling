@@ -5,87 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/addBtn"
-        style="@style/normalTitleTv"
-        android:text="@string/add"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/optRecycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/deleteBtn"
-        style="@style/normalTitleTv"
-        android:text="@string/delete"
-        app:layout_constraintBottom_toBottomOf="@+id/addBtn"
-        app:layout_constraintStart_toEndOf="@+id/addBtn"
-        app:layout_constraintTop_toTopOf="@+id/addBtn" />
-
-
-    <Button
-        android:id="@+id/autoBtn"
-        style="@style/normalTitleTv"
-        android:text="@string/auto_exc"
-        app:layout_constraintBottom_toBottomOf="@+id/deleteBtn"
-        app:layout_constraintStart_toEndOf="@+id/deleteBtn"
-        app:layout_constraintTop_toTopOf="@+id/deleteBtn" />
-
-    <Button
-        android:id="@+id/addPointBtn"
-        style="@style/normalTitleTv"
-        android:text="@string/add_point"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addBtn" />
-
-    <Button
-        android:id="@+id/deletePointBtn"
-        style="@style/normalTitleTv"
-        android:text="@string/delete_point"
-        app:layout_constraintBottom_toBottomOf="@+id/addPointBtn"
-        app:layout_constraintStart_toEndOf="@+id/addPointBtn"
-        app:layout_constraintTop_toTopOf="@+id/addPointBtn" />
-
-    <Button
-        android:id="@+id/boundaryBtn"
-        style="@style/normalTitleTv"
-        android:text="@string/boundary"
-        app:layout_constraintBottom_toBottomOf="@+id/deletePointBtn"
-        app:layout_constraintStart_toEndOf="@+id/deletePointBtn"
-        app:layout_constraintTop_toTopOf="@+id/deletePointBtn" />
-
-    <Button
-        android:id="@+id/previewBtn"
-        style="@style/normalTitleTv"
-        android:text="@string/preview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addPointBtn" />
-
-    <CheckBox
-        android:id="@+id/boundaryCb"
-        style="@style/normalTitleTv"
-        android:text="@string/boundary"
-        app:layout_constraintBottom_toBottomOf="@+id/previewBtn"
-        app:layout_constraintStart_toEndOf="@+id/previewBtn"
-        app:layout_constraintTop_toTopOf="@+id/previewBtn" />
-
-    <CheckBox
-        android:id="@+id/identificationCb"
-        style="@style/normalTitleTv"
-        android:text="@string/feature"
-        app:layout_constraintBottom_toBottomOf="@+id/boundaryCb"
-        app:layout_constraintStart_toEndOf="@+id/boundaryCb"
-        app:layout_constraintTop_toTopOf="@+id/boundaryCb" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        tools:layout_editor_absoluteX="1dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+        android:id="@+id/feRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.55"
+        app:layout_constraintWidth_percent="0.5"
         tools:layout_editor_absoluteX="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

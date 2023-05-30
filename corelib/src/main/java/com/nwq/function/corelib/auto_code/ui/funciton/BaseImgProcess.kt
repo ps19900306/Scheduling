@@ -1,5 +1,8 @@
 package com.nwq.function.corelib.auto_code.ui.funciton
 
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 
@@ -107,7 +110,7 @@ class BaseImgProcess(
                 //left
                 if (!isBoundary && point.x > 0) {
                     val leftPoint = featureArray[point.y][point.x - 1]
-                    if (!originalList.contains(leftPoint)) {
+                    if (point.mFeaturePointKey!= leftPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -116,7 +119,7 @@ class BaseImgProcess(
                 //top
                 if (!isBoundary && point.y > 0) {
                     val topPoint = featureArray[point.y - 1][point.x]
-                    if (!originalList.contains(topPoint)) {
+                    if (point.mFeaturePointKey!= topPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -125,7 +128,7 @@ class BaseImgProcess(
                 //right
                 if (!isBoundary && point.x < with) {
                     val rightPoint = featureArray[point.y][point.x + 1]
-                    if (!originalList.contains(rightPoint)) {
+                    if (point.mFeaturePointKey!= rightPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -134,7 +137,7 @@ class BaseImgProcess(
                 //bottom
                 if (!isBoundary && point.y < height) {
                     val bottomPoint = featureArray[point.y + 1][point.x]
-                    if (!originalList.contains(bottomPoint)) {
+                    if (point.mFeaturePointKey!= bottomPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -258,8 +261,8 @@ class BaseImgProcess(
 
     //这里是为了优化过滤掉端点，去掉一些不必要的点
     private fun filterExtremePoint(
-        originalList: MutableList<FeatureCoordinatePoint>,
-        filterList: List<FeatureCoordinatePoint>
+        originalList: MutableList<FeatureCoordinatePoint>, //需要过滤的点
+        filterList: List<FeatureCoordinatePoint>     //过滤规则
     ) {
         val iterator = originalList.iterator()
         while (iterator.hasNext()) {//去除近的端点
@@ -411,5 +414,22 @@ class BaseImgProcess(
         colorMaps.put(darkestKey, mutableListOf())
     }
 
+
+    //多点选择平均色
+     fun addFeatureKey(vararg colorInt: Int) {
+        var redTotal = 0
+        var greenTotal = 0
+        var blueTotal = 0
+        colorInt.forEach {
+            redTotal += it.red
+            greenTotal += it.green
+            blueTotal += it.blue
+        }
+        colorMaps[ FeaturePointKey(
+            redTotal / colorInt.size,
+            greenTotal / colorInt.size,
+            blueTotal / colorInt.size
+        )]=mutableListOf()
+    }
 
 }
