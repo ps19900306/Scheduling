@@ -16,19 +16,12 @@ create time: 2023/5/17 15:40
 Function description:
  */
 
-class FeatureKeyAdapter(val map: HashMap<FeaturePointKey, MutableList<FeatureCoordinatePoint>>) :
+class FeatureKeyAdapter(val list: List<FeaturePointKey>,  val map: MutableMap<FeaturePointKey, MutableList<FeatureCoordinatePoint>>) :
     RecyclerView.Adapter<FeatureKeyViewHolder>() {
 
     companion object {
         val key1 = 1
         val key2 = 2
-    }
-
-    var list = map.keys.toList()
-
-    fun updateData() {
-        list = map.keys.toList()
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeatureKeyViewHolder {

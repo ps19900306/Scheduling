@@ -20,8 +20,8 @@ class BaseImgProcess(
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
 
-    private var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
-    private val featureKeyList = mutableListOf<FeaturePointKey>()
+    var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
+    val featureKeyList = mutableListOf<FeaturePointKey>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
@@ -110,7 +110,7 @@ class BaseImgProcess(
                 //left
                 if (!isBoundary && point.x > 0) {
                     val leftPoint = featureArray[point.y][point.x - 1]
-                    if (point.mFeaturePointKey!= leftPoint.mFeaturePointKey) {
+                    if (point.mFeaturePointKey != leftPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -119,7 +119,7 @@ class BaseImgProcess(
                 //top
                 if (!isBoundary && point.y > 0) {
                     val topPoint = featureArray[point.y - 1][point.x]
-                    if (point.mFeaturePointKey!= topPoint.mFeaturePointKey) {
+                    if (point.mFeaturePointKey != topPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -128,7 +128,7 @@ class BaseImgProcess(
                 //right
                 if (!isBoundary && point.x < with) {
                     val rightPoint = featureArray[point.y][point.x + 1]
-                    if (point.mFeaturePointKey!= rightPoint.mFeaturePointKey) {
+                    if (point.mFeaturePointKey != rightPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -137,7 +137,7 @@ class BaseImgProcess(
                 //bottom
                 if (!isBoundary && point.y < height) {
                     val bottomPoint = featureArray[point.y + 1][point.x]
-                    if (point.mFeaturePointKey!= bottomPoint.mFeaturePointKey) {
+                    if (point.mFeaturePointKey != bottomPoint.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
                     }
@@ -416,7 +416,7 @@ class BaseImgProcess(
 
 
     //多点选择平均色
-     fun addFeatureKey(vararg colorInt: Int) {
+    fun addFeatureKey(vararg colorInt: Int) {
         var redTotal = 0
         var greenTotal = 0
         var blueTotal = 0
@@ -425,11 +425,11 @@ class BaseImgProcess(
             greenTotal += it.green
             blueTotal += it.blue
         }
-        colorMaps[ FeaturePointKey(
+        colorMaps[FeaturePointKey(
             redTotal / colorInt.size,
             greenTotal / colorInt.size,
             blueTotal / colorInt.size
-        )]=mutableListOf()
+        )] = mutableListOf()
     }
 
 }
