@@ -97,4 +97,8 @@ class FeatureCoordinatePoint(
         return positionType == INTERNAL_TYPE
     }
 
+
+    fun isBoundary(): Boolean {
+        return positionType == BOUNDARY_TYPE
+    }
 }

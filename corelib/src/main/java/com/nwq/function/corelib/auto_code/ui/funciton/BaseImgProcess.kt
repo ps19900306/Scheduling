@@ -514,5 +514,21 @@ class BaseImgProcess(
         }
     }
 
+    fun getPreview(showFeature: Boolean, showBoundary: Boolean):List<FeatureCoordinatePoint> {
+        val pointList = mutableListOf<FeatureCoordinatePoint>()
+        featureKeyList.forEach {
+           if(it.isChecked){
+               colorMaps[it]?.forEach {
+                   if(showFeature &&  it.isIdentificationKey){
+                       pointList.add(it)
+                   }else if(showBoundary &&  it.isBoundary()){
+                       pointList.add(it)
+                   }
+               }
+           }
+        }
+        return pointList
+    }
+
 
 }

@@ -98,16 +98,17 @@ class ImgFeatureExtractionFunction(
                     generateCode()
                 }
                 R.string.preview -> {
-
+                    val list = mBaseImgProcess.getPreview(showFeature, showBoundary)
+                    mOptLister.showPoint(list)
                 }
                 R.string.feature -> {
-                    data.isCheck=!data.isCheck
-                    showFeature=data.isCheck
+                    data.isCheck = !data.isCheck
+                    showFeature = data.isCheck
                     mFunctionItemAdapter.notifyItemChanged(position)
                 }
                 R.string.boundary -> {
-                    data.isCheck=!data.isCheck
-                    showBoundary=data.isCheck
+                    data.isCheck = !data.isCheck
+                    showBoundary = data.isCheck
                     mFunctionItemAdapter.notifyItemChanged(position)
                 }
             }
