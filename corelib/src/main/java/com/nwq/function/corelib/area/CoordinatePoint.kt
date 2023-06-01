@@ -53,4 +53,22 @@ class CoordinatePoint(var x: Float, var y: Float) {
     }
 
 
+    fun divergentPoint(range: Int): List<CoordinatePoint> {
+        return if (range <= 0) {
+            listOf(this)
+        } else {
+            val list = mutableListOf<CoordinatePoint>()
+            for (x in xI-range  .. xI+range){
+                for(y in yI-range  .. yI+range){
+                    list.add(CoordinatePoint(x,y))
+                }
+            }
+
+            list.sortedBy {
+                Math.abs(it.xI - this.xI)+ Math.abs(it.yI - this.yI)
+            }
+            list
+        }
+    }
+
 }

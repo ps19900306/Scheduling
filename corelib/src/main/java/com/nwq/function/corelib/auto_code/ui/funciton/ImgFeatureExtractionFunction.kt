@@ -13,6 +13,8 @@ import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Compani
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.CHECK_TYPE
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
+import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_POINT
+import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_POINT
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
 import com.nwq.function.corelib.utils.runOnUI
 import com.nwq.function.corelib.utils.singleClick
@@ -32,14 +34,14 @@ class ImgFeatureExtractionFunction(
     val with: Int,
     val height: Int,
     val imgArray: List<IntArray>,
-    val binding: PartImgFeatureBinding
+    val binding: PartImgFeatureBinding,
+    val mOptLister: OptLister
 ) : FunctionBlock {
 
-    private val mBaseImgProcess = BaseImgProcess(imgArray, with, height)
+    private val mBaseImgProcess = BaseImgProcess(with, height, imgArray)
 
     private lateinit var mFeatureKeyAdapter: FeatureKeyAdapter
     private lateinit var mFunctionItemAdapter: FunctionItemAdapter
-
     private val context = binding.root.context
 
     private val functionItemList by lazy {
@@ -76,31 +78,31 @@ class ImgFeatureExtractionFunction(
 
         mFunctionItemAdapter.setOnItemClickListener { adapter, view, position ->
             when (functionItemList[position].strId) {
-                R.string.add->{
+                R.string.add -> {
+                    mOptLister.requestFeatureKey()
+                }
+                R.string.delete -> {
+                    mBaseImgProcess.deleteSelectFeatureKey()
+                }
+                R.string.add_point -> {
+                    mOptLister.optPoint(ADD_POINT)
+                }
+                R.string.delete_point -> {
+                    mOptLister.optPoint(DELETE_POINT)
+                }
+                R.string.auto_exc -> {
+                    mBaseImgProcess.autoExc()
+                }
+                R.string.auto_code -> {
 
                 }
-                R.string.delete->{
+                R.string.preview -> {
 
                 }
-                R.string.add_point->{
+                R.string.feature -> {
 
                 }
-                R.string.delete_point->{
-
-                }
-                R.string.auto_exc->{
-
-                }
-                R.string.auto_code->{
-
-                }
-                R.string.preview->{
-
-                }
-                R.string.feature->{
-
-                }
-                R.string.boundary->{
+                R.string.boundary -> {
 
                 }
             }
@@ -110,24 +112,46 @@ class ImgFeatureExtractionFunction(
 
 
     private fun initFeature() {
-         GlobalScope.launch(Dispatchers.Default) {
-             mBaseImgProcess.preprocessData()
-             runOnUI {
-                 mFeatureKeyAdapter = FeatureKeyAdapter(mBaseImgProcess.featureKeyList,mBaseImgProcess.colorMaps)
-             }
-         }
+        GlobalScope.launch(Dispatchers.Default) {
+            mBaseImgProcess.preprocessData()
+            runOnUI {
+                mFeatureKeyAdapter =
+                    FeatureKeyAdapter(mBaseImgProcess.featureKeyList, mBaseImgProcess.colorMaps)
+            }
+        }
 
     }
 
 
-    private fun autoFindTargetColor(colorInt: Int) {
-
-    }
-
-
-    override fun addFeatureKey(vararg colorInt: Int) {
+    override suspend fun addFeatureKey(vararg colorInt: Int) {
         mBaseImgProcess.addFeatureKey(*colorInt)
     }
+
+    override fun optPoint(cmd: Int, x: Int, y: Int, colorInt: Int) {
+        when (cmd) {
+            ADD_POINT -> {
+                addFeaturePoint(x, y)
+            }
+            DELETE_POINT -> {
+                deleteFeaturePoint(x, y)
+            }
+        }
+    }
+
+    override fun generateCode() {
+
+    }
+
+
+    private fun addFeaturePoint(x: Int, y: Int) {
+        mBaseImgProcess.addFeaturePoint(x - startX, y - startY)
+    }
+
+    private fun deleteFeaturePoint(x: Int, y: Int) {
+        mBaseImgProcess.deleteFeaturePoint(x - startX, y - startY)
+    }
+
+
 
 
 }

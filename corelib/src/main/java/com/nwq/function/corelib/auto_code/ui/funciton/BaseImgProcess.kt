@@ -3,8 +3,12 @@ package com.nwq.function.corelib.auto_code.ui.funciton
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
 create by: 86136
@@ -14,8 +18,9 @@ suspend标记耗时操作
  */
 
 class BaseImgProcess(
-    private val imgArray: List<IntArray>, private val with: Int,
+    private val with: Int,
     private val height: Int,
+    private val imgArray: List<IntArray>,
 ) {
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
@@ -96,6 +101,17 @@ class BaseImgProcess(
                             colorMaps[featureKey] = this
                         }).add(point)
                     }
+                }
+            }
+        }
+    }
+
+    fun autoExc() {
+        GlobalScope.launch(Dispatchers.Default) {
+            colorMaps.forEach {
+                if (darkestKey != it.key) {
+                    markBoundaryInternal(it.value)
+                    obtainFeaturePoints(it.value)
                 }
             }
         }
@@ -416,7 +432,7 @@ class BaseImgProcess(
 
 
     //多点选择平均色
-    fun addFeatureKey(vararg colorInt: Int) {
+    suspend fun addFeatureKey(vararg colorInt: Int) {
         var redTotal = 0
         var greenTotal = 0
         var blueTotal = 0
@@ -425,11 +441,78 @@ class BaseImgProcess(
             greenTotal += it.green
             blueTotal += it.blue
         }
-        colorMaps[FeaturePointKey(
+        val featurePointKey = FeaturePointKey(
             redTotal / colorInt.size,
             greenTotal / colorInt.size,
             blueTotal / colorInt.size
-        )] = mutableListOf()
+        )
+
+        colorMaps[featurePointKey] = mutableListOf()
+        featureKeyList.add(featurePointKey)
+        groupFeatureCoordinatePoint(listOf(featurePointKey))
     }
+
+    //添加附近选中的特征点
+    fun addFeaturePoint(x: Int, y: Int) {
+        CoordinatePoint(x, y).divergentPoint(3).forEach {
+            featureArray[it.yI][it.xI].let { point ->
+                var result: FeatureCoordinatePoint? = null
+                if (point.mFeaturePointKey?.isChecked == true) {
+                    if (result == null && point.x > 0) {
+                        val leftPoint = featureArray[point.y][point.x - 1]
+                        if (point.mFeaturePointKey == leftPoint.mFeaturePointKey && leftPoint.isInternal()) {
+                            result = leftPoint
+                        }
+                    }
+                    if (result == null && point.y > 0) {
+                        val topPoint = featureArray[point.y - 1][point.x]
+                        if (point.mFeaturePointKey == topPoint.mFeaturePointKey && topPoint.isInternal()) {
+                            result = topPoint
+                        }
+                    }
+                    if (result == null && point.x < with) {
+                        val rightPoint = featureArray[point.y][point.x + 1]
+                        if (point.mFeaturePointKey == rightPoint.mFeaturePointKey && rightPoint.isInternal()) {
+                            result = rightPoint
+                        }
+                    }
+
+                    if (result == null && point.y < height) {
+                        val bottomPoint = featureArray[point.y + 1][point.x]
+                        if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey && bottomPoint.isInternal()) {
+                            result = bottomPoint
+                        }
+                    }
+                }
+                if (result != null) {
+                    result.isIdentificationKey = true
+                    return
+                }
+            }
+        }
+    }
+
+    //删除附件选中的特征点
+    fun deleteFeaturePoint(x: Int, y: Int) {
+        CoordinatePoint(x, y).divergentPoint(3).forEach {
+            featureArray[it.yI][it.xI].let {
+                if (it.mFeaturePointKey?.isChecked == true && it.isIdentificationKey) {
+                    it.isIdentificationKey = false
+                    return
+                }
+            }
+        }
+    }
+
+    fun deleteSelectFeatureKey() {
+        val iterator = featureKeyList.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (item.isChecked) {
+                iterator.remove()
+            }
+        }
+    }
+
 
 }
