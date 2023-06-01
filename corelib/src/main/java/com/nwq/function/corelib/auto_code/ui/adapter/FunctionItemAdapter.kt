@@ -1,6 +1,7 @@
 package com.nwq.function.corelib.auto_code.ui.adapter
 
 import android.widget.Button
+import android.widget.CheckBox
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -32,9 +33,11 @@ class FunctionItemAdapter(list: MutableList<FunctionItemInfo>) :
         when(holder.itemViewType){
             CHECK_TYPE->{
                 holder.setText(R.id.cBox,item.strId)
+                holder.getView<CheckBox>(R.id.cBox).isChecked= item.isCheck
             }
             BUTTON_TYPE->{
                 holder.setText(R.id.btn,item.strId)
+
             }
         }
     }

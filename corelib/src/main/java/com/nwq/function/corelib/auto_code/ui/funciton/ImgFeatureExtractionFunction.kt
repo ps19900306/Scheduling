@@ -58,12 +58,12 @@ class ImgFeatureExtractionFunction(
         )
     }
 
+    private var showFeature = false
+    private var showBoundary = false
 
     init {
-
         initOpt()
         initFeature()
-
     }
 
 
@@ -77,7 +77,8 @@ class ImgFeatureExtractionFunction(
         binding.optRecycler.addItemDecoration(sd)
 
         mFunctionItemAdapter.setOnItemClickListener { adapter, view, position ->
-            when (functionItemList[position].strId) {
+            val data = functionItemList[position]
+            when (data.strId) {
                 R.string.add -> {
                     mOptLister.requestFeatureKey()
                 }
@@ -94,16 +95,20 @@ class ImgFeatureExtractionFunction(
                     mBaseImgProcess.autoExc()
                 }
                 R.string.auto_code -> {
-
+                    generateCode()
                 }
                 R.string.preview -> {
 
                 }
                 R.string.feature -> {
-
+                    data.isCheck=!data.isCheck
+                    showFeature=data.isCheck
+                    mFunctionItemAdapter.notifyItemChanged(position)
                 }
                 R.string.boundary -> {
-
+                    data.isCheck=!data.isCheck
+                    showBoundary=data.isCheck
+                    mFunctionItemAdapter.notifyItemChanged(position)
                 }
             }
         }
@@ -150,8 +155,6 @@ class ImgFeatureExtractionFunction(
     private fun deleteFeaturePoint(x: Int, y: Int) {
         mBaseImgProcess.deleteFeaturePoint(x - startX, y - startY)
     }
-
-
 
 
 }
