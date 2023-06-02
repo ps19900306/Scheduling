@@ -3,10 +3,13 @@ package com.nwq.function.corelib.auto_code.ui.funciton
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.nwq.function.corelib.R
 import com.nwq.function.corelib.area.CoordinateArea
+import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.auto_code.FunctionBlock
 import com.nwq.function.corelib.auto_code.ui.adapter.FeatureKeyAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter
@@ -138,29 +141,44 @@ class ImgFeatureExtractionFunction(
         mBaseImgProcess.addFeatureKey(*colorInt)
     }
 
-    override fun optPoint(cmd: Int, x: Int, y: Int, colorInt: Int) {
+    override fun optPoint(cmd: Int, vararg coordinatePoint: CoordinatePoint) {
         when (cmd) {
             ADD_POINT -> {
-                addFeaturePoint(x, y)
+                addFeaturePoint(*coordinatePoint)
             }
             DELETE_POINT -> {
-                deleteFeaturePoint(x, y)
+                deleteFeaturePoint(*coordinatePoint)
             }
         }
     }
+
+    override fun optArea(cmd: Int, vararg area: CoordinateArea) {
+        TODO("Not yet implemented")
+    }
+
 
     override fun generateCode() {
 
     }
 
-
-    private fun addFeaturePoint(x: Int, y: Int) {
-        mBaseImgProcess.addFeaturePoint(x - startX, y - startY)
+    override fun hideView() {
+        binding.root.isGone=true
     }
 
-    private fun deleteFeaturePoint(x: Int, y: Int) {
-        mBaseImgProcess.deleteFeaturePoint(x - startX, y - startY)
+    override fun showView() {
+        binding.root.isVisible=true
     }
 
 
+    private fun addFeaturePoint(vararg coordinatePoint: CoordinatePoint) {
+        coordinatePoint.forEach {
+            mBaseImgProcess.addFeaturePoint(it.xI - startX, it.yI - startY)
+        }
+    }
+
+    private fun deleteFeaturePoint(vararg coordinatePoint: CoordinatePoint) {
+        coordinatePoint.forEach {
+            mBaseImgProcess.deleteFeaturePoint(it.xI - startX, it.yI - startY)
+        }
+    }
 }

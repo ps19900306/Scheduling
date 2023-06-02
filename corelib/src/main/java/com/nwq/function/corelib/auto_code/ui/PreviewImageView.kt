@@ -28,16 +28,11 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
     private val mDotPaint: Paint  //用来画点的
     private val oblongPaint: Paint //用来画长方形的
     private val dotSize: Float
-    private val dotList = mutableListOf<CoordinatePoint>()
-    private var areaList = mutableListOf<CoordinateArea>()
+    val dotList = mutableListOf<CoordinatePoint>()
+    var areaList = mutableListOf<CoordinateArea>()
 
     //单区域预览
-    private var oblongArea: CoordinateArea? = null
-
-    fun setArea(area: CoordinateArea?) {
-        oblongArea = area
-        invalidate()
-    }
+    var oblongArea: CoordinateArea? = null
 
 
     init {
@@ -58,6 +53,53 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         oblongPaint.color = oblongColor
         oblongPaint.strokeWidth = oblongSize
         oblongPaint.setStyle(Paint.Style.STROKE)
+    }
+
+    fun setArea(area: CoordinateArea?) {
+        oblongArea = area
+        invalidate()
+    }
+
+
+    fun addArea(coordinate: CoordinateArea): Boolean {
+        if (!areaList.contains(coordinate)) {
+            areaList.add(coordinate)
+            invalidate()
+            return true
+        }
+        return false
+    }
+
+    fun removeArea(coordinate: CoordinateArea) {
+        if (areaList.contains(coordinate)) {
+            areaList.remove(coordinate)
+            invalidate()
+        }
+    }
+
+    fun clearArea() {
+        areaList.clear()
+    }
+
+
+    fun addDot(coordinate: CoordinatePoint): Boolean {
+        if (!dotList.contains(coordinate)) {
+            dotList.add(coordinate)
+            invalidate()
+            return true
+        }
+        return false
+    }
+
+    fun removeDot(coordinate: CoordinatePoint) {
+        if (dotList.contains(coordinate)) {
+            dotList.remove(coordinate)
+            invalidate()
+        }
+    }
+
+    fun clearPoint() {
+        dotList.clear()
     }
 
 
