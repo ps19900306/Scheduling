@@ -17,23 +17,30 @@ import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.nwq.function.corelib.R
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.BUTTON_TYPE
+import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
+import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFunction
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd
+import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.utils.singleClick
 
-class AutoCodeActivity : AppCompatActivity() {
+class AutoCodeActivity : AppCompatActivity(), OptLister {
 
     companion object {
         val NORMAL_MODE = 1   //普通模式
         val PREVIEW_MODE = 2   //预览模式
         val FUNCTION_MODE = 3  //功能模式
+
+        val CREATE_IMAGE_FEATURE = 11
     }
 
     lateinit var bind: ActivityAutoCodeBinding
     private lateinit var mBitmap: Bitmap
+    private var nowMode = NORMAL_MODE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,15 +114,60 @@ class AutoCodeActivity : AppCompatActivity() {
     }
 
     /**
-     * 这个是开始设备的页面
+     * 这个是进行点和区域选取的
      */
+    private var starX = 1F
+    private var starY = 1F
+    private var isFirst = true
     override fun onTouchEvent(ev: MotionEvent): Boolean {
+        when (nowMode) {
+            CREATE_IMAGE_FEATURE -> {
+                if (isFirst) {
+                    if (ev.action == MotionEvent.ACTION_DOWN) {
+                        starX = ev.x
+                        starY = ev.y
+                        isFirst = false
+                    }
+                } else {
+                    if (ev.action == MotionEvent.ACTION_MOVE) {
+                        bind.previewView.setArea(CoordinateArea(starX, starY, ev.x, ev.y))
+                    } else if (ev.action == MotionEvent.ACTION_UP) {
+                        bind.previewView.setArea(null)
+                        isFirst = true
+
+                        var coordinateArea = CoordinateArea(starX, starY, ev.x, ev.y)
+                        mFunctionBlock = ImgFeatureExtractionFunction(coordinateArea,coordinateArea.getBitmapPixList(mBitmap),bind.imgFeatureLayout,this)
+                    }
+                }
+            }
+        }
+
         return super.onTouchEvent(ev)
     }
 
 
 
+
+
+    /***
+     *
+     */
     private var mFunctionBlock: FunctionBlock? = null
+    override fun optPoint(cmd: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun requestArea(cmd: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun requestFeatureKey() {
+        TODO("Not yet implemented")
+    }
+
+    override fun showPoint(list: List<FeatureCoordinatePoint>) {
+        TODO("Not yet implemented")
+    }
 
 
 }

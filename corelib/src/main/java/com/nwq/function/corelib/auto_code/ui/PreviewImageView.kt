@@ -31,6 +31,14 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
     private val dotList = mutableListOf<CoordinatePoint>()
     private var areaList = mutableListOf<CoordinateArea>()
 
+    //单区域预览
+    private var oblongArea: CoordinateArea? = null
+
+    fun setArea(area: CoordinateArea?) {
+        oblongArea = area
+        invalidate()
+    }
+
 
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PreviewImageView)
@@ -62,6 +70,15 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
             canvas.drawCircle(it.x, it.y, dotSize, mDotPaint)
         }
         areaList.forEach {
+            canvas.drawRect(
+                it.x.toFloat(),
+                it.y.toFloat(),
+                (it.x + it.width).toFloat(),
+                (it.y + it.height).toFloat(),
+                oblongPaint
+            )
+        }
+        oblongArea?.let {
             canvas.drawRect(
                 it.x.toFloat(),
                 it.y.toFloat(),

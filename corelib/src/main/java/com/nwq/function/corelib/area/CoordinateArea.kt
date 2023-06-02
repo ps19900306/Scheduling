@@ -1,5 +1,6 @@
 package com.nwq.function.corelib.area
 
+import android.graphics.Bitmap
 import com.nwq.function.corelib.click.task.ClickTask
 
 /**
@@ -18,6 +19,13 @@ class CoordinateArea(
 ) {
 
 
+    constructor(
+        x: Float,
+        y: Float,
+        endX: Float,
+        endY: Float,
+    ) : this(x.toInt(), y.toInt(), (endX - x).toInt(), (endY - y).toInt(), 0, 0)
+
     fun setOffset(ofstX: Int, ofstY: Int) {
         offsetX = ofstX
         offsetY = ofstY
@@ -29,17 +37,53 @@ class CoordinateArea(
     }
 
 
+    fun getBitmapPix(bitmap: Bitmap): IntArray {
+        val pixels = IntArray(width * height)
+        bitmap.getPixels(
+            pixels,
+            0,
+            width,
+            x,
+            y,
+            width,
+            height
+        )
+        return pixels
+    }
+
+
+    //到底要不要帮扩边框
+    fun getBitmapPixList(bitmap: Bitmap): MutableList<IntArray> {
+        val list= mutableListOf<IntArray>()
+        for (i in 0 until height)
+        {
+            val pixels = IntArray(width)
+            bitmap.getPixels(
+                pixels,
+                0,
+                width,
+                x,
+                y+i,
+                width,
+                1
+            )
+            list.add(pixels)
+        }
+        return list
+    }
+
+
     val coordinate
         get() = CoordinatePoint(
-            (x + (Math.random() * 0.6 + 0.2) * width).toFloat()+offsetX ,
-            (y + (Math.random() * 0.6 + 0.2) * height).toFloat()+offsetY
+            (x + (Math.random() * 0.6 + 0.2) * width).toFloat() + offsetX,
+            (y + (Math.random() * 0.6 + 0.2) * height).toFloat() + offsetY
         )
 
 
     val fullCoordinate
         get() = CoordinatePoint(
-            (x + Math.random() * width).toFloat()+offsetX ,
-            (y + Math.random() * height).toFloat()+offsetY
+            (x + Math.random() * width).toFloat() + offsetX,
+            (y + Math.random() * height).toFloat() + offsetY
         )
 
 }

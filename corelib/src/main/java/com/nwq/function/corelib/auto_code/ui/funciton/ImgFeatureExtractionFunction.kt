@@ -6,6 +6,7 @@ import androidx.core.graphics.red
 import androidx.recyclerview.widget.GridLayoutManager
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.nwq.function.corelib.R
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.auto_code.FunctionBlock
 import com.nwq.function.corelib.auto_code.ui.adapter.FeatureKeyAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter
@@ -37,6 +38,10 @@ class ImgFeatureExtractionFunction(
     val binding: PartImgFeatureBinding,
     val mOptLister: OptLister
 ) : FunctionBlock {
+
+
+    constructor(coordinateAre: CoordinateArea,imgArray: List<IntArray>,binding: PartImgFeatureBinding,mOptLister: OptLister)
+    :this(coordinateAre.x,coordinateAre.y,coordinateAre.width,coordinateAre.height,imgArray,binding,mOptLister)
 
     private val mBaseImgProcess = BaseImgProcess(with, height, imgArray)
 
