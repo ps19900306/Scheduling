@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".auto_code.AutoCodeActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/allImg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.nwq.function.corelib.auto_code.ui.PreviewImageView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-27dp" />
+
+    <include
+        android:id="@+id/indexLayout"
+        layout="@layout/part_auto_code_index"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+
+    <include
+        android:visibility="gone"
+        android:id="@+id/imgFeatureLayout"
+        layout="@layout/part_img_feature"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</FrameLayout>

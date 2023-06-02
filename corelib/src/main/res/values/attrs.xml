@@ -1,0 +1,16 @@
+<resources>
+    <declare-styleable name="FullscreenAttrs">
+        <attr name="fullscreenBackgroundColor" format="color" />
+        <attr name="fullscreenTextColor" format="color" />
+    </declare-styleable>
+
+
+    <declare-styleable name="PreviewImageView">
+        <attr name="dotSize" format="dimension" />
+        <attr name="dotColor" format="color" />
+        <attr name="oblongSize" format="dimension" />
+        <attr name="oblongColor" format="color" />
+    </declare-styleable>
+
+
+</resources>

@@ -6,6 +6,8 @@ interface OptLister {
 
     fun optPoint(@OptCmd cmd:Int)
 
+    fun requestArea(@OptCmd cmd:Int)
+
     fun requestFeatureKey()
 
     fun showPoint(list:List<FeatureCoordinatePoint>)

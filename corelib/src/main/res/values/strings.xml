@@ -11,5 +11,6 @@
     <string name="auto_code">代码</string>
     <string name="preview">预览</string>
     <string name="attribute">属性</string>
+    <string name="image_feature_extraction">图片特征提取</string>
 
 </resources>

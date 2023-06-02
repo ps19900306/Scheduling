@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/singleBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单点单值颜色"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/singleBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单点全值颜色"
+        app:layout_constraintStart_toEndOf="@+id/singleBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/singleBtn3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单点低值颜色"
+        app:layout_constraintStart_toEndOf="@+id/singleBtn2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/twoBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="二点校验点一"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/singleBtn" />
+
+    <Button
+        android:id="@+id/twoBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="二点只插值"
+        app:layout_constraintStart_toEndOf="@+id/twoBtn"
+        app:layout_constraintTop_toTopOf="@+id/twoBtn" />
+
+    <Button
+        android:id="@+id/searchScopeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="寻找范围"
+        app:layout_constraintStart_toEndOf="@+id/twoBtn2"
+        app:layout_constraintTop_toTopOf="@+id/twoBtn2" />
+
+    <Button
+        android:id="@+id/areaBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击区域"
+        app:layout_constraintStart_toEndOf="@+id/searchScopeBtn"
+        app:layout_constraintTop_toTopOf="@+id/searchScopeBtn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
