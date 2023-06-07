@@ -181,7 +181,9 @@ class BaseImgProcess(
     ): List<FeatureCoordinatePoint> {
         val list = mutableListOf<FeatureCoordinatePoint>()
         var startPoint = originalList.find { !it.hasContinuousSet }
+        var i =0
         while (startPoint != null) {
+            Timber.d("第${i}个块 obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/7");
             startPoint.setStartPosition()
             val extremePoints = groupBlock(startPoint, pickingInterval)
             list.addAll(extremePoints)
