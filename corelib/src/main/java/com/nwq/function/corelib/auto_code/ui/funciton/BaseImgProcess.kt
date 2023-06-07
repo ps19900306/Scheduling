@@ -76,11 +76,12 @@ class BaseImgProcess(
     private suspend fun organizeColorMaps() {
         Timber.d("${colorMaps.size} 过滤前大小 BaseImgProcess NWQ_ 2023/6/7");
         colorMaps = colorMaps.filter {
+            it.key.pointCount = it.value.size
             it.value.size > pointNumberThreshold
         }.toMutableMap()
         Timber.d("${colorMaps.size} 过滤后大小 BaseImgProcess NWQ_ 2023/6/7");
         featureKeyList.clear()
-        featureKeyList.addAll(colorMaps.keys)
+        featureKeyList.addAll(colorMaps.keys.sortedByDescending { it.pointCount })
         colorMaps.forEach {
             brightestKey = brightestKey.getBrightest(it.key)
             differenceKey = differenceKey.getDifference(it.key)
@@ -116,7 +117,8 @@ class BaseImgProcess(
             colorMaps.forEach {
                 if (darkestKey != it.key) {
                     markBoundaryInternal(it.value)
-                    obtainFeaturePoints(it.value)
+                    val result = obtainFeaturePoints(it.value)
+                    Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
                 }
             }
         }
@@ -129,7 +131,7 @@ class BaseImgProcess(
             if (!point.hasJudeType()) {
                 var isBoundary = false
                 //left
-                if (!isBoundary && point.x > 0) {
+                if (!isBoundary && point.x > 1) {
                     val leftPoint = featureArray[point.y][point.x - 1]
                     if (point.mFeaturePointKey != leftPoint.mFeaturePointKey) {
                         isBoundary = true
@@ -138,7 +140,7 @@ class BaseImgProcess(
                 }
 
                 //top
-                if (!isBoundary && point.y > 0) {
+                if (!isBoundary && point.y > 1) {
                     val topPoint = featureArray[point.y - 1][point.x]
                     if (point.mFeaturePointKey != topPoint.mFeaturePointKey) {
                         isBoundary = true
@@ -147,7 +149,7 @@ class BaseImgProcess(
                 }
 
                 //right
-                if (!isBoundary && point.x < with) {
+                if (!isBoundary && point.x < with - 1) {
                     val rightPoint = featureArray[point.y][point.x + 1]
                     if (point.mFeaturePointKey != rightPoint.mFeaturePointKey) {
                         isBoundary = true
@@ -156,7 +158,7 @@ class BaseImgProcess(
                 }
 
                 //bottom
-                if (!isBoundary && point.y < height) {
+                if (!isBoundary && point.y < height - 1) {
                     val bottomPoint = featureArray[point.y + 1][point.x]
                     if (point.mFeaturePointKey != bottomPoint.mFeaturePointKey) {
                         isBoundary = true
@@ -178,12 +180,12 @@ class BaseImgProcess(
         pickingInterval: Int = 20
     ): List<FeatureCoordinatePoint> {
         val list = mutableListOf<FeatureCoordinatePoint>()
-        var startPoint = originalList.find { it.hasContinuousSet }
+        var startPoint = originalList.find { !it.hasContinuousSet }
         while (startPoint != null) {
             startPoint.setStartPosition()
             val extremePoints = groupBlock(startPoint, pickingInterval)
             list.addAll(extremePoints)
-            startPoint = originalList.find { it.hasContinuousSet }
+            startPoint = originalList.find { !it.hasContinuousSet }
         }
         return list
     }
@@ -249,26 +251,26 @@ class BaseImgProcess(
         //尽量选择内部点进行判定，这样可以减少一点范围误差
         extremePoints.map { point ->
             var result: FeatureCoordinatePoint? = null
-            if (result == null && point.x > 0) {
+            if (result == null && point.x > 1) {
                 val leftPoint = featureArray[point.y][point.x - 1]
                 if (point.mFeaturePointKey == leftPoint.mFeaturePointKey && leftPoint.isInternal()) {
                     result = leftPoint
                 }
             }
-            if (result == null && point.y > 0) {
+            if (result == null && point.y > 1) {
                 val topPoint = featureArray[point.y - 1][point.x]
                 if (point.mFeaturePointKey == topPoint.mFeaturePointKey && topPoint.isInternal()) {
                     result = topPoint
                 }
             }
-            if (result == null && point.x < with) {
+            if (result == null && point.x < with - 1) {
                 val rightPoint = featureArray[point.y][point.x + 1]
                 if (point.mFeaturePointKey == rightPoint.mFeaturePointKey && rightPoint.isInternal()) {
                     result = rightPoint
                 }
             }
 
-            if (result == null && point.y < height) {
+            if (result == null && point.y < height - 1) {
                 val bottomPoint = featureArray[point.y + 1][point.x]
                 if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey && bottomPoint.isInternal()) {
                     result = bottomPoint
@@ -304,7 +306,7 @@ class BaseImgProcess(
         blockList: MutableList<FeatureCoordinatePoint>,
     ): List<FeatureCoordinatePoint> {
         val list = mutableListOf<FeatureCoordinatePoint>()
-        if (point.x > 0) {
+        if (point.x > 1) {
             val leftPoint = featureArray[point.y][point.x - 1]
             if (point.mFeaturePointKey == leftPoint.mFeaturePointKey) {
                 if (leftPoint.continuePath(point)
@@ -316,7 +318,7 @@ class BaseImgProcess(
         }
 
         //top
-        if (point.y > 0) {
+        if (point.y > 1) {
             val topPoint = featureArray[point.y - 1][point.x]
             if (point.mFeaturePointKey == topPoint.mFeaturePointKey) {
                 if (topPoint.continuePath(point)
@@ -329,7 +331,7 @@ class BaseImgProcess(
 
 
         //right
-        if (point.x < with) {
+        if (point.x < with - 1) {
             val rightPoint = featureArray[point.y][point.x + 1]
             if (point.mFeaturePointKey == rightPoint.mFeaturePointKey) {
                 if (rightPoint.continuePath(point)
@@ -341,7 +343,7 @@ class BaseImgProcess(
         }
 
         //bottom
-        if (point.y < height) {
+        if (point.y < height - 1) {
             val bottomPoint = featureArray[point.y + 1][point.x]
             if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey) {
                 if (bottomPoint.continuePath(point)
@@ -352,7 +354,7 @@ class BaseImgProcess(
             }
         }
 
-        if (point.x > 0 && point.y > 0) {
+        if (point.x > 1 && point.y > 1) {
             val tPoint = featureArray[point.y - 1][point.x - 1]
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
                 if (tPoint.continuePath(point)?.let { list.add(it) } != null &&
@@ -363,7 +365,7 @@ class BaseImgProcess(
             }
         }
 
-        if (point.x > 0 && point.y < height) {
+        if (point.x > 1 && point.y < height - 1) {
             val tPoint = featureArray[point.y + 1][point.x - 1]
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
                 if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
@@ -375,7 +377,7 @@ class BaseImgProcess(
             }
         }
 
-        if (point.x < with && point.y > 0) {
+        if (point.x < with - 1 && point.y > 1) {
             val tPoint = featureArray[point.y - 1][point.x + 1]
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
                 if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
@@ -387,7 +389,7 @@ class BaseImgProcess(
             }
         }
 
-        if (point.x < with && point.y < height) {
+        if (point.x < with - 1 && point.y < height - 1) {
             val tPoint = featureArray[point.y + 1][point.x + 1]
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
                 if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
@@ -437,7 +439,7 @@ class BaseImgProcess(
 
 
     //多点选择平均色
-     fun addFeatureKey(vararg colorInt: Int) {
+    fun addFeatureKey(vararg colorInt: Int) {
         var redTotal = 0
         var greenTotal = 0
         var blueTotal = 0
@@ -521,18 +523,18 @@ class BaseImgProcess(
         }
     }
 
-    fun getPreview(showFeature: Boolean, showBoundary: Boolean):List<FeatureCoordinatePoint> {
+    fun getPreview(showFeature: Boolean, showBoundary: Boolean): List<FeatureCoordinatePoint> {
         val pointList = mutableListOf<FeatureCoordinatePoint>()
         featureKeyList.forEach {
-           if(it.isChecked){
-               colorMaps[it]?.forEach {
-                   if(showFeature &&  it.isIdentificationKey){
-                       pointList.add(it)
-                   }else if(showBoundary &&  it.isBoundary()){
-                       pointList.add(it)
-                   }
-               }
-           }
+            if (it.isChecked) {
+                colorMaps[it]?.forEach {
+                    if (showFeature && it.isIdentificationKey) {
+                        pointList.add(it)
+                    } else if (showBoundary && it.isBoundary()) {
+                        pointList.add(it)
+                    }
+                }
+            }
         }
         return pointList
     }
