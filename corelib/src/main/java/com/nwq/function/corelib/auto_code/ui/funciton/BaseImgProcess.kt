@@ -38,7 +38,7 @@ class BaseImgProcess(
         val dataList = mutableListOf<Array<FeatureCoordinatePoint>>()
         var data = mutableListOf<FeatureCoordinatePoint>()
         imgArray.forEachIndexed { y, arry ->
-            if (y != 0) {
+            if (y != 0) {//因为y=0时候第一组数据还未写入
                 dataList.add(data.toTypedArray())
                 data.clear()
             }

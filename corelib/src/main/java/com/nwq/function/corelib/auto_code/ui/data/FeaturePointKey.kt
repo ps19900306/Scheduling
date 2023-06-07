@@ -36,8 +36,8 @@ class FeaturePointKey(var colorInt: Int) {
     var minRToG = rToG * 0.9
     var maxRToB = rToB * 1.1
     var minRToB = rToB * 0.9
-    var maxGToG = gToB * 1.1
-    var minGToG = gToB * 0.9
+    var maxGToB = gToB * 1.1
+    var minGToB = gToB * 0.9
 
     var isExpend = false //这个给Adapter使用的
     var isChecked = false //这个给Adapter使用的
@@ -81,8 +81,8 @@ class FeaturePointKey(var colorInt: Int) {
         minRToG = rToG * 0.9
         maxRToB = rToB * 1.1
         minRToB = rToB * 0.9
-        maxGToG = gToB * 1.1
-        minGToG = gToB * 0.9
+        maxGToB = gToB * 1.1
+        minGToB = gToB * 0.9
     }
 
 
@@ -173,16 +173,16 @@ class FeaturePointKey(var colorInt: Int) {
     }
 
     fun isInRange(r: Int, g: Int, b: Int): Boolean {
-        val rToG = red.toFloat() / green.toFloat()
-        val rToB = red.toFloat() / blue.toFloat()
-        val gToB = green.toFloat() / blue.toFloat()
+        val rToG = r.toFloat() / g.toFloat()
+        val rToB = r.toFloat() / b.toFloat()
+        val gToB = g.toFloat() / b.toFloat()
         return r in minRed..maxRed
                 && g in minGreen..maxGreen
                 && b in minBlue..maxBlue &&
                 (ignoreRatio ||
-                        (rToG < maxRToG && rToG > minRToG
-                                && rToB < maxRToB && rToG > minRToB
-                                && gToB < maxGToG && rToG > minGToG))
+                        (          rToG < maxRToG && rToG > minRToG
+                                && rToB < maxRToB && rToB > minRToB
+                                && gToB < maxGToB && gToB > minGToB))
     }
 
 

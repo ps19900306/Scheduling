@@ -25,8 +25,8 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int 
     var minRToG = rToG * 0.9
     var maxRToB = rToB * 1.1
     var minRToB = rToB * 0.9
-    var maxGToG = gToB * 1.1
-    var minGToG = gToB * 0.9
+    var maxGToB = gToB * 1.1
+    var minGToB = gToB * 0.9
 
     companion object {
         val list = mutableListOf<SimpleRule>()
@@ -51,7 +51,7 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int 
         return r in minRed..maxRed && g in minGreen..maxGreen && b in minBlue..maxBlue
                 && rToG < maxRToG && rToG > minRToG
                 && rToB < maxRToB && rToB > minRToB
-                && gToB < maxGToG && gToB > minGToG
+                && gToB < maxGToB && gToB > minGToB
     }
 
 }
