@@ -32,19 +32,20 @@ class FeaturePointKey(var colorInt: Int) {
     var rToB = red.toFloat() / blue.toFloat()
     var gToB = green.toFloat() / blue.toFloat()
 
-    var maxRToG = rToG * 1.1
-    var minRToG = rToG * 0.9
-    var maxRToB = rToB * 1.1
-    var minRToB = rToB * 0.9
-    var maxGToB = gToB * 1.1
-    var minGToB = gToB * 0.9
+    val rangRatio = 0.2
+    var maxRToG = rToG * (1 + rangRatio)
+    var minRToG = rToG * (1 - rangRatio)
+    var maxRToB = rToB * (1 + rangRatio)
+    var minRToB = rToB * (1 - rangRatio)
+    var maxGToB = gToB * (1 + rangRatio)
+    var minGToB = gToB * (1 - rangRatio)
 
     var isExpend = false //这个给Adapter使用的
     var isChecked = false //这个给Adapter使用的
 
     var isKeyMember = false //是否是三大特征值
 
-    var pointCount =0
+    var pointCount = 0
 
     constructor(
         red: Int,
@@ -180,9 +181,9 @@ class FeaturePointKey(var colorInt: Int) {
                 && g in minGreen..maxGreen
                 && b in minBlue..maxBlue &&
                 (ignoreRatio ||
-                        (          rToG < maxRToG && rToG > minRToG
-                                && rToB < maxRToB && rToB > minRToB
-                                && gToB < maxGToB && gToB > minGToB))
+                        (rToG in minRToG..maxRToG
+                                && rToB in minRToB..maxRToB
+                                && gToB in minGToB..maxGToB))
     }
 
 

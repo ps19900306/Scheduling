@@ -49,9 +49,9 @@ class SimpleRule(val redB: Int, val greenB: Int, val blueB: Int, val range: Int 
         val rToB = redB.toFloat() / blueB.toFloat()
         val gToB = greenB.toFloat() / blueB.toFloat()
         return r in minRed..maxRed && g in minGreen..maxGreen && b in minBlue..maxBlue
-                && rToG < maxRToG && rToG > minRToG
-                && rToB < maxRToB && rToB > minRToB
-                && gToB < maxGToB && gToB > minGToB
+                && rToG <= maxRToG && rToG >= minRToG
+                && rToB <= maxRToB && rToB >= minRToB
+                && gToB <= maxGToB && gToB >= minGToB
     }
 
 }

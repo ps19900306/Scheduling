@@ -145,6 +145,7 @@ class ImgFeatureExtractionFunction(
             runOnUI {
                 mFeatureKeyAdapter =
                     FeatureKeyAdapter(mBaseImgProcess.featureKeyList, mBaseImgProcess.colorMaps)
+                binding.feRecycler.adapter=mFeatureKeyAdapter
             }
         }
 

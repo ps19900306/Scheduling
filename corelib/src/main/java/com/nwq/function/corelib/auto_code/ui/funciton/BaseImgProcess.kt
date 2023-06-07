@@ -9,6 +9,7 @@ import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -73,9 +74,13 @@ class BaseImgProcess(
 
 
     private suspend fun organizeColorMaps() {
+        Timber.d("${colorMaps.size} 过滤前大小 BaseImgProcess NWQ_ 2023/6/7");
         colorMaps = colorMaps.filter {
             it.value.size > pointNumberThreshold
         }.toMutableMap()
+        Timber.d("${colorMaps.size} 过滤后大小 BaseImgProcess NWQ_ 2023/6/7");
+        featureKeyList.clear()
+        featureKeyList.addAll(colorMaps.keys)
         colorMaps.forEach {
             brightestKey = brightestKey.getBrightest(it.key)
             differenceKey = differenceKey.getDifference(it.key)

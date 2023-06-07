@@ -16,13 +16,11 @@ create time: 2023/5/17 15:40
 Function description:
  */
 
-class FeatureKeyAdapter(val list: List<FeaturePointKey>,  val map: MutableMap<FeaturePointKey, MutableList<FeatureCoordinatePoint>>) :
+class FeatureKeyAdapter(
+    val list: List<FeaturePointKey>,
+    val map: MutableMap<FeaturePointKey, MutableList<FeatureCoordinatePoint>>
+) :
     RecyclerView.Adapter<FeatureKeyViewHolder>() {
-
-    companion object {
-        val key1 = 1
-        val key2 = 2
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeatureKeyViewHolder {
         val binding = ItemFeatureKeyBinding.inflate(LayoutInflater.from(parent.context))
@@ -47,6 +45,9 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
     private val mFeaturePointAdapter by lazy {
         FeaturePointAdapter(listOf())
     }
+
+    private var list: List<FeatureCoordinatePoint>? = null
+
 
     init {
         binding.expandBtn.singleClick {
@@ -76,8 +77,8 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
 
 
     fun bindData(featurePointKey: FeaturePointKey, list: List<FeatureCoordinatePoint>?) {
-        binding.root.setTag(FeatureKeyAdapter.key1, featurePointKey)
-        binding.root.setTag(FeatureKeyAdapter.key2, list)
+        binding.root.tag = featurePointKey
+        this.list = list
         binding.keyCb.isChecked = featurePointKey.isChecked
         binding.colorView.setBackgroundColor(featurePointKey.colorInt)
         binding.colorRgbTv.text =
@@ -95,7 +96,7 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
     }
 
     private fun getFeaturePointKey(): FeaturePointKey? {
-        val featurePointKey = binding.root.getTag(FeatureKeyAdapter.key1)
+        val featurePointKey = binding.root.tag
         return if (featurePointKey is FeaturePointKey) {
             featurePointKey
         } else {
@@ -103,13 +104,8 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
         }
     }
 
-    private fun getFeaturePointList(): List<*>? {
-        val featurePointList = binding.root.getTag(FeatureKeyAdapter.key2)
-        return if (featurePointList is List<*>) {
-            featurePointList
-        } else {
-            null
-        }
+    private fun getFeaturePointList(): List<FeatureCoordinatePoint>? {
+        return list
     }
 
 }
