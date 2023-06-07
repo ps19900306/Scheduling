@@ -110,6 +110,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
             when (data.strId) {
                 R.string.image_feature_extraction -> {
                     nowMode = CREATE_IMAGE_FEATURE
+                    bind.okTv.isVisible = true
                 }
             }
         }

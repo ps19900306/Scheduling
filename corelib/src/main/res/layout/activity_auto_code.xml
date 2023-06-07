@@ -19,6 +19,7 @@
         tools:layout_editor_absoluteY="-27dp" />
 
     <TextView
+        android:layout_marginTop="20dp"
         android:id="@+id/okTv"
         android:padding="2dp"
         android:layout_width="wrap_content"
