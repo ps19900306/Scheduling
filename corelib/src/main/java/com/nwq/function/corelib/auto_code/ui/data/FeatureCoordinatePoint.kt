@@ -49,7 +49,7 @@ class FeatureCoordinatePoint(
     var hasFindRound = false     //是否被找寻 向四周寻找
     var startX = 0
     var startY = 0
-    var sequenceNumber = 0
+    var sequenceNumber = 0  //这个是进行排序使用的
 
 
     fun setStartPosition() {
