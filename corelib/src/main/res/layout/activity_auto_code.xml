@@ -27,7 +27,6 @@
         android:layout_gravity="end|top"/>
 
     <include
-        android:visibility="gone"
         android:id="@+id/indexLayout"
         layout="@layout/part_auto_code_index"
         android:layout_width="match_parent"

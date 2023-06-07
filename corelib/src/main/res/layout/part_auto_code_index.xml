@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <Button
+        android:layout_marginTop="24dp"
         android:id="@+id/fullButton"
         style="@style/normalTitleTv"
         android:text="全屏幕"

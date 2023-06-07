@@ -3,11 +3,13 @@ package com.nwq.function.corelib.utils
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import timber.log.Timber
 import java.io.*
+
 
 /**
 create by: 86136
@@ -125,4 +127,37 @@ object FileUtils {
         inputStream.close()
     }
 
+
+    @Throws(IOException::class)
+    fun decodeFile(filePath: String?): Bitmap? {
+        var b: Bitmap? = null
+        val IMAGE_MAX_SIZE = 600
+        val f = File(filePath) ?: return null
+        //Decode image size
+        val o = BitmapFactory.Options()
+        o.inJustDecodeBounds = true
+        var fis = FileInputStream(f)
+        BitmapFactory.decodeStream(fis, null, o)
+        fis.close()
+        var scale = 1
+        if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
+            scale = Math.pow(
+                2.0,
+                Math.round(
+                    Math.log(
+                        IMAGE_MAX_SIZE / Math.max(o.outHeight, o.outWidth).toDouble()
+                    ) / Math.log(0.5)
+                ).toInt().toDouble()
+            ).toInt()
+        }
+
+        //Decode with inSampleSize
+        val o2 = BitmapFactory.Options()
+        o2.inMutable=true
+        o2.inSampleSize = scale
+        fis = FileInputStream(f)
+        b = BitmapFactory.decodeStream(fis, null, o2)
+        fis.close()
+        return b
+    }
 }
