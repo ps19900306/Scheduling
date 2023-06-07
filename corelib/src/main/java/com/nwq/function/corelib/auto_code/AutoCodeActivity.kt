@@ -19,10 +19,8 @@ import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.BUTTON_TYPE
-import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
 import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFunction
-import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.utils.singleClick
@@ -35,6 +33,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         val FUNCTION_MODE = 3  //功能模式
 
         val CREATE_IMAGE_FEATURE = 11
+
 
         val OPT_POINT = 101
         val OPT_AREA = 102
@@ -188,7 +187,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 OPT_POINT -> {
                     if (bind.previewView.dotList.isNotEmpty()) {
-                        mFunctionBlock?.optPoint(cmdInt,*bind.previewView.dotList.toTypedArray())
+                        mFunctionBlock?.optPoint(cmdInt, *bind.previewView.dotList.toTypedArray())
                         mFunctionBlock?.showView()
                         bind.okTv.isGone = true
                         nowMode = FUNCTION_MODE
@@ -196,7 +195,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 OPT_AREA -> {
                     if (bind.previewView.areaList.isNotEmpty()) {
-                        mFunctionBlock?.optArea(cmdInt,*bind.previewView.areaList.toTypedArray())
+                        mFunctionBlock?.optArea(cmdInt, *bind.previewView.areaList.toTypedArray())
                         mFunctionBlock?.showView()
                         bind.okTv.isGone = true
                         nowMode = FUNCTION_MODE
@@ -207,7 +206,8 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
     }
 
 
-    private var cmdInt=0
+    private var cmdInt = 0
+
     /***
      * 这个是暴露给
      */
@@ -216,7 +216,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         nowMode = OPT_POINT
         bind.okTv.isVisible = true
         bind.previewView.clearPoint()
-        cmdInt=cmd
+        cmdInt = cmd
     }
 
     override fun requestArea(cmd: Int) {
@@ -224,19 +224,26 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         nowMode = OPT_AREA
         bind.okTv.isVisible = true
         bind.previewView.clearArea()
-        cmdInt=cmd
+        cmdInt = cmd
     }
 
-    override fun requestFeatureKey() {
+
+    override fun showPoint(list: List<CoordinatePoint>) {
         mFunctionBlock?.hideView()
+        bind.previewView.setPointList(list)
     }
 
-    override fun showPoint(list: List<FeatureCoordinatePoint>) {
-        mFunctionBlock?.hideView()
+    override fun getPointColor(x: Int, y: Int): Int {
+        return mBitmap.getPixel(x, y)
+    }
+
+    override fun getPointColor(x: Int, y: Int, width: Int, height: Int): IntArray {
+        val array = IntArray(width * height)
+        mBitmap.getPixels(array, 0, width, x, y, width, height)
+        return array
     }
 
 
     private var mFunctionBlock: FunctionBlock? = null
-
 
 }

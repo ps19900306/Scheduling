@@ -17,6 +17,7 @@ import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Compani
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.CHECK_TYPE
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
+import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_FEATURE_KEY
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_POINT
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_POINT
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
@@ -43,8 +44,21 @@ class ImgFeatureExtractionFunction(
 ) : FunctionBlock {
 
 
-    constructor(coordinateAre: CoordinateArea,imgArray: List<IntArray>,binding: PartImgFeatureBinding,mOptLister: OptLister)
-    :this(coordinateAre.x,coordinateAre.y,coordinateAre.width,coordinateAre.height,imgArray,binding,mOptLister)
+    constructor(
+        coordinateAre: CoordinateArea,
+        imgArray: List<IntArray>,
+        binding: PartImgFeatureBinding,
+        mOptLister: OptLister
+    )
+            : this(
+        coordinateAre.x,
+        coordinateAre.y,
+        coordinateAre.width,
+        coordinateAre.height,
+        imgArray,
+        binding,
+        mOptLister
+    )
 
     private val mBaseImgProcess = BaseImgProcess(with, height, imgArray)
 
@@ -88,7 +102,7 @@ class ImgFeatureExtractionFunction(
             val data = functionItemList[position]
             when (data.strId) {
                 R.string.add -> {
-                    mOptLister.requestFeatureKey()
+                    mOptLister.optPoint(ADD_FEATURE_KEY)
                 }
                 R.string.delete -> {
                     mBaseImgProcess.deleteSelectFeatureKey()
@@ -107,7 +121,7 @@ class ImgFeatureExtractionFunction(
                 }
                 R.string.preview -> {
                     val list = mBaseImgProcess.getPreview(showFeature, showBoundary)
-                    mOptLister.showPoint(list)
+                    mOptLister.showPoint(list.map { CoordinatePoint(it.x + startX, it.y + startY) })
                 }
                 R.string.feature -> {
                     data.isCheck = !data.isCheck
@@ -149,11 +163,16 @@ class ImgFeatureExtractionFunction(
             DELETE_POINT -> {
                 deleteFeaturePoint(*coordinatePoint)
             }
+            ADD_FEATURE_KEY -> {
+                addFeatureKey(*coordinatePoint)
+            }
         }
     }
 
     override fun optArea(cmd: Int, vararg area: CoordinateArea) {
-        TODO("Not yet implemented")
+        when (cmd) {
+
+        }
     }
 
 
@@ -162,11 +181,16 @@ class ImgFeatureExtractionFunction(
     }
 
     override fun hideView() {
-        binding.root.isGone=true
+        binding.root.isGone = true
     }
 
     override fun showView() {
-        binding.root.isVisible=true
+        binding.root.isVisible = true
+    }
+
+    private fun addFeatureKey(vararg coordinatePoint: CoordinatePoint) {
+        val colors = coordinatePoint.map { mOptLister.getPointColor(it.xI, it.yI) }
+        mBaseImgProcess.addFeatureKey(*colors.toIntArray())
     }
 
 

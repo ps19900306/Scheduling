@@ -102,6 +102,12 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         dotList.clear()
     }
 
+    fun setPointList(list:List<CoordinatePoint>){
+        dotList.clear()
+        dotList.addAll(list)
+        invalidate()
+    }
+
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)

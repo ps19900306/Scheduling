@@ -432,7 +432,7 @@ class BaseImgProcess(
 
 
     //多点选择平均色
-    suspend fun addFeatureKey(vararg colorInt: Int) {
+     fun addFeatureKey(vararg colorInt: Int) {
         var redTotal = 0
         var greenTotal = 0
         var blueTotal = 0
@@ -449,7 +449,9 @@ class BaseImgProcess(
 
         colorMaps[featurePointKey] = mutableListOf()
         featureKeyList.add(featurePointKey)
-        groupFeatureCoordinatePoint(listOf(featurePointKey))
+        GlobalScope.launch(Dispatchers.Default) {
+            groupFeatureCoordinatePoint(listOf(featurePointKey))
+        }
     }
 
     //添加附近选中的特征点
