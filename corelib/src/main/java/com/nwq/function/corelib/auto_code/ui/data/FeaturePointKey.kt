@@ -178,13 +178,22 @@ class FeaturePointKey(var colorInt: Int) {
         val rToG = r.toFloat() / g.toFloat()
         val rToB = r.toFloat() / b.toFloat()
         val gToB = g.toFloat() / b.toFloat()
+        val radio = if (ignoreRatio) { //这里只验证值最大值和其他色值的比例
+            true
+        } else if (red >= green && red >= blue) {
+            rToG in minRToG..maxRToG
+                    && rToB in minRToB..maxRToB
+        } else if (green >= red && green >= blue) {
+            rToG in minRToG..maxRToG
+                    && gToB in minGToB..maxGToB
+        } else {
+            rToB in minRToB..maxRToB
+                    && gToB in minGToB..maxGToB
+        }
+
         return r in minRed..maxRed
                 && g in minGreen..maxGreen
-                && b in minBlue..maxBlue &&
-                (ignoreRatio ||
-                        (rToG in minRToG..maxRToG
-                                && rToB in minRToB..maxRToB
-                                && gToB in minGToB..maxGToB))
+                && b in minBlue..maxBlue && radio
     }
 
 
