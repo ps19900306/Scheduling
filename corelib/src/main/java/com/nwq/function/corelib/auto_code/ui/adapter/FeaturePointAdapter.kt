@@ -1,5 +1,6 @@
 package com.nwq.function.corelib.auto_code.ui.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -7,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.databinding.ItemFeatureKeyBinding
+import com.nwq.function.corelib.databinding.ItemFeaturePointBinding
+import com.nwq.function.corelib.utils.singleClick
 
 /**
 create by: 86136
@@ -15,7 +18,7 @@ Function description:
  */
 
 class FeaturePointAdapter(var list: List<FeatureCoordinatePoint>) :
-    RecyclerView.Adapter<FeatureKeyViewHolder>() {
+    RecyclerView.Adapter<FeaturePointViewHolder>() {
 
 
     fun updateList(data: List<FeatureCoordinatePoint>) {
@@ -23,13 +26,13 @@ class FeaturePointAdapter(var list: List<FeatureCoordinatePoint>) :
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeatureKeyViewHolder {
-        val binding = ItemFeatureKeyBinding.inflate(LayoutInflater.from(parent.context))
-        return FeatureKeyViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturePointViewHolder {
+        val binding = ItemFeaturePointBinding.inflate(LayoutInflater.from(parent.context))
+        return FeaturePointViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: FeatureKeyViewHolder, position: Int) {
-
+    override fun onBindViewHolder(holder: FeaturePointViewHolder, position: Int) {
+        holder.bindData(list.get(position))
     }
 
     override fun getItemCount(): Int {
@@ -37,27 +40,34 @@ class FeaturePointAdapter(var list: List<FeatureCoordinatePoint>) :
     }
 }
 
-public class FeaturePointViewHolder(val binding: ItemFeatureKeyBinding) :
+public class FeaturePointViewHolder(val binding: ItemFeaturePointBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
+    init {
+        binding.keyCb.setOnCheckedChangeListener { compoundButton, b ->
+            if (b) {
+                getFeaturePoint()?.let {
+                    it.isIdentificationKey = b
+                }
+            }
+        }
+    }
 
-    fun bindData(position:FeatureCoordinatePoint) {
-//        binding.root.tag = featurePointKey
-//        this.list = list
-//        binding.keyCb.isChecked = featurePointKey.isChecked
-//        binding.colorView.setBackgroundColor(featurePointKey.colorInt)
-//        binding.colorRgbTv.text =
-//            "${featurePointKey.red}：${featurePointKey.green}：${featurePointKey.blue}"
-//        list?.let { mFeaturePointAdapter.updateList(it) }
-//        binding.pointRecycler.adapter=mFeaturePointAdapter
-//        if (featurePointKey.isExpend) {
-//            list?.let { list ->
-//                binding.pointRecycler.isVisible = list.isNotEmpty()
-//            } ?: let {
-//                binding.pointRecycler.isVisible = false
-//            }
-//        } else {
-//            binding.pointRecycler.isVisible = false
-//        }
+
+    fun bindData(data: FeatureCoordinatePoint) {
+        binding.root.tag = data
+        binding.keyCb.isChecked = data.isIdentificationKey
+        binding.colorView.setBackgroundColor(Color.rgb(data.red, data.green, data.blue))
+        binding.colorRgbTv.text = "${data.red}：${data.green}：${data.blue}"
+        binding.attributeText.text="x:${data.x},y:${data.y}"
+    }
+
+    private fun getFeaturePoint(): FeatureCoordinatePoint? {
+        val featurePoint = binding.root.tag
+        return if (featurePoint is FeatureCoordinatePoint) {
+            featurePoint
+        } else {
+            null
+        }
     }
 }

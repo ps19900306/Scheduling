@@ -32,8 +32,8 @@
         app:layout_constraintTop_toTopOf="@+id/colorView"
         tools:text=" 12 :37 :19" />
 
-    <Button
-        android:id="@+id/expandBtn"
+    <TextView
+        android:id="@+id/attributeText"
         style="@style/normalTitleTv"
         android:text="@string/expand"
         app:layout_constraintBottom_toBottomOf="@+id/colorRgbTv"

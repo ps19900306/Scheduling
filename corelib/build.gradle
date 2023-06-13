@@ -8,11 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.nwq.function.corelib"
-        minSdk 29
+        minSdk 30
         targetSdk 32
         versionCode 1
-        versionName "1.0"
-
+        versionName "1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,4 +51,5 @@ dependencies {
     implementation 'com.rmtheis:tess-two:9.1.0'
     implementation 'io.github.lucksiege:pictureselector:v3.11.0'
     implementation 'io.github.lucksiege:compress:v3.10.9'
+
 }
