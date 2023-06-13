@@ -115,7 +115,7 @@ class BaseImgProcess(
     fun autoExc() {
         GlobalScope.launch(Dispatchers.Default) {
             colorMaps.forEach {
-                if (darkestKey != it.key) {
+                if (darkestKey != it.key &&  it.key.isChecked) {
                     markBoundaryInternal(it.value)
                     val result = obtainFeaturePoints(it.value)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");

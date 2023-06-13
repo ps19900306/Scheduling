@@ -32,9 +32,8 @@
         app:layout_constraintTop_toTopOf="@+id/colorView"
         tools:text=" 12 :37 :19" />
 
-
-    <Button
-        android:id="@+id/attributeBtn"
+    <TextView
+        android:id="@+id/attributeText"
         style="@style/normalTitleTv"
         android:layout_width="80dp"
         android:text="@string/attribute"
@@ -47,9 +46,9 @@
         style="@style/normalTitleTv"
         android:layout_width="80dp"
         android:text="@string/expand"
-        app:layout_constraintBottom_toBottomOf="@+id/attributeBtn"
-        app:layout_constraintStart_toEndOf="@+id/attributeBtn"
-        app:layout_constraintTop_toTopOf="@+id/attributeBtn" />
+        app:layout_constraintBottom_toBottomOf="@+id/attributeText"
+        app:layout_constraintStart_toEndOf="@+id/attributeText"
+        app:layout_constraintTop_toTopOf="@+id/attributeText" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pointRecycler"

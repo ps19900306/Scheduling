@@ -2,8 +2,10 @@ package com.nwq.function.corelib.auto_code.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
+import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.databinding.ItemFeatureKeyBinding
 
 /**
@@ -38,4 +40,24 @@ class FeaturePointAdapter(var list: List<FeatureCoordinatePoint>) :
 public class FeaturePointViewHolder(val binding: ItemFeatureKeyBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
+
+    fun bindData(position:FeatureCoordinatePoint) {
+//        binding.root.tag = featurePointKey
+//        this.list = list
+//        binding.keyCb.isChecked = featurePointKey.isChecked
+//        binding.colorView.setBackgroundColor(featurePointKey.colorInt)
+//        binding.colorRgbTv.text =
+//            "${featurePointKey.red}：${featurePointKey.green}：${featurePointKey.blue}"
+//        list?.let { mFeaturePointAdapter.updateList(it) }
+//        binding.pointRecycler.adapter=mFeaturePointAdapter
+//        if (featurePointKey.isExpend) {
+//            list?.let { list ->
+//                binding.pointRecycler.isVisible = list.isNotEmpty()
+//            } ?: let {
+//                binding.pointRecycler.isVisible = false
+//            }
+//        } else {
+//            binding.pointRecycler.isVisible = false
+//        }
+    }
 }
