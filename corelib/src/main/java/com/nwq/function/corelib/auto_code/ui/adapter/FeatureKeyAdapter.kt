@@ -52,7 +52,7 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
     init {
         binding.expandBtn.singleClick {
             getFeaturePointKey()?.let {
-                it.isExpend =!it.isExpend
+                it.isExpend = !it.isExpend
                 if (it.isExpend) {
                     getFeaturePointList()?.let { list ->
                         binding.pointRecycler.isVisible = list.isNotEmpty()
@@ -87,10 +87,19 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
         binding.colorRgbTv.text =
             "${featurePointKey.red}：${featurePointKey.green}：${featurePointKey.blue}"
 
-        binding.attributeText.text="T:${list?.size?:0} K:${list?.filter { it.isIdentificationKey}?.size?:0}"
+        binding.attributeText.text =
+            "T:${list?.size ?: 0} K:${list?.filter { it.isIdentificationKey }?.size ?: 0}"
 
-        list?.let { mFeaturePointAdapter.updateList(it) }
-        binding.pointRecycler.adapter=mFeaturePointAdapter
+        //这里设置未重要的
+        var pointList = list?.filter { it.isIdentificationKey }
+        if (pointList.isNullOrEmpty()) {
+            pointList = list?.filter { it.isBoundary() }
+        }
+        if (pointList?.isNotEmpty()==true) {
+            mFeaturePointAdapter.updateList(pointList)
+        }
+
+        binding.pointRecycler.adapter = mFeaturePointAdapter
         if (featurePointKey.isExpend) {
             list?.let { list ->
                 binding.pointRecycler.isVisible = list.isNotEmpty()
