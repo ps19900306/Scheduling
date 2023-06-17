@@ -194,9 +194,11 @@ class BaseImgProcess(
             list.addAll(extremePoints)
             startPoint = originalList.find { !it.hasContinuousSet }
         }
-        Timber.d("取得端点数1  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
-        filterExtremePoint(list, list)
-        Timber.d("取得端点数2  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+
+
+//        Timber.d("取得端点数1  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+//        filterExtremePoint(list, list)
+//        Timber.d("取得端点数2  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
 
         //尽量选择内部点进行判定，这样可以减少一点范围误差
        val result = list.map { point ->
@@ -263,7 +265,7 @@ class BaseImgProcess(
             }
             oldList.clear()
             oldList.addAll(newList)
-            filterExtremePoint(extremePoints, newList)
+//            filterExtremePoint(extremePoints, newList)
         }
 
 //        //过滤掉一些端点
@@ -274,7 +276,7 @@ class BaseImgProcess(
             point = 4
         }
 
-        oldList.getOrNull(0)?.let {
+        endList.getOrNull(0)?.let {
             //增加首尾点
             extremePoints.add(startPoint)
             extremePoints.add(it)
