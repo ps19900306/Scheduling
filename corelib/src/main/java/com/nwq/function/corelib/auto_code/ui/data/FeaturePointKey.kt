@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -17,9 +18,9 @@ class FeaturePointKey(var colorInt: Int) {
     var green: Int = colorInt.green
     var blue: Int = colorInt.blue
 
-    var redD = 15
-    var greenD = 15
-    var blueD = 15
+    var redD = 30
+    var greenD = 30
+    var blueD = 30
 
     var maxRed = red + redD
     var minRed = red - redD
@@ -43,35 +44,36 @@ class FeaturePointKey(var colorInt: Int) {
     //这个特征共有多少特征点
     var pointCount = 1
 
-     fun updateByAdd(newColorInt: Int) {
-        val redA: Int = colorInt.red
-        val greenA: Int = colorInt.green
-        val blueA: Int = colorInt.blue
-
-        red = (red * pointCount + redA) / (pointCount + 1)
-        green = (green * pointCount + greenA) / (pointCount + 1)
-        blue = (blue * pointCount + blueA) / (pointCount + 1)
-
-        maxRed = red + redD
-        minRed = red - redD
-        maxGreen = green + greenD
-        minGreen = green - greenD
-        maxBlue = blue + blueD
-        minBlue = blue - blueD
-
-        rToG = red.toFloat() / green.toFloat()
-        rToB = red.toFloat() / blue.toFloat()
-        gToB = green.toFloat() / blue.toFloat()
-
-        maxRToG = rToG * (1 + rangRatio)
-        minRToG = rToG * (1 - rangRatio)
-        maxRToB = rToB * (1 + rangRatio)
-        minRToB = rToB * (1 - rangRatio)
-        maxGToB = gToB * (1 + rangRatio)
-        minGToB = gToB * (1 - rangRatio)
-
-        pointCount++
-    }
+//    //当有一个新的点加入分组则进行处理 这里保证取平均值
+//    fun updateByAdd(newColorInt: Int) {
+//        val redA: Int = newColorInt.red
+//        val greenA: Int = newColorInt.green
+//        val blueA: Int = newColorInt.blue
+//        Timber.d("old $red:$green:$blue updateByAdd FeaturePointKey NWQ_ 2023/6/17");
+//        red = (red * pointCount + redA) / (pointCount + 1)
+//        green = (green * pointCount + greenA) / (pointCount + 1)
+//        blue = (blue * pointCount + blueA) / (pointCount + 1)
+//
+//        maxRed = red + redD
+//        minRed = red - redD
+//        maxGreen = green + greenD
+//        minGreen = green - greenD
+//        maxBlue = blue + blueD
+//        minBlue = blue - blueD
+//
+//        rToG = red.toFloat() / green.toFloat()
+//        rToB = red.toFloat() / blue.toFloat()
+//        gToB = green.toFloat() / blue.toFloat()
+//
+//        maxRToG = rToG * (1 + rangRatio)
+//        minRToG = rToG * (1 - rangRatio)
+//        maxRToB = rToB * (1 + rangRatio)
+//        minRToB = rToB * (1 - rangRatio)
+//        maxGToB = gToB * (1 + rangRatio)
+//        minGToB = gToB * (1 - rangRatio)
+//        Timber.d("new $red:$green:$blue updateByAdd FeaturePointKey NWQ_ 2023/6/17");
+//        pointCount++
+//    }
 
 
     var isExpend = false //这个给Adapter使用的
@@ -96,26 +98,6 @@ class FeaturePointKey(var colorInt: Int) {
 
     override fun hashCode(): Int {
         return colorInt
-    }
-
-    fun update() {
-        maxRed = red + redD
-        minRed = red - redD
-        maxGreen = green + greenD
-        minGreen = green - greenD
-        maxBlue = blue + blueD
-        minBlue = blue - blueD
-
-        rToG = red.toFloat() / green.toFloat()
-        rToB = red.toFloat() / blue.toFloat()
-        gToB = green.toFloat() / blue.toFloat()
-
-        maxRToG = rToG * 1.1
-        minRToG = rToG * 0.9
-        maxRToB = rToB * 1.1
-        minRToB = rToB * 0.9
-        maxGToB = gToB * 1.1
-        minGToB = gToB * 0.9
     }
 
 

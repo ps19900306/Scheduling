@@ -25,7 +25,7 @@ class BaseImgProcess(
 ) {
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
-
+    private val picking_Interval=10 //这里是间隔多少个点进行一次取值
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
@@ -62,7 +62,6 @@ class BaseImgProcess(
         if (key != null) {
             point.mFeaturePointKey = key
             colorMaps[key]?.add(point)
-            key.updateByAdd(colorInt)
         } else {
             val newKey = FeaturePointKey(colorInt)
             point.mFeaturePointKey = newKey
@@ -180,7 +179,7 @@ class BaseImgProcess(
     //获取特征点，这里使用边界点
     fun obtainFeaturePoints(
         originalList: MutableList<FeatureCoordinatePoint>,
-        pickingInterval: Int = 20
+        pickingInterval: Int = picking_Interval
     ): List<FeatureCoordinatePoint> {
         originalList.forEach {
             it.hasContinuousSet = false
@@ -235,15 +234,18 @@ class BaseImgProcess(
     }
 
     //对相同的特征色值的 根据连接度对组进行分块
-    private fun groupBlock(
+    private fun groupBlock(//这里是根据起始点进行眼神
         startPoint: FeatureCoordinatePoint,
-        pickingInterval: Int = 20
+        pickingInterval: Int = picking_Interval
     ): List<FeatureCoordinatePoint> {
         val blockList = mutableListOf<FeatureCoordinatePoint>()
+
         var step = 0 //这里用于记录最大步数
+
         val oldList = mutableListOf(startPoint)
         val newList = mutableListOf<FeatureCoordinatePoint>()
         val extremePoints = mutableListOf<FeatureCoordinatePoint>()//端点，就是找不延续的点了
+
         val endList = mutableListOf<FeatureCoordinatePoint>()
         while (!oldList.isEmpty()) {
             step++
@@ -264,10 +266,9 @@ class BaseImgProcess(
             filterExtremePoint(extremePoints, newList)
         }
 
-        //过滤掉一些端点
-        filterExtremePoint(extremePoints, extremePoints)
-        filterExtremePoint(extremePoints, listOf(startPoint))
-
+//        //过滤掉一些端点
+//        filterExtremePoint(extremePoints, extremePoints)
+//        filterExtremePoint(extremePoints, listOf(startPoint))
         var point = step / pickingInterval //取点数目
         if (point < 4) { //一块至少取点四个
             point = 4

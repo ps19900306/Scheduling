@@ -65,7 +65,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
 
     override fun onBackPressed() {
         if(nowMode!=NORMAL_MODE){
-            nowMode=nowMode
+            nowMode=NORMAL_MODE
             bind.indexLayout.root.isVisible =true
             bind.imgFeatureLayout.root.isGone =true
         }else{
