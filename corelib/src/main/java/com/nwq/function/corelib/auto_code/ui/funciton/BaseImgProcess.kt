@@ -62,6 +62,7 @@ class BaseImgProcess(
         if (key != null) {
             point.mFeaturePointKey = key
             colorMaps[key]?.add(point)
+            key.updateByAdd(colorInt)
         } else {
             val newKey = FeaturePointKey(colorInt)
             point.mFeaturePointKey = newKey
@@ -115,7 +116,7 @@ class BaseImgProcess(
     fun autoExc() {
         GlobalScope.launch(Dispatchers.Default) {
             colorMaps.forEach {
-                if (darkestKey != it.key &&  it.key.isChecked) {
+                if (darkestKey != it.key && it.key.isChecked) {
                     markBoundaryInternal(it.value)
                     val result = obtainFeaturePoints(it.value)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
@@ -171,6 +172,8 @@ class BaseImgProcess(
                 }
             }
         }
+
+        Timber.d("总点:${originalList.size}  外部点:${originalList.filter { it.isBoundary() }.size}  内部点:${originalList.filter { it.isInternal() }.size}  markBoundaryInternal BaseImgProcess NWQ_ 2023/6/17");
     }
 
 
@@ -179,17 +182,56 @@ class BaseImgProcess(
         originalList: MutableList<FeatureCoordinatePoint>,
         pickingInterval: Int = 20
     ): List<FeatureCoordinatePoint> {
+        originalList.forEach {
+            it.hasContinuousSet = false
+        }
         val list = mutableListOf<FeatureCoordinatePoint>()
         var startPoint = originalList.find { !it.hasContinuousSet }
-        var i =0
+        var i = 0
         while (startPoint != null) {
-            Timber.d("第${i}个块 obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/7");
+            Timber.d("第${i++}个块 obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/7");
             startPoint.setStartPosition()
             val extremePoints = groupBlock(startPoint, pickingInterval)
             list.addAll(extremePoints)
             startPoint = originalList.find { !it.hasContinuousSet }
         }
-        return list
+        Timber.d("取得端点数1  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+        filterExtremePoint(list, list)
+        Timber.d("取得端点数2  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+
+        //尽量选择内部点进行判定，这样可以减少一点范围误差
+       val result = list.map { point ->
+            var result: FeatureCoordinatePoint? = null
+            if (result == null && point.x > 1) {
+                val leftPoint = featureArray[point.y][point.x - 1]
+                if (point.mFeaturePointKey == leftPoint.mFeaturePointKey && leftPoint.isInternal()) {
+                    result = leftPoint
+                }
+            }
+            if (result == null && point.y > 1) {
+                val topPoint = featureArray[point.y - 1][point.x]
+                if (point.mFeaturePointKey == topPoint.mFeaturePointKey && topPoint.isInternal()) {
+                    result = topPoint
+                }
+            }
+            if (result == null && point.x < with - 1) {
+                val rightPoint = featureArray[point.y][point.x + 1]
+                if (point.mFeaturePointKey == rightPoint.mFeaturePointKey && rightPoint.isInternal()) {
+                    result = rightPoint
+                }
+            }
+
+            if (result == null && point.y < height - 1) {
+                val bottomPoint = featureArray[point.y + 1][point.x]
+                if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey && bottomPoint.isInternal()) {
+                    result = bottomPoint
+                }
+            }
+            result ?: point
+        }
+
+        result.forEach { it.isIdentificationKey = true }
+        return result
     }
 
     //对相同的特征色值的 根据连接度对组进行分块
@@ -248,37 +290,6 @@ class BaseImgProcess(
                     number = part * i
                 }
             }
-        }
-
-        //尽量选择内部点进行判定，这样可以减少一点范围误差
-        extremePoints.map { point ->
-            var result: FeatureCoordinatePoint? = null
-            if (result == null && point.x > 1) {
-                val leftPoint = featureArray[point.y][point.x - 1]
-                if (point.mFeaturePointKey == leftPoint.mFeaturePointKey && leftPoint.isInternal()) {
-                    result = leftPoint
-                }
-            }
-            if (result == null && point.y > 1) {
-                val topPoint = featureArray[point.y - 1][point.x]
-                if (point.mFeaturePointKey == topPoint.mFeaturePointKey && topPoint.isInternal()) {
-                    result = topPoint
-                }
-            }
-            if (result == null && point.x < with - 1) {
-                val rightPoint = featureArray[point.y][point.x + 1]
-                if (point.mFeaturePointKey == rightPoint.mFeaturePointKey && rightPoint.isInternal()) {
-                    result = rightPoint
-                }
-            }
-
-            if (result == null && point.y < height - 1) {
-                val bottomPoint = featureArray[point.y + 1][point.x]
-                if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey && bottomPoint.isInternal()) {
-                    result = bottomPoint
-                }
-            }
-            result ?: point
         }
         return extremePoints
     }
@@ -538,6 +549,7 @@ class BaseImgProcess(
                 }
             }
         }
+        Timber.d("预览点数 ${pointList.size} getPreview BaseImgProcess NWQ_ 2023/6/17");
         return pointList
     }
 

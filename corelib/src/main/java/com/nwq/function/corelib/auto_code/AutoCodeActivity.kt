@@ -63,6 +63,17 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
     }
 
 
+    override fun onBackPressed() {
+        if(nowMode!=NORMAL_MODE){
+            nowMode=nowMode
+            bind.indexLayout.root.isVisible =true
+            bind.imgFeatureLayout.root.isGone =true
+        }else{
+            super.onBackPressed()
+        }
+    }
+
+
     /**
      * 这个是开始设备的页面
      */

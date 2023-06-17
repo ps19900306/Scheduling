@@ -59,7 +59,8 @@ public class FeaturePointViewHolder(val binding: ItemFeaturePointBinding) :
         binding.keyCb.isChecked = data.isIdentificationKey
         binding.colorView.setBackgroundColor(Color.rgb(data.red, data.green, data.blue))
         binding.colorRgbTv.text = "${data.red}：${data.green}：${data.blue}"
-        binding.attributeText.text="x:${data.x},y:${data.y}"
+        binding.attributeText.text =
+            "x:${data.x},y:${data.y} ${if (data.isInternal()) "内部点" else "外部点"}"
     }
 
     private fun getFeaturePoint(): FeatureCoordinatePoint? {

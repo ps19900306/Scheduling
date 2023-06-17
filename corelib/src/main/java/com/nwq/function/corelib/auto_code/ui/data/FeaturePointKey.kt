@@ -40,13 +40,44 @@ class FeaturePointKey(var colorInt: Int) {
     var maxGToB = gToB * (1 + rangRatio)
     var minGToB = gToB * (1 - rangRatio)
 
+    //这个特征共有多少特征点
+    var pointCount = 1
+
+     fun updateByAdd(newColorInt: Int) {
+        val redA: Int = colorInt.red
+        val greenA: Int = colorInt.green
+        val blueA: Int = colorInt.blue
+
+        red = (red * pointCount + redA) / (pointCount + 1)
+        green = (green * pointCount + greenA) / (pointCount + 1)
+        blue = (blue * pointCount + blueA) / (pointCount + 1)
+
+        maxRed = red + redD
+        minRed = red - redD
+        maxGreen = green + greenD
+        minGreen = green - greenD
+        maxBlue = blue + blueD
+        minBlue = blue - blueD
+
+        rToG = red.toFloat() / green.toFloat()
+        rToB = red.toFloat() / blue.toFloat()
+        gToB = green.toFloat() / blue.toFloat()
+
+        maxRToG = rToG * (1 + rangRatio)
+        minRToG = rToG * (1 - rangRatio)
+        maxRToB = rToB * (1 + rangRatio)
+        minRToB = rToB * (1 - rangRatio)
+        maxGToB = gToB * (1 + rangRatio)
+        minGToB = gToB * (1 - rangRatio)
+
+        pointCount++
+    }
+
+
     var isExpend = false //这个给Adapter使用的
     var isChecked = false //这个给Adapter使用的
-
     var isKeyMember = false //是否是三大特征值
 
-    //这个特征共有多少特征点
-    var pointCount = 0
 
     constructor(
         red: Int,

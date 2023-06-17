@@ -56,8 +56,14 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
                 if (it.isExpend) {
                     getFeaturePointList()?.let { list ->
                         binding.pointRecycler.isVisible = list.isNotEmpty()
-
-
+                        //这里设置未重要的
+                        var pointList = list?.filter { it.isIdentificationKey }
+                        if (pointList.isNullOrEmpty()) {
+                            pointList = list?.filter { it.isBoundary() }
+                        }
+                        if (pointList.isNotEmpty() == true) {
+                            mFeaturePointAdapter.updateList(pointList)
+                        }
                     } ?: let {
                         binding.pointRecycler.isVisible = false
                     }
@@ -68,10 +74,8 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
         }
 
         binding.keyCb.setOnCheckedChangeListener { compoundButton, b ->
-            if (b) {
-                getFeaturePointKey()?.let {
-                    it.isChecked = b
-                }
+            getFeaturePointKey()?.let {
+                it.isChecked = b
             }
         }
 
@@ -95,7 +99,7 @@ public class FeatureKeyViewHolder(val binding: ItemFeatureKeyBinding) :
         if (pointList.isNullOrEmpty()) {
             pointList = list?.filter { it.isBoundary() }
         }
-        if (pointList?.isNotEmpty()==true) {
+        if (pointList?.isNotEmpty() == true) {
             mFeaturePointAdapter.updateList(pointList)
         }
 
