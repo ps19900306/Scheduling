@@ -63,7 +63,7 @@ class FeatureCoordinatePoint(
     var previousPoint: FeatureCoordinatePoint? = null
 
     fun continuePath(p: FeatureCoordinatePoint): FeatureCoordinatePoint? {
-        if (!hasContinuousSet) {
+        if (!hasContinuousSet) { //如果没有被设置则进行设置
             previousPoint = p
             hasContinuousSet = true
             startX = p.startY

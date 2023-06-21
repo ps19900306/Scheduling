@@ -25,7 +25,7 @@ class BaseImgProcess(
 ) {
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
-    private val picking_Interval=10 //这里是间隔多少个点进行一次取值
+    private val picking_Interval = 6 //这里是间隔多少个点进行一次取值
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
@@ -183,6 +183,7 @@ class BaseImgProcess(
     ): List<FeatureCoordinatePoint> {
         originalList.forEach {
             it.hasContinuousSet = false
+            it.hasFindRound = false
         }
         val list = mutableListOf<FeatureCoordinatePoint>()
         var startPoint = originalList.find { !it.hasContinuousSet }
@@ -196,12 +197,13 @@ class BaseImgProcess(
         }
 
 
-//        Timber.d("取得端点数1  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
-//        filterExtremePoint(list, list)
-//        Timber.d("取得端点数2  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+//      这个方法要进行优化
+        Timber.d("优化前  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+        filterExtremePoint(list, list)
+        Timber.d("优化后  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
 
         //尽量选择内部点进行判定，这样可以减少一点范围误差
-       val result = list.map { point ->
+        val result = list.map { point ->
             var result: FeatureCoordinatePoint? = null
             if (result == null && point.x > 1) {
                 val leftPoint = featureArray[point.y][point.x - 1]
@@ -242,55 +244,39 @@ class BaseImgProcess(
     ): List<FeatureCoordinatePoint> {
         val blockList = mutableListOf<FeatureCoordinatePoint>()
 
-        var step = 0 //这里用于记录最大步数
-
         val oldList = mutableListOf(startPoint)
         val newList = mutableListOf<FeatureCoordinatePoint>()
         val extremePoints = mutableListOf<FeatureCoordinatePoint>()//端点，就是找不延续的点了
 
-        val endList = mutableListOf<FeatureCoordinatePoint>()
+        val endList = mutableListOf(startPoint)//这个用于记录最后的端点
+
         while (!oldList.isEmpty()) {
-            step++
             newList.clear()
             oldList.forEach {
                 val result = dynamicSearchAround(it, blockList)
                 if (result.isEmpty()) {
-                    extremePoints.add(it)
+                    endList.add(it)
                 } else {
                     newList.addAll(result)
                 }
             }
-            if (newList.isEmpty()) {
-                endList.addAll(oldList)
-            }
             oldList.clear()
             oldList.addAll(newList)
-//            filterExtremePoint(extremePoints, newList)
         }
 
-//        //过滤掉一些端点
-//        filterExtremePoint(extremePoints, extremePoints)
-//        filterExtremePoint(extremePoints, listOf(startPoint))
-        var point = step / pickingInterval //取点数目
-        if (point < 4) { //一块至少取点四个
-            point = 4
-        }
 
-        endList.getOrNull(0)?.let {
+        endList.forEach {
             //增加首尾点
-            extremePoints.add(startPoint)
             extremePoints.add(it)
 
-            val part = it.sequenceNumber / 4
+            var point = it.sequenceNumber / pickingInterval //取点数目
+            val part = it.sequenceNumber / point
+
             var data = it
-            var i = point - 1
-            var number = part * i
-            while (data.previousPoint != null && i > 0) {
+            while (data.previousPoint != null) {
                 data = data.previousPoint!!
-                if (data.sequenceNumber == number) {
+                if (data.sequenceNumber % part == 0) { //这里用取余下的值为零进行选取
                     extremePoints.add(data)
-                    i--
-                    number = part * i
                 }
             }
         }
