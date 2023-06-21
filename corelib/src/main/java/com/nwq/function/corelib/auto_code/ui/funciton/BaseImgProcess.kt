@@ -73,7 +73,7 @@ class BaseImgProcess(
     }
 
 
-    private suspend fun organizeColorMaps() {
+    private fun organizeColorMaps() {
         Timber.d("${colorMaps.size} 过滤前大小 BaseImgProcess NWQ_ 2023/6/7");
         colorMaps = colorMaps.filter {
             it.key.pointCount = it.value.size
@@ -88,7 +88,9 @@ class BaseImgProcess(
             darkestKey = darkestKey.getDarkest(it.key)
         }
         brightestKey.isKeyMember = true
+        brightestKey.isChecked=true
         differenceKey.isKeyMember = true
+        brightestKey.isChecked=true
         darkestKey.isKeyMember = true
     }
 

@@ -2,10 +2,8 @@ package com.nwq.function.corelib.auto_code.ui
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color.red
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.nwq.function.corelib.R
