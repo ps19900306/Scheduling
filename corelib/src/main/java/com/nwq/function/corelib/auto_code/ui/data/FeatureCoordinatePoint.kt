@@ -61,6 +61,7 @@ class FeatureCoordinatePoint(
     }
 
     var previousPoint: FeatureCoordinatePoint? = null
+    var isAdd = false
 
     fun continuePath(p: FeatureCoordinatePoint): FeatureCoordinatePoint? {
         if (!hasContinuousSet) { //如果没有被设置则进行设置
@@ -72,9 +73,11 @@ class FeatureCoordinatePoint(
         }
         return if (hasFindRound) {
             null
-        } else {
+        } else if(isBoundary()){
             hasFindRound = true
             this
+        }else{
+            null
         }
     }
 

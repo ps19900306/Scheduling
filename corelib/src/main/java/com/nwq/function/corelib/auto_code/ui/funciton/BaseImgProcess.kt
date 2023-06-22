@@ -88,9 +88,9 @@ class BaseImgProcess(
             darkestKey = darkestKey.getDarkest(it.key)
         }
         brightestKey.isKeyMember = true
-        brightestKey.isChecked=true
+        brightestKey.isChecked = true
         differenceKey.isKeyMember = true
-        brightestKey.isChecked=true
+        brightestKey.isChecked = true
         darkestKey.isKeyMember = true
     }
 
@@ -180,15 +180,17 @@ class BaseImgProcess(
 
     //获取特征点，这里使用边界点
     fun obtainFeaturePoints(
-        originalList: MutableList<FeatureCoordinatePoint>,
-        pickingInterval: Int = picking_Interval
+        originalList: MutableList<FeatureCoordinatePoint>, pickingInterval: Int = picking_Interval
     ): List<FeatureCoordinatePoint> {
         originalList.forEach {
             it.hasContinuousSet = false
             it.hasFindRound = false
+            it.isAdd = false
         }
+
         val list = mutableListOf<FeatureCoordinatePoint>()
         var startPoint = originalList.find { !it.hasContinuousSet }
+
         var i = 0
         while (startPoint != null) {
             Timber.d("第${i++}个块 obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/7");
@@ -201,8 +203,8 @@ class BaseImgProcess(
 
 //      这个方法要进行优化
         Timber.d("优化前  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
-        filterExtremePoint(list, list)
-        Timber.d("优化后  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+//        filterExtremePoint(list, list)
+//        Timber.d("优化后  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
 
         //尽量选择内部点进行判定，这样可以减少一点范围误差
         val result = list.map { point ->
@@ -241,47 +243,44 @@ class BaseImgProcess(
 
     //对相同的特征色值的 根据连接度对组进行分块
     private fun groupBlock(//这里是根据起始点进行眼神
-        startPoint: FeatureCoordinatePoint,
-        pickingInterval: Int = picking_Interval
+        startPoint: FeatureCoordinatePoint, pickingInterval: Int = picking_Interval
     ): List<FeatureCoordinatePoint> {
+
         val blockList = mutableListOf<FeatureCoordinatePoint>()
+        blockList.add(startPoint)
 
         val oldList = mutableListOf(startPoint)
         val newList = mutableListOf<FeatureCoordinatePoint>()
         val extremePoints = mutableListOf<FeatureCoordinatePoint>()//端点，就是找不延续的点了
 
-        val endList = mutableListOf(startPoint)//这个用于记录最后的端点
-
+        var step = 0
         while (!oldList.isEmpty()) {
+            step++
             newList.clear()
-            oldList.forEach {
+            oldList.forEachIndexed { p, it ->
                 val result = dynamicSearchAround(it, blockList)
-                if (result.isEmpty()) {
-                    endList.add(it)
-                } else {
-                    newList.addAll(result)
-                }
+                newList.addAll(result)
             }
             oldList.clear()
             oldList.addAll(newList)
         }
 
 
-        endList.forEach {
-            //增加首尾点
-            extremePoints.add(it)
-
-            var point = it.sequenceNumber / pickingInterval //取点数目
-            val part = it.sequenceNumber / point
-
-            var data = it
-            while (data.previousPoint != null) {
-                data = data.previousPoint!!
-                if (data.sequenceNumber % part == 0) { //这里用取余下的值为零进行选取
-                    extremePoints.add(data)
+        for (i in 0..step step pickingInterval) { blockList.filter { it.sequenceNumber == i }?.let { stepList->
+                var startPoint = stepList.find { !it.isAdd }
+                while (startPoint != null) {
+                    extremePoints.add(startPoint)
+                    stepList.forEach { item ->
+                        if ((Math.abs(startPoint!!.x - item.x) < 3 && Math.abs(startPoint!!.x - item.x) < 3)) {
+                            item.isAdd = true
+                        }
+                    }
+                    startPoint = stepList.find { !it.isAdd }
                 }
+                Timber.d(" step:$i size${stepList.size} extremePoints${extremePoints.size} groupBlock BaseImgProcess NWQ_ 2023/6/22");
             }
         }
+
         return extremePoints
     }
 
@@ -301,6 +300,15 @@ class BaseImgProcess(
                 iterator.remove()
             }
         }
+    }
+
+    private fun needAdd(
+        item: FeatureCoordinatePoint, filterList: List<FeatureCoordinatePoint>
+    ): Boolean {
+        return filterList.find {
+            (it.x != item.x || it.y != item.y) //保证不是同一个点
+                    && (Math.abs(it.x - item.x) < 3 && Math.abs(it.x - item.x) < 3)//发现二点过近
+        } == null
     }
 
 
@@ -361,9 +369,9 @@ class BaseImgProcess(
         if (point.x > 1 && point.y > 1) {
             val tPoint = featureArray[point.y - 1][point.x - 1]
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
-                if (tPoint.continuePath(point)?.let { list.add(it) } != null &&
-                    !blockList.contains(tPoint)
-                ) {
+                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
+                        tPoint
+                    )) {
                     blockList.add(tPoint)
                 }
             }
@@ -374,8 +382,7 @@ class BaseImgProcess(
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
                 if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
                         tPoint
-                    )
-                ) {
+                    )) {
                     blockList.add(tPoint)
                 }
             }
@@ -386,8 +393,7 @@ class BaseImgProcess(
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
                 if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
                         tPoint
-                    )
-                ) {
+                    )) {
                     blockList.add(tPoint)
                 }
             }
@@ -398,8 +404,7 @@ class BaseImgProcess(
             if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
                 if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
                         tPoint
-                    )
-                ) {
+                    )) {
                     blockList.add(tPoint)
                 }
             }
@@ -453,9 +458,7 @@ class BaseImgProcess(
             blueTotal += it.blue
         }
         val featurePointKey = FeaturePointKey(
-            redTotal / colorInt.size,
-            greenTotal / colorInt.size,
-            blueTotal / colorInt.size
+            redTotal / colorInt.size, greenTotal / colorInt.size, blueTotal / colorInt.size
         )
 
         colorMaps[featurePointKey] = mutableListOf()
