@@ -1,8 +1,5 @@
 package com.nwq.function.corelib.auto_code.ui.funciton
 
-import androidx.core.graphics.blue
-import androidx.core.graphics.green
-import androidx.core.graphics.red
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,14 +12,12 @@ import com.nwq.function.corelib.auto_code.ui.adapter.FeatureKeyAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.BUTTON_TYPE
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.CHECK_TYPE
-import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_FEATURE_KEY
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_POINT
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_POINT
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
 import com.nwq.function.corelib.utils.runOnUI
-import com.nwq.function.corelib.utils.singleClick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -49,8 +44,7 @@ class ImgFeatureExtractionFunction(
         imgArray: List<IntArray>,
         binding: PartImgFeatureBinding,
         mOptLister: OptLister
-    )
-            : this(
+    ) : this(
         coordinateAre.x,
         coordinateAre.y,
         coordinateAre.width,
@@ -65,7 +59,9 @@ class ImgFeatureExtractionFunction(
     private lateinit var mFeatureKeyAdapter: FeatureKeyAdapter
     private lateinit var mFunctionItemAdapter: FunctionItemAdapter
     private val context = binding.root.context
-
+    private var showFeature = true
+    private var showBoundary = false
+    private var useBackground = false
     private val functionItemList by lazy {
         mutableListOf(
             FunctionItemInfo(R.string.add, BUTTON_TYPE),
@@ -75,13 +71,15 @@ class ImgFeatureExtractionFunction(
             FunctionItemInfo(R.string.auto_exc, BUTTON_TYPE),
             FunctionItemInfo(R.string.auto_code, BUTTON_TYPE),
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
-            FunctionItemInfo(R.string.feature, CHECK_TYPE),
-            FunctionItemInfo(R.string.boundary, CHECK_TYPE),
+            FunctionItemInfo(R.string.merge, BUTTON_TYPE),
+            FunctionItemInfo(R.string.background, BUTTON_TYPE),
+            FunctionItemInfo(R.string.useBackground, CHECK_TYPE,useBackground),
+            FunctionItemInfo(R.string.feature, CHECK_TYPE,showFeature),
+            FunctionItemInfo(R.string.boundary, CHECK_TYPE,showBoundary),
         )
     }
 
-    private var showFeature = false
-    private var showBoundary = false
+
 
     init {
         initOpt()
@@ -114,14 +112,28 @@ class ImgFeatureExtractionFunction(
                     mOptLister.optPoint(DELETE_POINT)
                 }
                 R.string.auto_exc -> {
-                    mBaseImgProcess.autoExc()
+                    mBaseImgProcess.autoExc(useBackground)
                 }
                 R.string.auto_code -> {
                     generateCode()
                 }
                 R.string.preview -> {
-                    val list = mBaseImgProcess.getPreview(showFeature, showBoundary)
+                    val list = mBaseImgProcess.getPreview(showFeature, showBoundary,useBackground)
                     mOptLister.showPoint(list.map { CoordinatePoint(it.x + startX, it.y + startY) })
+                }
+                R.string.merge->{
+                    mBaseImgProcess.mergeKey()
+                    mFeatureKeyAdapter =
+                        FeatureKeyAdapter(mBaseImgProcess.featureKeyList, mBaseImgProcess.colorMaps)
+                    binding.feRecycler.adapter=mFeatureKeyAdapter
+                }
+                R.string.useBackground->{
+                    data.isCheck = !data.isCheck
+                    useBackground = data.isCheck
+                    mFunctionItemAdapter.notifyItemChanged(position)
+                }
+                R.string.background->{
+                    mBaseImgProcess.setDarkestFeature()
                 }
                 R.string.feature -> {
                     data.isCheck = !data.isCheck

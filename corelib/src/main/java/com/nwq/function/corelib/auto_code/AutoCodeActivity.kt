@@ -24,6 +24,7 @@ import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFuncti
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.utils.singleClick
+import timber.log.Timber
 
 class AutoCodeActivity : AppCompatActivity(), OptLister {
 
@@ -79,7 +80,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
      */
     private lateinit var mFunctionItemAdapter: FunctionItemAdapter
     private val functionList by lazy {
-        mutableListOf(FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE))
+        mutableListOf(FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE))
     }
 
     private fun initIndex(controller: WindowInsetsControllerCompat) {
@@ -108,12 +109,13 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         }
 
 
-        val spanCount = 3
+        val spanCount = 4
         val sd = GridSpacingItemDecoration(spanCount, 8, true)
         bind.indexLayout.functionRecycler.layoutManager = GridLayoutManager(this, spanCount)
         mFunctionItemAdapter = FunctionItemAdapter(functionList)
         bind.indexLayout.functionRecycler.adapter = mFunctionItemAdapter
         bind.indexLayout.functionRecycler.addItemDecoration(sd)
+
 
         mFunctionItemAdapter.setOnItemClickListener { adapter, view, position ->
             val data = functionList[position]
@@ -123,7 +125,18 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                     nowMode = CREATE_IMAGE_FEATURE
                     bind.okTv.isVisible = true
                 }
+                R.string.test_pick_up_points->{
+                   val x=  mBitmap.width-2
+                    val Y=  mBitmap.height-2
+                    var startTime = System.currentTimeMillis()
+                    for (i in 0 ..1000){
+                        Timber.d("point i  initIndex AutoCodeActivity NWQ_ 2023/6/23");
+                        mBitmap.getPixel((Math.random()*x).toInt(), (Math.random()*Y).toInt())
+                    }
+                    Timber.d("消耗时间 ${System.currentTimeMillis()-startTime} initIndex AutoCodeActivity NWQ_ 2023/6/23");
+                }
             }
+
         }
 
     }

@@ -25,7 +25,8 @@ class BaseImgProcess(
 ) {
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
-    private val picking_Interval = 6 //这里是间隔多少个点进行一次取值
+    private val picking_Interval = 10 //这里是间隔多少个点进行一次取值
+    private val minPointInterval = 5 //最小取点间隔
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
@@ -63,7 +64,7 @@ class BaseImgProcess(
             point.mFeaturePointKey = key
             colorMaps[key]?.add(point)
         } else {
-            val newKey = FeaturePointKey(colorInt)
+            var newKey = FeaturePointKey(colorInt)
             point.mFeaturePointKey = newKey
             val list = mutableListOf<FeatureCoordinatePoint>()
             list.add(point)
@@ -90,7 +91,7 @@ class BaseImgProcess(
         brightestKey.isKeyMember = true
         brightestKey.isChecked = true
         differenceKey.isKeyMember = true
-        brightestKey.isChecked = true
+        differenceKey.isChecked = true
         darkestKey.isKeyMember = true
     }
 
@@ -114,67 +115,140 @@ class BaseImgProcess(
         }
     }
 
-    fun autoExc() {
+    fun autoExc(useBackground: Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
             colorMaps.forEach {
                 if (darkestKey != it.key && it.key.isChecked) {
-                    markBoundaryInternal(it.value)
+                    markBoundaryInternal(it.value, true)
                     val result = obtainFeaturePoints(it.value)
+                    if(useBackground)
+                    addBackground(result)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
                 }
             }
         }
     }
 
+    fun addBackground(result: List<FeatureCoordinatePoint>) {
+        result.forEach { point->
+            Timber.d("进行背景点添加  addBackground BaseImgProcess NWQ_ 2023/6/23");
+            getPointSurround(point,3,true,false){ nextPoint->
+                if(nextPoint.mFeaturePointKey == darkestKey){
+                    nextPoint.isIdentificationKey = true
+                    Timber.d("添加背景点数  addBackground BaseImgProcess NWQ_ 2023/6/23");
+                    true
+                }else{
+                    false
+                }
+            }
+        }
+
+    }
+
 
     //标记每个点的位置,标记为内部点或者是边界点
-    suspend fun markBoundaryInternal(originalList: MutableList<FeatureCoordinatePoint>) {
+    suspend fun markBoundaryInternal(
+        originalList: MutableList<FeatureCoordinatePoint>, redo: Boolean = true
+    ) {
         originalList.forEach { point ->
-            if (!point.hasJudeType()) {
+            if (redo || !point.hasJudeType()) {
                 var isBoundary = false
                 //left
-                if (!isBoundary && point.x > 1) {
-                    val leftPoint = featureArray[point.y][point.x - 1]
-                    if (point.mFeaturePointKey != leftPoint.mFeaturePointKey) {
+                getPointSurround(point, 1, false, false) {
+                    if (point.mFeaturePointKey != it.mFeaturePointKey) {
                         isBoundary = true
                         point.setBoundary()
+                        true
+                    } else {
+                        false
                     }
                 }
-
-                //top
-                if (!isBoundary && point.y > 1) {
-                    val topPoint = featureArray[point.y - 1][point.x]
-                    if (point.mFeaturePointKey != topPoint.mFeaturePointKey) {
-                        isBoundary = true
-                        point.setBoundary()
-                    }
-                }
-
-                //right
-                if (!isBoundary && point.x < with - 1) {
-                    val rightPoint = featureArray[point.y][point.x + 1]
-                    if (point.mFeaturePointKey != rightPoint.mFeaturePointKey) {
-                        isBoundary = true
-                        point.setBoundary()
-                    }
-                }
-
-                //bottom
-                if (!isBoundary && point.y < height - 1) {
-                    val bottomPoint = featureArray[point.y + 1][point.x]
-                    if (point.mFeaturePointKey != bottomPoint.mFeaturePointKey) {
-                        isBoundary = true
-                        point.setBoundary()
-                    }
-                }
-
                 if (!isBoundary) {
                     point.setInternal()
                 }
             }
         }
 
-        Timber.d("总点:${originalList.size}  外部点:${originalList.filter { it.isBoundary() }.size}  内部点:${originalList.filter { it.isInternal() }.size}  markBoundaryInternal BaseImgProcess NWQ_ 2023/6/17");
+        Timber.d("总点:${originalList.size}  外部点:${originalList.filter { it.isBoundary() }.size}  内部点:${originalList.filter { it.isInternal() }.size}  BaseImgProcess NWQ_ 2023/6/17");
+    }
+
+
+    private fun getPointSurround(
+        point: FeatureCoordinatePoint, range: Int, allDirection: Boolean,//这个是只寻找找四周还是寻找全部
+        includeSelf: Boolean = false, next: (p: FeatureCoordinatePoint) -> Boolean
+    ) {
+
+        var startX = point.x - range
+        var endX = point.x + range
+        var startY = point.y - range
+        var endY = point.y + range
+
+        if (startX < 0) {
+            startX = 0
+        }
+        if (endX > with - 1) {
+            endX = with - 1
+        }
+        if (startY < 0) {
+            startY = 0
+        }
+        if (endY > height - 1) {
+            endY = height - 1
+        }
+
+        if (allDirection) {
+            for (iy in startY..endY) {
+                for (ix in startX..endX) {
+                    val p = if (::featureArray.isInitialized) {
+                        featureArray.getOrNull(iy)?.getOrNull(ix) ?: FeatureCoordinatePoint(
+                            ix, iy, imgArray[iy][ix]
+                        )
+                    } else {
+                        FeatureCoordinatePoint(
+                            ix, iy, imgArray[iy][ix]
+                        )
+                    }
+                    if (p != point || includeSelf) {
+                        if (next.invoke(p)) {
+                            return
+                        }
+                    }
+                }
+            }
+        } else {
+            for (iy in startY..endY) {
+                val p = if (::featureArray.isInitialized) {
+                    featureArray.getOrNull(iy)?.getOrNull(point.x) ?: FeatureCoordinatePoint(
+                        point.x, iy, imgArray[iy][point.x]
+                    )
+                } else {
+                    FeatureCoordinatePoint(
+                        point.x, iy, imgArray[iy][point.x]
+                    )
+                }
+                if (p != point || includeSelf) {
+                    if (next.invoke(p)) {
+                        return
+                    }
+                }
+            }
+            for (ix in startX..endX) {
+                val p = if (::featureArray.isInitialized) {
+                    featureArray.getOrNull(point.y)?.getOrNull(ix) ?: FeatureCoordinatePoint(
+                        ix, point.y, imgArray[point.y][ix]
+                    )
+                } else {
+                    FeatureCoordinatePoint(
+                        ix, point.y, imgArray[point.y][ix]
+                    )
+                }
+                if (p != point || includeSelf) {
+                    if (next.invoke(p)) {
+                        return
+                    }
+                }
+            }
+        }
     }
 
 
@@ -189,61 +263,42 @@ class BaseImgProcess(
         }
 
         val list = mutableListOf<FeatureCoordinatePoint>()
-        var startPoint = originalList.find { !it.hasContinuousSet }
+        var startPoint = originalList.find { !it.hasContinuousSet && it.isBoundary() }
 
         var i = 0
         while (startPoint != null) {
             Timber.d("第${i++}个块 obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/7");
             startPoint.setStartPosition()
-            val extremePoints = groupBlock(startPoint, pickingInterval)
+            val extremePoints = groupBlock(startPoint, list, pickingInterval)
             list.addAll(extremePoints)
-            startPoint = originalList.find { !it.hasContinuousSet }
+            startPoint = originalList.find { !it.hasContinuousSet && it.isBoundary() }
         }
 
-
 //      这个方法要进行优化
-        Timber.d("优化前  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
-//        filterExtremePoint(list, list)
-//        Timber.d("优化后  ${list.size} obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/17");
+        Timber.d("截取特征数  ${list.size}  BaseImgProcess NWQ_ 2023/6/17");
 
         //尽量选择内部点进行判定，这样可以减少一点范围误差
         val result = list.map { point ->
-            var result: FeatureCoordinatePoint? = null
-            if (result == null && point.x > 1) {
-                val leftPoint = featureArray[point.y][point.x - 1]
-                if (point.mFeaturePointKey == leftPoint.mFeaturePointKey && leftPoint.isInternal()) {
-                    result = leftPoint
+            var result = point
+            getPointSurround(point, 1, true, true) { nextPoint ->
+                if (nextPoint.isInternal()) {
+                    result = nextPoint
+                    true
+                } else {
+                    false
                 }
             }
-            if (result == null && point.y > 1) {
-                val topPoint = featureArray[point.y - 1][point.x]
-                if (point.mFeaturePointKey == topPoint.mFeaturePointKey && topPoint.isInternal()) {
-                    result = topPoint
-                }
-            }
-            if (result == null && point.x < with - 1) {
-                val rightPoint = featureArray[point.y][point.x + 1]
-                if (point.mFeaturePointKey == rightPoint.mFeaturePointKey && rightPoint.isInternal()) {
-                    result = rightPoint
-                }
-            }
-
-            if (result == null && point.y < height - 1) {
-                val bottomPoint = featureArray[point.y + 1][point.x]
-                if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey && bottomPoint.isInternal()) {
-                    result = bottomPoint
-                }
-            }
-            result ?: point
+            result
         }
-
         result.forEach { it.isIdentificationKey = true }
         return result
     }
 
     //对相同的特征色值的 根据连接度对组进行分块
     private fun groupBlock(//这里是根据起始点进行眼神
-        startPoint: FeatureCoordinatePoint, pickingInterval: Int = picking_Interval
+        startPoint: FeatureCoordinatePoint,
+        keyList: List<FeatureCoordinatePoint>,
+        pickingInterval: Int = picking_Interval
     ): List<FeatureCoordinatePoint> {
 
         val blockList = mutableListOf<FeatureCoordinatePoint>()
@@ -257,159 +312,63 @@ class BaseImgProcess(
         while (!oldList.isEmpty()) {
             step++
             newList.clear()
-            oldList.forEachIndexed { p, it ->
-                val result = dynamicSearchAround(it, blockList)
-                newList.addAll(result)
+            oldList.forEach { point ->
+                getPointSurround(point, 1, true, false) { nextPoint ->
+                    if (nextPoint.continuePath(point)
+                            ?.let { newList.add(it) } != null && !blockList.contains(nextPoint)
+                    ) {
+                        blockList.add(nextPoint)
+                    }
+                    false
+                }
             }
             oldList.clear()
             oldList.addAll(newList)
         }
 
 
-        for (i in 0..step step pickingInterval) { blockList.filter { it.sequenceNumber == i }?.let { stepList->
+        for (i in 0..step step pickingInterval) {
+            blockList.filter { it.sequenceNumber == i }.let { stepList ->
                 var startPoint = stepList.find { !it.isAdd }
                 while (startPoint != null) {
-                    extremePoints.add(startPoint)
-                    stepList.forEach { item ->
-                        if ((Math.abs(startPoint!!.x - item.x) < 3 && Math.abs(startPoint!!.x - item.x) < 3)) {
-                            item.isAdd = true
+                    //这里防止单快过多添加
+                    if (keyList.find {
+                            (Math.abs(startPoint!!.x - it.x) < minPointInterval && Math.abs(
+                                startPoint!!.y - it.y
+                            ) < minPointInterval)
+                        } == null) {
+                        getPointSurround(startPoint, 4, true, true) { nextPoint ->
+                            if (startPoint!!.mFeaturePointKey == nextPoint.mFeaturePointKey) {
+                                nextPoint.isAdd = true
+                            }
+                            false
                         }
+                        extremePoints.add(startPoint)
                     }
+//                    stepList.forEach { item ->
+//                        if ((Math.abs(startPoint!!.x - item.x) < minPointInterval && Math.abs(
+//                                startPoint!!.y - item.y
+//                            ) < minPointInterval)
+//                        ) {
+//                            item.isAdd = true
+//                        }
+//                    }
                     startPoint = stepList.find { !it.isAdd }
                 }
                 Timber.d(" step:$i size${stepList.size} extremePoints${extremePoints.size} groupBlock BaseImgProcess NWQ_ 2023/6/22");
             }
         }
-
         return extremePoints
     }
 
-
-    //这里是为了优化过滤掉端点，去掉一些不必要的点
-    private fun filterExtremePoint(
-        originalList: MutableList<FeatureCoordinatePoint>, //需要过滤的点
-        filterList: List<FeatureCoordinatePoint>     //过滤规则
-    ) {
-        val iterator = originalList.iterator()
-        while (iterator.hasNext()) {//去除近的端点
-            val item = iterator.next()
-            if (filterList.find {
-                    (it.x != item.x || it.y != item.y) //保证不是同一个点
-                            && (Math.abs(it.x - item.x) < 3 && Math.abs(it.x - item.x) < 3)//发现二点过近
-                } != null) {
-                iterator.remove()
-            }
-        }
-    }
 
     private fun needAdd(
         item: FeatureCoordinatePoint, filterList: List<FeatureCoordinatePoint>
     ): Boolean {
         return filterList.find {
             (it.x != item.x || it.y != item.y) //保证不是同一个点
-                    && (Math.abs(it.x - item.x) < 3 && Math.abs(it.x - item.x) < 3)//发现二点过近
+                    && (Math.abs(it.x - item.x) < minPointInterval && Math.abs(it.x - item.x) < minPointInterval)//发现二点过近
         } == null
-    }
-
-
-    //动态向八方进行延展，同时进行排序
-    private fun dynamicSearchAround(
-        point: FeatureCoordinatePoint,
-        blockList: MutableList<FeatureCoordinatePoint>,
-    ): List<FeatureCoordinatePoint> {
-        val list = mutableListOf<FeatureCoordinatePoint>()
-        if (point.x > 1) {
-            val leftPoint = featureArray[point.y][point.x - 1]
-            if (point.mFeaturePointKey == leftPoint.mFeaturePointKey) {
-                if (leftPoint.continuePath(point)
-                        ?.let { list.add(it) } != null && !blockList.contains(leftPoint)
-                ) {
-                    blockList.add(leftPoint)
-                }
-            }
-        }
-
-        //top
-        if (point.y > 1) {
-            val topPoint = featureArray[point.y - 1][point.x]
-            if (point.mFeaturePointKey == topPoint.mFeaturePointKey) {
-                if (topPoint.continuePath(point)
-                        ?.let { list.add(it) } != null && !blockList.contains(topPoint)
-                ) {
-                    blockList.add(topPoint)
-                }
-            }
-        }
-
-
-        //right
-        if (point.x < with - 1) {
-            val rightPoint = featureArray[point.y][point.x + 1]
-            if (point.mFeaturePointKey == rightPoint.mFeaturePointKey) {
-                if (rightPoint.continuePath(point)
-                        ?.let { list.add(it) } != null && !blockList.contains(rightPoint)
-                ) {
-                    blockList.add(rightPoint)
-                }
-            }
-        }
-
-        //bottom
-        if (point.y < height - 1) {
-            val bottomPoint = featureArray[point.y + 1][point.x]
-            if (point.mFeaturePointKey == bottomPoint.mFeaturePointKey) {
-                if (bottomPoint.continuePath(point)
-                        ?.let { list.add(it) } != null && !blockList.contains(bottomPoint)
-                ) {
-                    blockList.add(bottomPoint)
-                }
-            }
-        }
-
-        if (point.x > 1 && point.y > 1) {
-            val tPoint = featureArray[point.y - 1][point.x - 1]
-            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
-                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
-                        tPoint
-                    )) {
-                    blockList.add(tPoint)
-                }
-            }
-        }
-
-        if (point.x > 1 && point.y < height - 1) {
-            val tPoint = featureArray[point.y + 1][point.x - 1]
-            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
-                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
-                        tPoint
-                    )) {
-                    blockList.add(tPoint)
-                }
-            }
-        }
-
-        if (point.x < with - 1 && point.y > 1) {
-            val tPoint = featureArray[point.y - 1][point.x + 1]
-            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
-                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
-                        tPoint
-                    )) {
-                    blockList.add(tPoint)
-                }
-            }
-        }
-
-        if (point.x < with - 1 && point.y < height - 1) {
-            val tPoint = featureArray[point.y + 1][point.x + 1]
-            if (point.mFeaturePointKey == tPoint.mFeaturePointKey) {
-                if (tPoint.continuePath(point)?.let { list.add(it) } != null && !blockList.contains(
-                        tPoint
-                    )) {
-                    blockList.add(tPoint)
-                }
-            }
-        }
-        return list
     }
 
 
@@ -436,14 +395,12 @@ class BaseImgProcess(
         colorMaps.put(differenceKey, mutableListOf())
     }
 
-    fun setDarkestFeature(data: FeaturePointKey) {
-        if (colorMaps.contains(darkestKey)) {
-            colorMaps.remove(darkestKey)
-        }
+    fun setDarkestFeature() {
         darkestKey.isKeyMember = false
-        darkestKey = data
-        darkestKey.isKeyMember = true
-        colorMaps.put(darkestKey, mutableListOf())
+        featureKeyList.find { it.isChecked }?.let {
+            darkestKey=it
+            darkestKey.isKeyMember = true
+        }
     }
 
 
@@ -530,7 +487,7 @@ class BaseImgProcess(
         }
     }
 
-    fun getPreview(showFeature: Boolean, showBoundary: Boolean): List<FeatureCoordinatePoint> {
+    fun getPreview(showFeature: Boolean, showBoundary: Boolean, useBackground: Boolean): List<FeatureCoordinatePoint> {
         val pointList = mutableListOf<FeatureCoordinatePoint>()
         featureKeyList.forEach {
             if (it.isChecked) {
@@ -543,8 +500,39 @@ class BaseImgProcess(
                 }
             }
         }
+        if(useBackground && darkestKey.isChecked==false){
+            colorMaps[darkestKey]?.forEach {
+                if (showFeature && it.isIdentificationKey) {
+                    pointList.add(it)
+                }
+            }
+        }
         Timber.d("预览点数 ${pointList.size} getPreview BaseImgProcess NWQ_ 2023/6/17");
         return pointList
+    }
+
+
+    fun mergeKey() {//对特征值进行合并
+        val needList = featureKeyList.filter {
+            it.isChecked
+        }
+        if (needList.size <= 1) {
+            return
+        }
+        val baseKey = needList.find { it.isKeyMember } ?: needList[0]
+        val baseList = colorMaps[baseKey]
+        needList.forEach {
+            if (it != baseKey) {
+                colorMaps[it]?.let {
+                    it.forEach { item ->
+                        item.mFeaturePointKey = baseKey
+                    }
+                    baseList?.addAll(it)
+                }
+                colorMaps.remove(it)
+                featureKeyList.remove(it)
+            }
+        }
     }
 
 

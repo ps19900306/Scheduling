@@ -18,9 +18,25 @@ class FeaturePointKey(var colorInt: Int) {
     var green: Int = colorInt.green
     var blue: Int = colorInt.blue
 
-    var redD = 30
-    var greenD = 30
-    var blueD = 30
+    val redD = getRange(red)
+    val greenD= getRange(green)
+    val blueD= getRange(blue)
+
+
+    fun getRange(bInt: Int):Int {
+       return if (bInt > 200) {
+            50
+        } else if (bInt > 150) {
+            40
+        } else if (bInt > 110) {
+            35
+        } else if (bInt > 80) {
+            30
+        } else {
+            15
+        }
+    }
+
 
     var maxRed = red + redD
     var minRed = red - redD
@@ -43,38 +59,6 @@ class FeaturePointKey(var colorInt: Int) {
 
     //这个特征共有多少特征点
     var pointCount = 1
-
-//    //当有一个新的点加入分组则进行处理 这里保证取平均值
-//    fun updateByAdd(newColorInt: Int) {
-//        val redA: Int = newColorInt.red
-//        val greenA: Int = newColorInt.green
-//        val blueA: Int = newColorInt.blue
-//        Timber.d("old $red:$green:$blue updateByAdd FeaturePointKey NWQ_ 2023/6/17");
-//        red = (red * pointCount + redA) / (pointCount + 1)
-//        green = (green * pointCount + greenA) / (pointCount + 1)
-//        blue = (blue * pointCount + blueA) / (pointCount + 1)
-//
-//        maxRed = red + redD
-//        minRed = red - redD
-//        maxGreen = green + greenD
-//        minGreen = green - greenD
-//        maxBlue = blue + blueD
-//        minBlue = blue - blueD
-//
-//        rToG = red.toFloat() / green.toFloat()
-//        rToB = red.toFloat() / blue.toFloat()
-//        gToB = green.toFloat() / blue.toFloat()
-//
-//        maxRToG = rToG * (1 + rangRatio)
-//        minRToG = rToG * (1 - rangRatio)
-//        maxRToB = rToB * (1 + rangRatio)
-//        minRToB = rToB * (1 - rangRatio)
-//        maxGToB = gToB * (1 + rangRatio)
-//        minGToB = gToB * (1 - rangRatio)
-//        Timber.d("new $red:$green:$blue updateByAdd FeaturePointKey NWQ_ 2023/6/17");
-//        pointCount++
-//    }
-
 
     var isExpend = false //这个给Adapter使用的
     var isChecked = false //这个给Adapter使用的
@@ -128,10 +112,9 @@ class FeaturePointKey(var colorInt: Int) {
 
 
     fun getDifference(featurePointKey: FeaturePointKey): FeaturePointKey {
-        val newColorInt = featurePointKey.colorInt
-        val newRed = newColorInt.red
-        val newGreen = newColorInt.green
-        val newBlue = newColorInt.blue
+        val newRed = featurePointKey.red
+        val newGreen = featurePointKey.green
+        val newBlue = featurePointKey.blue
         var i1 = Math.abs(red - green) + Math.abs(red - blue) + Math.abs(green - blue)
         var i2 =
             Math.abs(newRed - newGreen) + Math.abs(newRed - newBlue) + Math.abs(newGreen - newBlue)
