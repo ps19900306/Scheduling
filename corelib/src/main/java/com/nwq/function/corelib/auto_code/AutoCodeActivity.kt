@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings.Global
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.WindowManager
@@ -24,6 +25,9 @@ import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFuncti
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.utils.singleClick
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AutoCodeActivity : AppCompatActivity(), OptLister {
@@ -65,11 +69,11 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
 
 
     override fun onBackPressed() {
-        if(nowMode!=NORMAL_MODE){
-            nowMode=NORMAL_MODE
-            bind.indexLayout.root.isVisible =true
-            bind.imgFeatureLayout.root.isGone =true
-        }else{
+        if (nowMode != NORMAL_MODE) {
+            nowMode = NORMAL_MODE
+            bind.indexLayout.root.isVisible = true
+            bind.imgFeatureLayout.root.isGone = true
+        } else {
             super.onBackPressed()
         }
     }
@@ -80,7 +84,13 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
      */
     private lateinit var mFunctionItemAdapter: FunctionItemAdapter
     private val functionList by lazy {
-        mutableListOf(FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE))
+        mutableListOf(
+            FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
+            FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
+            FunctionItemInfo(
+                R.string.add_click_are, BUTTON_TYPE
+            )
+        )
     }
 
     private fun initIndex(controller: WindowInsetsControllerCompat) {
@@ -125,15 +135,23 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                     nowMode = CREATE_IMAGE_FEATURE
                     bind.okTv.isVisible = true
                 }
-                R.string.test_pick_up_points->{
-                   val x=  mBitmap.width-2
-                    val Y=  mBitmap.height-2
-                    var startTime = System.currentTimeMillis()
-                    for (i in 0 ..1000){
-                        Timber.d("point i  initIndex AutoCodeActivity NWQ_ 2023/6/23");
-                        mBitmap.getPixel((Math.random()*x).toInt(), (Math.random()*Y).toInt())
+                R.string.add_click_are -> {
+
+                }
+                R.string.test_pick_up_points -> {
+                    GlobalScope.launch(Dispatchers.Default) {
+                        val x = mBitmap.width - 2
+                        val Y = mBitmap.height - 2
+                        var startTime = System.currentTimeMillis()
+                        val endP = 1080 * 2400
+                        for (i in 0..endP) { //加随机1.7秒 不加0.7秒
+                            mBitmap.getPixel(
+                                (Math.random() * x).toInt(),
+                                (Math.random() * Y).toInt()
+                            )
+                        }
+                        Timber.d("消耗时间 ${System.currentTimeMillis() - startTime} initIndex AutoCodeActivity NWQ_ 2023/6/23");
                     }
-                    Timber.d("消耗时间 ${System.currentTimeMillis()-startTime} initIndex AutoCodeActivity NWQ_ 2023/6/23");
                 }
             }
 

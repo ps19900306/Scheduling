@@ -121,8 +121,7 @@ class BaseImgProcess(
                 if (darkestKey != it.key && it.key.isChecked) {
                     markBoundaryInternal(it.value, true)
                     val result = obtainFeaturePoints(it.value)
-                    if(useBackground)
-                    addBackground(result)
+                    if (useBackground) addBackground(result)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
                 }
             }
@@ -130,14 +129,15 @@ class BaseImgProcess(
     }
 
     fun addBackground(result: List<FeatureCoordinatePoint>) {
-        result.forEach { point->
+        result.forEach { point ->
             Timber.d("进行背景点添加  addBackground BaseImgProcess NWQ_ 2023/6/23");
-            getPointSurround(point,3,true,false){ nextPoint->
-                if(nextPoint.mFeaturePointKey == darkestKey){
+            getPointSurround(point, 3, true, false) { nextPoint ->
+                if (nextPoint.mFeaturePointKey == darkestKey) {
                     nextPoint.isIdentificationKey = true
+                    nextPoint.mDirectorPointKey = point.mFeaturePointKey
                     Timber.d("添加背景点数  addBackground BaseImgProcess NWQ_ 2023/6/23");
                     true
-                }else{
+                } else {
                     false
                 }
             }
@@ -398,7 +398,7 @@ class BaseImgProcess(
     fun setDarkestFeature() {
         darkestKey.isKeyMember = false
         featureKeyList.find { it.isChecked }?.let {
-            darkestKey=it
+            darkestKey = it
             darkestKey.isKeyMember = true
         }
     }
@@ -487,7 +487,9 @@ class BaseImgProcess(
         }
     }
 
-    fun getPreview(showFeature: Boolean, showBoundary: Boolean, useBackground: Boolean): List<FeatureCoordinatePoint> {
+    fun getPreview(
+        showFeature: Boolean, showBoundary: Boolean, useBackground: Boolean
+    ): List<FeatureCoordinatePoint> {
         val pointList = mutableListOf<FeatureCoordinatePoint>()
         featureKeyList.forEach {
             if (it.isChecked) {
@@ -500,7 +502,7 @@ class BaseImgProcess(
                 }
             }
         }
-        if(useBackground && darkestKey.isChecked==false){
+        if (useBackground && darkestKey.isChecked == false) {
             colorMaps[darkestKey]?.forEach {
                 if (showFeature && it.isIdentificationKey) {
                     pointList.add(it)
@@ -509,6 +511,37 @@ class BaseImgProcess(
         }
         Timber.d("预览点数 ${pointList.size} getPreview BaseImgProcess NWQ_ 2023/6/17");
         return pointList
+    }
+
+
+    fun getDatumPoint(datumPointSize: Int = 1): List<FeatureCoordinatePoint>? {
+        var list = colorMaps[differenceKey]?.filter { it.isIdentificationKey }
+        if (list.isNullOrEmpty()) {
+            list = colorMaps[brightestKey]?.filter { it.isIdentificationKey }
+        }
+        if (list.isNullOrEmpty()) return null
+        val resultList = list.sortedBy { it.x + it.y }
+        if (resultList.size > datumPointSize) {
+            return resultList.subList(0, datumPointSize - 1)
+        } else {
+            return resultList
+        }
+    }
+
+    fun getKeyPoint(): List<FeatureCoordinatePoint> {
+        val result = mutableListOf<FeatureCoordinatePoint>()
+
+        featureKeyList.filter { it.isChecked }.forEach { baseKey ->
+            colorMaps[baseKey]?.forEach { point ->
+                if (point.isIdentificationKey) result.add(point)
+            }
+        }
+        if (darkestKey.isChecked == false) {
+            colorMaps[darkestKey]?.forEach { point ->
+                if (point.isIdentificationKey) result.add(point)
+            }
+        }
+        return result
     }
 
 
@@ -525,6 +558,7 @@ class BaseImgProcess(
             if (it != baseKey) {
                 colorMaps[it]?.let {
                     it.forEach { item ->
+                        item.mOriginalPointKey = item.mFeaturePointKey
                         item.mFeaturePointKey = baseKey
                     }
                     baseList?.addAll(it)

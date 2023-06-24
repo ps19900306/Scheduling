@@ -49,7 +49,7 @@ class FeaturePointKey(var colorInt: Int) {
     var rToB = red.toFloat() / blue.toFloat()
     var gToB = green.toFloat() / blue.toFloat()
 
-    val rangRatio = 0.2
+    val rangRatio = 0.2F
     var maxRToG = rToG * (1 + rangRatio)
     var minRToG = rToG * (1 - rangRatio)
     var maxRToB = rToB * (1 + rangRatio)

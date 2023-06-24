@@ -12,15 +12,24 @@ import com.nwq.function.corelib.auto_code.ui.adapter.FeatureKeyAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.BUTTON_TYPE
 import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Companion.CHECK_TYPE
+import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
+import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_AREA
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_FEATURE_KEY
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_POINT
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_POINT
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
+import com.nwq.function.corelib.img.pcheck.IPR
+import com.nwq.function.corelib.img.pcheck.PointRule
+import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
+import com.nwq.function.corelib.img.task.CorrectPositionModel
+import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.runOnUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.StringBuilder
+import kotlin.math.min
 
 /**
 create by: 86136
@@ -35,7 +44,7 @@ class ImgFeatureExtractionFunction(
     val height: Int,
     val imgArray: List<IntArray>,
     val binding: PartImgFeatureBinding,
-    val mOptLister: OptLister
+    val mOptLister: OptLister,
 ) : FunctionBlock {
 
 
@@ -62,6 +71,8 @@ class ImgFeatureExtractionFunction(
     private var showFeature = true
     private var showBoundary = false
     private var useBackground = false
+    private var useInverseValue = false
+
     private val functionItemList by lazy {
         mutableListOf(
             FunctionItemInfo(R.string.add, BUTTON_TYPE),
@@ -73,12 +84,12 @@ class ImgFeatureExtractionFunction(
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
             FunctionItemInfo(R.string.merge, BUTTON_TYPE),
             FunctionItemInfo(R.string.background, BUTTON_TYPE),
-            FunctionItemInfo(R.string.useBackground, CHECK_TYPE,useBackground),
-            FunctionItemInfo(R.string.feature, CHECK_TYPE,showFeature),
-            FunctionItemInfo(R.string.boundary, CHECK_TYPE,showBoundary),
+            FunctionItemInfo(R.string.useBackground, CHECK_TYPE, useBackground),
+            FunctionItemInfo(R.string.inverse_value, CHECK_TYPE, useInverseValue),
+            FunctionItemInfo(R.string.feature, CHECK_TYPE, showFeature),
+            FunctionItemInfo(R.string.boundary, CHECK_TYPE, showBoundary),
         )
     }
-
 
 
     init {
@@ -118,21 +129,26 @@ class ImgFeatureExtractionFunction(
                     generateCode()
                 }
                 R.string.preview -> {
-                    val list = mBaseImgProcess.getPreview(showFeature, showBoundary,useBackground)
+                    val list = mBaseImgProcess.getPreview(showFeature, showBoundary, useBackground)
                     mOptLister.showPoint(list.map { CoordinatePoint(it.x + startX, it.y + startY) })
                 }
-                R.string.merge->{
+                R.string.merge -> {
                     mBaseImgProcess.mergeKey()
                     mFeatureKeyAdapter =
                         FeatureKeyAdapter(mBaseImgProcess.featureKeyList, mBaseImgProcess.colorMaps)
-                    binding.feRecycler.adapter=mFeatureKeyAdapter
+                    binding.feRecycler.adapter = mFeatureKeyAdapter
                 }
-                R.string.useBackground->{
+                R.string.useBackground -> {
                     data.isCheck = !data.isCheck
                     useBackground = data.isCheck
                     mFunctionItemAdapter.notifyItemChanged(position)
                 }
-                R.string.background->{
+                R.string.inverse_value -> {
+                    data.isCheck = !data.isCheck
+                    useInverseValue = data.isCheck
+                    mFunctionItemAdapter.notifyItemChanged(position)
+                }
+                R.string.background -> {
                     mBaseImgProcess.setDarkestFeature()
                 }
                 R.string.feature -> {
@@ -147,7 +163,6 @@ class ImgFeatureExtractionFunction(
                 }
             }
         }
-
     }
 
 
@@ -157,7 +172,7 @@ class ImgFeatureExtractionFunction(
             runOnUI {
                 mFeatureKeyAdapter =
                     FeatureKeyAdapter(mBaseImgProcess.featureKeyList, mBaseImgProcess.colorMaps)
-                binding.feRecycler.adapter=mFeatureKeyAdapter
+                binding.feRecycler.adapter = mFeatureKeyAdapter
             }
         }
 
@@ -189,10 +204,6 @@ class ImgFeatureExtractionFunction(
     }
 
 
-    override fun generateCode() {
-
-    }
-
     override fun hideView() {
         binding.root.isGone = true
     }
@@ -218,4 +229,43 @@ class ImgFeatureExtractionFunction(
             mBaseImgProcess.deleteFeaturePoint(it.xI - startX, it.yI - startY)
         }
     }
+
+
+    override fun generateCode() {
+        val datums = mBaseImgProcess.getDatumPoint(1)//用于找开始的点
+        val points = mBaseImgProcess.getKeyPoint()
+
+
+        val datumList = if (datums != null) {
+            val list = mutableListOf<PointRule>()
+            datums.forEach {
+                val coordinatePoint = CoordinatePoint(startX + it.x, startY + it.y)
+                val rule = ColorRuleRatioImpl.getSimple()
+                list.add(PointRule())
+            }
+        } else {
+
+        }
+
+
+//       val correctModel = CorrectPositionModel(pointList, tag, 1, 1)
+//        val iprList = mutableListOf<IPR>()
+//        ImgTaskImpl1(iprList, tag, correctModel)
+
+    }
+
+
+//    fun FeatureCoordinatePoint.toColorRule(notValue:Boolean): ColorRuleRatioImpl {
+//
+//        if(notValue && mDirectorPointKey!=null){
+//            val oKey = mDirectorPointKey!!
+//            return  ColorRuleRatioImpl(oKey.maxRed,oKey.minRed,oKey.maxGreen,oKey.minGreen,oKey.maxBlue,oKey.minBlue,
+//                oKey.maxRToG,oKey.minRToG,oKey.maxRToB,oKey.minRToB,oKey.maxGToB,oKey.minGToB)
+//        }else{
+//            val maxValue = Math.max(Math.max(red, green), blue)
+//            if(maxValue)
+//        }
+//    }
+
+
 }

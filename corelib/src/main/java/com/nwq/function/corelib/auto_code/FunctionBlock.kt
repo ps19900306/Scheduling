@@ -11,7 +11,9 @@ import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd
 interface FunctionBlock {
 
     //单点选取平均色
-    suspend fun addFeatureKey(vararg colorInt: Int)
+    suspend fun addFeatureKey(vararg colorInt: Int){
+
+    }
 
     fun optPoint(@OptCmd cmd: Int, vararg coordinatePoint: CoordinatePoint)
 

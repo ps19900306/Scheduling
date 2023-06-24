@@ -11,11 +11,7 @@ Function description:
  */
 
 class FeatureCoordinatePoint(
-    val x: Int,
-    val y: Int,
-    val red: Int,
-    val green: Int,
-    val blue: Int
+    val x: Int, val y: Int, val red: Int, val green: Int, val blue: Int
 ) {
 
     companion object {
@@ -25,24 +21,18 @@ class FeatureCoordinatePoint(
     }
 
     constructor(colorInt: Int) : this(
-        0,
-        0,
-        colorInt.red,
-        colorInt.green,
-        colorInt.blue
+        0, 0, colorInt.red, colorInt.green, colorInt.blue
     )
 
     constructor(x: Int, y: Int, colorInt: Int) : this(
-        x,
-        y,
-        colorInt.red,
-        colorInt.green,
-        colorInt.blue
+        x, y, colorInt.red, colorInt.green, colorInt.blue
     )
 
 
     var isIdentificationKey = false //是否作为识别的关键点
     var mFeaturePointKey: FeaturePointKey? = null
+    var mOriginalPointKey: FeaturePointKey? = null //如果进行了合并，这个是原来的的值
+    var mDirectorPointKey: FeaturePointKey? = null //如果进行了取背景色这个是 进行取背景色的色值
 
     //这里又来排顺序的
     var hasContinuousSet = false //是否被设置 边界点或者内部点
@@ -73,10 +63,10 @@ class FeatureCoordinatePoint(
         }
         return if (hasFindRound) {
             null
-        } else if(isBoundary()){
+        } else if (isBoundary()) {
             hasFindRound = true
             this
-        }else{
+        } else {
             null
         }
     }
