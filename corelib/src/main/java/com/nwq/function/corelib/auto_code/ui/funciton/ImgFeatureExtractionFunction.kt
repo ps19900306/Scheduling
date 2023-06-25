@@ -21,7 +21,9 @@ import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_PO
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
 import com.nwq.function.corelib.img.pcheck.IPR
 import com.nwq.function.corelib.img.pcheck.PointRule
+import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
+import com.nwq.function.corelib.img.rule.ColorRuleRatioUnImpl
 import com.nwq.function.corelib.img.task.CorrectPositionModel
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.runOnUI
@@ -71,7 +73,7 @@ class ImgFeatureExtractionFunction(
     private var showFeature = true
     private var showBoundary = false
     private var useBackground = false
-    private var useInverseValue = false
+    private var useInverseValue = false //true 背景点取相对颜色的反值， false 使用自己的颜色特性
 
     private val functionItemList by lazy {
         mutableListOf(
@@ -232,40 +234,87 @@ class ImgFeatureExtractionFunction(
 
 
     override fun generateCode() {
+        var tag = "Tag"
         val datums = mBaseImgProcess.getDatumPoint(1)//用于找开始的点
         val points = mBaseImgProcess.getKeyPoint()
 
 
-        val datumList = if (datums != null) {
+        val correctPositionModel = if (datums != null) {
             val list = mutableListOf<PointRule>()
             datums.forEach {
                 val coordinatePoint = CoordinatePoint(startX + it.x, startY + it.y)
-                val rule = ColorRuleRatioImpl.getSimple()
-                list.add(PointRule())
+                val rule = it.toColorRule(useInverseValue)
+                list.add(PointRule(coordinatePoint, rule))
             }
+             CorrectPositionModel(list, tag, 1, 1)
         } else {
-
+            null
         }
 
 
-//       val correctModel = CorrectPositionModel(pointList, tag, 1, 1)
+
+//
 //        val iprList = mutableListOf<IPR>()
 //        ImgTaskImpl1(iprList, tag, correctModel)
 
     }
 
 
-//    fun FeatureCoordinatePoint.toColorRule(notValue:Boolean): ColorRuleRatioImpl {
-//
-//        if(notValue && mDirectorPointKey!=null){
-//            val oKey = mDirectorPointKey!!
-//            return  ColorRuleRatioImpl(oKey.maxRed,oKey.minRed,oKey.maxGreen,oKey.minGreen,oKey.maxBlue,oKey.minBlue,
-//                oKey.maxRToG,oKey.minRToG,oKey.maxRToB,oKey.minRToB,oKey.maxGToB,oKey.minGToB)
-//        }else{
-//            val maxValue = Math.max(Math.max(red, green), blue)
-//            if(maxValue)
-//        }
-//    }
+    fun FeatureCoordinatePoint.toColorRule(notValue: Boolean): ColorIdentificationRule {
+        if (notValue && mDirectorPointKey != null) {
+            val oKey = mDirectorPointKey!!
+            return ColorRuleRatioUnImpl.getSimple(
+                oKey.maxRed, oKey.minRed, oKey.maxGreen, oKey.minGreen, oKey.maxBlue, oKey.minBlue,
+                oKey.maxRToG, oKey.minRToG, oKey.maxRToB, oKey.minRToB, oKey.maxGToB, oKey.minGToB
+            )
+        } else {
+            val maxValue = Math.max(Math.max(red, green), blue)
+            val range = if (maxValue > 200) {
+                15
+            } else if (maxValue > 150) {
+                25
+            } else if (maxValue > 110) {
+                30
+            } else if (maxValue > 80) {
+                20
+            } else {
+                15
+            }
+            var maxRed = red + range
+            var minRed = red - range
+            var maxGreen = green + range
+            var minGreen = green - range
+            var maxBlue = blue + range
+            var minBlue = blue - range
+
+
+            var rToG = red.toFloat() / green.toFloat()
+            var rToB = red.toFloat() / blue.toFloat()
+            var gToB = green.toFloat() / blue.toFloat()
+
+            val rangRatio = 0.1F
+            var maxRToG = rToG * (1 + rangRatio)
+            var minRToG = rToG * (1 - rangRatio)
+            var maxRToB = rToB * (1 + rangRatio)
+            var minRToB = rToB * (1 - rangRatio)
+            var maxGToB = gToB * (1 + rangRatio)
+            var minGToB = gToB * (1 - rangRatio)
+            return ColorRuleRatioImpl.getSimple(
+                maxRed,
+                minRed,
+                maxGreen,
+                minGreen,
+                maxBlue,
+                minBlue,
+                maxRToG,
+                minRToG,
+                maxRToB,
+                minRToB,
+                maxGToB,
+                minGToB
+            )
+        }
+    }
 
 
 }
