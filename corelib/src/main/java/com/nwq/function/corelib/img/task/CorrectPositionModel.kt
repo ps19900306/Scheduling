@@ -47,15 +47,13 @@ open class CorrectPositionModel(
 
 
     private fun correctCoordinate(ofsX: Int, ofsY: Int, record: Boolean = true) {
-        if (!everyRevalidation) {
-            hasCorrect = true
-            offsetX = ofsX
-            offsetY = ofsY
-            if (record) {
-                JsonUtil.objectToString(OffsetRecord(ofsX, ofsY)).let {
-                    var spStr by SPRepoPrefix.getNowSPRepo().getRecordImgTaskDeviation(tag)
-                    spStr = it
-                }
+        hasCorrect = true
+        offsetX = ofsX
+        offsetY = ofsY
+        if (record) {
+            JsonUtil.objectToString(OffsetRecord(ofsX, ofsY)).let {
+                var spStr by SPRepoPrefix.getNowSPRepo().getRecordImgTaskDeviation(tag)
+                spStr = it
             }
         }
     }

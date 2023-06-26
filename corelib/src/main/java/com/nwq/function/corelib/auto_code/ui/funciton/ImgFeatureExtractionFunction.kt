@@ -234,29 +234,53 @@ class ImgFeatureExtractionFunction(
 
 
     override fun generateCode() {
-        var tag = "Tag"
         val datums = mBaseImgProcess.getDatumPoint(1)//用于找开始的点
         val points = mBaseImgProcess.getKeyPoint()
+//        var tag = "Tag"
+//        val correctPositionModel = if (datums != null) {
+//            val list = mutableListOf<PointRule>()
+//            datums.forEach {
+//                val coordinatePoint = CoordinatePoint(startX + it.x, startY + it.y)
+//                val rule = it.toColorRule(false)
+//                list.add(PointRule(coordinatePoint, rule))
+//            }
+//            CorrectPositionModel(list, tag, 3, 3, false)
+//        } else {
+//            null
+//        }
+//
+//        val pointList = mutableListOf<IPR>()
+//        points.forEach {
+//            val coordinatePoint = CoordinatePoint(startX + it.x, startY + it.y)
+//            val rule = it.toColorRule(useInverseValue)
+//            pointList.add(PointRule(coordinatePoint, rule))
+//        }
+//        ImgTaskImpl1(pointList, tag, correctPositionModel)
 
 
-        val correctPositionModel = if (datums != null) {
-            val list = mutableListOf<PointRule>()
-            datums.forEach {
-                val coordinatePoint = CoordinatePoint(startX + it.x, startY + it.y)
-                val rule = it.toColorRule(useInverseValue)
-                list.add(PointRule(coordinatePoint, rule))
-            }
-             CorrectPositionModel(list, tag, 1, 1)
+        //这里进行代码生成
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("val isOpenTask by lazy {  \n")
+        stringBuilder.append("val tag = isOpen \n")
+        if (datums == null) {
+            stringBuilder.append("val correctPositionModel = null \n")
         } else {
-            null
+            stringBuilder.append("val list = mutableListOf<PointRule>()   \n")
+            datums.forEach {
+                stringBuilder.append("val coordinatePoint = CoordinatePoint(${startX + it.x}, ${startY + it.y})\n")
+                stringBuilder.append("val rule= ${it.toColorRule(false)}\n")
+                stringBuilder.append("list.add(PointRule(coordinatePoint, rule))   \n")
+            }
+            stringBuilder.append("val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)\n")
         }
 
-
-
-//
-//        val iprList = mutableListOf<IPR>()
-//        ImgTaskImpl1(iprList, tag, correctModel)
-
+        stringBuilder.append(" val pointList = mutableListOf<IPR>()\n")
+        points.forEach {
+            stringBuilder.append("val coordinatePoint = CoordinatePoint(${startX + it.x}, ${startY + it.y})\n")
+            stringBuilder.append("val rule= ${it.toColorRule(false)}\n")
+            stringBuilder.append("pointList.add(PointRule(coordinatePoint, rule))   \n")
+        }
+        stringBuilder.append(" ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
     }
 
 
@@ -313,6 +337,50 @@ class ImgFeatureExtractionFunction(
                 maxGToB,
                 minGToB
             )
+        }
+    }
+
+    fun FeatureCoordinatePoint.toColorRuleStr(notValue: Boolean): String {
+        if (notValue && mDirectorPointKey != null) {
+            val oKey = mDirectorPointKey!!
+            return "ColorRuleRatioUnImpl.getSimple(\n" +
+                    " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" +
+                    " ${oKey.maxRToG},${oKey.minRToG},${oKey.maxRToB},${oKey.minRToB},${oKey.maxGToB}, ${oKey.minGToB} )"
+        } else {
+            val maxValue = Math.max(Math.max(red, green), blue)
+            val range = if (maxValue > 200) {
+                15
+            } else if (maxValue > 150) {
+                25
+            } else if (maxValue > 110) {
+                30
+            } else if (maxValue > 80) {
+                20
+            } else {
+                15
+            }
+            var maxRed = red + range
+            var minRed = red - range
+            var maxGreen = green + range
+            var minGreen = green - range
+            var maxBlue = blue + range
+            var minBlue = blue - range
+
+
+            var rToG = red.toFloat() / green.toFloat()
+            var rToB = red.toFloat() / blue.toFloat()
+            var gToB = green.toFloat() / blue.toFloat()
+
+            val rangRatio = 0.1F
+            var maxRToG = rToG * (1 + rangRatio)
+            var minRToG = rToG * (1 - rangRatio)
+            var maxRToB = rToB * (1 + rangRatio)
+            var minRToB = rToB * (1 - rangRatio)
+            var maxGToB = gToB * (1 + rangRatio)
+            var minGToB = gToB * (1 - rangRatio)
+            return "ColorRuleRatioImpl.getSimple(\n" +
+                    " $maxRed,$minRed,$maxGreen,$minGreen,$maxBlue,$minBlue,\n" +
+                    " $maxRToG,$minRToG,$maxRToB,$minRToB,$maxGToB,$minGToB )"
         }
     }
 
