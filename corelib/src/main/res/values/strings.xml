@@ -18,5 +18,6 @@
     <string name="test_pick_up_points">取点耗时测试</string>
     <string name="add_click_are">点击区域</string>
     <string name="inverse_value">底色取反</string>
+    <string name="find_the_image_area">找图区域</string>
 
 </resources>

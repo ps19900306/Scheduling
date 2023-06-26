@@ -18,6 +18,7 @@ import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_AREA
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_FEATURE_KEY
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_POINT
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_POINT
+import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.FIND_IMAGE_AREA
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
 import com.nwq.function.corelib.img.pcheck.IPR
 import com.nwq.function.corelib.img.pcheck.PointRule
@@ -25,6 +26,7 @@ import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioUnImpl
 import com.nwq.function.corelib.img.task.CorrectPositionModel
+import com.nwq.function.corelib.img.task.FindImgTask
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.runOnUI
 import kotlinx.coroutines.Dispatchers
@@ -74,7 +76,7 @@ class ImgFeatureExtractionFunction(
     private var showBoundary = false
     private var useBackground = false
     private var useInverseValue = false //true 背景点取相对颜色的反值， false 使用自己的颜色特性
-
+    private var findImageArea: CoordinateArea? = null
     private val functionItemList by lazy {
         mutableListOf(
             FunctionItemInfo(R.string.add, BUTTON_TYPE),
@@ -82,6 +84,7 @@ class ImgFeatureExtractionFunction(
             FunctionItemInfo(R.string.add_point, BUTTON_TYPE),
             FunctionItemInfo(R.string.delete_point, BUTTON_TYPE),
             FunctionItemInfo(R.string.auto_exc, BUTTON_TYPE),
+            FunctionItemInfo(R.string.find_the_image_area, BUTTON_TYPE),
             FunctionItemInfo(R.string.auto_code, BUTTON_TYPE),
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
             FunctionItemInfo(R.string.merge, BUTTON_TYPE),
@@ -126,6 +129,9 @@ class ImgFeatureExtractionFunction(
                 }
                 R.string.auto_exc -> {
                     mBaseImgProcess.autoExc(useBackground)
+                }
+                R.string.find_the_image_area -> {
+                    mOptLister.requestArea(FIND_IMAGE_AREA)
                 }
                 R.string.auto_code -> {
                     generateCode()
@@ -201,7 +207,9 @@ class ImgFeatureExtractionFunction(
 
     override fun optArea(cmd: Int, vararg area: CoordinateArea) {
         when (cmd) {
-
+            FIND_IMAGE_AREA -> {
+                findImageArea = area.getOrNull(0)
+            }
         }
     }
 
@@ -234,29 +242,47 @@ class ImgFeatureExtractionFunction(
 
 
     override fun generateCode() {
+        val codeStr = if (findImageArea == null) {
+            builderImgTaskImpl1()
+        } else {
+            builderFindImgTask()
+        }
+    }
+
+
+    private fun builderFindImgTask(): String {
         val datums = mBaseImgProcess.getDatumPoint(1)//用于找开始的点
         val points = mBaseImgProcess.getKeyPoint()
-//        var tag = "Tag"
-//        val correctPositionModel = if (datums != null) {
-//            val list = mutableListOf<PointRule>()
-//            datums.forEach {
-//                val coordinatePoint = CoordinatePoint(startX + it.x, startY + it.y)
-//                val rule = it.toColorRule(false)
-//                list.add(PointRule(coordinatePoint, rule))
-//            }
-//            CorrectPositionModel(list, tag, 3, 3, false)
-//        } else {
-//            null
-//        }
-//
-//        val pointList = mutableListOf<IPR>()
-//        points.forEach {
-//            val coordinatePoint = CoordinatePoint(startX + it.x, startY + it.y)
-//            val rule = it.toColorRule(useInverseValue)
-//            pointList.add(PointRule(coordinatePoint, rule))
-//        }
-//        ImgTaskImpl1(pointList, tag, correctPositionModel)
+        //这里进行代码生成
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("val isOpenTask by lazy {  \n")
+        stringBuilder.append("val tag = isOpen \n")
+        datums?.getOrNull(0) ?: points[0].let {
+            stringBuilder.append(
+                "val keyPoint = PointRule(CoordinatePoint(${startX + it.x}, ${startY + it.y}), ${it.toColorRuleStr()})\n"
+            )
+        }
+        with(findImageArea!!) {
+            stringBuilder.append("val findArea = CoordinateArea($x,$y,$with,$height)\n")
+        }
+        stringBuilder.append(" val pointList = mutableListOf<IPR>()\n")
+        points.forEach {
+            stringBuilder.append(
+                "pointList.add(PointRule(CoordinatePoint(${startX + it.x}, ${startY + it.y}), ${
+                    it.toColorRuleStr(useInverseValue)
+                }))\n"
+            )
+        }
+        stringBuilder.append("ImgTaskImpl1(keyPoint, findArea, pointList,tag)   \n")
+        stringBuilder.append(" }  \n")
+        return stringBuilder.toString()
+    }
 
+
+    //这里是构造固定找图
+    private fun builderImgTaskImpl1(): String {
+        val datums = mBaseImgProcess.getDatumPoint(1)//用于找开始的点
+        val points = mBaseImgProcess.getKeyPoint()
 
         //这里进行代码生成
         val stringBuilder = StringBuilder()
@@ -267,80 +293,29 @@ class ImgFeatureExtractionFunction(
         } else {
             stringBuilder.append("val list = mutableListOf<PointRule>()   \n")
             datums.forEach {
-                stringBuilder.append("val coordinatePoint = CoordinatePoint(${startX + it.x}, ${startY + it.y})\n")
-                stringBuilder.append("val rule= ${it.toColorRule(false)}\n")
-                stringBuilder.append("list.add(PointRule(coordinatePoint, rule))   \n")
+                stringBuilder.append(
+                    "list.add(PointRule(CoordinatePoint(${startX + it.x}, ${startY + it.y}), ${
+                        it.toColorRuleStr()
+                    }))\n"
+                )
             }
             stringBuilder.append("val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)\n")
         }
 
         stringBuilder.append(" val pointList = mutableListOf<IPR>()\n")
         points.forEach {
-            stringBuilder.append("val coordinatePoint = CoordinatePoint(${startX + it.x}, ${startY + it.y})\n")
-            stringBuilder.append("val rule= ${it.toColorRule(false)}\n")
-            stringBuilder.append("pointList.add(PointRule(coordinatePoint, rule))   \n")
+            stringBuilder.append(
+                "pointList.add(PointRule(CoordinatePoint(${startX + it.x}, ${startY + it.y}), ${
+                    it.toColorRuleStr(useInverseValue)
+                }))\n"
+            )
         }
         stringBuilder.append(" ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
+        stringBuilder.append("}  \n")
+        return stringBuilder.toString()
     }
 
-
-    fun FeatureCoordinatePoint.toColorRule(notValue: Boolean): ColorIdentificationRule {
-        if (notValue && mDirectorPointKey != null) {
-            val oKey = mDirectorPointKey!!
-            return ColorRuleRatioUnImpl.getSimple(
-                oKey.maxRed, oKey.minRed, oKey.maxGreen, oKey.minGreen, oKey.maxBlue, oKey.minBlue,
-                oKey.maxRToG, oKey.minRToG, oKey.maxRToB, oKey.minRToB, oKey.maxGToB, oKey.minGToB
-            )
-        } else {
-            val maxValue = Math.max(Math.max(red, green), blue)
-            val range = if (maxValue > 200) {
-                15
-            } else if (maxValue > 150) {
-                25
-            } else if (maxValue > 110) {
-                30
-            } else if (maxValue > 80) {
-                20
-            } else {
-                15
-            }
-            var maxRed = red + range
-            var minRed = red - range
-            var maxGreen = green + range
-            var minGreen = green - range
-            var maxBlue = blue + range
-            var minBlue = blue - range
-
-
-            var rToG = red.toFloat() / green.toFloat()
-            var rToB = red.toFloat() / blue.toFloat()
-            var gToB = green.toFloat() / blue.toFloat()
-
-            val rangRatio = 0.1F
-            var maxRToG = rToG * (1 + rangRatio)
-            var minRToG = rToG * (1 - rangRatio)
-            var maxRToB = rToB * (1 + rangRatio)
-            var minRToB = rToB * (1 - rangRatio)
-            var maxGToB = gToB * (1 + rangRatio)
-            var minGToB = gToB * (1 - rangRatio)
-            return ColorRuleRatioImpl.getSimple(
-                maxRed,
-                minRed,
-                maxGreen,
-                minGreen,
-                maxBlue,
-                minBlue,
-                maxRToG,
-                minRToG,
-                maxRToB,
-                minRToB,
-                maxGToB,
-                minGToB
-            )
-        }
-    }
-
-    fun FeatureCoordinatePoint.toColorRuleStr(notValue: Boolean): String {
+    fun FeatureCoordinatePoint.toColorRuleStr(notValue: Boolean = false): String {
         if (notValue && mDirectorPointKey != null) {
             val oKey = mDirectorPointKey!!
             return "ColorRuleRatioUnImpl.getSimple(\n" +

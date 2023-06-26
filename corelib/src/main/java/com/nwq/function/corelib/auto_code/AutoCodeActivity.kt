@@ -69,7 +69,10 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
 
 
     override fun onBackPressed() {
-        if (nowMode != NORMAL_MODE) {
+        if (nowMode == PREVIEW_MODE && mFunctionBlock != null) {
+            mFunctionBlock?.showView()
+            nowMode = FUNCTION_MODE
+        } else if (nowMode == FUNCTION_MODE) {
             nowMode = NORMAL_MODE
             bind.indexLayout.root.isVisible = true
             bind.imgFeatureLayout.root.isGone = true
