@@ -1,5 +1,7 @@
 package com.nwq.function.corelib.auto_code
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
@@ -47,6 +49,9 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
     lateinit var bind: ActivityAutoCodeBinding
     private lateinit var mBitmap: Bitmap
     private var nowMode = NORMAL_MODE
+    val manager: ClipboardManager by lazy {
+        getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -289,7 +294,13 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         return array
     }
 
+    override fun getClipboardManager(): ClipboardManager {
+      return  manager
+    }
+
 
     private var mFunctionBlock: FunctionBlock? = null
+
+
 
 }

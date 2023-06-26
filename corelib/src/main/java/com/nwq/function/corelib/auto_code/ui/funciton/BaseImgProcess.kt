@@ -25,7 +25,7 @@ class BaseImgProcess(
 ) {
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
-    private val picking_Interval = 10 //这里是间隔多少个点进行一次取值
+    private val MIN_PICKING_INTERVAL = 10 //这里是间隔多少个点进行一次取值
     private val minPointInterval = 5 //最小取点间隔
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
@@ -118,7 +118,7 @@ class BaseImgProcess(
     fun autoExc(useBackground: Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
             colorMaps.forEach {
-                if (darkestKey != it.key && it.key.isChecked) {
+                if (it.key.isChecked) {
                     markBoundaryInternal(it.value, true)
                     val result = obtainFeaturePoints(it.value)
                     if (useBackground) addBackground(result)
@@ -129,20 +129,19 @@ class BaseImgProcess(
     }
 
     fun addBackground(result: List<FeatureCoordinatePoint>) {
-        result.forEach { point ->
-            Timber.d("进行背景点添加  addBackground BaseImgProcess NWQ_ 2023/6/23");
-            getPointSurround(point, 3, true, false) { nextPoint ->
-                if (nextPoint.mFeaturePointKey == darkestKey) {
-                    nextPoint.isIdentificationKey = true
-                    nextPoint.mDirectorPointKey = point.mFeaturePointKey
-                    Timber.d("添加背景点数  addBackground BaseImgProcess NWQ_ 2023/6/23");
-                    true
-                } else {
-                    false
+        for(i in 0  until result.size step result.size/2){
+            result.getOrNull(i)?.let {point ->
+                getPointSurround(point, 3, true, false) { nextPoint ->
+                    if (nextPoint.mFeaturePointKey == darkestKey) {
+                        nextPoint.isIdentificationKey = true
+                        nextPoint.mDirectorPointKey = point.mFeaturePointKey
+                        true
+                    } else {
+                        false
+                    }
                 }
             }
         }
-
     }
 
 
@@ -254,8 +253,21 @@ class BaseImgProcess(
 
     //获取特征点，这里使用边界点
     fun obtainFeaturePoints(
-        originalList: MutableList<FeatureCoordinatePoint>, pickingInterval: Int = picking_Interval
+        originalList: MutableList<FeatureCoordinatePoint>,
     ): List<FeatureCoordinatePoint> {
+        val pickingInterval = if (originalList.size > 400) {
+            20
+        } else if (originalList.size > 300) {
+            18
+        } else if (originalList.size > 200) {
+            15
+        } else if (originalList.size > 150) {
+            12
+        } else {
+            MIN_PICKING_INTERVAL
+        }
+
+
         originalList.forEach {
             it.hasContinuousSet = false
             it.hasFindRound = false
@@ -290,7 +302,11 @@ class BaseImgProcess(
             }
             result
         }
+        if (result.size > 10) {
+
+        }
         result.forEach { it.isIdentificationKey = true }
+
         return result
     }
 
@@ -298,7 +314,7 @@ class BaseImgProcess(
     private fun groupBlock(//这里是根据起始点进行眼神
         startPoint: FeatureCoordinatePoint,
         keyList: List<FeatureCoordinatePoint>,
-        pickingInterval: Int = picking_Interval
+        pickingInterval: Int
     ): List<FeatureCoordinatePoint> {
 
         val blockList = mutableListOf<FeatureCoordinatePoint>()
@@ -337,7 +353,7 @@ class BaseImgProcess(
                                 startPoint!!.y - it.y
                             ) < minPointInterval)
                         } == null) {
-                        getPointSurround(startPoint, 4, true, true) { nextPoint ->
+                        getPointSurround(startPoint, 5, true, true) { nextPoint ->
                             if (startPoint!!.mFeaturePointKey == nextPoint.mFeaturePointKey) {
                                 nextPoint.isAdd = true
                             }
@@ -568,6 +584,8 @@ class BaseImgProcess(
             }
         }
     }
+
+
 
 
 }
