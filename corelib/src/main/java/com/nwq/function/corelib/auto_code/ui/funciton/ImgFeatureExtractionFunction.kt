@@ -78,6 +78,7 @@ class ImgFeatureExtractionFunction(
     private var showFeature = true
     private var showBoundary = false
     private var useBackground = false
+    private var pointnterval: Int = 0
     private var useInverseValue = false //true 背景点取相对颜色的反值， false 使用自己的颜色特性
     private var findImageArea: CoordinateArea? = null
     private val functionItemList by lazy {
@@ -96,6 +97,7 @@ class ImgFeatureExtractionFunction(
             FunctionItemInfo(R.string.inverse_value, CHECK_TYPE, useInverseValue),
             FunctionItemInfo(R.string.feature, CHECK_TYPE, showFeature),
             FunctionItemInfo(R.string.boundary, CHECK_TYPE, showBoundary),
+            FunctionItemInfo(R.string.take_point_interval, CHECK_TYPE, showBoundary),
         )
     }
 
@@ -111,7 +113,13 @@ class ImgFeatureExtractionFunction(
         val spanCount = 3
         val sd = GridSpacingItemDecoration(spanCount, 8, true)
         binding.optRecycler.layoutManager = GridLayoutManager(context, spanCount)
-        mFunctionItemAdapter = FunctionItemAdapter(functionItemList)
+        mFunctionItemAdapter = FunctionItemAdapter(functionItemList) { i, S ->
+            when (i) {
+                R.string.take_point_interval -> {
+                    pointnterval = S.toIntOrNull() ?: 0
+                }
+            }
+        }
         binding.optRecycler.adapter = mFunctionItemAdapter
         binding.optRecycler.addItemDecoration(sd)
 
@@ -131,7 +139,7 @@ class ImgFeatureExtractionFunction(
                     mOptLister.optPoint(DELETE_POINT)
                 }
                 R.string.auto_exc -> {
-                    mBaseImgProcess.autoExc(useBackground)
+                    mBaseImgProcess.autoExc(useBackground,pointnterval)
                 }
                 R.string.find_the_image_area -> {
                     mOptLister.requestArea(FIND_IMAGE_AREA)

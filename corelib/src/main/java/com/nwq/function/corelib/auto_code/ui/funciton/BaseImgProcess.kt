@@ -115,12 +115,12 @@ class BaseImgProcess(
         }
     }
 
-    fun autoExc(useBackground: Boolean) {
+    fun autoExc(useBackground: Boolean, pointnterval: Int) {
         GlobalScope.launch(Dispatchers.Default) {
             colorMaps.forEach {
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value, true)
-                    val result = obtainFeaturePoints(it.value)
+                    val result = obtainFeaturePoints(it.value, pointnterval)
                     if (useBackground) addBackground(result)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
                 }
@@ -254,9 +254,12 @@ class BaseImgProcess(
     //获取特征点，这里使用边界点
     fun obtainFeaturePoints(
         allList: MutableList<FeatureCoordinatePoint>,
+        pointnterval: Int
     ): List<FeatureCoordinatePoint> {
         val originalList = allList.filter { it.isBoundary() }
-        val pickingInterval = if (originalList.size > 400) {
+        val pickingInterval = if (pointnterval > 0) {
+            pointnterval
+        } else if (originalList.size > 400) {
             30
         } else if (originalList.size > 300) {
             25
@@ -276,7 +279,7 @@ class BaseImgProcess(
         }
 
         val list = mutableListOf<FeatureCoordinatePoint>()
-        var startPoint = originalList.find { !it.hasContinuousSet  }//&& it.isBoundary()
+        var startPoint = originalList.find { !it.hasContinuousSet }//&& it.isBoundary()
 
         var i = 0
         while (startPoint != null) {
@@ -284,7 +287,7 @@ class BaseImgProcess(
             startPoint.setStartPosition()
             val extremePoints = groupBlock(startPoint, list, pickingInterval)
             list.addAll(extremePoints)
-            startPoint = originalList.find { !it.hasContinuousSet}//&& it.isBoundary()
+            startPoint = originalList.find { !it.hasContinuousSet }//&& it.isBoundary()
         }
 
 //      这个方法要进行优化
