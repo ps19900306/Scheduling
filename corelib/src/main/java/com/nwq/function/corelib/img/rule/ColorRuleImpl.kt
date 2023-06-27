@@ -45,6 +45,36 @@ class ColorRuleImpl(
                     list.add(this)
                 }
         }
+
+
+        fun getSimple(
+            red: Int,
+            green: Int,
+            blue: Int,
+        ): ColorRuleImpl {
+            val maxValue = Math.max(Math.max(red, green), blue)
+            val range = if (maxValue > 200) {
+                15
+            } else if (maxValue > 150) {
+                25
+            } else if (maxValue > 110) {
+                30
+            } else if (maxValue > 80) {
+                20
+            } else {
+                15
+            }
+            var maxRed = red + range
+            var minRed = red - range
+            var maxGreen = green + range
+            var minGreen = green - range
+            var maxBlue = blue + range
+            var minBlue = blue - range
+            return list.find { it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue }
+                ?: ColorRuleImpl(maxRed, minRed, maxGreen, minGreen, maxBlue, minBlue).apply {
+                    list.add(this)
+                }
+        }
     }
 
 

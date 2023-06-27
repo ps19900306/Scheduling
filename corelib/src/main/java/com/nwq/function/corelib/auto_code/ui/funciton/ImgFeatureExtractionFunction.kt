@@ -321,50 +321,14 @@ class ImgFeatureExtractionFunction(
     }
 
     fun FeatureCoordinatePoint.toColorRuleStr(notValue: Boolean = false): String {
-        if (notValue && mDirectorPointKey != null) {
+        return if (notValue && mDirectorPointKey != null) {
             val oKey = mDirectorPointKey!!
-            return "ColorRuleRatioUnImpl.getSimple(\n" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F" +
+            "ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F" +
                     "\n //red$red green$green blue$blue"
-
         } else {
-            val maxValue = Math.max(Math.max(red, green), blue)
-            val range = if (maxValue > 200) {
-                15
-            } else if (maxValue > 150) {
-                25
-            } else if (maxValue > 110) {
-                30
-            } else if (maxValue > 80) {
-                20
-            } else {
-                15
-            }
-            var maxRed = red + range
-            var minRed = red - range
-            var maxGreen = green + range
-            var minGreen = green - range
-            var maxBlue = blue + range
-            var minBlue = blue - range
-
-
-            var rToG = red.toFloat() / green.toFloat()
-            var rToB = red.toFloat() / blue.toFloat()
-            var gToB = green.toFloat() / blue.toFloat()
-
-            val rangRatio = 0.1F
-            var maxRToG = rToG * (1 + rangRatio)
-            var minRToG = rToG * (1 - rangRatio)
-            var maxRToB = rToB * (1 + rangRatio)
-            var minRToB = rToB * (1 - rangRatio)
-            var maxGToB = gToB * (1 + rangRatio)
-            var minGToB = gToB * (1 - rangRatio)
-            return "ColorRuleRatioImpl.getSimple(\n" + " $maxRed,$minRed,$maxGreen,$minGreen,$maxBlue,$minBlue,\n" + " ${maxRToG}F,${minRToG}F,${maxRToB}F,${minRToB}F,${maxGToB}F,${minGToB}F )"
+            "ColorRuleRatioUnImpl.getSimple(${red},${green},${blue}"
         }
     }
-
-
-
-
 
 
 }

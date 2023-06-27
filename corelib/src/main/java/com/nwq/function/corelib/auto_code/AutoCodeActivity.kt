@@ -1,5 +1,6 @@
 package com.nwq.function.corelib.auto_code
 
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
@@ -39,7 +40,8 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         val PREVIEW_MODE = 2   //预览模式
         val FUNCTION_MODE = 3  //功能模式
 
-        val CREATE_IMAGE_FEATURE = 11
+        val CREATE_IMAGE_FEATURE = 11//创建特征
+        val GET_CLICK_AREA = 12//获取点击区域
 
 
         val OPT_POINT = 101
@@ -144,7 +146,8 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                     bind.okTv.isVisible = true
                 }
                 R.string.add_click_are -> {
-
+                    nowMode = GET_CLICK_AREA
+                    bind.okTv.isVisible = true
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
@@ -175,7 +178,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
     private var isFirst = true
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (nowMode) {
-            CREATE_IMAGE_FEATURE -> {
+            CREATE_IMAGE_FEATURE,GET_CLICK_AREA -> {
                 if (isFirst) {
                     if (ev.action == MotionEvent.ACTION_DOWN) {
                         starX = ev.x
@@ -234,6 +237,13 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                         mFunctionBlock?.showView()
                         bind.okTv.isGone = true
                         nowMode = FUNCTION_MODE
+                    }
+                }
+                GET_CLICK_AREA->{
+                    bind.previewView.oblongArea?.let {
+                        val codeStr = "val clickArea by lazy { CoordinateArea(${it.x},${it.y},${it.width},${it.height})}"
+                        val clipData = ClipData.newPlainText("autoCode", codeStr)
+                        manager.setPrimaryClip(clipData)
                     }
                 }
                 OPT_POINT -> {
