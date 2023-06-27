@@ -2,6 +2,7 @@ package com.nwq.function.corelib.auto_code.ui.adapter
 
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.EditText
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -21,6 +22,7 @@ class FunctionItemAdapter(list: MutableList<FunctionItemInfo>) :
     companion object {
         const val CHECK_TYPE = 1
         const val BUTTON_TYPE = 2
+        const val EDIT_TEXT_TYPE = 3
     }
 
     init {
@@ -37,7 +39,6 @@ class FunctionItemAdapter(list: MutableList<FunctionItemInfo>) :
             }
             BUTTON_TYPE->{
                 holder.setText(R.id.btn,item.strId)
-
             }
         }
     }

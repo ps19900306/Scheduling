@@ -26,7 +26,7 @@ class BaseImgProcess(
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
     private val MIN_PICKING_INTERVAL = 10 //这里是间隔多少个点进行一次取值
-    private val minPointInterval = 5 //最小取点间隔
+    private val minPointInterval = 8 //最小取点间隔
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
@@ -129,8 +129,8 @@ class BaseImgProcess(
     }
 
     fun addBackground(result: List<FeatureCoordinatePoint>) {
-        for(i in 0  until result.size step result.size/2){
-            result.getOrNull(i)?.let {point ->
+        for (i in 0 until result.size step result.size / 2) {
+            result.getOrNull(i)?.let { point ->
                 getPointSurround(point, 3, true, false) { nextPoint ->
                     if (nextPoint.mFeaturePointKey == darkestKey) {
                         nextPoint.isIdentificationKey = true
@@ -253,16 +253,17 @@ class BaseImgProcess(
 
     //获取特征点，这里使用边界点
     fun obtainFeaturePoints(
-        originalList: MutableList<FeatureCoordinatePoint>,
+        allList: MutableList<FeatureCoordinatePoint>,
     ): List<FeatureCoordinatePoint> {
+        val originalList = allList.filter { it.isBoundary() }
         val pickingInterval = if (originalList.size > 400) {
-            20
+            30
         } else if (originalList.size > 300) {
-            18
+            25
         } else if (originalList.size > 200) {
-            15
+            20
         } else if (originalList.size > 150) {
-            12
+            15
         } else {
             MIN_PICKING_INTERVAL
         }
@@ -275,7 +276,7 @@ class BaseImgProcess(
         }
 
         val list = mutableListOf<FeatureCoordinatePoint>()
-        var startPoint = originalList.find { !it.hasContinuousSet && it.isBoundary() }
+        var startPoint = originalList.find { !it.hasContinuousSet  }//&& it.isBoundary()
 
         var i = 0
         while (startPoint != null) {
@@ -283,7 +284,7 @@ class BaseImgProcess(
             startPoint.setStartPosition()
             val extremePoints = groupBlock(startPoint, list, pickingInterval)
             list.addAll(extremePoints)
-            startPoint = originalList.find { !it.hasContinuousSet && it.isBoundary() }
+            startPoint = originalList.find { !it.hasContinuousSet}//&& it.isBoundary()
         }
 
 //      这个方法要进行优化
@@ -349,7 +350,7 @@ class BaseImgProcess(
                 while (startPoint != null) {
                     //这里防止单快过多添加
                     if (keyList.find {
-                            (Math.abs(startPoint!!.x - it.x) < minPointInterval && Math.abs(
+                            (Math.abs(startPoint!!.x - it.x) + Math.abs(
                                 startPoint!!.y - it.y
                             ) < minPointInterval)
                         } == null) {
@@ -361,14 +362,6 @@ class BaseImgProcess(
                         }
                         extremePoints.add(startPoint)
                     }
-//                    stepList.forEach { item ->
-//                        if ((Math.abs(startPoint!!.x - item.x) < minPointInterval && Math.abs(
-//                                startPoint!!.y - item.y
-//                            ) < minPointInterval)
-//                        ) {
-//                            item.isAdd = true
-//                        }
-//                    }
                     startPoint = stepList.find { !it.isAdd }
                 }
                 Timber.d(" step:$i size${stepList.size} extremePoints${extremePoints.size} groupBlock BaseImgProcess NWQ_ 2023/6/22");
@@ -383,7 +376,7 @@ class BaseImgProcess(
     ): Boolean {
         return filterList.find {
             (it.x != item.x || it.y != item.y) //保证不是同一个点
-                    && (Math.abs(it.x - item.x) < minPointInterval && Math.abs(it.x - item.x) < minPointInterval)//发现二点过近
+                    && (Math.abs(it.x - item.x) + Math.abs(it.x - item.x) < minPointInterval)//发现二点过近
         } == null
     }
 
@@ -584,8 +577,6 @@ class BaseImgProcess(
             }
         }
     }
-
-
 
 
 }
