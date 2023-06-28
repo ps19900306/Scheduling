@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import com.nwq.function.corelib.NwqAccessibilityService.Companion.Intent_Filter_TAG
 import com.nwq.function.corelib.auto_code.AutoCodeActivity
 import com.nwq.function.corelib.baseIf.CmdType
 import com.nwq.function.corelib.databinding.ActivityMainBinding
@@ -46,22 +47,22 @@ class MainActivity : AppCompatActivity() {
 
         bind.startRole1.singleClick {
             SPRepo.role = SpConstant.PREFIX_ROLE1
-            val intent = Intent("schedule.cmd")
-            intent.setDataAndType("schedule.cmd".toUri(), "cmd/int")
+            val intent = Intent(Intent_Filter_TAG)
+            intent.setDataAndType(Intent_Filter_TAG.toUri(), "cmd/int")
             intent.putExtra(Constant.CMD, CmdType.START)
             sendBroadcast(intent);
         }
         bind.startRole2.singleClick {
             SPRepo.role = SpConstant.PREFIX_ROLE2
-            val intent = Intent("schedule.cmd")
-            intent.setDataAndType("schedule.cmd".toUri(), "cmd/int")
+            val intent = Intent(Intent_Filter_TAG)
+            intent.setDataAndType(Intent_Filter_TAG.toUri(), "cmd/int")
             intent.putExtra(Constant.CMD, CmdType.START)
             sendBroadcast(intent);
         }
         bind.closeAll.singleClick {
             SPRepo.role = SpConstant.PREFIX_ROLE2
-            val intent = Intent("schedule.cmd")
-            intent.setDataAndType("schedule.cmd".toUri(), "cmd/int")
+            val intent = Intent(Intent_Filter_TAG)
+            intent.setDataAndType(Intent_Filter_TAG.toUri(), "cmd/int")
             intent.putExtra(Constant.CMD, CmdType.CLOSE)
             sendBroadcast(intent);
         }

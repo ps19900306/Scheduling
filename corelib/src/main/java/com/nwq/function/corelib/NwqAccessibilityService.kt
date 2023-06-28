@@ -23,6 +23,11 @@ class NwqAccessibilityService : AccessibilityService() {
     private val TAG = "NwqAccessibilityService"
     private val cList = mutableListOf<BaseController>()
 
+    companion object {
+        const val Intent_Filter_TAG = "schedule.cmd.v2"
+    }
+
+
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -67,7 +72,7 @@ class NwqAccessibilityService : AccessibilityService() {
 
     private fun registerReceiver() {
         Timber.d("registerReceiver NwqAccessibilityService NWQ_ 2023/3/12");
-        registerReceiver(communicationBroadcast, IntentFilter.create("schedule.cmd", "cmd/int"))
+        registerReceiver(communicationBroadcast, IntentFilter.create(Intent_Filter_TAG, "cmd/int"))
     }
 
 
