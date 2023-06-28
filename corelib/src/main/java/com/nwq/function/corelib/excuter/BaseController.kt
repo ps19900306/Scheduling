@@ -39,7 +39,6 @@ class BaseController(val acService: AccessibilityService) {
     }
 
 
-
     protected suspend fun waitImgTask(task: ImgTask, times: Int = 3): Boolean {
         var flag = true
         var count = times
@@ -70,6 +69,21 @@ class BaseController(val acService: AccessibilityService) {
             }
         } while (bitmap == null)
         return bitmap.width > bitmap.height
+    }
+
+
+    //获取图片不管高和宽
+    protected suspend fun takeScreenBitmap(delayTime: Long) {
+        if (delayTime > 0) {
+            delay(delayTime)
+        }
+        var bitmap: Bitmap? = null
+        do {
+            bitmap = takeScreenShot()
+            if (bitmap == null) {
+                delay(2000)
+            }
+        } while (bitmap == null)
     }
 
 
