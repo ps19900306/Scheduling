@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.view.accessibility.AccessibilityEvent
+import com.nwq.function.corelib.excuter.BaseController
+import com.nwq.function.corelib.excuter.star_wars.InterstellarMiners
 import com.nwq.function.corelib.utils.ContextUtil
 import timber.log.Timber
 
@@ -19,6 +21,7 @@ Function description:
 class NwqAccessibilityService : AccessibilityService() {
 
     private val TAG = "NwqAccessibilityService"
+    private val cList = mutableListOf<BaseController>()
 
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
@@ -38,13 +41,15 @@ class NwqAccessibilityService : AccessibilityService() {
 
 
     private fun startOpt(outGame: Boolean = false) {
-
-
+        Timber.d("启动脚本 NwqAccessibilityService NWQ_ 2023/3/12");
+        val interstellarMiners=  InterstellarMiners(this)
+        interstellarMiners.startWork()
+        cList.add(interstellarMiners)
     }
 
 
     fun dealEvent(intent: Intent) {
-
+        startOpt()
     }
 
 

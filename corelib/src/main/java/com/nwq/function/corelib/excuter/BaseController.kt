@@ -20,11 +20,17 @@ create time: 2023/5/29 17:54
 Function description:这里面放控制逻辑
  */
 
-class BaseController(val acService: AccessibilityService) {
+abstract class BaseController(val acService: AccessibilityService) {
 
     var screenBitmap: Bitmap? = null
     var runSwitch = true
 
+
+    abstract fun startWork()
+
+    fun closeWork() {
+        runSwitch = false
+    }
 
     protected suspend fun click(vararg click: ClickTask) {
         click(0, 0, *click)

@@ -21,8 +21,8 @@
     <string name="find_the_image_area">找图区域</string>
     <string name="take_point_interval">取点间隔</string>
 
-    <string name="accessibility_service_label">Scheduling</string>
-    <string name="accessibility_service_description">Scheduling</string>
+    <string name="accessibility_service_label">Schedule</string>
+    <string name="accessibility_service_description">Schedule</string>
     <string name="ok">确定</string>
     <string name="clear">清除</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>

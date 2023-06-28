@@ -9,5 +9,5 @@
     android:canRetrieveWindowContent="true"
     android:canTakeScreenshot="true"
     android:canPerformGestures="true"
-    android:settingsActivity=" com.nwq.function.scheduling.core_code.MainActivity"
+    android:settingsActivity="com.nwq.function.corelib.MainActivity"
     />
