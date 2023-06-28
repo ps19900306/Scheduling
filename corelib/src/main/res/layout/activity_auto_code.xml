@@ -21,10 +21,12 @@
     <TextView
         android:layout_marginTop="20dp"
         android:id="@+id/okTv"
-        android:padding="2dp"
+        android:padding="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OK"
+        android:textColor="@color/black"
+        android:background="#40FFFFFF"
         android:layout_gravity="end|top"/>
 
     <include

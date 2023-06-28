@@ -19,12 +19,22 @@ class FeaturePointKey(var colorInt: Int) {
     var blue: Int = colorInt.blue
 
     val redD = getRange(red)
-    val greenD= getRange(green)
-    val blueD= getRange(blue)
+    val greenD = getRange(green)
+    val blueD = getRange(blue)
 
 
-    fun getRange(bInt: Int):Int {
-       return if (bInt > 200) {
+    private val isDark by lazy {
+        val flag = red < 20 && green < 20 && blue < 20
+        if(flag){
+            red=1
+            green=1
+            blue=1
+        }
+        flag
+    }
+
+    fun getRange(bInt: Int): Int {
+        return if (bInt > 200) {
             50
         } else if (bInt > 150) {
             40
@@ -171,6 +181,11 @@ class FeaturePointKey(var colorInt: Int) {
     }
 
     fun isInRange(r: Int, g: Int, b: Int): Boolean {
+        if (isDark) {
+            return (r < 20 && g < 20 && b < 20)
+        }
+
+
         val rToG = r.toFloat() / g.toFloat()
         val rToB = r.toFloat() / b.toFloat()
         val gToB = g.toFloat() / b.toFloat()
