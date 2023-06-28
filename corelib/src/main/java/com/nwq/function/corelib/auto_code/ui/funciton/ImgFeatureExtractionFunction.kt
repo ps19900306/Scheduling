@@ -331,12 +331,14 @@ class ImgFeatureExtractionFunction(
     fun FeatureCoordinatePoint.toColorRuleStr(notValue: Boolean = false): String {
         return if (notValue && mDirectorPointKey != null) {
             val oKey = mDirectorPointKey!!
-            "ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F" +
-                    "\n //red$red green$green blue$blue"
+            "ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F)" +
+                    "\n //red$red green$green blue$blue \n"
         } else {
-            "ColorRuleRatioUnImpl.getSimple(${red},${green},${blue}"
+            "ColorRuleRatioImpl.getSimple(${red},${green},${blue})"
         }
     }
+
+
 
 
 }
