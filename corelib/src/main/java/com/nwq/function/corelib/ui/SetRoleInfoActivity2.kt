@@ -1,17 +1,17 @@
-package com.nwq.function.scheduling.ui
+package com.nwq.function.corelib.ui
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.nwq.function.scheduling.databinding.ActivitySetRoleInfo2Binding
-import com.nwq.function.scheduling.utils.JsonUtil
-import com.nwq.function.scheduling.utils.singleClick
-import com.nwq.function.scheduling.utils.sp.SP
-import com.nwq.function.scheduling.utils.sp.SPRepo
-import com.nwq.function.scheduling.utils.sp.SPRepoPrefix
-import com.nwq.function.scheduling.utils.sp.SpConstant
+import com.nwq.function.corelib.databinding.ActivitySetRoleInfo2Binding
+import com.nwq.function.corelib.utils.JsonUtil
+import com.nwq.function.corelib.utils.singleClick
+import com.nwq.function.corelib.utils.sp.SP
+import com.nwq.function.corelib.utils.sp.SPRepo
+import com.nwq.function.corelib.utils.sp.SPRepoPrefix
+import com.nwq.function.corelib.utils.sp.SpConstant
 
 class SetRoleInfoActivity2 : AppCompatActivity() {
 

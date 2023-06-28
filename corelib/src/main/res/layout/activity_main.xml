@@ -4,15 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
+
+    <Button
+        android:id="@+id/testColor"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="重置完成"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.437" />
+
+    <Button
+        android:id="@+id/setRole2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="设置角色2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.53"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.437" />
+
+    <Button
+        android:id="@+id/setRole1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="设置角色1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.102"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.437" />
+
+    <Button
+        android:id="@+id/startRole1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="开始角色1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.102"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.063" />
     <TextView
+        android:id="@+id/role1StatusTv"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/startRole1"
+        app:layout_constraintStart_toStartOf="@+id/startRole1"
+        app:layout_constraintTop_toBottomOf="@+id/startRole1" />
+
+    <Button
+        android:id="@+id/startRole2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="开始角色2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.53"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.063" />
+    <TextView
+        android:id="@+id/role2StatusTv"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/startRole2"
+        app:layout_constraintStart_toStartOf="@+id/startRole2"
+        app:layout_constraintTop_toBottomOf="@+id/startRole2" />
+    <Button
+        android:id="@+id/closeAll"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="关闭全部"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.063" />
+
+    <CheckBox
+        android:id="@+id/continueToTheNextCb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="是否继续执行下一个程序"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setRole2" />
+
+    <Button
+        android:id="@+id/autoBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="自动化"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/continueToTheNextCb" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

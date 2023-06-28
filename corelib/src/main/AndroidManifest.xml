@@ -28,9 +28,6 @@
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".auto_code.AutoCodeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,6 +35,42 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".auto_code.AutoCodeActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".ui.SelectModelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.SettingModelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.SetRoleInfoActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".ui.GetColorActivity"
+            android:exported="false" />
+
+
+        <service
+            android:name=".NwqAccessibilityService"
+            android:exported="true"
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+
+
     </application>
 
 </manifest>

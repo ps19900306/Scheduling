@@ -1,7 +1,7 @@
 package com.nwq.function.corelib.img.task
 
 import android.graphics.Bitmap
-import com.nwq.function.corelib.BasicTask
+import com.nwq.function.corelib.baseIf.BasicTask
 import com.nwq.function.corelib.img.pcheck.*
 import com.nwq.function.corelib.img.rule.ColorRuleImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
