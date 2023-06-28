@@ -17,4 +17,8 @@ class PointsRule(val points: List<CoordinatePoint>, val rule: ColorIdentificatio
             rule.optInt(intColor)
         } != null
     }
+
+    override fun getColorRule(): ColorIdentificationRule {
+        return rule
+    }
 }

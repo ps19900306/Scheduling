@@ -10,6 +10,7 @@ import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.img.rule.ColorCompareRule
+import com.nwq.function.corelib.img.rule.ColorIdentificationRule
 
 //单点对应单色
 class TwoAreaRule(
@@ -114,5 +115,6 @@ class TwoAreaRule(
 
         return RGBInfo(rTotal / count, gTotal / count, bTotal / count)
     }
+
 
 }

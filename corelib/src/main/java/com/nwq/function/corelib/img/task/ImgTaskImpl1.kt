@@ -18,9 +18,16 @@ open class ImgTaskImpl1(
     correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 
+    var nErrorTolerance: Int = 0 //普通点容错
+    var bErrorTolerance: Int = 2 //背景点容错
+
     override suspend fun verificationRule(bitmap: Bitmap): Boolean {
         val result = if (correctModel == null) {
-            checkImgTask(bitmap)
+            checkImgTask(
+                bitmap = bitmap,
+                nErrorTolerance = nErrorTolerance,
+                bErrorTolerance = bErrorTolerance
+            )
         } else {
             optClickTasks(bitmap, correctModel)
         }
@@ -36,7 +43,7 @@ open class ImgTaskImpl1(
                 it.resume(false)
                 false
             } else {
-                val result = checkImgTask(bitmap, x, y)
+                val result = checkImgTask(bitmap, x, y,nErrorTolerance,bErrorTolerance)
                 if (result) {
                     it.resume(true)
                     true

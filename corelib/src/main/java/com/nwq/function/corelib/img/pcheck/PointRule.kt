@@ -12,6 +12,11 @@ class PointRule(val point: CoordinatePoint, val rule: ColorIdentificationRule) :
         return point
     }
 
+    override fun getColorRule(): ColorIdentificationRule {
+         return rule
+    }
+
+
     override fun checkIpr(bitmap: Bitmap, offsetX: Int, offsetY: Int): Boolean {
         val intColor = bitmap.getPixel(point.xI + offsetX, point.yI + offsetY)
         return rule.optInt(intColor)
