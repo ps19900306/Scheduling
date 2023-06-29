@@ -96,10 +96,9 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
     private val functionList by lazy {
         mutableListOf(
             FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
-            FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
-            FunctionItemInfo(
-                R.string.add_click_are, BUTTON_TYPE
-            )
+            FunctionItemInfo(R.string.add_click_are, BUTTON_TYPE),
+          //  FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
+
         )
     }
 

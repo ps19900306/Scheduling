@@ -1,6 +1,7 @@
 package com.nwq.function.corelib.img.task
 
 import android.graphics.Bitmap
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.img.pcheck.IPR
 import timber.log.Timber
 import kotlin.coroutines.resume
@@ -18,6 +19,7 @@ open class ImgTaskImpl1(
     correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 
+    var clickArea: CoordinateArea? = null //如果
     var nErrorTolerance: Int = 0 //普通点容错
     var bErrorTolerance: Int = 2 //背景点容错
 
@@ -43,7 +45,7 @@ open class ImgTaskImpl1(
                 it.resume(false)
                 false
             } else {
-                val result = checkImgTask(bitmap, x, y,nErrorTolerance,bErrorTolerance)
+                val result = checkImgTask(bitmap, x, y, nErrorTolerance, bErrorTolerance)
                 if (result) {
                     it.resume(true)
                     true

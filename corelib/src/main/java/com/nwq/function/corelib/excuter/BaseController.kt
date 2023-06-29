@@ -79,7 +79,7 @@ abstract class BaseController(val acService: AccessibilityService) {
 
 
     //获取图片不管高和宽
-    protected suspend fun takeScreenBitmap(delayTime: Long) {
+    protected suspend fun takeScreenBitmap(delayTime: Long):Bitmap {
         if (delayTime > 0) {
             delay(delayTime)
         }
@@ -90,6 +90,7 @@ abstract class BaseController(val acService: AccessibilityService) {
                 delay(2000)
             }
         } while (bitmap == null)
+        return bitmap
     }
 
 
@@ -118,5 +119,10 @@ abstract class BaseController(val acService: AccessibilityService) {
                     it.resume(null)
                 }
             })
+    }
+
+
+    fun Bitmap.isOrientation():Boolean{
+        return width>height
     }
 }

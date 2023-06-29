@@ -36,9 +36,7 @@ class NwqAccessibilityService : AccessibilityService() {
         }
     }
 
-    private val helper by lazy {
 
-    }
 
     private val onCompleteLister = {
 

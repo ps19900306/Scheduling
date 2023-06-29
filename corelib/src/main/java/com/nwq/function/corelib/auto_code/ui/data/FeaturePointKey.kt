@@ -24,7 +24,7 @@ class FeaturePointKey(var colorInt: Int) {
 
 
     private val isDark by lazy {
-        val flag = red < 20 && green < 20 && blue < 20
+        val flag = red < 30 && green < 30 && blue < 30
         if(flag){
             red=1
             green=1
