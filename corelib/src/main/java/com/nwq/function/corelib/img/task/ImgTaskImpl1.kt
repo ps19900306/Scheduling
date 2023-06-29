@@ -57,4 +57,8 @@ open class ImgTaskImpl1(
     }
 
 
+    fun clearCorrect() {
+        correctModel?.clearCorrect()
+    }
+
 }

@@ -22,8 +22,8 @@ open class CorrectPositionModel(
         range
     )
 
-     var offsetX: Int = 0 //发现图片成功的时候X偏差值
-     var offsetY: Int = 0 //发现图片成功的时候Y偏差值
+    var offsetX: Int = 0 //发现图片成功的时候X偏差值
+    var offsetY: Int = 0 //发现图片成功的时候Y偏差值
     protected var hasCorrect = false
 
 
@@ -43,6 +43,10 @@ open class CorrectPositionModel(
 
     fun isCorrect(): Boolean {
         return hasCorrect
+    }
+
+    fun clearCorrect() {
+        hasCorrect = false
     }
 
 
