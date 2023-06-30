@@ -20,7 +20,7 @@ create time: 2023/5/29 17:54
 Function description:这里面放控制逻辑
  */
 
-abstract class BaseController(val acService: AccessibilityService) {
+abstract class BaseController(val acService: AccessibilityService,val endLister: EndLister?=null) {
 
     var screenBitmap: Bitmap? = null
     var runSwitch = true

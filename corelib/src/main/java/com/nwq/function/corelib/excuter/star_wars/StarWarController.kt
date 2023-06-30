@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.BaseController
+import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.sp.SPRepo
 import com.nwq.function.corelib.utils.sp.SpConstant
@@ -18,7 +19,7 @@ create time: 2023/6/28 14:52
 Function description:
  */
 
-abstract class StarWarController(acService: AccessibilityService) : BaseController(acService) {
+abstract class StarWarController(acService: AccessibilityService, endLister: EndLister?=null) : BaseController(acService,endLister) {
 
 
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
