@@ -301,7 +301,7 @@ class ImgFeatureExtractionFunction(
         val stringBuilder = StringBuilder()
         stringBuilder.append("val isOpenTask by lazy {  \n")
         stringBuilder.append("val tag = \"isOpen\" \n")
-        if (datums == null) {
+        if (datums.isNullOrEmpty()) {
             stringBuilder.append("val correctPositionModel = null \n")
         } else {
             stringBuilder.append("val list = mutableListOf<PointRule>()   \n")

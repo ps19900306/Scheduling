@@ -93,24 +93,10 @@ open class ColorRuleRatioImpl(
             red: Int,
             green: Int,
             blue: Int,
+            range: Int = 15,
         ): ColorRuleRatioImpl {
-            val maxValue = Math.max(Math.max(red, green), blue)
-            val minValue = Math.min(Math.min(red, green), blue)
             var rangRatio = 0.1F
 
-            val range = if (maxValue - minValue > 150) {
-                5
-            } else if (maxValue - minValue > 50) {
-                15
-            } else if (maxValue > 100) {
-                rangRatio = 0.15F
-                25
-            } else if (maxValue > 50) {
-                rangRatio = 0.2F
-                20
-            } else {
-                15
-            }
             var maxRed = (red + range).toRgbInt()
             var minRed = (red - range).toRgbInt()
             var maxGreen = (green + range).toRgbInt()

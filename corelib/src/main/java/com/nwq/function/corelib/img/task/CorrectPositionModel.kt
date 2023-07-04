@@ -10,8 +10,8 @@ import com.nwq.function.corelib.utils.sp.SPRepoPrefix
 open class CorrectPositionModel(
     val pointList: List<PointRule>,
     val tag: String,
-    val xRange: Int = 0, //初始图片的寻找范围， 必须有一个大于零
-    val yRange: Int = 0, //初始图片的寻找范围，必须有一个大于零
+    val xRange: Int = 3, //初始图片的寻找范围， 必须有一个大于零
+    val yRange: Int = 3, //初始图片的寻找范围，必须有一个大于零
     var everyRevalidation: Boolean = !(xRange == 0 && yRange == 0) // 每次都重复验证
 ) {
 
