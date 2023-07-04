@@ -1,5 +1,7 @@
 package com.nwq.function.corelib.img.rule
 
+import com.nwq.function.corelib.utils.toRgbInt
+
 /**
 create by: 86136
 create time: 2023/5/12 20:19
@@ -7,7 +9,7 @@ Function description:
 这个根据色值范围进行规则校验：同时增加比例特征值以求保证颜色的特性
  */
 
-class ColorRuleRatioImpl(
+open class ColorRuleRatioImpl(
     val maxRed: Int, val minRed: Int, val maxGreen: Int,
     val minGreen: Int, val maxBlue: Int, val minBlue: Int,
     val redToGreenMax: Float, val redToGreenMin: Float,
@@ -17,8 +19,7 @@ class ColorRuleRatioImpl(
 
 
     constructor(
-        maxRed: Int, minRed: Int, maxGreen: Int,
-        minGreen: Int, maxBlue: Int, minBlue: Int
+        maxRed: Int, minRed: Int, maxGreen: Int, minGreen: Int, maxBlue: Int, minBlue: Int
     ) : this(
         maxRed, minRed, maxGreen,
         minGreen, maxBlue, minBlue,
@@ -30,17 +31,31 @@ class ColorRuleRatioImpl(
 
     override fun verificationRule(red: Int, green: Int, blue: Int): Boolean {
         val redF = red.toFloat()
-        val greenF = red.toFloat()
-        val blueF = red.toFloat()
+        val greenF = green.toFloat()
+        val blueF = blue.toFloat()
 
-        val redToGreen = redF / greenF
-        val redToBlue = redF / blueF
-        val greenToBlue = greenF / blueF
+        val flag1 = if (redToGreenMin > 0 && redToGreenMax > 0 && red > 0 && green > 0) {
+            val redToGreen = redF / greenF
+            redToGreen in redToGreenMin..redToGreenMax
+        } else {
+            true
+        }
 
-        return red in minRed..maxRed && green in minGreen..maxGreen && blue in minBlue..maxBlue &&
-                redToGreen in redToGreenMin..redToGreenMax
-                && redToBlue in redToBlueMin..redToBlueMax
-                && greenToBlue in greenToBlueMin..greenToBlueMax
+        val flag2 = if (redToBlueMin > 0 && redToBlueMax > 0 && blue > 0 && red > 0) {
+            val redToBlue = redF / blueF
+            redToBlue in redToBlueMin..redToBlueMax
+        } else {
+            true
+        }
+
+        val flag3 = if (greenToBlueMin > 0 && greenToBlueMax > 0 && blue > 0 && green > 0) {
+            val greenToBlue = greenF / blueF
+            greenToBlue in greenToBlueMin..greenToBlueMax
+        } else {
+            true
+        }
+
+        return red in minRed..maxRed && green in minGreen..maxGreen && blue in minBlue..maxBlue && flag1 && flag2 && flag3
     }
 
     companion object {
@@ -55,25 +70,23 @@ class ColorRuleRatioImpl(
             greenToBlueMax: Float, greenToBlueMin: Float,
         ): ColorRuleRatioImpl {
             return list.find {
-                it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue &&
-                        it.redToGreenMax == redToGreenMax && it.redToGreenMin == redToGreenMin && it.redToBlueMax == redToBlueMax && it.redToBlueMin == redToBlueMin && it.greenToBlueMax == greenToBlueMax && it.greenToBlueMin == greenToBlueMin
+                it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue && it.redToGreenMax == redToGreenMax && it.redToGreenMin == redToGreenMin && it.redToBlueMax == redToBlueMax && it.redToBlueMin == redToBlueMin && it.greenToBlueMax == greenToBlueMax && it.greenToBlueMin == greenToBlueMin
+            } ?: ColorRuleRatioImpl(
+                maxRed,
+                minRed,
+                maxGreen,
+                minGreen,
+                maxBlue,
+                minBlue,
+                redToGreenMax,
+                redToGreenMin,
+                redToBlueMax,
+                redToBlueMin,
+                greenToBlueMax,
+                greenToBlueMin
+            ).apply {
+                list.add(this)
             }
-                ?: ColorRuleRatioImpl(
-                    maxRed,
-                    minRed,
-                    maxGreen,
-                    minGreen,
-                    maxBlue,
-                    minBlue,
-                    redToGreenMax,
-                    redToGreenMin,
-                    redToBlueMax,
-                    redToBlueMin,
-                    greenToBlueMax,
-                    greenToBlueMin
-                ).apply {
-                    list.add(this)
-                }
         }
 
         fun getSimple(
@@ -82,56 +95,72 @@ class ColorRuleRatioImpl(
             blue: Int,
         ): ColorRuleRatioImpl {
             val maxValue = Math.max(Math.max(red, green), blue)
-            val range = if (maxValue > 200) {
+            val minValue = Math.min(Math.min(red, green), blue)
+            var rangRatio = 0.1F
+
+            val range = if (maxValue - minValue > 150) {
+                5
+            } else if (maxValue - minValue > 50) {
                 15
-            } else if (maxValue > 150) {
+            } else if (maxValue > 100) {
+                rangRatio = 0.15F
                 25
-            } else if (maxValue > 110) {
-                30
-            } else if (maxValue > 80) {
+            } else if (maxValue > 50) {
+                rangRatio = 0.2F
                 20
             } else {
                 15
             }
-            var maxRed = red + range
-            var minRed = red - range
-            var maxGreen = green + range
-            var minGreen = green - range
-            var maxBlue = blue + range
-            var minBlue = blue - range
+            var maxRed = (red + range).toRgbInt()
+            var minRed = (red - range).toRgbInt()
+            var maxGreen = (green + range).toRgbInt()
+            var minGreen = (green - range).toRgbInt()
+            var maxBlue = (blue + range).toRgbInt()
+            var minBlue = (blue - range).toRgbInt()
 
-            var rToG = red.toFloat() / green.toFloat()
-            var rToB = red.toFloat() / blue.toFloat()
-            var gToB = green.toFloat() / blue.toFloat()
 
-            val rangRatio = 0.1F
-            var redToGreenMax = rToG * (1 + rangRatio)
-            var redToGreenMin = rToG * (1 - rangRatio)
-            var redToBlueMax = rToB * (1 + rangRatio)
-            var redToBlueMin = rToB * (1 - rangRatio)
-            var greenToBlueMax = gToB * (1 + rangRatio)
-            var greenToBlueMin = gToB * (1 - rangRatio)
+            var redToGreenMax = 0F
+            var redToGreenMin = 0F
+            var redToBlueMax = 0F
+            var redToBlueMin = 0F
+            var greenToBlueMax = 0F
+            var greenToBlueMin = 0F
+
+
+            if (green > 0 && red > 0) {
+                var rToG = red.toFloat() / green.toFloat()
+                redToGreenMax = rToG * (1 + rangRatio)
+                redToGreenMin = rToG * (1 - rangRatio)
+            }
+            if (blue > 0 && red > 0) {
+                var rToB = red.toFloat() / blue.toFloat()
+                redToBlueMax = rToB * (1 + rangRatio)
+                redToBlueMin = rToB * (1 - rangRatio)
+            }
+            if (green > 0 && blue > 0) {
+                var gToB = green.toFloat() / blue.toFloat()
+                greenToBlueMax = gToB * (1 + rangRatio)
+                greenToBlueMin = gToB * (1 - rangRatio)
+            }
 
             return list.find {
-                it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue &&
-                        it.redToGreenMax == redToGreenMax && it.redToGreenMin == redToGreenMin && it.redToBlueMax == redToBlueMax && it.redToBlueMin == redToBlueMin && it.greenToBlueMax == greenToBlueMax && it.greenToBlueMin == greenToBlueMin
+                it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue && it.redToGreenMax == redToGreenMax && it.redToGreenMin == redToGreenMin && it.redToBlueMax == redToBlueMax && it.redToBlueMin == redToBlueMin && it.greenToBlueMax == greenToBlueMax && it.greenToBlueMin == greenToBlueMin
+            } ?: ColorRuleRatioImpl(
+                maxRed,
+                minRed,
+                maxGreen,
+                minGreen,
+                maxBlue,
+                minBlue,
+                redToGreenMax,
+                redToGreenMin,
+                redToBlueMax,
+                redToBlueMin,
+                greenToBlueMax,
+                greenToBlueMin
+            ).apply {
+                list.add(this)
             }
-                ?: ColorRuleRatioImpl(
-                    maxRed,
-                    minRed,
-                    maxGreen,
-                    minGreen,
-                    maxBlue,
-                    minBlue,
-                    redToGreenMax,
-                    redToGreenMin,
-                    redToBlueMax,
-                    redToBlueMin,
-                    greenToBlueMax,
-                    greenToBlueMin
-                ).apply {
-                    list.add(this)
-                }
         }
     }
 

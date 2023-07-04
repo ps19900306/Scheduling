@@ -4,12 +4,10 @@
     android:layout_height="wrap_content"
     android:clickable="true">
 
-    <EditText
+    <TextView
         android:id="@+id/edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="@dimen/sp_14"
         android:textColor="@color/black"
-        android:layout_margin="8dp"
         android:text="@string/auto_exc" />
 </FrameLayout>
