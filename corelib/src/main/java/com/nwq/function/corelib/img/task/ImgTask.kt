@@ -13,10 +13,7 @@ import com.nwq.function.corelib.img.rule.ColorRuleUnImpl
  */
 abstract class ImgTask(
     val iprList: List<IPR>, val tag: String, val correctModel: CorrectPositionModel? = null
-) : BasicTask {
-
-    //验证是否符合规则
-    abstract suspend fun verificationRule(bitmap: Bitmap): Boolean
+) : BasicImgTask() {
 
     protected fun checkImgTask(
         bitmap: Bitmap,

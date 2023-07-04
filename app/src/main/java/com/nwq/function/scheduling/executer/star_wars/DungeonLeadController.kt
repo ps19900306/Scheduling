@@ -13,8 +13,9 @@ Function description:
  */
 
 class DungeonLeadController(p: AccessibilityHelper, c: () -> Boolean) : BaseController(p, c) {
+
     override suspend fun generalControlMethod() {
-        TODO("Not yet implemented")
+
     }
 
 }
