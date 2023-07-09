@@ -253,8 +253,7 @@ class BaseImgProcess(
 
     //获取特征点，这里使用边界点
     fun obtainFeaturePoints(
-        allList: MutableList<FeatureCoordinatePoint>,
-        pointnterval: Int
+        allList: MutableList<FeatureCoordinatePoint>, pointnterval: Int
     ): List<FeatureCoordinatePoint> {
         val originalList = allList.filter { it.isBoundary() }
         val pickingInterval = if (pointnterval > 0) {
@@ -531,11 +530,17 @@ class BaseImgProcess(
         if (list.isNullOrEmpty()) {
             list = colorMaps[brightestKey]?.filter { it.isIdentificationKey }
         }
-        if (list.isNullOrEmpty()) return null
+        if (list.isNullOrEmpty()) {
+         //   Timber.d("没有获取到 getDatumPoint BaseImgProcess NWQ_ 2023/7/8");
+            return null
+        }
+      //  Timber.d("${list.size} getDatumPoint BaseImgProcess NWQ_ 2023/7/8");
         val resultList = list.sortedBy { it.x + it.y }
         if (resultList.size > datumPointSize) {
-            return resultList.subList(0, datumPointSize - 1)
+
+            return resultList.subList(0, datumPointSize )
         } else {
+
             return resultList
         }
     }

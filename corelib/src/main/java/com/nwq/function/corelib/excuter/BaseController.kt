@@ -63,7 +63,7 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
 
 
     //如果截图失败则等待二秒后继续截图
-    protected suspend fun takeScreen(delayTime: Long): Boolean {
+    protected suspend fun takeScreen(delayTime: Long=0): Boolean {
         if (delayTime > 0) {
             delay(delayTime)
         }
@@ -79,7 +79,7 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
 
 
     //获取图片不管高和宽
-    protected suspend fun takeScreenBitmap(delayTime: Long):Bitmap {
+    protected suspend fun takeScreenBitmap(delayTime: Long=0):Bitmap {
         if (delayTime > 0) {
             delay(delayTime)
         }
@@ -124,5 +124,13 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
 
     fun Bitmap.isOrientation():Boolean{
         return width>height
+    }
+
+    fun pressBackBtn() {
+        acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+    }
+
+    fun pressHomeBtn() {
+        acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
     }
 }

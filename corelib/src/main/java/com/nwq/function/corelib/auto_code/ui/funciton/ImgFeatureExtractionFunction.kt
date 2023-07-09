@@ -3,6 +3,7 @@ package com.nwq.function.corelib.auto_code.ui.funciton
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,6 +32,7 @@ import com.nwq.function.corelib.img.rule.ColorRuleRatioUnImpl
 import com.nwq.function.corelib.img.task.CorrectPositionModel
 import com.nwq.function.corelib.img.task.FindImgTask
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
+import com.nwq.function.corelib.utils.ToastHelper
 import com.nwq.function.corelib.utils.runOnUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -109,7 +111,6 @@ class ImgFeatureExtractionFunction(
 
 
     private fun initOpt() {
-
         val spanCount = 3
         val sd = GridSpacingItemDecoration(spanCount, 8, true)
         binding.optRecycler.layoutManager = GridLayoutManager(context, spanCount)
@@ -124,6 +125,7 @@ class ImgFeatureExtractionFunction(
         binding.optRecycler.addItemDecoration(sd)
 
         mFunctionItemAdapter.setOnItemClickListener { adapter, view, position ->
+            ToastHelper.showToast("点击")
             val data = functionItemList[position]
             when (data.strId) {
                 R.string.add -> {
@@ -139,7 +141,7 @@ class ImgFeatureExtractionFunction(
                     mOptLister.optPoint(DELETE_POINT)
                 }
                 R.string.auto_exc -> {
-                    mBaseImgProcess.autoExc(useBackground,pointnterval)
+                    mBaseImgProcess.autoExc(useBackground, pointnterval)
                 }
                 R.string.find_the_image_area -> {
                     mOptLister.requestArea(FIND_IMAGE_AREA)

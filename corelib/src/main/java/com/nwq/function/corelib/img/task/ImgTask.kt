@@ -7,12 +7,13 @@ import com.nwq.function.corelib.img.rule.ColorRuleImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioUnImpl
 import com.nwq.function.corelib.img.rule.ColorRuleUnImpl
+import timber.log.Timber
 
 /**
  * 不能实列化
  */
 abstract class ImgTask(
-    val iprList: List<IPR>, val tag: String, val correctModel: CorrectPositionModel? = null
+   protected val iprList: List<IPR>,protected val tag: String,protected val correctModel: CorrectPositionModel? = null
 ) : BasicImgTask() {
 
     protected fun checkImgTask(
@@ -26,6 +27,7 @@ abstract class ImgTask(
         var backgroundErrorCount = 0
         iprList.forEach {
             if (!it.checkIpr(bitmap, offsetX, offsetY)) {
+                //Timber.d("${it.getCoordinatePoint()}");
                 if (it.getColorRule() is ColorRuleRatioImpl || it.getColorRule() is ColorRuleImpl) {
                     normalErrorCount++
                     if (normalErrorCount > nErrorTolerance) {

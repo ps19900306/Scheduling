@@ -89,7 +89,7 @@ open class CorrectPositionModel(
                     startX,
                     startY,
                     width,
-                    1
+                    height
                 )
                 var hasFind = false
                 pixels.forEachIndexed { index, colorInt ->
@@ -109,7 +109,8 @@ open class CorrectPositionModel(
                             ofsY = startY + index - pointList[0].getCoordinatePoint().yI
                         }
 
-                        if (pointList.size > 1) {
+
+                        if (pointList.size > 1) {//这个是说标准掉有多个
                             //找不符合规则的点 只要有则去除
                             val hasFailedPoint = pointList.find {
                                 val colorInt =
@@ -120,13 +121,13 @@ open class CorrectPositionModel(
                                 if (next.invoke(ofsX, ofsY, false)) {
                                     hasFind = true
                                     correctCoordinate(ofsX, ofsY)
-                                    return@forEachIndexed
+                                    return
                                 }
                             }
                         } else {
                             if (next.invoke(ofsX, ofsY, false)) {
                                 correctCoordinate(ofsX, ofsY)
-                                return@forEachIndexed
+                                return
                             }
                         }
                     }

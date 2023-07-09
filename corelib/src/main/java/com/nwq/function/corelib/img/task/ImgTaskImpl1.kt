@@ -14,9 +14,7 @@ Function description:
 固定点找图，成功后会记录偏差值，以优化流程
  */
 open class ImgTaskImpl1(
-    iprList: List<IPR>,
-    tag: String,
-    correctModel: CorrectPositionModel? = null
+    iprList: List<IPR>, tag: String, correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 
     var clickArea: CoordinateArea? = null //如果
@@ -37,12 +35,17 @@ open class ImgTaskImpl1(
         return result
     }
 
-    suspend fun optClickTasks(
+    protected suspend fun optClickTasks(
         bitmap: Bitmap, correctModel: CorrectPositionModel
     ): Boolean = suspendCoroutine {
         correctModel.check(bitmap = bitmap, next = { x, y, end ->
             if (end) {
-                it.resume(false)
+                if (correctModel.isCorrect()) {
+                    val result = checkImgTask(bitmap, x, y, nErrorTolerance, bErrorTolerance)
+                    it.resume(result)
+                } else {
+                    it.resume(false)
+                }
                 false
             } else {
                 val result = checkImgTask(bitmap, x, y, nErrorTolerance, bErrorTolerance)

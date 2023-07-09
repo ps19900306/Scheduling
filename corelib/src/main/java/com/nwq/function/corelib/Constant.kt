@@ -33,5 +33,5 @@ object Constant {
 
 
     val clickIntervals
-        get() = ((Math.random() * 0.5 + 1) * 600).toLong()
+        get() = ((Math.random() * 0.7 + 1) * 200).toLong()
 }

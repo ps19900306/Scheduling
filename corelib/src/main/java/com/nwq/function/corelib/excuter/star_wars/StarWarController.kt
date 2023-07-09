@@ -1,7 +1,10 @@
 package com.nwq.function.corelib.excuter.star_wars
 
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Bitmap
+import com.nwq.function.corelib.Constant.doubleClickInterval
 import com.nwq.function.corelib.Constant.normalClickInterval
+import com.nwq.function.corelib.Constant.tripleClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.BaseController
 import com.nwq.function.corelib.excuter.EndLister
@@ -23,6 +26,7 @@ Function description:
 abstract class StarWarController(acService: AccessibilityService, endLister: EndLister? = null) :
     BaseController(acService, endLister) {
 
+    val en = StarWarEnvironment
 
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
     val APP_LOCATION_X
@@ -34,45 +38,60 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
     fun getAppArea(): CoordinateArea {
         return CoordinateArea(
-            82 + (APP_LOCATION_X - 1) * 254,
-            185 + (APP_LOCATION_Y - 1) * 291,
-            154,
-            153
+            82 + (APP_LOCATION_X - 1) * 254, 185 + (APP_LOCATION_Y - 1) * 291, 154, 153
         )
     }
 
     override fun startWork() {
         GlobalScope.launch(Dispatchers.Default) {
-            // intoGame()
+            val bitmap = takeScreenBitmap(doubleClickInterval)
+            if(bitmap.isOrientation())
+            {
+                pressHomeBtn()
+                delay(doubleClickInterval)
+            }
+            intoGame()
         }
+    }
+
+   suspend private fun hasIntoGame(bitmap: Bitmap):Boolean{
+     return  (en.isClosePositionMenuT.verificationRule(bitmap) || en.isOpenPositionMenuT.verificationRule(bitmap))
+               &&(en.isInSpaceStationT.verificationRule(bitmap) ||en.isOpenEyeMenuT.verificationRule(bitmap) ||en.isCloseEyeMenuT.verificationRule(bitmap) )
     }
 
     //进入游戏的进入逻辑
-    private suspend fun intoGame(endTask: ImgTaskImpl1, midList: List<ImgTaskImpl1>): Boolean {
+    private suspend fun intoGame(){
         var flag = true
-        var count = 300
+        var count = 10
         while (flag && count > 0 && runSwitch) {
-            val bitmap = takeScreenBitmap(normalClickInterval)
-            if (!bitmap.isOrientation()) {
-                click(getAppArea().toClickTask())
-                count--
-            } else if (endTask.verificationRule(bitmap)) {
-                flag = false
-            } else {
-                val nowTask = midList.find { it.verificationRule(bitmap) }
-                if (nowTask == null) {
-                    count--
-                } else {
-                    nowTask.clickArea?.toClickTask()?.let {
-                        click(nowTask, it)
-                    }
+            val bitmap = takeScreenBitmap(doubleClickInterval)
+            if (bitmap.isOrientation()) {
+                if (en.isLoadingGameT.verificationRule(bitmap)){
+                }else if(en.isAnnouncementT.verificationRule(bitmap)){
+                    click(en.isAnnouncementT,en.closeAnnouncementArea.toClickTask())
+                }else if(en.isUpdateGameT.verificationRule(bitmap)){
+                    click(en.isUpdateGameT,en.updateGameArea.toClickTask())
+                    delay(tripleClickInterval)
+                }else if(en.isStartGameT.verificationRule(bitmap)){
+                    click(en.isStartGameT,en.isStartGameArea.toClickTask())
+                }else if(en.isSelectRoleT.verificationRule(bitmap)){
+                    click(en.isSelectRoleT,en.selectRoleArea.toClickTask())
+                }else if(en.isOpenBigMenuT.verificationRule(bitmap)){
+                    click(en.isOpenBigMenuT,en.closeBigMenuArea.toClickTask())
+                }else if(hasIntoGame(bitmap)){
+                    flag = false
                 }
+            }else {//这里没有横屏所以
+                click(getAppArea().toClickTask())
+                delay(tripleClickInterval)
+                count--
             }
         }
-        return !flag
     }
 
-    private suspend fun executionResults(endTask: List<BasicImgTask>, midList: List<ImgTaskImpl1>): Boolean  {
+    private suspend fun executionResults(
+        endTask: List<BasicImgTask>, midList: List<ImgTaskImpl1>
+    ): Boolean {
         var flag = true
         var count = 300
         while (flag && count > 0 && runSwitch) {

@@ -1,6 +1,7 @@
 package com.nwq.function.corelib.img.rule
 
 import com.nwq.function.corelib.utils.toRgbInt
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -54,8 +55,15 @@ open class ColorRuleRatioImpl(
         } else {
             true
         }
+        val resultFlag =red in minRed..maxRed && green in minGreen..maxGreen && blue in minBlue..maxBlue && flag1 && flag2 && flag3
+//        if(!resultFlag){
+//             Timber.d("red: $red, green: $green, blue: $blue verificationRule  \n ${toString()}NWQ_ 2023/7/9");
+//        }
+        return resultFlag
+    }
 
-        return red in minRed..maxRed && green in minGreen..maxGreen && blue in minBlue..maxBlue && flag1 && flag2 && flag3
+    override fun toString(): String {
+        return "ColorRuleRatioImpl(maxRed=$maxRed, minRed=$minRed, maxGreen=$maxGreen, minGreen=$minGreen, maxBlue=$maxBlue, minBlue=$minBlue, redToGreenMax=$redToGreenMax, redToGreenMin=$redToGreenMin, redToBlueMax=$redToBlueMax, redToBlueMin=$redToBlueMin, greenToBlueMax=$greenToBlueMax, greenToBlueMin=$greenToBlueMin)"
     }
 
     companion object {
@@ -93,10 +101,9 @@ open class ColorRuleRatioImpl(
             red: Int,
             green: Int,
             blue: Int,
-            range: Int = 15,
+            range: Int = 35,
         ): ColorRuleRatioImpl {
-            var rangRatio = 0.1F
-
+            var rangRatio = 0.2F
             var maxRed = (red + range).toRgbInt()
             var minRed = (red - range).toRgbInt()
             var maxGreen = (green + range).toRgbInt()

@@ -27,6 +27,7 @@ import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
 import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFunction
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
+import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment
 import com.nwq.function.corelib.utils.singleClick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -97,7 +98,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         mutableListOf(
             FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.add_click_are, BUTTON_TYPE),
-          //  FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
+            FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
 
         )
     }
@@ -150,18 +151,22 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                        val x = mBitmap.width - 2
-                        val Y = mBitmap.height - 2
-                        var startTime = System.currentTimeMillis()
-                        val endP = 1080 * 2400
-                        for (i in 0..endP) { //加随机1.7秒 不加0.7秒
-                            mBitmap.getPixel(
-                                (Math.random() * x).toInt(),
-                                (Math.random() * Y).toInt()
-                            )
-                        }
-                        Timber.d("消耗时间 ${System.currentTimeMillis() - startTime} initIndex AutoCodeActivity NWQ_ 2023/6/23");
+                        StarWarEnvironment.isOpenBigMenuT.verificationRule(mBitmap)
                     }
+                    bind.indexLayout.root.isVisible = true
+//                    GlobalScope.launch(Dispatchers.Default) {
+//                        val x = mBitmap.width - 2
+//                        val Y = mBitmap.height - 2
+//                        var startTime = System.currentTimeMillis()
+//                        val endP = 1080 * 2400
+//                        for (i in 0..endP) { //加随机1.7秒 不加0.7秒
+//                            mBitmap.getPixel(
+//                                (Math.random() * x).toInt(),
+//                                (Math.random() * Y).toInt()
+//                            )
+//                        }
+//                        Timber.d("消耗时间 ${System.currentTimeMillis() - startTime} initIndex AutoCodeActivity NWQ_ 2023/6/23");
+//                    }
                 }
             }
 
