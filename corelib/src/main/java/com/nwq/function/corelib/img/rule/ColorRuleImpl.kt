@@ -33,12 +33,12 @@ class ColorRuleImpl(
         private val list = mutableListOf<ColorRuleImpl>()
 
         fun getSimple(
-            maxRed: Int,
-            minRed: Int,
-            maxGreen: Int,
-            minGreen: Int,
-            maxBlue: Int,
-            minBlue: Int
+            maxRed: Int = 255,
+            minRed: Int = 0,
+            maxGreen: Int = 255,
+            minGreen: Int = 0,
+            maxBlue: Int = 255,
+            minBlue: Int = 0,
         ): ColorRuleImpl {
             return list.find { it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue }
                 ?: ColorRuleImpl(maxRed, minRed, maxGreen, minGreen, maxBlue, minBlue).apply {
@@ -51,30 +51,29 @@ class ColorRuleImpl(
             red: Int,
             green: Int,
             blue: Int,
+            range: Int = 15,
         ): ColorRuleImpl {
-            val maxValue = Math.max(Math.max(red, green), blue)
-            val range = if (maxValue > 200) {
-                15
-            } else if (maxValue > 150) {
-                25
-            } else if (maxValue > 110) {
-                30
-            } else if (maxValue > 80) {
-                20
-            } else {
-                15
-            }
-            var maxRed = red + range
-            var minRed = red - range
-            var maxGreen = green + range
-            var minGreen = green - range
-            var maxBlue = blue + range
-            var minBlue = blue - range
+            val maxRed = red + range
+            val minRed = red - range
+            val maxGreen = green + range
+            val minGreen = green - range
+            val maxBlue = blue + range
+            val minBlue = blue - range
             return list.find { it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue }
                 ?: ColorRuleImpl(maxRed, minRed, maxGreen, minGreen, maxBlue, minBlue).apply {
                     list.add(this)
                 }
         }
+
+
+        fun getAllOver(min: Int): ColorRuleImpl {
+            return getSimple(minRed = min, minBlue = min, minGreen = min)
+        }
+
+        fun getAllLess(min: Int): ColorRuleImpl {
+            return getSimple(maxRed = min, maxBlue = min, maxGreen = min)
+        }
+
     }
 
 
