@@ -89,6 +89,13 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
+    private suspend fun receiveDailyGift(){
+      val isInSpace= en.isInSpaceStationT.verificationRule(screenBitmap!!)
+
+
+    }
+
+
     private suspend fun executionResults(
         endTask: List<BasicImgTask>, midList: List<ImgTaskImpl1>
     ): Boolean {
