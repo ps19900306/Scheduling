@@ -6,6 +6,7 @@ import androidx.core.graphics.red
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
+import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -119,6 +120,7 @@ class BaseImgProcess(
         GlobalScope.launch(Dispatchers.Default) {
             colorMaps.forEach {
                 if (it.key.isChecked) {
+                    allMaxRange(it.key, it.value)
                     markBoundaryInternal(it.value, true)
                     val result = obtainFeaturePoints(it.value, pointnterval)
                     if (useBackground) addBackground(result)
@@ -127,6 +129,55 @@ class BaseImgProcess(
             }
         }
     }
+
+    private fun allMaxRange(key: FeaturePointKey, list: MutableList<FeatureCoordinatePoint>) {
+        var maxRed = 0
+        var minRed = 255
+        var maxGreen = 0
+        var minGreen = 255
+        var maxBlue = 0
+        var minBlue = 255
+
+        var maxRToG = 0F
+        var minRToG = 255F
+        var maxRToB = 0F
+        var minRToB = 255F
+        var maxGToB = 0F
+        var minGToB = 255F
+
+        list.forEach {
+            maxRed = Math.max(it.red, maxRed)
+            minRed = Math.min(it.red, minRed)
+            maxGreen = Math.max(it.green, maxGreen)
+            minGreen = Math.min(it.green, minGreen)
+            maxBlue = Math.max(it.blue, maxBlue)
+            minBlue = Math.min(it.blue, minBlue)
+
+            maxRToG = Math.max(it.red.toFloat() / it.green.toFloat(), maxRToG)
+            minRToG = Math.min(it.red.toFloat() / it.green.toFloat(), minRToG)
+            maxRToB = Math.max(it.red.toFloat() / it.blue.toFloat(), maxRToB)
+            minRToB = Math.min(it.red.toFloat() / it.blue.toFloat(), minRToB)
+            maxGToB = Math.max(it.green.toFloat() / it.blue.toFloat(), maxGToB)
+            minGToB = Math.min(it.green.toFloat() / it.blue.toFloat(), minGToB)
+        }
+
+        val data = ColorRuleRatioImpl(
+            maxRed,
+            minRed,
+            maxGreen,
+            minGreen,
+            maxBlue,
+            minBlue,
+            maxRToG,
+            minRToG,
+            maxRToB,
+            minRToB,
+            maxGToB,
+            minGToB,
+        )
+        key.colorRuleRatioImpl=data
+    }
+
 
     fun addBackground(result: List<FeatureCoordinatePoint>) {
         for (i in 0 until result.size step result.size / 2) {
@@ -531,14 +582,14 @@ class BaseImgProcess(
             list = colorMaps[brightestKey]?.filter { it.isIdentificationKey }
         }
         if (list.isNullOrEmpty()) {
-         //   Timber.d("没有获取到 getDatumPoint BaseImgProcess NWQ_ 2023/7/8");
+            //   Timber.d("没有获取到 getDatumPoint BaseImgProcess NWQ_ 2023/7/8");
             return null
         }
-      //  Timber.d("${list.size} getDatumPoint BaseImgProcess NWQ_ 2023/7/8");
+        //  Timber.d("${list.size} getDatumPoint BaseImgProcess NWQ_ 2023/7/8");
         val resultList = list.sortedBy { it.x + it.y }
         if (resultList.size > datumPointSize) {
 
-            return resultList.subList(0, datumPointSize )
+            return resultList.subList(0, datumPointSize)
         } else {
 
             return resultList

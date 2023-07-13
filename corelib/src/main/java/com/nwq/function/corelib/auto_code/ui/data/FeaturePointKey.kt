@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
 import timber.log.Timber
 
 /**
@@ -23,12 +24,13 @@ class FeaturePointKey(var colorInt: Int) {
     val blueD = getRange(blue)
 
 
+    var colorRuleRatioImpl: ColorRuleRatioImpl? = null
     private val isDark by lazy {
         val flag = red < 30 && green < 30 && blue < 30
-        if(flag){
-            red=1
-            green=1
-            blue=1
+        if (flag) {
+            red = 1
+            green = 1
+            blue = 1
         }
         flag
     }
