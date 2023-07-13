@@ -17,11 +17,13 @@ open class ImgTaskImpl1(
     iprList: List<IPR>, tag: String, correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 
-    var clickArea: CoordinateArea? = null //如果
+
     var nErrorTolerance: Int = 0 //普通点容错
     var bErrorTolerance: Int = 2 //背景点容错
 
-    override suspend fun verificationRule(bitmap: Bitmap): Boolean {
+    override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
+        if(bitmap == null)
+            return  false
         val result = if (correctModel == null) {
             checkImgTask(
                 bitmap = bitmap,

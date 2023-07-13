@@ -985,7 +985,9 @@ object StarWarEnvironment {
                 CoordinatePoint(154, 524), ColorRuleRatioImpl.getSimple(254, 42, 64)
             )
         )
-        ImgTaskImpl1(pointList, tag, correctPositionModel)
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            clickArea = openGiftMenuArea
+        }
     }
     val openGiftMenuArea by lazy { CoordinateArea(90, 507, 77, 79) }
 
@@ -1038,6 +1040,7 @@ object StarWarEnvironment {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
+    //领取礼物
     val openCollectGiftArea by lazy { CoordinateArea(485, 731, 252, 39) }
     val closeCollectGiftArea by lazy { CoordinateArea(1905,151,57,61)}
 
@@ -1075,9 +1078,10 @@ object StarWarEnvironment {
         ))
         pointList.add(PointRule(CoordinatePoint(1654, 973), ColorRuleRatioUnImpl.getSimple( 275,175,226,146,164,94,
             1.451613F,0.96774197F,2.0930233F,1.3953489F,1.7302326F, 1.1534884F)
-            //red69 green68 blue64
         ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel)
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            clickArea =  CollectChipArea
+        }
     }
     val CollectChipArea by lazy { CoordinateArea(1706,891,221,71)}
     val CloseCollectChipMenuArea by lazy { CoordinateArea(1920,96,62,65)}

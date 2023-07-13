@@ -1,6 +1,7 @@
 package com.nwq.function.corelib.img.task
 
 import android.graphics.Bitmap
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.baseIf.BasicTask
 import com.nwq.function.corelib.img.pcheck.*
 import com.nwq.function.corelib.img.rule.ColorRuleImpl
@@ -15,6 +16,8 @@ import timber.log.Timber
 abstract class ImgTask(
    protected val iprList: List<IPR>,protected val tag: String,protected val correctModel: CorrectPositionModel? = null
 ) : BasicImgTask() {
+
+    var clickArea: CoordinateArea? = null //如果
 
     protected fun checkImgTask(
         bitmap: Bitmap,

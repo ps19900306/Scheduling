@@ -3,6 +3,7 @@ package com.nwq.function.corelib.excuter.star_wars
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Bitmap
 import com.nwq.function.corelib.Constant.doubleClickInterval
+import com.nwq.function.corelib.Constant.fastClickInterval
 import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.Constant.tripleClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
@@ -45,8 +46,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     override fun startWork() {
         GlobalScope.launch(Dispatchers.Default) {
             val bitmap = takeScreenBitmap(doubleClickInterval)
-            if(bitmap.isOrientation())
-            {
+            if (bitmap.isOrientation()) {
                 pressHomeBtn()
                 delay(doubleClickInterval)
             }
@@ -54,34 +54,41 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-   suspend private fun hasIntoGame(bitmap: Bitmap):Boolean{
-     return  (en.isClosePositionMenuT.verificationRule(bitmap) || en.isOpenPositionMenuT.verificationRule(bitmap))
-               &&(en.isInSpaceStationT.verificationRule(bitmap) ||en.isOpenEyeMenuT.verificationRule(bitmap) ||en.isCloseEyeMenuT.verificationRule(bitmap) )
+    suspend private fun hasIntoGame(bitmap: Bitmap?): Boolean {
+        if(bitmap==null)
+            return false
+        return (en.isClosePositionMenuT.verificationRule(bitmap) || en.isOpenPositionMenuT.verificationRule(
+            bitmap
+        ))
+                && (en.isInSpaceStationT.verificationRule(bitmap) || en.isOpenEyeMenuT.verificationRule(
+            bitmap
+        ) || en.isCloseEyeMenuT.verificationRule(bitmap))
     }
 
     //进入游戏的进入逻辑
-    private suspend fun intoGame(){
+    private suspend fun intoGame() {
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreenBitmap(doubleClickInterval)
             if (bitmap.isOrientation()) {
-                if (en.isLoadingGameT.verificationRule(bitmap)){
-                }else if(en.isAnnouncementT.verificationRule(bitmap)){
-                    click(en.isAnnouncementT,en.closeAnnouncementArea.toClickTask())
-                }else if(en.isUpdateGameT.verificationRule(bitmap)){
-                    click(en.isUpdateGameT,en.updateGameArea.toClickTask())
+                if (en.isLoadingGameT.verificationRule(bitmap)) {
+                } else if (en.isAnnouncementT.verificationRule(bitmap)) {
+                    click(en.isAnnouncementT, en.closeAnnouncementArea.toClickTask())
+                } else if (en.isUpdateGameT.verificationRule(bitmap)) {
+                    click(en.isUpdateGameT, en.updateGameArea.toClickTask())
                     delay(tripleClickInterval)
-                }else if(en.isStartGameT.verificationRule(bitmap)){
-                    click(en.isStartGameT,en.isStartGameArea.toClickTask())
-                }else if(en.isSelectRoleT.verificationRule(bitmap)){
-                    click(en.isSelectRoleT,en.selectRoleArea.toClickTask())
-                }else if(en.isOpenBigMenuT.verificationRule(bitmap)){
-                    click(en.isOpenBigMenuT,en.closeBigMenuArea.toClickTask())
-                }else if(hasIntoGame(bitmap)){
+                } else if (en.isStartGameT.verificationRule(bitmap)) {
+                    click(en.isStartGameT, en.isStartGameArea.toClickTask())
+                } else if (en.isSelectRoleT.verificationRule(bitmap)) {
+                    click(en.isSelectRoleT, en.selectRoleArea.toClickTask())
+                } else if (en.isOpenBigMenuT.verificationRule(bitmap)) {
+                    click(en.isOpenBigMenuT, en.closeBigMenuArea.toClickTask())
+                } else if (hasIntoGame(bitmap)) {
+                    receiveDailyGift()
                     flag = false
                 }
-            }else {//这里没有横屏所以
+            } else {//这里没有横屏所以
                 click(getAppArea().toClickTask())
                 delay(tripleClickInterval)
                 count--
@@ -89,9 +96,45 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-    private suspend fun receiveDailyGift(){
-      val isInSpace= en.isInSpaceStationT.verificationRule(screenBitmap!!)
+    private suspend fun receiveDailyGift() {
+        if (takeScreen(fastClickInterval) || !runSwitch) {
+            runSwitch = false
+            return
+        }
+        val hasTips = en.isGiftMenuTipsT.verificationRule(screenBitmap)
+        val isInSpace = en.isInSpaceStationT.verificationRule(screenBitmap)
 
+        if (hasTips) {
+            waitImgNotTask(en.isGiftMenuTipsT)
+            if (waitImgTask(en.isCanCollectGiftT)) {
+                click(en.openCollectGiftArea.toClickTask())
+                if (isInSpace && en.isCollectChipT.verificationRule(screenBitmap)) {
+                    delay(normalClickInterval)
+                    click(en.collectChipMenuArea.toClickTask())
+                    waitImgTask(en.isCollectChipMenuT)
+                    delay(normalClickInterval)
+                    click(en.CloseCollectChipMenuArea.toClickTask())
+                } else {
+                    delay(normalClickInterval)
+                    click(en.closeCollectGiftArea.toClickTask())
+                }
+            }
+
+            var flag = true
+            var count = 5
+            while (flag && count > 0 && runSwitch) {
+                if (!takeScreen(doubleClickInterval)||!runSwitch) {
+                    runSwitch = false
+                    return
+                }
+                if (hasIntoGame(screenBitmap)) {
+                    flag = false
+                }else{
+                    pressBackBtn()
+                }
+                count--
+            }
+        }
 
     }
 

@@ -54,7 +54,50 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
                 return false
             }
             if (task.verificationRule(screenBitmap!!)) {
+                task?.clickArea?.toClickTask()?.let {
+                    click(it)
+                }
                 return true
+            }
+            count--
+        }
+        return false
+    }
+
+    protected suspend fun waitImgTask2(task: ImgTask, times: Int = 3): Boolean {
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(Constant.normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (task.verificationRule(screenBitmap!!)) {
+                return true
+            }else{
+                task?.clickArea?.toClickTask()?.let {
+                    click(it)
+                }
+            }
+            count--
+        }
+        return false
+    }
+
+    protected suspend fun waitImgNotTask(task: ImgTask, times: Int = 3): Boolean {
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(Constant.doubleClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (task.verificationRule(screenBitmap!!)) {
+                return true
+            }else{
+                task?.clickArea?.toClickTask()?.let {
+                    click(it)
+                }
             }
             count--
         }

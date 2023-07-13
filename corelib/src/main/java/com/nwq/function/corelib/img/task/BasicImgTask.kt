@@ -11,5 +11,5 @@ Function description:
 
 abstract class BasicImgTask(): BasicTask {
     //验证是否符合规则
-    abstract suspend fun verificationRule(bitmap: Bitmap): Boolean
+    abstract suspend fun verificationRule(bitmap: Bitmap?): Boolean
 }
