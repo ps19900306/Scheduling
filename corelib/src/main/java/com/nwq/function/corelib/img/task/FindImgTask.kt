@@ -66,7 +66,9 @@ open class FindImgTask(
         }
     }
 
-    override suspend fun verificationRule(bitmap: Bitmap): Boolean {
+    override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
+        if(bitmap==null)
+            return false
         return findImgByColor(bitmap, findArea)
     }
 
@@ -112,6 +114,8 @@ open class FindImgTask(
             CoordinatePoint(area.x, area.y)
         }
     }
+
+
 
 
 }

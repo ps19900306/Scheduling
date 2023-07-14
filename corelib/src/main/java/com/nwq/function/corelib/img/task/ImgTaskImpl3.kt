@@ -14,7 +14,7 @@ open class ImgTaskImpl3(
     iprList: List<IPR>, tag: String, correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 
-    override suspend fun verificationRule(bitmap: Bitmap): Boolean {
+    override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         TODO("Not yet implemented")
     }
 

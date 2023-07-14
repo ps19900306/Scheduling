@@ -116,12 +116,13 @@ class BaseImgProcess(
         }
     }
 
-    fun autoExc(useBackground: Boolean, pointnterval: Int) {
+    fun autoExc(useBackground: Boolean, pointnterval: Int,allPointKey:Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
-            colorMaps.forEach {
+            colorMaps.forEach { it ->
                 if (it.key.isChecked) {
-                    allMaxRange(it.key, it.value)
                     markBoundaryInternal(it.value, true)
+                    if(allPointKey)
+                    allMaxRange(it.key, it.value.filter { it.isBoundary() })
                     val result = obtainFeaturePoints(it.value, pointnterval)
                     if (useBackground) addBackground(result)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
@@ -130,7 +131,7 @@ class BaseImgProcess(
         }
     }
 
-    private fun allMaxRange(key: FeaturePointKey, list: MutableList<FeatureCoordinatePoint>) {
+    private fun allMaxRange(key: FeaturePointKey, list: List<FeatureCoordinatePoint>) {
         var maxRed = 0
         var minRed = 255
         var maxGreen = 0

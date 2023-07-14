@@ -4,10 +4,9 @@
     android:layout_height="wrap_content"
     android:clickable="true">
 
-    <TextView
+    <EditText
         android:id="@+id/edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="@color/black"
-        android:text="@string/auto_exc" />
+        android:textColor="@color/black" />
 </FrameLayout>
