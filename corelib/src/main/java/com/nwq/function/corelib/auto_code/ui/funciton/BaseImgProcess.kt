@@ -122,7 +122,9 @@ class BaseImgProcess(
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value, true)
                     if(allPointKey)
-                    allMaxRange(it.key, it.value.filter { it.isBoundary() })
+                    {
+                        allMaxRange(it.key, it.value.filter { it.isBoundary() })
+                    }
                     val result = obtainFeaturePoints(it.value, pointnterval)
                     if (useBackground) addBackground(result)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
@@ -162,19 +164,21 @@ class BaseImgProcess(
             minGToB = Math.min(it.green.toFloat() / it.blue.toFloat(), minGToB)
         }
 
+        val maxD = 1.05
+        val minD = 0.9
         val data = ColorRuleRatioImpl(
-            maxRed,
-            minRed,
-            maxGreen,
-            minGreen,
-            maxBlue,
-            minBlue,
-            maxRToG,
-            minRToG,
-            maxRToB,
-            minRToB,
-            maxGToB,
-            minGToB,
+            (maxRed*maxD).toInt(),
+            (minRed*minD).toInt(),
+            (maxGreen*maxD).toInt(),
+            (minGreen*minD).toInt(),
+            (maxBlue*maxD).toInt(),
+            (minBlue*minD).toInt(),
+            (maxRToG*maxD).toFloat(),
+            (minRToG*minD).toFloat(),
+            (maxRToB*maxD).toFloat(),
+            (minRToB*minD).toFloat(),
+            (maxGToB*maxD).toFloat(),
+            (minGToB*minD).toFloat(),
         )
         key.colorRuleRatioImpl=data
     }
@@ -368,7 +372,7 @@ class BaseImgProcess(
     //对相同的特征色值的 根据连接度对组进行分块
     private fun groupBlock(//这里是根据起始点进行眼神
         startPoint: FeatureCoordinatePoint,
-        keyList: List<FeatureCoordinatePoint>,
+        keyList: List<FeatureCoordinatePoint>, //这个是已经作为关键点添加了的
         pickingInterval: Int
     ): List<FeatureCoordinatePoint> {
 
@@ -406,9 +410,9 @@ class BaseImgProcess(
                     if (keyList.find {
                             (Math.abs(startPoint!!.x - it.x) + Math.abs(
                                 startPoint!!.y - it.y
-                            ) < minPointInterval)
+                            ) < (pickingInterval/2 +2))
                         } == null) {
-                        getPointSurround(startPoint, 5, true, true) { nextPoint ->
+                        getPointSurround(startPoint, (pickingInterval/2 +1), true, true) { nextPoint ->
                             if (startPoint!!.mFeaturePointKey == nextPoint.mFeaturePointKey) {
                                 nextPoint.isAdd = true
                             }

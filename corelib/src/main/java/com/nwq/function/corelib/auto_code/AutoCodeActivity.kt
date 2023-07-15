@@ -151,7 +151,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                        StarWarEnvironment.isOpenBigMenuT.verificationRule(mBitmap)
+                      //  StarWarEnvironment.isOpenTask.verificationRule(mBitmap)
                     }
                     bind.indexLayout.root.isVisible = true
 //                    GlobalScope.launch(Dispatchers.Default) {

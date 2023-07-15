@@ -1085,4 +1085,111 @@ object StarWarEnvironment {
     }
     val CollectChipArea by lazy { CoordinateArea(1706,891,221,71)}
     val CloseCollectChipMenuArea by lazy { CoordinateArea(1920,96,62,65)}
+
+
+    //打开了机遇大菜单
+    val isOpenJiyuBigMenuTask by lazy {
+        val tag = "isOpenJiyuBigMenu"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 187,120,199,132,197,131,
+            0.9944445F,0.79444444F,1.0093923F,0.79444444F,1.0832279F, 0.89440995F)
+        val ruleRatio2 =  ColorRuleRatioUnImpl.getSimple( 187,120,199,132,197,131,
+            0.9944445F,0.79444444F,1.0093923F,0.79444444F,1.0832279F, 0.89440995F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(275, 38), ruleRatio1
+            //red153 green172 blue168
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(282, 64), ruleRatio1
+            //red171 green186 blue183
+        ))
+        pointList.add(PointRule(CoordinatePoint(305, 70), ruleRatio1
+            //red173 green188 blue185
+        ))
+        pointList.add(PointRule(CoordinatePoint(254, 71), ruleRatio1
+            //red173 green188 blue183
+        ))
+        pointList.add(PointRule(CoordinatePoint(266, 71), ruleRatio1
+            //red173 green188 blue185
+        ))
+        pointList.add(PointRule(CoordinatePoint(285, 81), ruleRatio1
+            //red183 green195 blue191
+        ))
+        pointList.add(PointRule(CoordinatePoint(275, 38), ruleRatio1
+            //red153 green172 blue168
+        ))
+        pointList.add(PointRule(CoordinatePoint(291, 42), ruleRatio1
+            //red153 green169 blue168
+        ))
+        pointList.add(PointRule(CoordinatePoint(274, 50), ruleRatio1
+            //red160 green179 blue175
+        ))
+        pointList.add(PointRule(CoordinatePoint(287, 51), ruleRatio1
+            //red158 green177 blue173
+        ))
+        pointList.add(PointRule(CoordinatePoint(265, 55), ruleRatio1
+            //red163 green179 blue176
+        ))
+        pointList.add(PointRule(CoordinatePoint(297, 56), ruleRatio1
+            //red165 green181 blue178
+        ))
+        pointList.add(PointRule(CoordinatePoint(262, 52), ruleRatio2
+            //red27 green31 blue34
+        ))
+        pointList.add(PointRule(CoordinatePoint(302, 71), ruleRatio2
+            //red33 green38 blue41
+        ))
+        pointList.add(PointRule(CoordinatePoint(287, 83), ruleRatio2
+            //red36 green42 blue42
+        ))
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
+
+
+    val item1IsNormalTask by lazy {
+        val tag = "item1IsNormal"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 126,74,141,88,140,88,
+            0.94029856F,0.72692305F,0.95307696F,0.72692305F,1.0881817F, 0.9F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(611, 319), ColorRuleRatioImpl.getSimple(45,65,64)))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(628, 320), ruleRatio1
+            //red118 green132 blue132
+        ))
+        pointList.add(PointRule(CoordinatePoint(614, 322), ruleRatio1
+            //red123 green137 blue137
+        ))
+        pointList.add(PointRule(CoordinatePoint(642, 323), ruleRatio1
+            //red125 green137 blue137
+        ))
+        pointList.add(PointRule(CoordinatePoint(627, 344), ruleRatio1
+            //red123 green135 blue135
+        ))
+        pointList.add(PointRule(CoordinatePoint(641, 356), ruleRatio1
+            //red123 green139 blue138
+        ))
+        pointList.add(PointRule(CoordinatePoint(610, 332), ruleRatio1
+            //red110 green126 blue125
+        ))
+        pointList.add(PointRule(CoordinatePoint(647, 333), ruleRatio1
+            //red115 green131 blue130
+        ))
+        pointList.add(PointRule(CoordinatePoint(624, 351), ruleRatio1
+            //red92 green111 blue109
+        ))
+        pointList.add(PointRule(CoordinatePoint(620, 359), ruleRatio1
+            //red116 green132 blue131
+        ))
+        pointList.add(PointRule(CoordinatePoint(611, 319), ColorRuleRatioImpl.getSimple(45,65,64)))
+        pointList.add(PointRule(CoordinatePoint(644, 330), ColorRuleRatioImpl.getSimple(54,74,73)))
+        pointList.add(PointRule(CoordinatePoint(618, 356), ColorRuleRatioImpl.getSimple(54,72,72)))
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
+
+
+
+
 }

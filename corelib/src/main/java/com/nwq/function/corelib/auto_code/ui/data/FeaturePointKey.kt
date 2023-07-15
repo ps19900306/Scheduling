@@ -37,13 +37,13 @@ class FeaturePointKey(var colorInt: Int) {
 
     fun getRange(bInt: Int): Int {
         return if (bInt > 200) {
-            50
+            20
         } else if (bInt > 150) {
-            40
-        } else if (bInt > 110) {
-            35
-        } else if (bInt > 80) {
             30
+        } else if (bInt > 110) {
+            25
+        } else if (bInt > 80) {
+            20
         } else {
             15
         }
@@ -61,7 +61,7 @@ class FeaturePointKey(var colorInt: Int) {
     var rToB = red.toFloat() / blue.toFloat()
     var gToB = green.toFloat() / blue.toFloat()
 
-    val rangRatio = 0.2F
+    val rangRatio = 0.15F
     var maxRToG = rToG * (1 + rangRatio)
     var minRToG = rToG * (1 - rangRatio)
     var maxRToB = rToB * (1 + rangRatio)
