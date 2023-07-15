@@ -2,7 +2,9 @@ package com.nwq.function.corelib.img.task
 
 import android.graphics.Bitmap
 import com.nwq.function.corelib.area.CoordinateArea
+import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.img.pcheck.IPR
+import com.nwq.function.corelib.img.pcheck.PointRule
 import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -66,4 +68,19 @@ open class ImgTaskImpl1(
         correctModel?.clearCorrect()
     }
 
+
+
+    //根据偏差值构造新的找寻任务
+    fun copyOffset(tag:String,offsetX:Int,offsetY:Int): ImgTaskImpl1 {
+        val cList =  mutableListOf<PointRule>()
+        correctModel?.pointList?.let {
+            cList.addAll(it)
+        }
+        val newCorrectModel = CorrectPositionModel(cList,tag,correctModel?.xRange?:3,correctModel?.yRange?:3,
+            correctModel?.everyRevalidation?:false)
+        newCorrectModel.supplementalValueX = offsetX
+        newCorrectModel.supplementalValueY = offsetY
+        val list = mutableListOf <IPR>()
+        return ImgTaskImpl1(iprList,tag,newCorrectModel)
+    }
 }

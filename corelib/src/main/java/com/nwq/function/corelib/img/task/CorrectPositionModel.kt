@@ -8,24 +8,30 @@ import com.nwq.function.corelib.utils.sp.SP
 import com.nwq.function.corelib.utils.sp.SPRepoPrefix
 
 open class CorrectPositionModel(
-    val pointList: List<PointRule>,
-    val tag: String,
-    val xRange: Int = 3, //初始图片的寻找范围， 必须有一个大于零
+    val pointList: List<PointRule>, val tag: String, val xRange: Int = 3, //初始图片的寻找范围， 必须有一个大于零
     val yRange: Int = 3, //初始图片的寻找范围，必须有一个大于零
     var everyRevalidation: Boolean = !(xRange == 0 && yRange == 0) // 每次都重复验证
 ) {
 
     constructor(pointList: List<PointRule>, tag: String, range: Int) : this(
-        pointList,
-        tag,
-        range,
-        range
+        pointList, tag, range, range
     )
+
+    //这个是补充值 当一行有多个属性时候使用
+    var supplementalValueX = 0
+    var supplementalValueY = 0
 
     var offsetX: Int = 0 //发现图片成功的时候X偏差值
     var offsetY: Int = 0 //发现图片成功的时候Y偏差值
     protected var hasCorrect = false
 
+    fun getOffsetXSupple(): Int {
+        return offsetX + supplementalValueX
+    }
+
+    fun getOffsetYSupple(): Int {
+        return offsetY + supplementalValueY
+    }
 
     init {
         if (xRange == 0 && yRange == 0) {
@@ -65,7 +71,7 @@ open class CorrectPositionModel(
     //这个next可能会被多次调用
     fun check(bitmap: Bitmap, next: (ofsX: Int, ofsY: Int, end: Boolean) -> Boolean) {
         if (hasCorrect && !everyRevalidation) {
-            next(offsetX, offsetY, true)
+            next(getOffsetXSupple(), getOffsetYSupple(), true)
         } else {
             if (xRange > 0 || yRange > 0) {
                 val width = if (xRange > 0) {
@@ -83,13 +89,7 @@ open class CorrectPositionModel(
                 val startY = pointList[0].getCoordinatePoint().yI - yRange
                 val pixels = IntArray(size)
                 bitmap.getPixels(
-                    pixels,
-                    0,
-                    width,
-                    startX,
-                    startY,
-                    width,
-                    height
+                    pixels, 0, width, startX+supplementalValueX, startY+supplementalValueY, width, height
                 )
                 var hasFind = false
                 pixels.forEachIndexed { index, colorInt ->
@@ -97,10 +97,8 @@ open class CorrectPositionModel(
                         var ofsX = 0
                         var ofsY = 0
                         if (width > 1 && height > 1) {
-                            ofsX =
-                                startX + index % width - pointList[0].getCoordinatePoint().xI
-                            ofsY =
-                                startY + index / width - pointList[0].getCoordinatePoint().yI
+                            ofsX = startX + index % width - pointList[0].getCoordinatePoint().xI
+                            ofsY = startY + index / width - pointList[0].getCoordinatePoint().yI
                         } else if (width > 1 && height == 1) {
                             ofsX = startX + index - pointList[0].getCoordinatePoint().xI
                             ofsY = 0
@@ -114,25 +112,25 @@ open class CorrectPositionModel(
                             //找不符合规则的点 只要有则去除
                             val hasFailedPoint = pointList.find {
                                 val colorInt =
-                                    bitmap.getPixel(it.point.xI + ofsX, it.point.yI + ofsY)
+                                    bitmap.getPixel(it.point.xI + ofsX+supplementalValueX, it.point.yI + ofsY+supplementalValueY)
                                 !it.rule.optInt(colorInt)
                             }
                             if (hasFailedPoint == null) {
-                                if (next.invoke(ofsX, ofsY, false)) {
+                                if (next.invoke(ofsX+supplementalValueX, ofsY+supplementalValueY, false)) {
                                     hasFind = true
                                     correctCoordinate(ofsX, ofsY)
                                     return
                                 }
                             }
                         } else {
-                            if (next.invoke(ofsX, ofsY, false)) {
+                            if (next.invoke(ofsX+supplementalValueX, ofsY+supplementalValueY, false)) {
                                 correctCoordinate(ofsX, ofsY)
                                 return
                             }
                         }
                     }
                 }
-                next.invoke(0, 0, true)
+                next.invoke(0+supplementalValueX, 0+supplementalValueY, true)
             }
         }
     }

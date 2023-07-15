@@ -50,10 +50,10 @@ abstract class ImgTask(
     }
 
     fun getOffsetX(): Int {
-        return correctModel?.offsetX ?: 0
+        return correctModel?.getOffsetXSupple()?:0
     }
 
     fun getOffsetY(): Int {
-        return correctModel?.offsetY ?: 0
+        return correctModel?.getOffsetYSupple()?:0
     }
 }

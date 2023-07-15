@@ -401,7 +401,7 @@ class BaseImgProcess(
             oldList.addAll(newList)
         }
 
-
+        if(step>=pickingInterval/2 +1) // 单独的孤点这里不做处理
         for (i in 0..step step pickingInterval) {
             blockList.filter { it.sequenceNumber == i }.let { stepList ->
                 var startPoint = stepList.find { !it.isAdd }

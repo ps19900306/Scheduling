@@ -1146,7 +1146,8 @@ object StarWarEnvironment {
     }
 
 
-
+    //
+    private val itemOffset = 465  //X 条目X轴位移
     val item1IsNormalTask by lazy {
         val tag = "item1IsNormal"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 126,74,141,88,140,88,
@@ -1187,9 +1188,6 @@ object StarWarEnvironment {
         pointList.add(PointRule(CoordinatePoint(618, 356), ColorRuleRatioImpl.getSimple(54,72,72)))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-
-
-
 
 
 }
