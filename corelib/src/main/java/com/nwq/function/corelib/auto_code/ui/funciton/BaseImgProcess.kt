@@ -3,6 +3,7 @@ package com.nwq.function.corelib.auto_code.ui.funciton
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
@@ -28,12 +29,15 @@ class BaseImgProcess(
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
     private val MIN_PICKING_INTERVAL = 10 //这里是间隔多少个点进行一次取值
     private val minPointInterval = 8 //最小取点间隔
+    var minStep =2
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
     private lateinit var featureArray: Array<Array<FeatureCoordinatePoint>>
+
+
 
 
     //开始前必须调用此方法，且在非主线程调用，耗时
@@ -116,8 +120,14 @@ class BaseImgProcess(
         }
     }
 
-    fun autoExc(useBackground: Boolean, pointnterval: Int,allPointKey:Boolean) {
+    fun autoExc(useBackground: Boolean, pointnterval: Int,allPointKey:Boolean,useInverseValue:Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
+            //增加非取反的背景颜色补充
+            colorMaps[darkestKey]?.let {
+                if(useBackground && !useInverseValue){
+                    allMaxRange(darkestKey,it)
+                }
+            }
             colorMaps.forEach { it ->
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value, true)
@@ -129,6 +139,7 @@ class BaseImgProcess(
                     if (useBackground) addBackground(result)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
                 }
+
             }
         }
     }
@@ -185,16 +196,23 @@ class BaseImgProcess(
 
 
     fun addBackground(result: List<FeatureCoordinatePoint>) {
+
         for (i in 0 until result.size step result.size / 2) {
             result.getOrNull(i)?.let { point ->
-                getPointSurround(point, 3, true, false) { nextPoint ->
-                    if (nextPoint.mFeaturePointKey == darkestKey) {
-                        nextPoint.isIdentificationKey = true
-                        nextPoint.mDirectorPointKey = point.mFeaturePointKey
-                        true
-                    } else {
-                        false
+                var flag = true
+                var rang = 3
+                while (flag && rang <10){
+                    getPointSurround(point, rang, true, false) { nextPoint ->
+                        if (nextPoint.mFeaturePointKey == darkestKey) {
+                            nextPoint.isIdentificationKey = true
+                            nextPoint.mDirectorPointKey = point.mFeaturePointKey
+                            flag = false
+                            true
+                        } else {
+                            false
+                        }
                     }
+                    rang ++
                 }
             }
         }
@@ -361,11 +379,7 @@ class BaseImgProcess(
             }
             result
         }
-        if (result.size > 10) {
-
-        }
         result.forEach { it.isIdentificationKey = true }
-
         return result
     }
 
@@ -401,7 +415,8 @@ class BaseImgProcess(
             oldList.addAll(newList)
         }
 
-        if(step>=pickingInterval/2 +1) // 单独的孤点这里不做处理
+        // 单独的孤点这里不做处理
+        if(step>=minStep)
         for (i in 0..step step pickingInterval) {
             blockList.filter { it.sequenceNumber == i }.let { stepList ->
                 var startPoint = stepList.find { !it.isAdd }
@@ -410,9 +425,9 @@ class BaseImgProcess(
                     if (keyList.find {
                             (Math.abs(startPoint!!.x - it.x) + Math.abs(
                                 startPoint!!.y - it.y
-                            ) < (pickingInterval/2 +2))
+                            ) < ( Math.min(pickingInterval/2 +2,8)  ))
                         } == null) {
-                        getPointSurround(startPoint, (pickingInterval/2 +1), true, true) { nextPoint ->
+                        getPointSurround(startPoint, Math.min(pickingInterval/2 +1,5) , true, true) { nextPoint ->
                             if (startPoint!!.mFeaturePointKey == nextPoint.mFeaturePointKey) {
                                 nextPoint.isAdd = true
                             }
@@ -601,7 +616,7 @@ class BaseImgProcess(
         }
     }
 
-    fun getKeyPoint(): List<FeatureCoordinatePoint> {
+    fun getKeyPoint(): MutableList<FeatureCoordinatePoint> {
         val result = mutableListOf<FeatureCoordinatePoint>()
 
         featureKeyList.filter { it.isChecked }.forEach { baseKey ->

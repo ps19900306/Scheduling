@@ -28,8 +28,6 @@ import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFuncti
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment
-import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment.topLockTargetList
-import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment.topLockTargetList2
 import com.nwq.function.corelib.utils.singleClick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -153,12 +151,13 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                        topLockTargetList2.forEach {
-                            it.verificationRule(mBitmap)
-                        }
-                        topLockTargetList.forEach {
-                            it.verificationRule(mBitmap)
-                        }
+//                        StarWarEnvironment.topLockTargetList2.forEach {
+//                            it.verificationRule(mBitmap)
+//                        }
+//                        StarWarEnvironment.topLockTargetList.forEach {
+//                            it.verificationRule(mBitmap)
+//                        }
+                        StarWarEnvironment.isCanLockTask.verificationRule(mBitmap)
                     }
                     bind.indexLayout.root.isVisible = true
 //                    GlobalScope.launch(Dispatchers.Default) {
@@ -273,7 +272,9 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                             mFunctionBlock?.showView()
                             nowMode = FUNCTION_MODE
                         }else{
-                            onBackPressed()
+                            nowMode = NORMAL_MODE
+                            bind.indexLayout.root.isVisible = true
+                            bind.imgFeatureLayout.root.isGone = true
                         }
                     }
                 }

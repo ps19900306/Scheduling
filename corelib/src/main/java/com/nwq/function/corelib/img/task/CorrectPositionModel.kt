@@ -73,6 +73,10 @@ open class CorrectPositionModel(
         if (hasCorrect && !everyRevalidation) {
             next(getOffsetXSupple(), getOffsetYSupple(), true)
         } else {
+            //如果上次有对应的位置，则这里修正位置
+            if(hasCorrect && next(getOffsetXSupple(), getOffsetYSupple(), false)){
+                    return
+            }
             if (xRange > 0 || yRange > 0) {
                 val width = if (xRange > 0) {
                     xRange * 2 + 1
