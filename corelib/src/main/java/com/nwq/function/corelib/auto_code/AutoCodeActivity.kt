@@ -28,6 +28,8 @@ import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFuncti
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment
+import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment.topLockTargetList
+import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment.topLockTargetList2
 import com.nwq.function.corelib.utils.singleClick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -151,7 +153,12 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                      //  StarWarEnvironment.isOpenTask.verificationRule(mBitmap)
+                        topLockTargetList2.forEach {
+                            it.verificationRule(mBitmap)
+                        }
+                        topLockTargetList.forEach {
+                            it.verificationRule(mBitmap)
+                        }
                     }
                     bind.indexLayout.root.isVisible = true
 //                    GlobalScope.launch(Dispatchers.Default) {
@@ -260,10 +267,14 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 OPT_AREA -> {
                     if (bind.previewView.areaList.isNotEmpty()) {
-                        mFunctionBlock?.optArea(cmdInt, *bind.previewView.areaList.toTypedArray())
-                        mFunctionBlock?.showView()
                         bind.okTv.isGone = true
-                        nowMode = FUNCTION_MODE
+                        if(mFunctionBlock!=null){
+                            mFunctionBlock?.optArea(cmdInt, *bind.previewView.areaList.toTypedArray())
+                            mFunctionBlock?.showView()
+                            nowMode = FUNCTION_MODE
+                        }else{
+                            onBackPressed()
+                        }
                     }
                 }
             }
@@ -310,6 +321,10 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
 
     override fun getClipboardManager(): ClipboardManager {
       return  manager
+    }
+
+    override fun fullScreen() {
+        bind.indexLayout.fullButton.callOnClick()
     }
 
 

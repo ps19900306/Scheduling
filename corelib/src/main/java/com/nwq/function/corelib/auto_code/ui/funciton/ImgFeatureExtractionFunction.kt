@@ -24,6 +24,7 @@ import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_AREA
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_FEATURE_KEY
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_POINT
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_POINT
+import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.FILTER_OUT_AREAS
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.FIND_IMAGE_AREA
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
 import com.nwq.function.corelib.img.pcheck.IPR
@@ -83,27 +84,34 @@ class ImgFeatureExtractionFunction(
     private var showBoundary = false
     private var useBackground = true
     private var pointnterval: Int = 0
+    private var minStep: Int = 0
     private var useInverseValue = false //true 背景点取相对颜色的反值， false 使用自己的颜色特性
     private var allPointKey = true//true 对全部的点规则生成特诊该规则
+    private var sortByX = false//true 对全部的点规则生成特诊该规则
     private var findImageArea: CoordinateArea? = null
+    private var filterOutArea: CoordinateArea? = null
     private val functionItemList by lazy {
         mutableListOf(
+            FunctionItemInfo(R.string.auto_exc, BUTTON_TYPE),
+            FunctionItemInfo(R.string.auto_code, BUTTON_TYPE),
+            FunctionItemInfo(R.string.find_the_image_area, BUTTON_TYPE),
+            FunctionItemInfo(R.string.filter_out_areas, BUTTON_TYPE),//这个还有问题
+            FunctionItemInfo(R.string.merge, BUTTON_TYPE),
+            FunctionItemInfo(R.string.background, BUTTON_TYPE),
+            FunctionItemInfo(R.string.all_point_key, CHECK_TYPE, allPointKey),
+            FunctionItemInfo(R.string.useBackground, CHECK_TYPE, useBackground),
+            FunctionItemInfo(R.string.inverse_value, CHECK_TYPE, useInverseValue),
+            FunctionItemInfo(R.string.sort_by_x, CHECK_TYPE, useInverseValue),
+            FunctionItemInfo(R.string.feature, CHECK_TYPE, showFeature),
+            FunctionItemInfo(R.string.boundary, CHECK_TYPE, showBoundary),
+            FunctionItemInfo(R.string.take_point_interval, EDIT_TEXT_TYPE),
+            FunctionItemInfo(R.string.mini_steps, EDIT_TEXT_TYPE),
             FunctionItemInfo(R.string.add, BUTTON_TYPE),
             FunctionItemInfo(R.string.delete, BUTTON_TYPE),
             FunctionItemInfo(R.string.add_point, BUTTON_TYPE),
             FunctionItemInfo(R.string.delete_point, BUTTON_TYPE),
-            FunctionItemInfo(R.string.auto_exc, BUTTON_TYPE),
-            FunctionItemInfo(R.string.find_the_image_area, BUTTON_TYPE),
-            FunctionItemInfo(R.string.auto_code, BUTTON_TYPE),
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
-            FunctionItemInfo(R.string.merge, BUTTON_TYPE),
-            FunctionItemInfo(R.string.background, BUTTON_TYPE),
-            FunctionItemInfo(R.string.all_point_key, CHECK_TYPE,allPointKey),
-            FunctionItemInfo(R.string.useBackground, CHECK_TYPE, useBackground),
-            FunctionItemInfo(R.string.inverse_value, CHECK_TYPE, useInverseValue),
-            FunctionItemInfo(R.string.feature, CHECK_TYPE, showFeature),
-            FunctionItemInfo(R.string.boundary, CHECK_TYPE, showBoundary),
-            FunctionItemInfo(R.string.take_point_interval, EDIT_TEXT_TYPE),
+            FunctionItemInfo(R.string.full_screen, BUTTON_TYPE),
         )
     }
 
@@ -122,6 +130,11 @@ class ImgFeatureExtractionFunction(
             when (i) {
                 R.string.take_point_interval -> {
                     pointnterval = S.toIntOrNull() ?: 0
+                }
+                R.string.mini_steps -> {
+                    minStep = S.toIntOrNull() ?: 0
+                    if(minStep>0)
+                    mBaseImgProcess.minStep =minStep
                 }
             }
         }
@@ -145,15 +158,25 @@ class ImgFeatureExtractionFunction(
                     mOptLister.optPoint(DELETE_POINT)
                 }
                 R.string.auto_exc -> {
-                    mBaseImgProcess.autoExc(useBackground, pointnterval, allPointKey)
+                    mBaseImgProcess.autoExc(
+                        useBackground, pointnterval, allPointKey, useInverseValue
+                    )
+                }
+                R.string.auto_code -> {
+                    generateCode()
+                    val list = mBaseImgProcess.getPreview(showFeature, showBoundary, useBackground)
+                    mOptLister.showPoint(list.map { CoordinatePoint(it.x + startX, it.y + startY) })
                 }
                 R.string.find_the_image_area -> {
                     mOptLister.requestArea(FIND_IMAGE_AREA)
                 }
-
-                R.string.auto_code -> {
-                    generateCode()
+                R.string.filter_out_areas -> {
+                    mOptLister.requestArea(FILTER_OUT_AREAS)
                 }
+                R.string.full_screen->{
+                    mOptLister.fullScreen()
+                }
+
                 R.string.preview -> {
                     val list = mBaseImgProcess.getPreview(showFeature, showBoundary, useBackground)
                     mOptLister.showPoint(list.map { CoordinatePoint(it.x + startX, it.y + startY) })
@@ -172,6 +195,11 @@ class ImgFeatureExtractionFunction(
                 R.string.inverse_value -> {
                     data.isCheck = !data.isCheck
                     useInverseValue = data.isCheck
+                    mFunctionItemAdapter.notifyItemChanged(position)
+                }
+                R.string.sort_by_x-> {
+                    data.isCheck = !data.isCheck
+                    sortByX = data.isCheck
                     mFunctionItemAdapter.notifyItemChanged(position)
                 }
                 R.string.all_point_key -> {
@@ -206,7 +234,6 @@ class ImgFeatureExtractionFunction(
                 binding.feRecycler.adapter = mFeatureKeyAdapter
             }
         }
-
     }
 
 
@@ -232,6 +259,9 @@ class ImgFeatureExtractionFunction(
         when (cmd) {
             FIND_IMAGE_AREA -> {
                 findImageArea = area.getOrNull(0)
+            }
+            FILTER_OUT_AREAS -> {
+                filterOutArea = area.getOrNull(0)
             }
         }
     }
@@ -263,6 +293,9 @@ class ImgFeatureExtractionFunction(
         }
     }
 
+    private fun removeArea(area: CoordinateArea) {
+
+    }
 
     override fun generateCode() {
         val codeStr = if (findImageArea == null) {
@@ -311,6 +344,26 @@ class ImgFeatureExtractionFunction(
     private fun builderImgTaskImpl1(): String {
         val datums = mBaseImgProcess.getDatumPoint(1)//用于找开始的点
         val points = mBaseImgProcess.getKeyPoint()
+//        filterOutArea?.let { are->
+//          val iterator= points.iterator()
+//           while (iterator.hasNext()){
+//               val item = iterator.next()
+//               val x= item.x + startX
+//               val y= item.y + startY
+//               if(x in are.x .. are.x+with && y in are.y .. are.y + height)
+//               {
+//                   iterator.remove()
+//               }
+//           }
+//        }
+        if(sortByX){
+            val tempLIST=   points.sortedBy {
+                it.x }
+            points.clear()
+            points.addAll(tempLIST)
+        }
+
+
         tempMap.clear()
         tempMap2.clear()
         //这里进行代码生成
@@ -321,8 +374,7 @@ class ImgFeatureExtractionFunction(
         var number = 0
         points.forEach {
             if (tempMap[it.mFeaturePointKey!!] == null) {
-                if(it.mFeaturePointKey?.colorRuleRatioImpl != null )
-                {
+                if (it.mFeaturePointKey?.colorRuleRatioImpl != null) {
                     val oKey = it.mFeaturePointKey!!.colorRuleRatioImpl!!
                     number++
                     val tempStr =
@@ -340,7 +392,7 @@ class ImgFeatureExtractionFunction(
 //                }
             }
 
-            if (useInverseValue && tempMap2[it.mFeaturePointKey!!] == null && it.mFeaturePointKey?.isChecked?:false) {
+            if (useInverseValue && tempMap2[it.mFeaturePointKey!!] == null && it.mFeaturePointKey?.isChecked ?: false) {
                 if (it.mFeaturePointKey?.colorRuleRatioImpl != null) {
                     val oKey = it.mFeaturePointKey!!.colorRuleRatioImpl!!
                     number++
@@ -391,13 +443,11 @@ class ImgFeatureExtractionFunction(
             if (mDirectorPointKey?.colorRuleRatioImpl != null) {
                 val oKey = mDirectorPointKey!!.colorRuleRatioImpl!!
                 (tempMap2[mDirectorPointKey!!]
-                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)")) +
-                        "\n //red$red green$green blue$blue \n"
+                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)")) + "\n //red$red green$green blue$blue \n"
             } else {
                 val oKey = mDirectorPointKey!!
                 (tempMap2[mDirectorPointKey!!]
-                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F)")) +
-                            "\n //red$red green$green blue$blue \n"
+                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F)")) + "\n //red$red green$green blue$blue \n"
             }
         } else {
             if (mFeaturePointKey?.colorRuleRatioImpl != null) {

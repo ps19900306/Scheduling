@@ -69,7 +69,6 @@ open class ImgTaskImpl1(
     }
 
 
-
     //根据偏差值构造新的找寻任务
     fun copyOffset(tag:String,offsetX:Int,offsetY:Int): ImgTaskImpl1 {
         val cList =  mutableListOf<PointRule>()

@@ -23,4 +23,5 @@ interface OptLister {
     ): IntArray
 
     fun getClipboardManager(): ClipboardManager
+    fun fullScreen()
 }
