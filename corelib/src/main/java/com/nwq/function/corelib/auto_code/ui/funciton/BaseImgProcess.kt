@@ -196,9 +196,28 @@ class BaseImgProcess(
 
 
     fun addBackground(result: List<FeatureCoordinatePoint>) {
-
-        for (i in 0 until result.size step result.size / 2) {
-            result.getOrNull(i)?.let { point ->
+        if(result.size>1){
+            for (i in 0 until result.size step result.size / 2) {
+                result.getOrNull(i)?.let { point ->
+                    var flag = true
+                    var rang = 3
+                    while (flag && rang <10){
+                        getPointSurround(point, rang, true, false) { nextPoint ->
+                            if (nextPoint.mFeaturePointKey == darkestKey) {
+                                nextPoint.isIdentificationKey = true
+                                nextPoint.mDirectorPointKey = point.mFeaturePointKey
+                                flag = false
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                        rang ++
+                    }
+                }
+            }
+        }else{
+            result.getOrNull(0)?.let { point ->
                 var flag = true
                 var rang = 3
                 while (flag && rang <10){
@@ -216,6 +235,7 @@ class BaseImgProcess(
                 }
             }
         }
+
     }
 
 
