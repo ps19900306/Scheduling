@@ -56,4 +56,6 @@ abstract class ImgTask(
     fun getOffsetY(): Int {
         return correctModel?.getOffsetYSupple()?:0
     }
+
+
 }

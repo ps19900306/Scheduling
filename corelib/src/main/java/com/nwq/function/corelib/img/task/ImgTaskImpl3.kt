@@ -11,7 +11,6 @@ import kotlin.coroutines.suspendCoroutine
 create by: 86136
 create time: 2023/5/13 14:22
 Function description:
-这个用于判断进度条血条的
  */
 open class ImgTaskImpl3(
     iprList: List<IPR>, tag: String, correctModel: CorrectPositionModel? = null

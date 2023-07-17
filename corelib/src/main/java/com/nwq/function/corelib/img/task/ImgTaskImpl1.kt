@@ -79,7 +79,6 @@ open class ImgTaskImpl1(
             correctModel?.everyRevalidation?:false)
         newCorrectModel.supplementalValueX = offsetX
         newCorrectModel.supplementalValueY = offsetY
-        val list = mutableListOf <IPR>()
         return ImgTaskImpl1(iprList,tag,newCorrectModel)
     }
 }
