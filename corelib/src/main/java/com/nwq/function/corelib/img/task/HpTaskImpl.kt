@@ -21,6 +21,7 @@ open class HpTaskImpl(
 
 
     var lastP= iprList.size
+    //如果是满血返回false 不是返回true
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
             return false
@@ -35,7 +36,7 @@ open class HpTaskImpl(
         return false
     }
 
-    private fun getNowPercent():Int{
+    fun getNowPercent():Int{
        return ((lastP*100F)/iprList.size).toInt()
     }
 

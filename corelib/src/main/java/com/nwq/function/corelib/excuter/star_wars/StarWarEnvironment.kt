@@ -1503,7 +1503,7 @@ object StarWarEnvironment {
         )
     }
 
-    //前往的点击区域
+    //接取任务 前往的点击区域
     val isQianWangTask by lazy {
         val tag = "isQianWang"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 234,181,253,201,250,198,
