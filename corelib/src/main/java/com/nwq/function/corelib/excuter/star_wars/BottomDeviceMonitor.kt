@@ -204,8 +204,11 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
             }
         }
 
-        clickAreaList.map {
-
+        normallyOpenList.getOrNull(0)?.let { task->
+            clickAreaList.map {
+                it.offsetX = task.getOffX()
+                it.offsetY = task.getOffY()
+            }
         }
 
 
