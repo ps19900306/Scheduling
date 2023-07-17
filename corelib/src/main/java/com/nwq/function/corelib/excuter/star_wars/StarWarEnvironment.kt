@@ -1391,7 +1391,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(1336, 216), ruleRatio1
             //red163 green178 blue175
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(1345, 209), ruleRatio1
             //red157 green173 blue170
@@ -1441,7 +1441,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(2184, 87), ruleRatio1
             //red173 green173 blue173
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(2184, 87), ruleRatio1
             //red173 green173 blue173
@@ -1503,7 +1503,7 @@ object StarWarEnvironment {
         )
     }
 
-    //前往的点击区域
+    //接取任务 前往的点击区域
     val isQianWangTask by lazy {
         val tag = "isQianWang"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 234,181,253,201,250,198,
@@ -1713,6 +1713,7 @@ object StarWarEnvironment {
         ))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
+
 
     //是否可以锁定的按钮 注意这里需要对颜色调整，会有变化范围
     val isCanLockTask by lazy {

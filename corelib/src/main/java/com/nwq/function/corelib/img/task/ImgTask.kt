@@ -49,6 +49,7 @@ abstract class ImgTask(
         return true
     }
 
+    //这里有补充值
     fun getOffsetX(): Int {
         return correctModel?.getOffsetXSupple()?:0
     }
@@ -56,4 +57,15 @@ abstract class ImgTask(
     fun getOffsetY(): Int {
         return correctModel?.getOffsetYSupple()?:0
     }
+
+    //这里没有补充值
+    fun getOffX(): Int {
+        return correctModel?.offsetX?:0
+    }
+
+    //这里没有补充值点
+    fun getOffY(): Int {
+        return correctModel?.offsetY?:0
+    }
+
 }

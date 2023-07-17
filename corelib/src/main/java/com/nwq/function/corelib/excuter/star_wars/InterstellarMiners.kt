@@ -19,5 +19,10 @@ class InterstellarMiners(acService: AccessibilityService,endLister: EndLister?=n
     private val MINING_MONITORING = 5//采矿监控期间
 
 
+    override suspend fun generalControlMethod() {
+
+
+    }
+
 
 }
