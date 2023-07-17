@@ -3,6 +3,9 @@ package com.nwq.function.corelib.area
 import android.graphics.Bitmap
 import com.nwq.function.corelib.Constant.clickIntervals
 import com.nwq.function.corelib.click.task.ClickTask
+import com.nwq.function.corelib.img.pcheck.PointRule
+import com.nwq.function.corelib.img.task.CorrectPositionModel
+import com.nwq.function.corelib.img.task.ImgTaskImpl1
 
 /**
 create by: 86136
@@ -55,16 +58,15 @@ class CoordinateArea(
 
     //到底要不要帮扩边框
     fun getBitmapPixList(bitmap: Bitmap): MutableList<IntArray> {
-        val list= mutableListOf<IntArray>()
-        for (i in 0 until height)
-        {
+        val list = mutableListOf<IntArray>()
+        for (i in 0 until height) {
             val pixels = IntArray(width)
             bitmap.getPixels(
                 pixels,
                 0,
                 width,
                 x,
-                y+i,
+                y + i,
                 width,
                 1
             )
@@ -87,4 +89,9 @@ class CoordinateArea(
             (y + Math.random() * height).toFloat() + offsetY
         )
 
+
+    //根据偏差值构造新的找寻任务
+    fun copyOffset(offsetX: Int, offsetY: Int): CoordinateArea {
+        return CoordinateArea(x + offsetX, y + offsetY, width, height, offsetX, offsetY)
+    }
 }

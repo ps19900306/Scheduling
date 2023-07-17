@@ -24,8 +24,8 @@ open class ImgTaskImpl1(
     var bErrorTolerance: Int = 2 //背景点容错
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
-        if(bitmap == null)
-            return  false
+        if (bitmap == null)
+            return false
         val result = if (correctModel == null) {
             checkImgTask(
                 bitmap = bitmap,
@@ -70,15 +70,31 @@ open class ImgTaskImpl1(
 
 
     //根据偏差值构造新的找寻任务
-    fun copyOffset(tag:String,offsetX:Int,offsetY:Int): ImgTaskImpl1 {
-        val cList =  mutableListOf<PointRule>()
+    fun copyOffset(tag: String, offsetX: Int, offsetY: Int): ImgTaskImpl1 {
+        val cList = mutableListOf<PointRule>()
         correctModel?.pointList?.let {
             cList.addAll(it)
         }
-        val newCorrectModel = CorrectPositionModel(cList,tag,correctModel?.xRange?:3,correctModel?.yRange?:3,
-            correctModel?.everyRevalidation?:false)
+        val newCorrectModel = CorrectPositionModel(
+            cList, tag, correctModel?.xRange ?: 3, correctModel?.yRange ?: 3,
+            correctModel?.everyRevalidation ?: false
+        )
         newCorrectModel.supplementalValueX = offsetX
         newCorrectModel.supplementalValueY = offsetY
-        return ImgTaskImpl1(iprList,tag,newCorrectModel)
+
+        val coordinateArea = if (clickArea != null) {
+            CoordinateArea(
+                clickArea!!.x + offsetX,
+                clickArea!!.y + offsetY,
+                clickArea!!.width,
+                clickArea!!.height
+            )
+        } else {
+            null
+        }
+
+        return ImgTaskImpl1(iprList, tag, newCorrectModel).apply {
+              this.clickArea = coordinateArea
+        }
     }
 }
