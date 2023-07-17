@@ -28,7 +28,9 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     BaseController(acService, endLister) {
 
     val en = StarWarEnvironment
-
+    val WAREHOUSE_BIG_MUNU_P = 1//仓库
+    val TASK_BIG_MUNU_P = 2 //际遇任务
+    val PLANETARY_ORE_MUNU_P = 3 //行星菜
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
     val APP_LOCATION_X
         get() = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
@@ -55,7 +57,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
     suspend private fun hasIntoGame(bitmap: Bitmap?): Boolean {
-        if(bitmap==null)
+        if (bitmap == null)
             return false
         return (en.isClosePositionMenuT.verificationRule(bitmap) || en.isOpenPositionMenuT.verificationRule(
             bitmap
@@ -102,9 +104,8 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             return
         }
         val hasTips = en.isGiftMenuTipsT.verificationRule(screenBitmap)
-        val isInSpace = en.isInSpaceStationT.verificationRule(screenBitmap)
-
         if (hasTips) {
+            val isInSpace = en.isInSpaceStationT.verificationRule(screenBitmap)
             waitImgNotTask(en.isGiftMenuTipsT)
             if (waitImgTask(en.isCanCollectGiftT)) {
                 click(en.openCollectGiftArea.toClickTask())
@@ -123,13 +124,13 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             var flag = true
             var count = 5
             while (flag && count > 0 && runSwitch) {
-                if (!takeScreen(doubleClickInterval)||!runSwitch) {
+                if (!takeScreen(doubleClickInterval) || !runSwitch) {
                     runSwitch = false
                     return
                 }
                 if (hasIntoGame(screenBitmap)) {
                     flag = false
-                }else{
+                } else {
                     pressBackBtn()
                 }
                 count--
@@ -163,5 +164,11 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             }
         }
         return !flag
+    }
+
+
+    suspend fun ensureOpenMenuArea(index: Int) {
+
+
     }
 }

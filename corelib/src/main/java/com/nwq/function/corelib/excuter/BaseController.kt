@@ -28,6 +28,8 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
 
     abstract fun startWork()
 
+    abstract suspend fun generalControlMethod()
+
     fun closeWork() {
         runSwitch = false
     }
