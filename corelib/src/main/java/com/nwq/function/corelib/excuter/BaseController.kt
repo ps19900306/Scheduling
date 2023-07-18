@@ -6,6 +6,9 @@ import android.os.Build
 import android.view.Display
 import androidx.annotation.RequiresApi
 import com.nwq.function.corelib.Constant
+import com.nwq.function.corelib.Constant.clickIntervals
+import com.nwq.function.corelib.Constant.fastClickInterval
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.click.SimpleClickUtils
 import com.nwq.function.corelib.click.task.ClickTask
 import com.nwq.function.corelib.img.task.ImgTask
@@ -20,11 +23,14 @@ create time: 2023/5/29 17:54
 Function description:这里面放控制逻辑
  */
 
-abstract class BaseController(val acService: AccessibilityService,val endLister: EndLister?=null) {
+abstract class BaseController(
+    val acService: AccessibilityService,
+    val endLister: EndLister? = null
+) {
 
     var screenBitmap: Bitmap? = null
     var runSwitch = true
-
+    private val  waitTaskTime = 5
 
     abstract fun startWork()
 
@@ -34,12 +40,28 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
         runSwitch = false
     }
 
+
+    protected suspend fun click(listArea: MutableList<CoordinateArea>?,offsetX: Int=0, offsetY: Int=0) {
+        if (listArea == null)
+            return
+        var delayTime = 0L
+        var clickTime = 0L
+        val clickList = listArea.map {
+            if (clickTime > 0) {
+                delayTime += clickTime + fastClickInterval
+            }
+            clickTime = clickIntervals
+            ClickTask(listOf(it.coordinate), delayTime, clickTime)
+        }
+        SimpleClickUtils.optClickTasks(acService, offsetX, offsetY, *(clickList.toTypedArray()))
+    }
+
     protected suspend fun click(vararg click: ClickTask) {
         click(0, 0, *click)
     }
 
     protected suspend fun click(task: ImgTask) {
-        if(task.clickArea!=null){
+        if (task.clickArea != null) {
             click(task.getOffsetX(), task.getOffsetY(), task.clickArea!!.toClickTask())
         }
     }
@@ -53,7 +75,11 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
     }
 
 
-    protected suspend fun waitImgTask(task: ImgTask, times: Int = 3): Boolean {
+    protected suspend fun waitImgTask(task: ImgTask, times: Int = waitTaskTime): Boolean {
+        return waitImgTask(task,task.clickArea,times)
+    }
+
+    protected suspend fun waitImgTask(task: ImgTask, coordinateArea: CoordinateArea?, times: Int = waitTaskTime): Boolean {
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
@@ -62,7 +88,7 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
                 return false
             }
             if (task.verificationRule(screenBitmap!!)) {
-                task?.clickArea?.toClickTask()?.let {
+                coordinateArea?.toClickTask()?.let {
                     click(it)
                 }
                 return true
@@ -72,7 +98,12 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
         return false
     }
 
-    protected suspend fun waitImgTask2(task: ImgTask, times: Int = 3): Boolean {
+
+    protected suspend fun waitImgTask2(task: ImgTask, times: Int = waitTaskTime): Boolean {
+        return waitImgTask2(task,task.clickArea,times)
+    }
+
+    protected suspend fun waitImgTask2(task: ImgTask,coordinateArea: CoordinateArea?, times: Int = waitTaskTime): Boolean {
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
@@ -82,8 +113,8 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
             }
             if (task.verificationRule(screenBitmap!!)) {
                 return true
-            }else{
-                task?.clickArea?.toClickTask()?.let {
+            } else {
+                coordinateArea?.toClickTask()?.let {
                     click(it)
                 }
             }
@@ -92,7 +123,11 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
         return false
     }
 
-    protected suspend fun waitImgNotTask(task: ImgTask, times: Int = 3): Boolean {
+    protected suspend fun waitImgNotTask(task: ImgTask, times: Int = waitTaskTime): Boolean {
+        return waitImgNotTask(task,task.clickArea,times)
+    }
+
+    protected suspend fun waitImgNotTask(task: ImgTask,coordinateArea: CoordinateArea?,times: Int = waitTaskTime): Boolean {
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
@@ -100,10 +135,10 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
                 runSwitch = false
                 return false
             }
-            if (task.verificationRule(screenBitmap!!)) {
+            if (!task.verificationRule(screenBitmap!!)) {
                 return true
-            }else{
-                task?.clickArea?.toClickTask()?.let {
+            } else {
+                coordinateArea?.toClickTask()?.let {
                     click(it)
                 }
             }
@@ -114,7 +149,7 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
 
 
     //如果截图失败则等待二秒后继续截图
-    protected suspend fun takeScreen(delayTime: Long=0): Boolean {
+    protected suspend fun takeScreen(delayTime: Long = 0): Boolean {
         if (delayTime > 0) {
             delay(delayTime)
         }
@@ -130,7 +165,7 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
 
 
     //获取图片不管高和宽
-    protected suspend fun takeScreenBitmap(delayTime: Long=0):Bitmap {
+    protected suspend fun takeScreenBitmap(delayTime: Long = 0): Bitmap {
         if (delayTime > 0) {
             delay(delayTime)
         }
@@ -173,8 +208,8 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
     }
 
 
-    fun Bitmap.isOrientation():Boolean{
-        return width>height
+    fun Bitmap.isOrientation(): Boolean {
+        return width > height
     }
 
     fun pressBackBtn() {
