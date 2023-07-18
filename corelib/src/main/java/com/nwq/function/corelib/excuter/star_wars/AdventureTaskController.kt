@@ -33,7 +33,9 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
+           when(nowTask){
 
+           }
         }
     }
 
@@ -102,6 +104,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             needBack = true
         }
     }
+
+
 
 
 }

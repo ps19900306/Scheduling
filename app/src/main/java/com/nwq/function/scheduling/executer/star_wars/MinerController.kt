@@ -380,7 +380,6 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             clickJumpCollectionAddress(warehouseIndex, false)
             nowStep = MONITORING_RETURN_STATUS
         }
-
     }
 
     private fun isDangerous(): Boolean {
