@@ -11,5 +11,8 @@ Function description:
  */
 
 class ColdController(acService: AccessibilityService, endLister: EndLister?=null) : StarWarController(acService,endLister) {
+    override suspend fun generalControlMethod() {
+        TODO("Not yet implemented")
+    }
 
 }

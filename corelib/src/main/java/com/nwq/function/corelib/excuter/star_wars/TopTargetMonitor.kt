@@ -54,7 +54,8 @@ class TopTargetMonitor(val tagList: List<ImgTaskImpl1>, val hpList: List<HpTaskI
             val nowAttack = getNowAttackTarget(nowNumber, bitmap)
             //目标数目没有变化，攻击的目标相同且血量相同 或者长时间没有目标
             if (nowNumber == lastTargetNumber && lastHpTaskImpl == nowAttack && (nowAttack?.getNowPercent()
-                    ?: 0) == (lastHpTaskImpl?.getNowPercent() ?: 0)
+                    ?: 100) > 0 && (nowAttack?.getNowPercent()
+                    ?: 100) == (lastHpTaskImpl?.getNowPercent() ?: 100)
             ) {//这里表示数值没有变化
                 if (lastTimeStamp == 0L) {
                     lastTimeStamp = nowTime
