@@ -56,7 +56,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-    suspend private fun hasIntoGame(bitmap: Bitmap?): Boolean {
+    private suspend fun hasIntoGame(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
             return false
         return (en.isClosePositionMenuT.verificationRule(bitmap) || en.isOpenPositionMenuT.verificationRule(
@@ -66,6 +66,15 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             bitmap
         ) || en.isCloseEyeMenuT.verificationRule(bitmap))
     }
+
+    private suspend fun hasTaskDialogBox(bitmap: Bitmap?):Boolean{
+        if (bitmap == null)
+            return false
+        return (en.isShowLeftDialogBox.verificationRule(bitmap) || en.isShowLeftDialogBox.verificationRule(
+            bitmap
+        ))
+    }
+
 
     //进入游戏的进入逻辑
     private suspend fun intoGame() {

@@ -38,6 +38,12 @@ abstract class BaseController(val acService: AccessibilityService,val endLister:
         click(0, 0, *click)
     }
 
+    protected suspend fun click(task: ImgTask) {
+        if(task.clickArea!=null){
+            click(task.getOffsetX(), task.getOffsetY(), task.clickArea!!.toClickTask())
+        }
+    }
+
     protected suspend fun click(task: ImgTask, vararg click: ClickTask) {
         click(task.getOffsetX(), task.getOffsetY(), *click)
     }

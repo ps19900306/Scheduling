@@ -18,7 +18,7 @@ class TopTargetMonitor(val tagList: List<ImgTaskImpl1>, val hpList: List<HpTaskI
     private val toleranceInterval = 15 * 1000
 
     private var numberOfRounds = 0
-    private var lastTargetNumber = 0
+     var lastTargetNumber = 0
     private var lastHpTaskImpl: AttackTargetResult? = null
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
