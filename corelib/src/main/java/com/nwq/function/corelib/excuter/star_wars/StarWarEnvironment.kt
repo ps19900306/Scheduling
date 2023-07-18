@@ -1780,4 +1780,104 @@ object StarWarEnvironment {
 
 
 
+    val bottomDeviceArea by lazy { CoordinateArea(1666,953,74,79)}
+    val isBottomDeviceTask by lazy {
+        val tag = "isBottomDevice"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 227,153,266,199,255,186,
+            0.90059286F,0.69324327F,0.9376543F,0.69324327F,1.1315068F, 0.937037F)
+        val ruleRatio2 =  ColorRuleRatioUnImpl.getSimple( 227,153,266,199,255,186,
+            0.90059286F,0.69324327F,0.9376543F,0.69324327F,1.1315068F, 0.937037F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(1704, 949), ruleRatio1
+            //red213 green255 blue243
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(1704, 949), ruleRatio1
+            //red213 green255 blue243
+        ))
+        pointList.add(PointRule(CoordinatePoint(1706, 949), ruleRatio1
+            //red204 green251 blue235
+        ))
+        pointList.add(PointRule(CoordinatePoint(1710, 950), ruleRatio1
+            //red209 green253 blue238
+        ))
+        pointList.add(PointRule(CoordinatePoint(1700, 945), ruleRatio2
+            //red30 green31 blue33
+        ))
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance =2
+            bErrorTolerance =1
+            clickArea= bottomDeviceArea
+        }
+    }
+
+    val topDeviceArea by lazy { CoordinateArea(1671,843,64,68)}
+    val isTopDeviceTask by lazy {
+        val tag = "isTopDevice"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 229,163,267,206,255,191,
+            0.9125F,0.7055085F,0.9462963F,0.7055085F,1.1406819F, 0.93333334F)
+        val ruleRatio2 =  ColorRuleRatioUnImpl.getSimple( 229,163,267,206,255,191,
+            0.9125F,0.7055085F,0.9462963F,0.7055085F,1.1406819F, 0.93333334F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(1704, 835), ruleRatio1
+            //red213 green254 blue240
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+
+        pointList.add(PointRule(CoordinatePoint(1704, 835), ruleRatio1
+            //red213 green254 blue240
+        ))
+        pointList.add(PointRule(CoordinatePoint(1706, 835), ruleRatio1
+            //red206 green250 blue235
+        ))
+        pointList.add(PointRule(CoordinatePoint(1710, 836), ruleRatio1
+            //red208 green252 blue237
+        ))
+        pointList.add(PointRule(CoordinatePoint(1700, 838), ruleRatio2
+            //red44 green43 blue41
+        ))
+        pointList.add(PointRule(CoordinatePoint(1718, 830), ruleRatio2
+            //red30 green36 blue32
+        ))
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance =2
+            bErrorTolerance =1
+            clickArea= topDeviceArea
+        }
+    }
+
+
+    val BottomDeviceOffset = 109
+    val topDeviceList by lazy {
+        var i =0
+        val tag = "isTopDevice"
+        val task = isTopDeviceTask
+        arrayOf(
+            task,
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+        )
+    }
+
+    val bottomDeviceList by lazy {
+        var i =0
+        val tag = "isBottomDevice"
+        val task = isBottomDeviceTask
+        arrayOf(
+            task,
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+            task.copyOffset("$tag${++i}",BottomDeviceOffset*i,0),
+        )
+    }
+
+
+
 }

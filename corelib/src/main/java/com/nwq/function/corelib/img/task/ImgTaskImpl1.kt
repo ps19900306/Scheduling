@@ -94,7 +94,9 @@ open class ImgTaskImpl1(
         }
 
         return ImgTaskImpl1(iprList, tag, newCorrectModel).apply {
-              this.clickArea = coordinateArea
+            this.clickArea = coordinateArea
+            this.nErrorTolerance = nErrorTolerance
+            this.bErrorTolerance = bErrorTolerance
         }
     }
 }
