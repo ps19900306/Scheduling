@@ -2,6 +2,7 @@ package com.nwq.function.corelib.excuter.star_wars
 
 import android.graphics.Bitmap
 import com.nwq.function.corelib.area.CoordinateArea
+import com.nwq.function.corelib.excuter.star_wars.data.OptSlotInfo
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.JsonUtil
 import com.nwq.function.corelib.utils.sp.SPRepoPrefix
