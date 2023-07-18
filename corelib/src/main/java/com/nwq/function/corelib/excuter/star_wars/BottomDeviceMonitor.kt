@@ -2,6 +2,7 @@ package com.nwq.function.corelib.excuter.star_wars
 
 import android.graphics.Bitmap
 import com.nwq.function.corelib.area.CoordinateArea
+import com.nwq.function.corelib.excuter.star_wars.data.OptSlotInfo
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.JsonUtil
 import com.nwq.function.corelib.utils.sp.SPRepoPrefix
@@ -33,6 +34,11 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
     private var lastChangeTime = 0L
     private val openInterval = 30 * 1000L
     private var openMaintenance = false // 是否该维修器材
+    private val lastCloseItem = mutableListOf<ImgTaskImpl1>()
+    private val lastClickArea = mutableListOf<CoordinateArea>()
+    private var flag = 1  // 第一次取对比值 第二次才根据对进行开关
+    private val maxAbnormal = 4
+    private var abnormalRecords = maxAbnormal // 如果多次需要开启网子 可能就是卡脚本了
 
     //设置需要常开的设备
     private fun setNormallyOpenList(list: List<Int>) {
@@ -119,6 +125,9 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
         }
     }
 
+    fun isNeedAbnormal(): Boolean {
+        return abnormalRecords < 1
+    }
 
     //设置开启网子
     fun closeReducer() {
@@ -127,6 +136,11 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
 
     fun openReducer() {
         needOpenReducer = true
+    }
+
+    fun clearData(){
+        flag == 1
+        abnormalRecords = maxAbnormal
     }
 
     //设置开启维修设备
@@ -139,41 +153,58 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
         }
     }
 
-    private val lastCloseItem = mutableListOf<ImgTaskImpl1>()
-    private val lastClickArea = mutableListOf<ImgTaskImpl1>()
-
     //这里是需要点击的区域
-    suspend fun updateInfo(bitmap: Bitmap): MutableList<CoordinateArea> {
+    suspend fun updateInfo(bitmap: Bitmap): MutableList<CoordinateArea>? {
+        flag++
+        //第一次先记录开启状态，方便二次确认
+        if (flag % 2 == 0) {
+            lastCloseItem.clear()
+            normallyOpenList.forEach {
+                if (!it.verificationRule(bitmap)) {
+                    lastCloseItem.add(it)
+                }
+            }
+            reducerList.forEach {
+                if (!it.verificationRule(bitmap)) {
+                    lastCloseItem.add(it)
+                }
+            }
+            maintenanceEquipment.forEach {
+                if (!it.verificationRule(bitmap)) {
+                    lastCloseItem.add(it)
+                }
+            }
+            return null
+        }
+
+
+        //这个根据上次结果二次确认后
         val nowClickList = mutableListOf<ImgTaskImpl1>()
-        val nowCloseList = mutableListOf<ImgTaskImpl1>()
         //开启常开
         normallyOpenList.forEach {
             if (!it.verificationRule(bitmap)) {
-                nowCloseList.add(it)
                 if (lastCloseItem.contains(it)) {//如果二次都是关闭的则进行打开
                     nowClickList.add(it)
                 }
             }
         }
-
         //开启网子
         if (needOpenReducer) {
             reducerList.forEach {
                 if (!it.verificationRule(bitmap)) {
-                    nowCloseList.add(it)
                     if (lastCloseItem.contains(it)) {//如果二次都是关闭的则进行打开
                         nowClickList.add(it)
                         needOpenReducer = false
                     }
+                } else if (!lastCloseItem.contains(it)) {
+                    needOpenReducer = false
                 }
             }
         }
-
         //开启维修设备
         if (openMaintenance) {
             maintenanceEquipment.forEach {
                 if (!it.verificationRule(bitmap)) {
-                    nowCloseList.add(it)
                     if (lastCloseItem.contains(it) && (System.currentTimeMillis() - lastChangeTime) < openInterval) {
                         nowClickList.add(it)
                         lastChangeTime = System.currentTimeMillis()
@@ -187,30 +218,36 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
                         nowClickList.add(it)
                         lastChangeTime = System.currentTimeMillis()
                     }
-                } else {
-                    nowCloseList.add(it)
                 }
             }
         }
 
-        var nowTime = System.currentTimeMillis()
         val clickAreaList = mutableListOf<CoordinateArea>()
-        checkTimeOn(nowTime, intervalOpenList1, clickAreaList)
-        checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
-        checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
         nowClickList.forEach {
             it.clickArea?.let {
                 clickAreaList.add(it)
             }
         }
+        //这里不管定时开的设备，只管关键设备
+        if (clickAreaList.find { lastClickArea.contains(it) } == null) {//这里表示点击效果无效
+            abnormalRecords--
+        } else {
+            abnormalRecords = maxAbnormal
+        }
+        lastClickArea.clear()
+        lastClickArea.addAll(clickAreaList)
 
-        normallyOpenList.getOrNull(0)?.let { task->
+
+        var nowTime = System.currentTimeMillis()
+        checkTimeOn(nowTime, intervalOpenList1, clickAreaList)
+        checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
+        checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
+        normallyOpenList.getOrNull(0)?.let { task ->
             clickAreaList.map {
                 it.offsetX = task.getOffX()
                 it.offsetY = task.getOffY()
             }
         }
-
 
         return clickAreaList
     }

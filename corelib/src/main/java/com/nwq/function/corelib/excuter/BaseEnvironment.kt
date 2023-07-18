@@ -14,7 +14,6 @@ Function description:
  */
 class BaseEnvironment {
 
-
     private val isOpenTask by lazy {
         val tag = "isOpen"
 

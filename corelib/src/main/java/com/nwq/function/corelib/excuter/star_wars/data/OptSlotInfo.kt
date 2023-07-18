@@ -1,4 +1,4 @@
-package com.nwq.function.corelib.excuter.star_wars
+package com.nwq.function.corelib.excuter.star_wars.data
 
 import com.nwq.function.corelib.area.CoordinateArea
 

@@ -76,6 +76,7 @@ class CoordinateArea(
     }
 
 
+    //这个是中间60%的区域
     val coordinate
         get() = CoordinatePoint(
             (x + (Math.random() * 0.6 + 0.2) * width).toFloat() + offsetX,
@@ -83,6 +84,7 @@ class CoordinateArea(
         )
 
 
+    //这个是全点区域
     val fullCoordinate
         get() = CoordinatePoint(
             (x + Math.random() * width).toFloat() + offsetX,

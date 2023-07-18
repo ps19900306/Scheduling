@@ -12,6 +12,7 @@ import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.img.task.BasicImgTask
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.sp.SPRepo
+import com.nwq.function.corelib.utils.sp.SPRepoPrefix
 import com.nwq.function.corelib.utils.sp.SpConstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -27,6 +28,10 @@ Function description:
 abstract class StarWarController(acService: AccessibilityService, endLister: EndLister? = null) :
     BaseController(acService, endLister) {
 
+    protected val spReo by lazy {
+        SPRepoPrefix.getNowSPRepo()
+    }
+    val warehouseIndex = spReo.fightBaseLocation
     val en = StarWarEnvironment
     val WAREHOUSE_BIG_MUNU_P = 1//仓库
     val TASK_BIG_MUNU_P = 2 //际遇任务
@@ -56,7 +61,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-    suspend private fun hasIntoGame(bitmap: Bitmap?): Boolean {
+    private suspend fun hasIntoGame(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
             return false
         return (en.isClosePositionMenuT.verificationRule(bitmap) || en.isOpenPositionMenuT.verificationRule(
@@ -67,8 +72,25 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         ) || en.isCloseEyeMenuT.verificationRule(bitmap))
     }
 
+    protected suspend fun hasTaskDialogBox(bitmap: Bitmap?): Boolean {
+        if (bitmap == null)
+            return false
+        return (en.isShowLeftDialogBox.verificationRule(bitmap) || en.isShowLeftDialogBox.verificationRule(
+            bitmap
+        ))
+    }
+
+    protected suspend fun isInSailing(bitmap: Bitmap?): Boolean {
+        if (bitmap == null)
+            return false
+        return (en.isOpenPositionMenuT.verificationRule(bitmap) || en.isSailingT.verificationRule(
+            bitmap
+        ))
+    }
+
+
     //进入游戏的进入逻辑
-    private suspend fun intoGame() {
+    protected suspend fun intoGame() {
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
@@ -167,8 +189,43 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
 
-    suspend fun ensureOpenMenuArea(index: Int) {
+    protected suspend fun ensureOpenBigMenuArea(index: Int) {
 
+    }
 
+    protected suspend fun clickPositionMenu(index: Int) {
+
+    }
+
+    //这个方法要将出现眼睛或者在空间站
+    protected suspend fun theOutCheck() {
+
+    }
+
+    //这个是在战斗中飞回
+    protected suspend fun emergencyEvacuation(flag: Boolean = true) {
+        if (en.isInSpaceStationT.verificationRule(screenBitmap)) {
+            //这里是已经成功回到空间站了
+
+        } else if (en.isOpenPositionMenuT.verificationRule(screenBitmap)) {
+            //坐标菜单打开的
+            clickPositionMenu(warehouseIndex)
+        } else if (en.isClosePositionMenuT.verificationRule(screenBitmap)) {
+            //坐标菜关闭的
+            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
+            clickPositionMenu(warehouseIndex)
+        } else if (en.isOpenEyeMenuT.verificationRule(screenBitmap) || en.isCloseEyeMenuT.verificationRule(
+                screenBitmap
+            )
+        ) { //这里是坐标菜单被遮挡了
+            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
+            clickPositionMenu(warehouseIndex)
+        } else { //这里是没有在前台界面
+            if(flag){
+                theOutCheck()
+                waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
+                emergencyEvacuation(false)
+            }
+        }
     }
 }
