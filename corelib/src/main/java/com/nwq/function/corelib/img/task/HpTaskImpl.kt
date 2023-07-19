@@ -37,7 +37,7 @@ open class HpTaskImpl(
     }
 
     fun getNowPercent():Int{
-       return ((lastP*100F)/iprList.size).toInt()
+       return (((iprList.size-lastP)*100F)/iprList.size).toInt()
     }
 
 
