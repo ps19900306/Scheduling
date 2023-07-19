@@ -242,7 +242,6 @@ class BaseImgProcess(
         point: FeatureCoordinatePoint, range: Int, allDirection: Boolean,//这个是只寻找找四周还是寻找全部
         includeSelf: Boolean = false, next: (p: FeatureCoordinatePoint) -> Boolean
     ) {
-
         var startX = point.x - range
         var endX = point.x + range
         var startY = point.y - range

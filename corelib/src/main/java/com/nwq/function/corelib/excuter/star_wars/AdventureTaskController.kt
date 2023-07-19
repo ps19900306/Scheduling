@@ -2,6 +2,7 @@ package com.nwq.function.corelib.excuter.star_wars
 
 import android.accessibilityservice.AccessibilityService
 import com.nwq.function.corelib.Constant.doubleClickInterval
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import timber.log.Timber
@@ -28,11 +29,13 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private val EXIT_GAME = 400//正常退出
     private val RESTART_GAME = 401//退出重新进入
     private val EXIT_GAME_ERROR = 1000//异常退出
+    private val ABNORMAL_STATE = 10000 //异常状态
     private var nowTask = START_GAME
 
     private lateinit var topTargetMonitor: TopTargetMonitor
     private lateinit var bottomDeviceMonitor: BottomDeviceMonitor
-    private lateinit var isNotTask:ImgTaskImpl1
+    private lateinit var isNotTask: ImgTaskImpl1
+
     //    var mEnterCombatStatus = false //这个是进入战斗的时间
     private var needBack = false
     private var needCancel = false
@@ -40,9 +43,9 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
-           when(nowTask){
+            when (nowTask) {
 
-           }
+            }
         }
     }
 
@@ -50,14 +53,86 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private suspend fun pickTask() {
         ensureOpenBigMenuArea(TASK_BIG_MUNU_P)
         val isNoTask = waitImgTask(isNotTask)
-        if(isNoTask){
-             en.qianWangArea
-        }else{
+        //TODO 点击去领取任务的区域
+        val goClickArea = CoordinateArea(0,0,0,0,)
+        if (isNoTask) {
+            needCancel = false
+            click(goClickArea)
+            pickUpTask2()
+        } else {
+            if(needCancel){
+                aboundTask()
+                click(goClickArea)//这里点击左边的进入任务
+            }else{
 
+            }
+        }
+    }
+
+    private suspend fun pickUpTask2(){
+        val list = getPickUpArea()
+        if (list == null) {
+            //没有刷出来数据
+            nowTask = ABNORMAL_STATE
+            return
+        } else if (list.isEmpty()) {
+            //没有可以领取的任务
+            if (waitImgTask(en.isCanRefreshTask, 30 * 30)) {
+                takeScreen(doubleClickInterval)
+                val list1 = getPickUpArea()
+                if (list1.isNullOrEmpty()) {
+                    nowTask = ABNORMAL_STATE
+                    return
+                }
+                list.addAll(list1)
+            } else {
+                nowTask = ABNORMAL_STATE
+                return
+            }
+        }
+        click(list)//这里接受全部的任务
+        takeScreen(doubleClickInterval)
+        //TODO 点击领取任务区域
+        val rightClickArea = CoordinateArea(0,0,0,0,)
+        if(waitImgTask2(en.isQianWangTask,rightClickArea)){
+            click(en.qianWangArea)
+            nowTask = BATTLE_NAVIGATION_MONITORING
+            return
+        }else{
+            nowTask = ABNORMAL_STATE
+            return
         }
     }
 
 
+    //放弃任务
+    private fun aboundTask(){
+
+    }
+
+    private suspend fun getPickUpArea(): MutableList<CoordinateArea>? {
+        val clickArea = mutableListOf<CoordinateArea>()
+        val list = waitImgTaskList(en.IsNormalTaskList)
+        if (list.isEmpty()) {
+            //卡住了没有刷出来任务
+            return null
+        }
+        list.forEach {
+            if (en.IsZeroDistanceList[it].verificationRule(screenBitmap) || en.IsZeroDistanceList[it].verificationRule(
+                    screenBitmap
+                )
+            ) {
+                en.pickUpItemList[it].let {
+                    if (it.verificationRule(screenBitmap)) {
+                        it.getOfsArea()?.let {
+                            clickArea.add(it)
+                        }
+                    }
+                }
+            }
+        }
+        return clickArea
+    }
 
 
     private suspend fun combatMonitoring() {
@@ -128,16 +203,19 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 runSwitch = false
                 return
             }
-            if(en.isInSpaceStationT.verificationRule(screenBitmap)){
+            if (en.isInSpaceStationT.verificationRule(screenBitmap)) {
                 if (spReo.isPickupBox) {
                     unloadingCargo()
                 }
-            }else if(en.isOpenBigMenuT.verificationRule(screenBitmap)){
+            } else if (en.isOpenBigMenuT.verificationRule(screenBitmap)) {
                 click(en.closeBigMenuArea)
-            }else if(en.isConfirmDialogTask.verificationRule(screenBitmap)){
+            } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
                 click(en.confirmDialogEnsureArea)
-            }else if( count< maxCount-10 && !en.isSailingT.verificationRule(screenBitmap)
-                &&en.isCloseEyeMenuT.verificationRule(screenBitmap) &&en.isOpenEyeMenuT.verificationRule(screenBitmap)){
+            } else if (count < maxCount - 10 && !en.isSailingT.verificationRule(screenBitmap)
+                && en.isCloseEyeMenuT.verificationRule(screenBitmap) && en.isOpenEyeMenuT.verificationRule(
+                    screenBitmap
+                )
+            ) {
                 clickPositionMenu(warehouseIndex)
             }
             count--
