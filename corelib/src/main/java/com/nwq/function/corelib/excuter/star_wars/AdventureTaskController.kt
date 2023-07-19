@@ -3,6 +3,7 @@ package com.nwq.function.corelib.excuter.star_wars
 import android.accessibilityservice.AccessibilityService
 import com.nwq.function.corelib.Constant.doubleClickInterval
 import com.nwq.function.corelib.excuter.EndLister
+import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import timber.log.Timber
 
 /**
@@ -27,9 +28,15 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private val EXIT_GAME = 400//正常退出
     private val RESTART_GAME = 401//退出重新进入
     private val EXIT_GAME_ERROR = 1000//异常退出
-
-
     private var nowTask = START_GAME
+
+    private lateinit var topTargetMonitor: TopTargetMonitor
+    private lateinit var bottomDeviceMonitor: BottomDeviceMonitor
+    private lateinit var isNotTask:ImgTaskImpl1
+    //    var mEnterCombatStatus = false //这个是进入战斗的时间
+    private var needBack = false
+    private var needCancel = false
+
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
@@ -39,19 +46,20 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         }
     }
 
+
     private suspend fun pickTask() {
         ensureOpenBigMenuArea(TASK_BIG_MUNU_P)
-       // waitImgTask()
+        val isNoTask = waitImgTask(isNotTask)
+        if(isNoTask){
+             en.qianWangArea
+        }else{
+
+        }
     }
 
 
 
-    private lateinit var topTargetMonitor: TopTargetMonitor
-    private lateinit var bottomDeviceMonitor: BottomDeviceMonitor
 
-    //    var mEnterCombatStatus = false //这个是进入战斗的时间
-    private var needBack = false
-    private var needCancel = false
     private suspend fun combatMonitoring() {
         var flag = true
         var count = 200

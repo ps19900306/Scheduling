@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.abs
 
 /**
 create by: 86136
@@ -29,15 +30,13 @@ class BaseImgProcess(
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
     private val MIN_PICKING_INTERVAL = 10 //这里是间隔多少个点进行一次取值
     private val minPointInterval = 8 //最小取点间隔
-    var minStep =2
+    var minStep = 2
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
     private lateinit var featureArray: Array<Array<FeatureCoordinatePoint>>
-
-
 
 
     //开始前必须调用此方法，且在非主线程调用，耗时
@@ -120,19 +119,23 @@ class BaseImgProcess(
         }
     }
 
-    fun autoExc(useBackground: Boolean, pointnterval: Int,allPointKey:Boolean,useInverseValue:Boolean) {
+    fun autoExc(
+        useBackground: Boolean,
+        pointnterval: Int,
+        allPointKey: Boolean,
+        useInverseValue: Boolean
+    ) {
         GlobalScope.launch(Dispatchers.Default) {
             //增加非取反的背景颜色补充
             colorMaps[darkestKey]?.let {
-                if(useBackground && !useInverseValue){
-                    allMaxRange(darkestKey,it)
+                if (useBackground && !useInverseValue) {
+                    allMaxRange(darkestKey, it)
                 }
             }
             colorMaps.forEach { it ->
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value, true)
-                    if(allPointKey)
-                    {
+                    if (allPointKey) {
                         allMaxRange(it.key, it.value.filter { it.isBoundary() })
                     }
                     val result = obtainFeaturePoints(it.value, pointnterval)
@@ -178,41 +181,30 @@ class BaseImgProcess(
         val maxD = 1.05
         val minD = 0.9
         val data = ColorRuleRatioImpl(
-            (maxRed*maxD).toInt(),
-            (minRed*minD).toInt(),
-            (maxGreen*maxD).toInt(),
-            (minGreen*minD).toInt(),
-            (maxBlue*maxD).toInt(),
-            (minBlue*minD).toInt(),
-            (maxRToG*maxD).toFloat(),
-            (minRToG*minD).toFloat(),
-            (maxRToB*maxD).toFloat(),
-            (minRToB*minD).toFloat(),
-            (maxGToB*maxD).toFloat(),
-            (minGToB*minD).toFloat(),
+            (maxRed * maxD).toInt(),
+            (minRed * minD).toInt(),
+            (maxGreen * maxD).toInt(),
+            (minGreen * minD).toInt(),
+            (maxBlue * maxD).toInt(),
+            (minBlue * minD).toInt(),
+            (maxRToG * maxD).toFloat(),
+            (minRToG * minD).toFloat(),
+            (maxRToB * maxD).toFloat(),
+            (minRToB * minD).toFloat(),
+            (maxGToB * maxD).toFloat(),
+            (minGToB * minD).toFloat(),
         )
-        key.colorRuleRatioImpl=data
+        key.colorRuleRatioImpl = data
     }
 
 
-    fun addBackground(result: List<FeatureCoordinatePoint>) {
-
-        for (i in 0 until result.size step result.size / 2) {
+   private fun addBackground(result: List<FeatureCoordinatePoint>) {
+        for (i in result.indices step result.size / 2) {
             result.getOrNull(i)?.let { point ->
-                var flag = true
-                var rang = 3
-                while (flag && rang <10){
-                    getPointSurround(point, rang, true, false) { nextPoint ->
-                        if (nextPoint.mFeaturePointKey == darkestKey) {
-                            nextPoint.isIdentificationKey = true
-                            nextPoint.mDirectorPointKey = point.mFeaturePointKey
-                            flag = false
-                            true
-                        } else {
-                            false
-                        }
-                    }
-                    rang ++
+                val list = getPointSurroundV2(point, 20, true, false)
+                list.find { it.mFeaturePointKey == darkestKey }?.let { darkPoint->
+                    darkPoint.isIdentificationKey = true
+                    darkPoint.mDirectorPointKey = point.mFeaturePointKey
                 }
             }
         }
@@ -272,15 +264,9 @@ class BaseImgProcess(
         if (allDirection) {
             for (iy in startY..endY) {
                 for (ix in startX..endX) {
-                    val p = if (::featureArray.isInitialized) {
-                        featureArray.getOrNull(iy)?.getOrNull(ix) ?: FeatureCoordinatePoint(
-                            ix, iy, imgArray[iy][ix]
-                        )
-                    } else {
-                        FeatureCoordinatePoint(
-                            ix, iy, imgArray[iy][ix]
-                        )
-                    }
+                    val p = FeatureCoordinatePoint(
+                        ix, iy, imgArray[iy][ix]
+                    )
                     if (p != point || includeSelf) {
                         if (next.invoke(p)) {
                             return
@@ -290,15 +276,9 @@ class BaseImgProcess(
             }
         } else {
             for (iy in startY..endY) {
-                val p = if (::featureArray.isInitialized) {
-                    featureArray.getOrNull(iy)?.getOrNull(point.x) ?: FeatureCoordinatePoint(
-                        point.x, iy, imgArray[iy][point.x]
-                    )
-                } else {
-                    FeatureCoordinatePoint(
-                        point.x, iy, imgArray[iy][point.x]
-                    )
-                }
+                val p = FeatureCoordinatePoint(
+                    point.x, iy, imgArray[iy][point.x]
+                )
                 if (p != point || includeSelf) {
                     if (next.invoke(p)) {
                         return
@@ -306,15 +286,9 @@ class BaseImgProcess(
                 }
             }
             for (ix in startX..endX) {
-                val p = if (::featureArray.isInitialized) {
-                    featureArray.getOrNull(point.y)?.getOrNull(ix) ?: FeatureCoordinatePoint(
-                        ix, point.y, imgArray[point.y][ix]
-                    )
-                } else {
-                    FeatureCoordinatePoint(
-                        ix, point.y, imgArray[point.y][ix]
-                    )
-                }
+                val p = FeatureCoordinatePoint(
+                    ix, point.y, imgArray[point.y][ix]
+                )
                 if (p != point || includeSelf) {
                     if (next.invoke(p)) {
                         return
@@ -322,6 +296,63 @@ class BaseImgProcess(
                 }
             }
         }
+    }
+
+
+    private fun getPointSurroundV2(
+        point: FeatureCoordinatePoint, range: Int, allDirection: Boolean,//这个是只寻找找四周还是寻找全部
+        includeSelf: Boolean = false
+    ): List<FeatureCoordinatePoint> {
+        val list = mutableListOf<FeatureCoordinatePoint>()
+        var startX = point.x - range
+        var endX = point.x + range
+        var startY = point.y - range
+        var endY = point.y + range
+
+        if (startX < 0) {
+            startX = 0
+        }
+        if (endX > with - 1) {
+            endX = with - 1
+        }
+        if (startY < 0) {
+            startY = 0
+        }
+        if (endY > height - 1) {
+            endY = height - 1
+        }
+
+        if (allDirection) {
+            for (iy in startY..endY) {
+                for (ix in startX..endX) {
+                    val p = FeatureCoordinatePoint(
+                        ix, iy, imgArray[iy][ix]
+                    )
+                    if (p != point || includeSelf) {
+                        list.add(p)
+                    }
+                }
+            }
+        } else {
+            for (iy in startY..endY) {
+                val p = FeatureCoordinatePoint(
+                    point.x, iy, imgArray[iy][point.x]
+                )
+                if (p != point || includeSelf) {
+                    list.add(p)
+                }
+            }
+            for (ix in startX..endX) {
+                val p = FeatureCoordinatePoint(
+                    ix, point.y, imgArray[point.y][ix]
+                )
+                if (p != point || includeSelf) {
+                    list.add(p)
+                }
+            }
+        }
+        list.sortBy { abs(it.x - point.x) + abs(it.y - point.y) }
+        return list
     }
 
 
@@ -416,30 +447,35 @@ class BaseImgProcess(
         }
 
         // 单独的孤点这里不做处理
-        if(step>=minStep)
-        for (i in 0..step step pickingInterval) {
-            blockList.filter { it.sequenceNumber == i }.let { stepList ->
-                var startPoint = stepList.find { !it.isAdd }
-                while (startPoint != null) {
-                    //这里防止单快过多添加
-                    if (keyList.find {
-                            (Math.abs(startPoint!!.x - it.x) + Math.abs(
-                                startPoint!!.y - it.y
-                            ) < ( Math.min(pickingInterval/2 +2,8)  ))
-                        } == null) {
-                        getPointSurround(startPoint, Math.min(pickingInterval/2 +1,5) , true, true) { nextPoint ->
-                            if (startPoint!!.mFeaturePointKey == nextPoint.mFeaturePointKey) {
-                                nextPoint.isAdd = true
+        if (step >= minStep)
+            for (i in 0..step step pickingInterval) {
+                blockList.filter { it.sequenceNumber == i }.let { stepList ->
+                    var startPoint = stepList.find { !it.isAdd }
+                    while (startPoint != null) {
+                        //这里防止单快过多添加
+                        if (keyList.find {
+                                (Math.abs(startPoint!!.x - it.x) + Math.abs(
+                                    startPoint!!.y - it.y
+                                ) < (Math.min(pickingInterval / 2 + 2, 8)))
+                            } == null) {
+                            getPointSurround(
+                                startPoint,
+                                Math.min(pickingInterval / 2 + 1, 5),
+                                true,
+                                true
+                            ) { nextPoint ->
+                                if (startPoint!!.mFeaturePointKey == nextPoint.mFeaturePointKey) {
+                                    nextPoint.isAdd = true
+                                }
+                                false
                             }
-                            false
+                            extremePoints.add(startPoint)
                         }
-                        extremePoints.add(startPoint)
+                        startPoint = stepList.find { !it.isAdd }
                     }
-                    startPoint = stepList.find { !it.isAdd }
+                    Timber.d(" step:$i size${stepList.size} extremePoints${extremePoints.size} groupBlock BaseImgProcess NWQ_ 2023/6/22");
                 }
-                Timber.d(" step:$i size${stepList.size} extremePoints${extremePoints.size} groupBlock BaseImgProcess NWQ_ 2023/6/22");
             }
-        }
         return extremePoints
     }
 
@@ -653,6 +689,7 @@ class BaseImgProcess(
                 }
                 colorMaps.remove(it)
                 featureKeyList.remove(it)
+                it.isChecked = false
             }
         }
     }
