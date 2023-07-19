@@ -39,10 +39,12 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         }
     }
 
-
-    private fun pickTask() {
-
+    private suspend fun pickTask() {
+        ensureOpenBigMenuArea(TASK_BIG_MUNU_P)
+       // waitImgTask()
     }
+
+
 
     private lateinit var topTargetMonitor: TopTargetMonitor
     private lateinit var bottomDeviceMonitor: BottomDeviceMonitor
@@ -53,6 +55,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private suspend fun combatMonitoring() {
         var flag = true
         var count = 200
+        nowTask = PICK_UP_TASK
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
@@ -79,6 +82,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 }
                 if (!needBack && topTargetMonitor.isNeedAbnormal()) {
                     emergencyEvacuation()
+                    nowTask = MONITORING_RETURN_STATUS
                     needCancel = true
                     needBack = true
                 }
@@ -106,6 +110,35 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     }
 
 
+    private suspend fun monitoringReturnStatus() {
+        Timber.d("monitoringReturnStatus FightController NWQ_ 2023/4/11");
+        var flag = true
+        val maxCount = 15 * 60
+        var count = maxCount
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if(en.isInSpaceStationT.verificationRule(screenBitmap)){
+                if (spReo.isPickupBox) {
+                    unloadingCargo()
+                }
+            }else if(en.isOpenBigMenuT.verificationRule(screenBitmap)){
+                click(en.closeBigMenuArea)
+            }else if(en.isConfirmDialogTask.verificationRule(screenBitmap)){
+                click(en.confirmDialogEnsureArea)
+            }else if( count< maxCount-10 && !en.isSailingT.verificationRule(screenBitmap)
+                &&en.isCloseEyeMenuT.verificationRule(screenBitmap) &&en.isOpenEyeMenuT.verificationRule(screenBitmap)){
+                clickPositionMenu(warehouseIndex)
+            }
+            count--
+        }
+        if (count == 0 && flag) {
+            runSwitch = false
+            return
+        }
+    }
 
 
 }

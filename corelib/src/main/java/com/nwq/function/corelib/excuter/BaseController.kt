@@ -40,6 +40,11 @@ abstract class BaseController(
         runSwitch = false
     }
 
+    protected suspend fun click(coordinateArea: CoordinateArea?) {
+        coordinateArea?.let {
+            click(it.toClickTask())
+        }
+    }
 
     protected suspend fun click(listArea: MutableList<CoordinateArea>?,offsetX: Int=0, offsetY: Int=0) {
         if (listArea == null)

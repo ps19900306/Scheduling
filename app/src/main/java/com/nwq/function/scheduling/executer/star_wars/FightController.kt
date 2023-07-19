@@ -947,7 +947,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         click(constant.dialogDetermineArea)
         delay(normalClickInterval)
         takeScreen(doubleClickInterval)
-        ensureCloseDetermine()
+   ensureCloseDetermine()
     }
 
 
