@@ -172,6 +172,8 @@ abstract class BaseController(
         return false
     }
 
+
+
     protected suspend fun waitImgNotTask(task: ImgTask, times: Int = waitTaskTime): Boolean {
         return waitImgNotTask(task, task.clickArea, times)
     }
@@ -225,6 +227,29 @@ abstract class BaseController(
         return list
     }
 
+    protected suspend fun waitImgTask1List2(
+        tasks: List<ImgTask>,
+        coordinateArea: CoordinateArea?,
+        times: Int = waitTaskTime
+    ): Boolean {
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(Constant.normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (tasks.find { it.verificationRule(screenBitmap!!) } != null) {
+                return true
+            } else {
+                coordinateArea?.toClickTask()?.let {
+                    click(it)
+                }
+            }
+            count--
+        }
+        return false
+    }
 
 
     //如果截图失败则等待二秒后继续截图

@@ -23,7 +23,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private val BATTLE_NAVIGATION_MONITORING = 2//战斗飞行导航监控
     private val COMBAT_MONITORING = 3 //战斗监控阶段
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
-    private val ALL_COMPLETE = 9//返回空间站监听
+    private val ALL_COMPLETE = 9//全部完成
     private val CHECK_SHIP = 10//检查船只
 
     private val EXIT_GAME = 400//正常退出
@@ -54,22 +54,35 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         ensureOpenBigMenuArea(TASK_BIG_MUNU_P)
         val isNoTask = waitImgTask(isNotTask)
         //TODO 点击去领取任务的区域
-        val goClickArea = CoordinateArea(0,0,0,0,)
+        val goClickArea = CoordinateArea(0, 0, 0, 0)
         if (isNoTask) {
             needCancel = false
             click(goClickArea)
             pickUpTask2()
         } else {
-            if(needCancel){
+            if (needCancel) {
                 aboundTask()
                 click(goClickArea)//这里点击左边的进入任务
+                pickUpTask2()
+            } else if (waitImgTask2(en.isShowLeftDialogBox, goClickArea)) {//这里要点击接任务的区域
+                //这里点击前往了
+                clickTheDialogueClose()
+                nowTask = BATTLE_NAVIGATION_MONITORING
             }else{
-
+                nowTask = ABNORMAL_STATE
+                return
             }
         }
     }
 
-    private suspend fun pickUpTask2(){
+
+    //pickUp 是否是接取任务
+    private suspend fun clickTheDialogueClose(count: Int = 3): Boolean {
+
+        return true
+    }
+
+    private suspend fun pickUpTask2() {
         val list = getPickUpArea()
         if (list == null) {
             //没有刷出来数据
@@ -93,12 +106,13 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         click(list)//这里接受全部的任务
         takeScreen(doubleClickInterval)
         //TODO 点击领取任务区域
-        val rightClickArea = CoordinateArea(0,0,0,0,)
-        if(waitImgTask2(en.isQianWangTask,rightClickArea)){
-            click(en.qianWangArea)
+        val rightClickArea = CoordinateArea(0, 0, 0, 0)
+        if (waitImgTask2(en.isShowLeftDialogBox, rightClickArea)) {
+            // click(en.qianWangArea)
+            clickTheDialogueClose()
             nowTask = BATTLE_NAVIGATION_MONITORING
             return
-        }else{
+        } else {
             nowTask = ABNORMAL_STATE
             return
         }
@@ -106,7 +120,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
 
     //放弃任务
-    private fun aboundTask(){
+    private fun aboundTask() {
 
     }
 
@@ -134,6 +148,39 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         return clickArea
     }
 
+
+    private suspend fun startNavigationMonitoring() {
+        Timber.d("monitoringReturnStatus FightController NWQ_ 2023/4/11");
+        var flag = true
+        val maxCount = 15 * 60
+        var count = maxCount
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (en.isCanLockTask.verificationRule(screenBitmap)) {
+                nowTask = COMBAT_MONITORING
+                return
+            } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
+                click(en.confirmDialogEnsureArea)
+            } else if (en.isClosePositionMenuT.verificationRule(screenBitmap)) {
+
+
+            } else if (count < maxCount - 10 && !en.isSailingT.verificationRule(screenBitmap)
+                && en.isCloseEyeMenuT.verificationRule(screenBitmap) && en.isOpenEyeMenuT.verificationRule(
+                    screenBitmap
+                )
+            ) {
+                clickPositionMenu(warehouseIndex)
+            }
+            count--
+        }
+        if (count == 0 && flag) {
+            runSwitch = false
+            return
+        }
+    }
 
     private suspend fun combatMonitoring() {
         var flag = true
