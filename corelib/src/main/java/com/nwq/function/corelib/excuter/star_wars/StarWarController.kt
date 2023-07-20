@@ -189,18 +189,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
 
-    protected suspend fun ensureOpenBigMenuArea(index: Int) {
 
-    }
-
-    protected suspend fun clickPositionMenu(index: Int) {
-
-    }
-
-    //这个方法要将出现眼睛或者在空间站
-    protected suspend fun theOutCheck() {
-
-    }
 
     //这个是在战斗中飞回
     protected suspend fun emergencyEvacuation(flag: Boolean = true) {
@@ -229,7 +218,26 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-    protected fun  unloadingCargo(){
+    protected suspend fun ensureOpenBigMenuArea(index: Int) {
+        TODO("Not yet implemented")
+    }
 
+    protected suspend fun clickPositionMenu(index: Int) {
+        TODO("Not yet implemented")
+    }
+
+    //这个方法要将出现眼睛或者在空间站
+    protected suspend fun theOutCheck() {
+        TODO("Not yet implemented")
+    }
+
+
+    protected fun  unloadingCargo(){
+        TODO("Not yet implemented")
+    }
+
+
+    protected fun outGame() {
+        TODO("Not yet implemented")
     }
 }
