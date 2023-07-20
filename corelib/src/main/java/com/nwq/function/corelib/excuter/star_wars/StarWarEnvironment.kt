@@ -1199,7 +1199,8 @@ object StarWarEnvironment {
     }
 
     val IsNormalTaskList by lazy {
-        arrayOf(item1IsNormalTask,
+        arrayOf(
+            item1IsNormalTask,
             item1IsNormalTask.copyOffset("item2IsNormal",itemOffset,0),
             item1IsNormalTask.copyOffset("item3IsNormal",itemOffset*2,0))
     }
@@ -1300,6 +1301,8 @@ object StarWarEnvironment {
     }
 
 
+    //pickUpTask
+    val pickUpTaskArea by lazy { CoordinateArea(565,626,451,70)}
     val pickUp1ItemTask by lazy {
         val tag = "pickUp1Item"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 236,175,254,190,254,188,
@@ -1366,11 +1369,12 @@ object StarWarEnvironment {
         pointList.add(PointRule(CoordinatePoint(767, 672), ruleRatio2
             //red46 green95 blue89
         ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel)
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            clickArea = pickUpTaskArea
+        }
     }
 
-    //pickUpTask
-    val pickUpTaskArea by lazy { CoordinateArea(565,626,451,70)}
+
 
     val pickUpItemList by lazy {
         arrayOf(
@@ -1380,6 +1384,7 @@ object StarWarEnvironment {
     }
 
 
+    val refreshTaskArea by lazy { CoordinateArea(1311,176,245,92)}
     //是否可以刷新任务
     val isCanRefreshTask by lazy {
         val tag = "isCanRefresh"
@@ -1391,7 +1396,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(1336, 216), ruleRatio1
             //red163 green178 blue175
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(1345, 209), ruleRatio1
             //red157 green173 blue170
@@ -1423,10 +1428,12 @@ object StarWarEnvironment {
         pointList.add(PointRule(CoordinatePoint(1321, 204), ruleRatio2
             //red17 green19 blue18
         ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel)
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            clickArea =refreshTaskArea
+        }
     }
 
-    val refreshTaskArea by lazy { CoordinateArea(1311,176,245,92)}
+
 
     private val itemTopOffset = 378  //X 条目X轴位 378
     private val topItemInver =130

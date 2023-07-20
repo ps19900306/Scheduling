@@ -11,7 +11,9 @@ import com.nwq.function.corelib.Constant.fastClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.click.SimpleClickUtils
 import com.nwq.function.corelib.click.task.ClickTask
+import com.nwq.function.corelib.img.task.BasicImgTask
 import com.nwq.function.corelib.img.task.ImgTask
+import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import kotlin.coroutines.resume
@@ -30,7 +32,7 @@ abstract class BaseController(
 
     var screenBitmap: Bitmap? = null
     var runSwitch = true
-    private val  waitTaskTime = 5
+    private val waitTaskTime = 5
 
     abstract fun startWork()
 
@@ -40,8 +42,17 @@ abstract class BaseController(
         runSwitch = false
     }
 
+    protected suspend fun click(coordinateArea: CoordinateArea?) {
+        coordinateArea?.let {
+            click(it.toClickTask())
+        }
+    }
 
-    protected suspend fun click(listArea: MutableList<CoordinateArea>?,offsetX: Int=0, offsetY: Int=0) {
+    protected suspend fun click(
+        listArea: List<CoordinateArea>?,
+        offsetX: Int = 0,
+        offsetY: Int = 0
+    ) {
         if (listArea == null)
             return
         var delayTime = 0L
@@ -76,10 +87,29 @@ abstract class BaseController(
 
 
     protected suspend fun waitImgTask(task: ImgTask, times: Int = waitTaskTime): Boolean {
-        return waitImgTask(task,task.clickArea,times)
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(Constant.normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (task.verificationRule(screenBitmap!!)) {
+                task.getOfsArea()?.toClickTask()?.let {
+                    click(it)
+                }
+                return true
+            }
+            count--
+        }
+        return false
     }
 
-    protected suspend fun waitImgTask(task: ImgTask, coordinateArea: CoordinateArea?, times: Int = waitTaskTime): Boolean {
+    protected suspend fun waitImgTask(
+        task: ImgTask,
+        coordinateArea: CoordinateArea?,
+        times: Int = waitTaskTime
+    ): Boolean {
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
@@ -100,10 +130,30 @@ abstract class BaseController(
 
 
     protected suspend fun waitImgTask2(task: ImgTask, times: Int = waitTaskTime): Boolean {
-        return waitImgTask2(task,task.clickArea,times)
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(Constant.normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (task.verificationRule(screenBitmap!!)) {
+                return true
+            } else {
+                task.getOfsArea()?.toClickTask()?.let {
+                    click(it)
+                }
+            }
+            count--
+        }
+        return false
     }
 
-    protected suspend fun waitImgTask2(task: ImgTask,coordinateArea: CoordinateArea?, times: Int = waitTaskTime): Boolean {
+    protected suspend fun waitImgTask2(
+        task: ImgTask,
+        coordinateArea: CoordinateArea?,
+        times: Int = waitTaskTime
+    ): Boolean {
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
@@ -123,11 +173,17 @@ abstract class BaseController(
         return false
     }
 
+
+
     protected suspend fun waitImgNotTask(task: ImgTask, times: Int = waitTaskTime): Boolean {
-        return waitImgNotTask(task,task.clickArea,times)
+        return waitImgNotTask(task, task.clickArea, times)
     }
 
-    protected suspend fun waitImgNotTask(task: ImgTask,coordinateArea: CoordinateArea?,times: Int = waitTaskTime): Boolean {
+    protected suspend fun waitImgNotTask(
+        task: ImgTask,
+        coordinateArea: CoordinateArea?,
+        times: Int = waitTaskTime
+    ): Boolean {
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
@@ -136,6 +192,55 @@ abstract class BaseController(
                 return false
             }
             if (!task.verificationRule(screenBitmap!!)) {
+                return true
+            } else {
+                coordinateArea?.toClickTask()?.let {
+                    click(it)
+                }
+            }
+            count--
+        }
+        return false
+    }
+
+    protected suspend fun waitImgTaskList(
+        taskList: Array<ImgTaskImpl1>,
+        times: Int = waitTaskTime
+    ): List<Int> {
+        val list = mutableListOf<Int>()
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(Constant.doubleClickInterval)) {
+                runSwitch = false
+                return list
+            }
+            taskList.forEachIndexed { index, imgTask ->
+                if (imgTask.verificationRule(screenBitmap)) {
+                    list.add(index)
+                }
+            }
+            if (list.isNotEmpty()) {
+                flag = false
+            }
+            count--
+        }
+        return list
+    }
+
+    protected suspend fun waitImgTask1List2(
+        tasks: List<ImgTask>,
+        coordinateArea: CoordinateArea?,
+        times: Int = waitTaskTime
+    ): Boolean {
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(Constant.normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (tasks.find { it.verificationRule(screenBitmap!!) } != null) {
                 return true
             } else {
                 coordinateArea?.toClickTask()?.let {
@@ -218,5 +323,13 @@ abstract class BaseController(
 
     fun pressHomeBtn() {
         acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+    }
+
+    suspend fun BasicImgTask.check():Boolean{
+        return this.verificationRule(screenBitmap)
+    }
+
+    suspend fun CoordinateArea.clickA():Unit{
+              click(this)
     }
 }

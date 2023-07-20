@@ -14,7 +14,9 @@ import timber.log.Timber
  * 不能实列化
  */
 abstract class ImgTask(
-   protected val iprList: List<IPR>,protected val tag: String,protected val correctModel: CorrectPositionModel? = null
+    protected val iprList: List<IPR>,
+    protected val tag: String,
+    protected val correctModel: CorrectPositionModel? = null
 ) : BasicImgTask() {
 
     var clickArea: CoordinateArea? = null //如果
@@ -51,21 +53,29 @@ abstract class ImgTask(
 
     //这里有补充值
     fun getOffsetX(): Int {
-        return correctModel?.getOffsetXSupple()?:0
+        return correctModel?.getOffsetXSupple() ?: 0
     }
 
     fun getOffsetY(): Int {
-        return correctModel?.getOffsetYSupple()?:0
+        return correctModel?.getOffsetYSupple() ?: 0
+    }
+
+    fun getOfsArea(): CoordinateArea? {
+        clickArea?.let {
+            it.offsetX = getOffsetX()
+            it.offsetY = getOffsetY()
+        }
+        return clickArea
     }
 
     //这里没有补充值
     fun getOffX(): Int {
-        return correctModel?.offsetX?:0
+        return correctModel?.offsetX ?: 0
     }
 
     //这里没有补充值点
     fun getOffY(): Int {
-        return correctModel?.offsetY?:0
+        return correctModel?.offsetY ?: 0
     }
 
 }
