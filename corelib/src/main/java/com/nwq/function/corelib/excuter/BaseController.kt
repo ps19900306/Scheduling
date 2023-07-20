@@ -11,6 +11,7 @@ import com.nwq.function.corelib.Constant.fastClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.click.SimpleClickUtils
 import com.nwq.function.corelib.click.task.ClickTask
+import com.nwq.function.corelib.img.task.BasicImgTask
 import com.nwq.function.corelib.img.task.ImgTask
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import kotlinx.coroutines.delay
@@ -322,5 +323,9 @@ abstract class BaseController(
 
     fun pressHomeBtn() {
         acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+    }
+
+    suspend fun BasicImgTask.check():Boolean{
+        return this.verificationRule(screenBitmap)
     }
 }

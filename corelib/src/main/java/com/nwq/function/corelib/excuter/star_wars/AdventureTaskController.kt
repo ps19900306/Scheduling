@@ -138,7 +138,11 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         }
         click(list)//这里接受全部的任务
         takeScreen(doubleClickInterval)
-        //TODO 点击领取任务区域
+        if(en.isEndNormalTask.check()){
+            click(en.endNormalArea)
+        }else{
+
+        }
         val rightClickArea = CoordinateArea(0, 0, 0, 0)
         if (waitImgTask2(en.isQianWangTask, rightClickArea)) {
             delay(normalClickInterval)
@@ -216,7 +220,6 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private suspend fun combatMonitoring() {
         var flag = true
         var count = 200
-        nowTask = PICK_UP_TASK
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false

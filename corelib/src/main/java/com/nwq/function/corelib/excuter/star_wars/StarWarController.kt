@@ -64,28 +64,20 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     private suspend fun hasIntoGame(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
             return false
-        return (en.isClosePositionMenuT.verificationRule(bitmap) || en.isOpenPositionMenuT.verificationRule(
-            bitmap
-        ))
-                && (en.isInSpaceStationT.verificationRule(bitmap) || en.isOpenEyeMenuT.verificationRule(
-            bitmap
-        ) || en.isCloseEyeMenuT.verificationRule(bitmap))
+        return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()
+                && (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check()|| en.isCloseEyeMenuT.check()))
     }
 
     protected suspend fun hasTaskDialogBox(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
             return false
-        return (en.isShowLeftDialogBox.verificationRule(bitmap) || en.isShowLeftDialogBox.verificationRule(
-            bitmap
-        ))
+        return (en.isShowLeftDialogBox.check() || en.isShowLeftDialogBox.check())
     }
 
     protected suspend fun isInSailing(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
             return false
-        return (en.isOpenPositionMenuT.verificationRule(bitmap) || en.isSailingT.verificationRule(
-            bitmap
-        ))
+        return (en.isOpenPositionMenuT.check() || en.isSailingT.check())
     }
 
 
@@ -96,17 +88,17 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreenBitmap(doubleClickInterval)
             if (bitmap.isOrientation()) {
-                if (en.isLoadingGameT.verificationRule(bitmap)) {
-                } else if (en.isAnnouncementT.verificationRule(bitmap)) {
+                if (en.isLoadingGameT.check()) {
+                } else if (en.isAnnouncementT.check()) {
                     click(en.isAnnouncementT, en.closeAnnouncementArea.toClickTask())
-                } else if (en.isUpdateGameT.verificationRule(bitmap)) {
+                } else if (en.isUpdateGameT.check()) {
                     click(en.isUpdateGameT, en.updateGameArea.toClickTask())
                     delay(tripleClickInterval)
-                } else if (en.isStartGameT.verificationRule(bitmap)) {
+                } else if (en.isStartGameT.check()) {
                     click(en.isStartGameT, en.isStartGameArea.toClickTask())
-                } else if (en.isSelectRoleT.verificationRule(bitmap)) {
+                } else if (en.isSelectRoleT.check()) {
                     click(en.isSelectRoleT, en.selectRoleArea.toClickTask())
-                } else if (en.isOpenBigMenuT.verificationRule(bitmap)) {
+                } else if (en.isOpenBigMenuT.check()) {
                     click(en.isOpenBigMenuT, en.closeBigMenuArea.toClickTask())
                 } else if (hasIntoGame(bitmap)) {
                     receiveDailyGift()
@@ -125,13 +117,13 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             runSwitch = false
             return
         }
-        val hasTips = en.isGiftMenuTipsT.verificationRule(screenBitmap)
+        val hasTips = en.isGiftMenuTipsT.check()
         if (hasTips) {
-            val isInSpace = en.isInSpaceStationT.verificationRule(screenBitmap)
+            val isInSpace = en.isInSpaceStationT.check()
             waitImgNotTask(en.isGiftMenuTipsT)
             if (waitImgTask(en.isCanCollectGiftT)) {
                 click(en.openCollectGiftArea.toClickTask())
-                if (isInSpace && en.isCollectChipT.verificationRule(screenBitmap)) {
+                if (isInSpace && en.isCollectChipT.check()) {
                     delay(normalClickInterval)
                     click(en.collectChipMenuArea.toClickTask())
                     waitImgTask(en.isCollectChipMenuT)
@@ -172,10 +164,10 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             if (!bitmap.isOrientation()) {
                 click(getAppArea().toClickTask())
                 count--
-            } else if (endTask.find { !it.verificationRule(bitmap) } == null) {
+            } else if (endTask.find { !it.check() } == null) {
                 flag = false
             } else {
-                val nowTask = midList.find { it.verificationRule(bitmap) }
+                val nowTask = midList.find { it.check() }
                 if (nowTask == null) {
                     count--
                 } else {
@@ -193,19 +185,17 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
     //这个是在战斗中飞回
     protected suspend fun emergencyEvacuation(flag: Boolean = true) {
-        if (en.isInSpaceStationT.verificationRule(screenBitmap)) {
+        if (en.isInSpaceStationT.check()) {
             //这里是已经成功回到空间站了
 
-        } else if (en.isOpenPositionMenuT.verificationRule(screenBitmap)) {
+        } else if (en.isOpenPositionMenuT.check()) {
             //坐标菜单打开的
             clickPositionMenu(warehouseIndex)
-        } else if (en.isClosePositionMenuT.verificationRule(screenBitmap)) {
+        } else if (en.isClosePositionMenuT.check()) {
             //坐标菜关闭的
             waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
             clickPositionMenu(warehouseIndex)
-        } else if (en.isOpenEyeMenuT.verificationRule(screenBitmap) || en.isCloseEyeMenuT.verificationRule(
-                screenBitmap
-            )
+        } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()
         ) { //这里是坐标菜单被遮挡了
             waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
             clickPositionMenu(warehouseIndex)
