@@ -37,12 +37,12 @@ open class CorrectPositionModel(
         if (xRange == 0 && yRange == 0) {
             hasCorrect = true
         } else if (!everyRevalidation) {
-            val spStr by SPRepoPrefix.getNowSPRepo().getRecordImgTaskDeviation(tag)
-            if (!TextUtils.isEmpty(spStr)) {
-                JsonUtil.anyToJsonObject<OffsetRecord>(spStr)?.let {
-                    correctCoordinate(it.offsetX, it.offsetY, false)
-                }
-            }
+//            val spStr by SPRepoPrefix.getNowSPRepo().getRecordImgTaskDeviation(tag)
+//            if (!TextUtils.isEmpty(spStr)) {
+//                JsonUtil.anyToJsonObject<OffsetRecord>(spStr)?.let {
+//                    correctCoordinate(it.offsetX, it.offsetY, false)
+//                }
+//            }
         }
     }
 

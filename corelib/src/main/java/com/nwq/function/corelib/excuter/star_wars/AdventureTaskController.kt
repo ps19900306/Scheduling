@@ -5,6 +5,7 @@ import com.nwq.function.corelib.Constant.doubleClickInterval
 import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.EndLister
+import com.nwq.function.corelib.excuter.star_wars.data.QuickBigMenu
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -89,7 +90,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
 
     private suspend fun pickTask() {
-        ensureOpenBigMenuArea(TASK_BIG_MUNU_P)
+        ensureOpenBigMenuArea(QuickBigMenu.TASK_BIG_MUNU_P)
         val isNoTask = waitImgTask(isNotTask)
         //TODO 点击去领取任务的区域
         val goClickArea = CoordinateArea(0, 0, 0, 0)

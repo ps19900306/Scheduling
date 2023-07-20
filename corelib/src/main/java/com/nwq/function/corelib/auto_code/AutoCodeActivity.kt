@@ -151,12 +151,12 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                        StarWarEnvironment.topDeviceList.forEach {
+                        StarWarEnvironment.isEndNormalList.forEach {
                             it.verificationRule(mBitmap)
                         }
-                        StarWarEnvironment.bottomDeviceList.forEach {
-                            it.verificationRule(mBitmap)
-                        }
+//                        StarWarEnvironment.bottomDeviceList.forEach {
+//                            it.verificationRule(mBitmap)
+//                        }
                     //    StarWarEnvironment.isCanLockTask.verificationRule(mBitmap)
                     }
                     bind.indexLayout.root.isVisible = true
