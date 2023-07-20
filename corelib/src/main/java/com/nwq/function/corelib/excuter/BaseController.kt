@@ -328,4 +328,8 @@ abstract class BaseController(
     suspend fun BasicImgTask.check():Boolean{
         return this.verificationRule(screenBitmap)
     }
+
+    suspend fun CoordinateArea.clickA():Unit{
+              click(this)
+    }
 }
