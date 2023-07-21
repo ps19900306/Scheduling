@@ -254,6 +254,10 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                         val codeStr = "val clickArea by lazy { CoordinateArea(${it.x},${it.y},${it.width},${it.height})}"
                         val clipData = ClipData.newPlainText("autoCode", codeStr)
                         manager.setPrimaryClip(clipData)
+                        bind.okTv.isGone = true
+                        nowMode = NORMAL_MODE
+                        bind.indexLayout.root.isVisible = true
+                        bind.imgFeatureLayout.root.isGone = true
                     }
                 }
                 OPT_POINT -> {
