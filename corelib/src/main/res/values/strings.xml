@@ -32,5 +32,5 @@
     <string name="filter_out_areas">过滤掉区域</string>
     <string name="full_screen">全屏幕</string>
     <string name="mini_steps">最小步数</string>
-    <string name="sort_by_x">x轴排序</string>
+    <string name="sort_by_x">x轴倒序</string>
 </resources>

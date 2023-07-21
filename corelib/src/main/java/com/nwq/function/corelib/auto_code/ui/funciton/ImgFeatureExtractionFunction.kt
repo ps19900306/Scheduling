@@ -344,7 +344,7 @@ class ImgFeatureExtractionFunction(
 //           }
 //        }
         if(sortByX){
-            val tempLIST=   points.sortedBy {
+            val tempLIST=   points.sortedByDescending {
                 it.x }
             points.clear()
             points.addAll(tempLIST)
