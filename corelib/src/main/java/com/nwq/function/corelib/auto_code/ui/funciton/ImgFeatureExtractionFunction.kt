@@ -1,9 +1,6 @@
 package com.nwq.function.corelib.auto_code.ui.funciton
 
 import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,28 +17,18 @@ import com.nwq.function.corelib.auto_code.ui.adapter.FunctionItemAdapter.Compani
 import com.nwq.function.corelib.auto_code.ui.data.FeatureCoordinatePoint
 import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
-import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_AREA
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_FEATURE_KEY
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.ADD_POINT
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_POINT
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.FILTER_OUT_AREAS
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.FIND_IMAGE_AREA
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
-import com.nwq.function.corelib.img.pcheck.IPR
-import com.nwq.function.corelib.img.pcheck.PointRule
-import com.nwq.function.corelib.img.rule.ColorIdentificationRule
-import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
-import com.nwq.function.corelib.img.rule.ColorRuleRatioUnImpl
-import com.nwq.function.corelib.img.task.CorrectPositionModel
-import com.nwq.function.corelib.img.task.FindImgTask
-import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.ToastHelper
 import com.nwq.function.corelib.utils.runOnUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.StringBuilder
-import kotlin.math.min
 
 /**
 create by: 86136
@@ -83,7 +70,7 @@ class ImgFeatureExtractionFunction(
     private var showFeature = true
     private var showBoundary = false
     private var useBackground = true
-    private var pointnterval: Int = 0
+    private var takePointCount: Int = 0
     private var minStep: Int = 0
     private var useInverseValue = false //true 背景点取相对颜色的反值， false 使用自己的颜色特性
     private var allPointKey = true//true 对全部的点规则生成特诊该规则
@@ -129,7 +116,7 @@ class ImgFeatureExtractionFunction(
         mFunctionItemAdapter = FunctionItemAdapter(functionItemList) { i, S ->
             when (i) {
                 R.string.take_point_interval -> {
-                    pointnterval = S.toIntOrNull() ?: 0
+                    takePointCount = S.toIntOrNull() ?: 0
                 }
                 R.string.mini_steps -> {
                     minStep = S.toIntOrNull() ?: 0
@@ -159,7 +146,7 @@ class ImgFeatureExtractionFunction(
                 }
                 R.string.auto_exc -> {
                     mBaseImgProcess.autoExc(
-                        useBackground, pointnterval, allPointKey, useInverseValue
+                        useBackground, takePointCount, allPointKey, useInverseValue
                     )
                 }
                 R.string.auto_code -> {
@@ -443,17 +430,17 @@ class ImgFeatureExtractionFunction(
             if (mDirectorPointKey?.colorRuleRatioImpl != null) {
                 val oKey = mDirectorPointKey!!.colorRuleRatioImpl!!
                 (tempMap2[mDirectorPointKey!!]
-                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)")) + "\n //red$red green$green blue$blue \n"
+                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)")) + "\n //red$red green$green blue$blue blockNumber${this.blockNumber}\n"
             } else {
                 val oKey = mDirectorPointKey!!
                 (tempMap2[mDirectorPointKey!!]
-                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F)")) + "\n //red$red green$green blue$blue \n"
+                    ?: ("ColorRuleRatioUnImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.maxRToG}F,${oKey.minRToG}F,${oKey.maxRToB}F,${oKey.minRToB}F,${oKey.maxGToB}F, ${oKey.minGToB}F)")) + "\n //red$red green$green blue$blue blockNumber${this.blockNumber}\n"
             }
         } else {
             if (mFeaturePointKey?.colorRuleRatioImpl != null) {
                 val oKey = mFeaturePointKey!!.colorRuleRatioImpl!!
                 (tempMap[mFeaturePointKey!!]
-                    ?: ("ColorRuleRatioImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)")) + "\n //red$red green$green blue$blue \n"
+                    ?: ("ColorRuleRatioImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)")) + "\n //red$red green$green blue$blue blockNumber${this.blockNumber}\n"
             } else {
                 "ColorRuleRatioImpl.getSimple(${red},${green},${blue})"
             }

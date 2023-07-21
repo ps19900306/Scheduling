@@ -1986,26 +1986,7 @@ object StarWarEnvironment {
     }
 
 
-    val isOpenTask by lazy {
-        val tag = "isOpen"
-        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 172,113,172,111,172,111,
-            1.0669354F,0.8939189F,1.0754032F,0.8939189F,1.0669354F, 0.8787402F)
-        val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(236, 164), ruleRatio1
-            //red139 green139 blue139
-        ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
-        val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(236, 164), ruleRatio1
-            //red139 green139 blue139
-        ))
-        pointList.add(PointRule(CoordinatePoint(242, 164), ruleRatio1
-            //red147 green148 blue150
-        ))
-        pointList.add(PointRule(CoordinatePoint(234, 180), ruleRatio1
-            //red159 green159 blue159
-        ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel)
-    }
+
+
 
 }

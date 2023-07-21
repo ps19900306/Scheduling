@@ -41,6 +41,7 @@ class FeatureCoordinatePoint(
     var startY = 0
     var sequenceNumber = 0  //这个是进行排序使用的
 
+    var blockNumber = 0 //这个是分块的信息 到时候方便进行取舍
 
     fun setStartPosition() {
         hasContinuousSet = true
@@ -64,6 +65,7 @@ class FeatureCoordinatePoint(
         return if (hasFindRound) {
             null
         } else if (isBoundary()) {
+            blockNumber = p.blockNumber
             hasFindRound = true
             this
         } else {
