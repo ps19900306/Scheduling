@@ -28,7 +28,7 @@ class BaseImgProcess(
 ) {
 
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
-    private val MIN_PICKING_INTERVAL = 10 //这里是间隔多少个点进行一次取值
+    private val TAKE_POINT_COUNT = 6 //这里是最少取多少个特质点
     private val minPointInterval = 8 //最小取点间隔
     var minStep = 2
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
@@ -137,7 +137,7 @@ class BaseImgProcess(
                     }
                     val result = obtainFeaturePoints(
                         it.value,
-                        if (takePointCount > 0) takePointCount else 10
+                        if (takePointCount > 0) takePointCount else TAKE_POINT_COUNT
                     )
                     if (useBackground) addBackground(result)
                     Timber.d("${result.size} autoExc BaseImgProcess NWQ_ 2023/6/7");
@@ -409,8 +409,7 @@ class BaseImgProcess(
         while (startPoint != null) {
             Timber.d("第${i++}个块 obtainFeaturePoints BaseImgProcess NWQ_ 2023/6/7");
             startPoint.setStartPosition()
-            startPoint.blockNumber = i
-            val extremePoints = groupBlock(startPoint, originalList.size, takePointCount)
+            val extremePoints = groupBlock(startPoint,i, originalList.size, takePointCount)
             list.addAll(extremePoints)
             startPoint = originalList.find { !it.hasContinuousSet }//&& it.isBoundary()
         }
@@ -422,7 +421,7 @@ class BaseImgProcess(
         val result = list.map { point ->
             var result = point
             getPointSurround(point, 1, true, true) { nextPoint ->
-                if (nextPoint.isInternal()) {
+                if (nextPoint.isInternal() && point.blockNumber == nextPoint.blockNumber ) {
                     result = nextPoint
                     true
                 } else {
@@ -438,7 +437,9 @@ class BaseImgProcess(
 
     //对相同的特征色值的 根据连接度对组进行分块
     private fun groupBlock(//这里是根据起始点进行眼神
-        startPoint: FeatureCoordinatePoint, allSize: Int, //这个是已经作为关键点添加了的
+        startPoint: FeatureCoordinatePoint,
+        sortNumber:Int,
+        allSize: Int, //这个是已经作为关键点添加了的
         takePoints: Int
     ): List<FeatureCoordinatePoint> {
 
@@ -500,7 +501,10 @@ class BaseImgProcess(
                 }
             }
         }
-        Timber.d(" step:$step size${blockList.size} extremePoints${extremePoints.size} groupBlock BaseImgProcess NWQ_ 2023/6/22");
+        extremePoints.forEach {
+            it.blockNumber = sortNumber
+        }
+        Timber.d(" step:$step size:${blockList.size} extremePoints:${extremePoints.size} groupBlock BaseImgProcess NWQ_ 2023/6/22");
         return extremePoints
     }
 
@@ -672,7 +676,6 @@ class BaseImgProcess(
 
             return resultList.subList(0, datumPointSize)
         } else {
-
             return resultList
         }
     }

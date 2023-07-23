@@ -55,34 +55,31 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
                 pressHomeBtn()
                 delay(doubleClickInterval)
             }
-            intoGame()
+            if (intoGame()) {
+                generalControlMethod()
+            }
         }
     }
 
     private suspend fun hasIntoGame(bitmap: Bitmap?): Boolean {
-        if (bitmap == null)
-            return false
-        return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()
-                && (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()))
+        if (bitmap == null) return false
+        return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check() && (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()))
     }
 
-    protected suspend fun hasTaskDialogBox(bitmap: Bitmap?): Boolean {
-        if (bitmap == null)
-            return false
+    protected suspend fun hasTaskDialogBox(): Boolean {
         return (en.isShowLeftDialogBox.check() || en.isShowLeftDialogBox.check())
     }
 
     protected suspend fun isInSailing(bitmap: Bitmap?): Boolean {
-        if (bitmap == null)
-            return false
+        if (bitmap == null) return false
         return (en.isOpenPositionMenuT.check() || en.isSailingT.check())
     }
 
 
     //进入游戏的进入逻辑
-    protected suspend fun intoGame() {
+    protected suspend fun intoGame(): Boolean {
         var flag = true
-        var count = 10
+        var count = 20
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreenBitmap(doubleClickInterval)
             if (bitmap.isOrientation()) {
@@ -108,13 +105,10 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
                 count--
             }
         }
+        return !flag
     }
 
     private suspend fun receiveDailyGift() {
-        if (takeScreen(fastClickInterval) || !runSwitch) {
-            runSwitch = false
-            return
-        }
         val hasTips = en.isGiftMenuTipsT.check()
         if (hasTips) {
             val isInSpace = en.isInSpaceStationT.check()
@@ -127,30 +121,15 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
                     waitImgTask(en.isCollectChipMenuT)
                     delay(normalClickInterval)
                     click(en.CloseCollectChipMenuArea.toClickTask())
+                    delay(normalClickInterval)
+                    waitImgNotTask(en.isHasTakeTask, en.hasTakeArea)
                 } else {
                     delay(normalClickInterval)
                     click(en.closeCollectGiftArea.toClickTask())
                 }
             }
-
-            var flag = true
-            var count = 5
-            while (flag && count > 0 && runSwitch) {
-                if (!takeScreen(doubleClickInterval) || !runSwitch) {
-                    runSwitch = false
-                    return
-                }
-                if (hasIntoGame(screenBitmap)) {
-                    flag = false
-                } else {
-                    pressBackBtn()
-                }
-                count--
-            }
         }
-
     }
-
 
     private suspend fun executionResults(
         endTask: List<BasicImgTask>, midList: List<ImgTaskImpl1>
@@ -182,8 +161,6 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     //这个是在战斗中飞回
     protected suspend fun emergencyEvacuation(flag: Boolean = true) {
         if (en.isInSpaceStationT.check()) {
-            //这里是已经成功回到空间站了
-
         } else if (en.isOpenPositionMenuT.check()) {
             //坐标菜单打开的
             clickPositionMenu(warehouseIndex)
@@ -191,8 +168,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             //坐标菜关闭的
             waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
             clickPositionMenu(warehouseIndex)
-        } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()
-        ) { //这里是坐标菜单被遮挡了
+        } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) { //这里是坐标菜单被遮挡了
             waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
             clickPositionMenu(warehouseIndex)
         } else { //这里是没有在前台界面
@@ -215,7 +191,11 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             if (en.isOpenBigMenuT.check()) {
                 when (index) {
                     QuickBigMenu.WAREHOUSE_BIG_MUNU_P -> {
-
+                        if (en.isOpenWarehouseBigMenuTask.check()) {
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.clickA()
+                        }
                     }
                     QuickBigMenu.TASK_BIG_MUNU_P -> {
                         if (en.isOpenJiyuBigMenuTask.check()) {
@@ -225,50 +205,60 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
                         }
                     }
                     QuickBigMenu.PLANETARY_ORE_MUNU_P -> {
-
+                        if (en.isOpenCaiBigMenuTask.check()) {
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.clickA()
+                        }
                     }
                 }
             } else {
                 //这里判断有图行再进行点击防止被阻挡导致错点
                 when (index) {
                     QuickBigMenu.WAREHOUSE_BIG_MUNU_P -> {
-
+                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                            en.openWarehouseItemArea.clickA()
+                        }
                     }
                     QuickBigMenu.TASK_BIG_MUNU_P -> {
-                        if (en.isOpenJiyuBigMenuTask.check()) {
-                            flag = false
-                        } else {
-                            en.closeBigMenuArea.clickA()
+                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                            en.openJiYuItemArea.clickA()
                         }
                     }
                     QuickBigMenu.PLANETARY_ORE_MUNU_P -> {
-
+                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                            en.openCaiItemArea.clickA()
+                        }
                     }
                 }
             }
+            count--
         }
         return !flag
     }
 
-    protected suspend fun clickQuickBigMenu(index: Int) {
-        TODO("Not yet implemented")
-    }
-
 
     protected suspend fun clickPositionMenu(index: Int) {
-        TODO("Not yet implemented")
+
+        if (en.isClosePositionMenuT.check()) {
+            //坐标菜关闭的
+            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
+
+        } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) { //这里是坐标菜单被遮挡了
+            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
+
+        }
     }
 
     //这个方法要将出现眼睛或者在空间站
     protected suspend fun theOutCheck() {
-        TODO("Not yet implemented")
+
     }
 
 
     protected fun unloadingCargo() {
         TODO("Not yet implemented")
     }
-
 
     protected fun outGame() {
         TODO("Not yet implemented")

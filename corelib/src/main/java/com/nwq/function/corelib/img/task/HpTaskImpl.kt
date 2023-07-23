@@ -45,7 +45,7 @@ open class HpTaskImpl(
 
 
     //这里传递对应血条的判断
-    fun copyHpOffset(tag:String,correctModel:CorrectPositionModel): HpTaskImpl {
+    fun copyHpOffset(tag:String,correctModel:CorrectPositionModel?): HpTaskImpl {
         return HpTaskImpl(iprList,tag,correctModel)
     }
 

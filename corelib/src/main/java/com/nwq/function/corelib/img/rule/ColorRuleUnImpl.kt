@@ -32,13 +32,14 @@ class ColorRuleUnImpl(
     companion object {
         private val list = mutableListOf<ColorRuleUnImpl>()
 
+
         fun getSimple(
-            maxRed: Int,
-            minRed: Int,
-            maxGreen: Int,
-            minGreen: Int,
-            maxBlue: Int,
-            minBlue: Int
+            maxRed: Int = 255,
+            minRed: Int = 0,
+            maxGreen: Int = 255,
+            minGreen: Int = 0,
+            maxBlue: Int = 255,
+            minBlue: Int = 0,
         ): ColorRuleUnImpl {
             return list.find { it.maxRed == maxRed && it.minRed == minRed && it.maxGreen == maxGreen && it.minGreen == minGreen && it.maxBlue == maxBlue && it.minBlue == minBlue }
                 ?: ColorRuleUnImpl(maxRed, minRed, maxGreen, minGreen, maxBlue, minBlue).apply {
@@ -47,5 +48,8 @@ class ColorRuleUnImpl(
         }
     }
 
+    fun getAllLess(min: Int): ColorRuleUnImpl {
+        return ColorRuleUnImpl.getSimple(maxRed = min, maxBlue = min, maxGreen = min)
+    }
 
 }

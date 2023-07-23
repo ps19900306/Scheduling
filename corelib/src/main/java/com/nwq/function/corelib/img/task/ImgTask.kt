@@ -16,7 +16,7 @@ import timber.log.Timber
 abstract class ImgTask(
     protected val iprList: List<IPR>,
     protected val tag: String,
-    protected val correctModel: CorrectPositionModel? = null
+     val correctModel: CorrectPositionModel? = null
 ) : BasicImgTask() {
 
     var clickArea: CoordinateArea? = null //如果
@@ -60,10 +60,11 @@ abstract class ImgTask(
         return correctModel?.getOffsetYSupple() ?: 0
     }
 
+    //这里只修正相对偏差值 不修正补充的
     fun getOfsArea(): CoordinateArea? {
         clickArea?.let {
-            it.offsetX = getOffsetX()
-            it.offsetY = getOffsetY()
+            it.offsetX = getOffX()
+            it.offsetY = getOffY()
         }
         return clickArea
     }

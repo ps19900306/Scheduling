@@ -33,7 +33,7 @@ class SetRoleInfoActivity2 : AppCompatActivity() {
     var timeOnList1SP by SP(prefixRole + SpConstant.TIME_ON_LIST1, "[11,12]")
     var timeOnList2SP by SP(prefixRole + SpConstant.TIME_ON_LIST2, "")
     var timeOnList3SP by SP(prefixRole + SpConstant.TIME_ON_LIST3, "[10]")
-    var wholeBattleListSP by SP(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
+    var wholeBattleListSP by SP(prefixRole + SpConstant.WHOLE_BATTLE_LIST, "[1,7,8]")
     var roundBattleListSP by SP(prefixRole + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
     var celestialResourcesSP by SP(prefixRole + SpConstant.CELESTIAL_RESOURCES_LIST, "")
     var resourcesBaseLocationSP by SP(prefixRole + SpConstant.RESOURCES_BASE_LOCATION, 0)

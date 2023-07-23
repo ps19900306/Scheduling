@@ -5,6 +5,8 @@ import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.img.pcheck.IPR
 import com.nwq.function.corelib.img.pcheck.PointRule
+import com.nwq.function.corelib.img.rule.ColorRuleRatioUnImpl
+import com.nwq.function.corelib.img.rule.ColorRuleUnImpl
 import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -21,7 +23,7 @@ open class ImgTaskImpl1(
 
 
     var nErrorTolerance: Int = 0 //普通点容错
-    var bErrorTolerance: Int = 2 //背景点容错
+    var bErrorTolerance: Int = iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl }.size -1 //背景点容错
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         if (bitmap == null)

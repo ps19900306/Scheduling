@@ -6,7 +6,7 @@ import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.excuter.star_wars.data.QuickBigMenu
-import com.nwq.function.corelib.img.task.ImgTaskImpl1
+import com.nwq.function.corelib.img.task.HpTaskImpl
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -34,10 +34,16 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private val RESTART_GAME = 401//退出重新进入
     private val EXIT_GAME_ERROR = 1000//异常退出
     private var nowTask = START_GAME
+    private lateinit var listHp: List<HpTaskImpl>
+    private val topTargetMonitor by lazy {
+        TopTargetMonitor(
+            en.topLockTargetList1, en.topTargetHpList1, en.topLockTargetList2, en.topTargetHpList2
+        )
+    }
+    private val bottomDeviceMonitor by lazy {
+        BottomDeviceMonitor(en.topDeviceList, en.bottomDeviceList)
+    }
 
-    private lateinit var topTargetMonitor: TopTargetMonitor
-    private lateinit var bottomDeviceMonitor: BottomDeviceMonitor
-    private lateinit var isNotTask: ImgTaskImpl1
 
     //    var mEnterCombatStatus = false //这个是进入战斗的时间
     private var needBack = false
@@ -47,77 +53,107 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     override suspend fun generalControlMethod() {
         while (runSwitch) {
             when (nowTask) {
-                START_GAME->{
+                START_GAME -> {
                     startGame()
                 }
-                PICK_UP_TASK->{
+                PICK_UP_TASK -> {
                     pickTask()
                 }
-                BATTLE_NAVIGATION_MONITORING->{
+                BATTLE_NAVIGATION_MONITORING -> {
                     startNavigationMonitoring()
                 }
-                COMBAT_MONITORING->{
+                COMBAT_MONITORING -> {
                     combatMonitoring()
                 }
-                MONITORING_RETURN_STATUS->{
+                MONITORING_RETURN_STATUS -> {
                     monitoringReturnStatus()
                 }
-                ALL_COMPLETE->{
+                ALL_COMPLETE -> {
 
                 }
-                CHECK_SHIP->{
+                CHECK_SHIP -> {
 
                 }
-                RESTART_GAME->{//这里先退出游戏再出去
+                RESTART_GAME -> {//这里先退出游戏再出去
                     outGame()
                     delay(doubleClickInterval)
                     intoGame()
                 }
-                ABNORMAL_STATE->{
+                ABNORMAL_STATE -> {
                     theOutCheck()
                     clickPositionMenu(warehouseIndex)
                     nowTask = MONITORING_RETURN_STATUS
                 }
             }
         }
-    }
-
-
-    private fun startGame(){
 
     }
 
+    private suspend fun startGame() {
+        topTargetMonitor.updateInfo(screenBitmap!!)
+        if (topTargetMonitor.lastTargetNumber > 0 || en.isCanLockTask.check()) {
+            nowTask = COMBAT_MONITORING
+        } else {
+            nowTask = PICK_UP_TASK
+        }
+    }
 
 
     private suspend fun pickTask() {
         ensureOpenBigMenuArea(QuickBigMenu.TASK_BIG_MUNU_P)
-        val isNoTask = waitImgTask(isNotTask)
-        //TODO 点击去领取任务的区域
-        val goClickArea = CoordinateArea(0, 0, 0, 0)
+        val isNoTask = isHasJiyuTask()
         if (isNoTask) {
             needCancel = false
-            click(goClickArea)
+            click(en.goJiyuListMenuArea)
             pickUpTask2()
         } else {
             if (needCancel) {
                 aboundTask()
-                click(goClickArea)//这里点击左边的进入任务
+                click(en.goJiyuListMenuArea)//这里点击左边的进入任务
                 pickUpTask2()
-            } else if (waitImgTask2(en.isShowLeftDialogBox, goClickArea)) {//这里要点击接任务的区域
+            } else {
                 //这里点击前往了
-                clickTheDialogueClose()
-                nowTask = BATTLE_NAVIGATION_MONITORING
-            }else{
-                nowTask = ABNORMAL_STATE
-                return
+                en.startJiyuBigArea.clickA()
+                if (clickTheDialogueClose()) {
+                    nowTask = BATTLE_NAVIGATION_MONITORING
+                } else {
+                    nowTask = PICK_UP_TASK
+                }
             }
         }
     }
 
+    private suspend fun aboundTask() {
+        en.openJiyuBigArea.clickA()
+        delay(doubleClickInterval)
+        en.abandonTaskArea.clickA()
+        delay(doubleClickInterval)
+        en.confirmDialogCancelArea.clickA()
+        delay(doubleClickInterval)
+    }
+
+    private suspend fun isHasJiyuTask(): Boolean {
+        var flag = true
+        var count = 3
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(normalClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isNojiYuTask.check()) {
+                return true
+            } else if (en.isBigNormalList.find { it.check() } != null) {
+                return false
+            }
+            count--
+        }
+        return false
+    }
+
+
     private suspend fun pickUpTask2() {
         val list = getPickUpArea()
         //TODO 这里要判断是否完成的
-
         if (list == null) {
             //没有刷出来数据
             nowTask = ABNORMAL_STATE
@@ -139,15 +175,27 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         }
         click(list)//这里接受全部的任务
         takeScreen(doubleClickInterval)
-        if(en.isEndNormalTask.check()){
-            click(en.endNormalArea)
-        }else{
 
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (en.isEndNormalList.find { it.check() } != null) {
+                click(en.endNormalArea)
+            } else if (en.isQianWangTask.check()) {
+                delay(normalClickInterval)
+                click(en.qianWangArea)
+                flag = false
+            } else if (en.isShowLeftDialogBox.check() || en.isConfirmDialogTask.check()) {
+                flag = false
+            }
+            count--
         }
-        val rightClickArea = CoordinateArea(0, 0, 0, 0)
-        if (waitImgTask2(en.isQianWangTask, rightClickArea)) {
-            delay(normalClickInterval)
-            click(en.qianWangArea)
+
+        if (!flag) {
             clickTheDialogueClose()
             nowTask = BATTLE_NAVIGATION_MONITORING
             return
@@ -155,18 +203,36 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             nowTask = ABNORMAL_STATE
             return
         }
+
     }
 
     //pickUp 是否是接取任务
-    private suspend fun clickTheDialogueClose(count: Int = 3): Boolean {
-        return true
+    private suspend fun clickTheDialogueClose(dCount: Int = 3): Boolean {
+        var flag = true
+        var count = dCount
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isShowLeftDialogBox.check()) {
+                en.leftDialogArea.clickA()
+                count = dCount
+            } else if (en.isShowRightDialogBox.check()) {
+                en.rightDialogArea.clickA()
+                count = dCount
+            } else if (en.isConfirmDialogTask.check()) {
+                en.confirmDialogEnsureArea.clickA()
+                flag = false
+            }
+            count--
+        }
+        return !flag
     }
 
 
     //放弃任务
-    private fun aboundTask() {
 
-    }
 
     private suspend fun getPickUpArea(): MutableList<CoordinateArea>? {
         val clickArea = mutableListOf<CoordinateArea>()
@@ -176,7 +242,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             return null
         }
         list.forEach {
-            if (en.IsZeroDistanceList[it].verificationRule(screenBitmap) || en.IsZeroDistanceList[it].verificationRule(
+            if (en.IsZeroDistanceList[it].verificationRule(screenBitmap) || en.IsOneDistanceList[it].verificationRule(
                     screenBitmap
                 )
             ) {
@@ -196,7 +262,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private suspend fun startNavigationMonitoring() {
         Timber.d("monitoringReturnStatus FightController NWQ_ 2023/4/11");
         var flag = true
-        val maxCount =20
+        val maxCount = 20
         var count = maxCount
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
@@ -212,8 +278,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 count--
             }
         }
-        if (count == 0 && flag) {
-            nowTask =  PICK_UP_TASK
+        if (!flag && runSwitch) {
+            nowTask = PICK_UP_TASK
             return
         }
     }
@@ -226,13 +292,18 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 runSwitch = false
                 return
             }
-            if (en.isCanLockTask.verificationRule(screenBitmap)) {
-                click(en.isCanLockTask)
+            if (en.isCanLockTask.check()) {
+                en.lockTargetArea.clickA()
+                delay(doubleClickInterval)
                 if (topTargetMonitor.onNewLock()) {
                     bottomDeviceMonitor.openReducer()
                 }
-            } else if (hasTaskDialogBox(screenBitmap)) { //这里表示任务已经结束了
+            } else if (topTargetMonitor.isEndData() && hasTaskDialogBox()) { //这里表示任务已经结束了
+                Timber.d("任务已经结束 AdventureTaskController NWQ_ 2023/7/23");
                 nowTask = PICK_UP_TASK
+                clickTheDialogueClose()
+                topTargetMonitor.clearData()
+                bottomDeviceMonitor.clearData()
                 return
             } else if (needBack && (isInSailing(screenBitmap) || en.isInSpaceStationT.verificationRule(
                     screenBitmap
@@ -245,16 +316,31 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 if (topTargetMonitor.needOpenReducer) {
                     bottomDeviceMonitor.openReducer()
                 }
+                if (topTargetMonitor.isWaitEnd()) {
+                    if (!needBack) {
+                        Timber.d("topTargetMonitor isWaitEnd NWQ_ 2023/7/22");
+                        topTargetMonitor.clearData()
+                        bottomDeviceMonitor.clearData()
+                        nowTask = PICK_UP_TASK
+                        clickTheDialogueClose()
+                        return
+                    }
+                }
+
                 if (!needBack && topTargetMonitor.isNeedAbnormal()) {
-                    emergencyEvacuation()
-                    nowTask = MONITORING_RETURN_STATUS
-                    needCancel = true
-                    needBack = true
+                    if (topTargetMonitor.isNeedAbnormal()) {
+                        Timber.d("topTargetMonitor emergencyEvacuation NWQ_ 2023/7/22");
+                        emergencyEvacuation()
+                        nowTask = MONITORING_RETURN_STATUS
+                        needCancel = true
+                        needBack = true
+                    }
                 }
                 if (topTargetMonitor.lastTargetNumber > 0) {
                     val listArea = bottomDeviceMonitor.updateInfo(screenBitmap!!)
                     click(listArea)
                     if (bottomDeviceMonitor.isNeedAbnormal()) {
+                        Timber.d("bottomDeviceMonitor emergencyEvacuation NWQ_ 2023/7/22");
                         emergencyEvacuation()
                         nowTask = RESTART_GAME
                         needCancel = true
@@ -293,8 +379,9 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 click(en.closeBigMenuArea)
             } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
                 click(en.confirmDialogEnsureArea)
-            } else if (count < maxCount - 10 && !en.isSailingT.verificationRule(screenBitmap)
-                && en.isCloseEyeMenuT.verificationRule(screenBitmap) && en.isOpenEyeMenuT.verificationRule(
+            } else if (count < maxCount - 10 && !en.isSailingT.verificationRule(screenBitmap) && en.isCloseEyeMenuT.verificationRule(
+                    screenBitmap
+                ) && en.isOpenEyeMenuT.verificationRule(
                     screenBitmap
                 )
             ) {

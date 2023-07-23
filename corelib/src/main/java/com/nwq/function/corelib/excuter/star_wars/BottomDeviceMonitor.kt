@@ -13,7 +13,7 @@ create time: 2023/7/17 10:45
 Function description:
  */
 
-class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<ImgTaskImpl1>) {
+class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<ImgTaskImpl1>) {
 
 
     protected val TopOfst = 6//顶部的偏移量
@@ -33,7 +33,7 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
     private var needOpenReducer = false // 是否该开启网子
     private var lastChangeTime = 0L
     private val openInterval = 30 * 1000L
-    private var openMaintenance = false // 是否该维修器材
+    private var openMaintenance = true // 是否该维修器材
     private val lastCloseItem = mutableListOf<ImgTaskImpl1>()
     private val lastClickArea = mutableListOf<CoordinateArea>()
     private var flag = 1  // 第一次取对比值 第二次才根据对进行开关
@@ -147,9 +147,8 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
     fun setStartMaintenance(b: Boolean) {
         if (b == openMaintenance) { //一致 不处理
             return
-        } else if ((System.currentTimeMillis() - lastChangeTime) < openInterval) {
+        } else {
             openMaintenance = b
-            lastChangeTime = System.currentTimeMillis()
         }
     }
 
@@ -230,10 +229,11 @@ class BottomDeviceMonitor(val listTop: List<ImgTaskImpl1>, val listBot: List<Img
         }
         //这里不管定时开的设备，只管关键设备
         if (clickAreaList.find { lastClickArea.contains(it) } == null) {//这里表示点击效果无效
-            abnormalRecords--
-        } else {
             abnormalRecords = maxAbnormal
+        } else {
+            abnormalRecords--
         }
+
         lastClickArea.clear()
         lastClickArea.addAll(clickAreaList)
 

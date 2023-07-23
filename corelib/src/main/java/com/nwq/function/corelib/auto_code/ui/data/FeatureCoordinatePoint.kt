@@ -65,7 +65,6 @@ class FeatureCoordinatePoint(
         return if (hasFindRound) {
             null
         } else if (isBoundary()) {
-            blockNumber = p.blockNumber
             hasFindRound = true
             this
         } else {

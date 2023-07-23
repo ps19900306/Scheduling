@@ -28,6 +28,7 @@ import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFuncti
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment
+import com.nwq.function.corelib.utils.JsonUtil
 import com.nwq.function.corelib.utils.singleClick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -151,9 +152,9 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                        StarWarEnvironment.isEndNormalList.forEach {
-                            it.verificationRule(mBitmap)
-                        }
+                        StarWarEnvironment.isShowRightDialogBox.verificationRule(mBitmap)
+                        StarWarEnvironment.isShowLeftDialogBox.verificationRule(mBitmap)
+                        StarWarEnvironment.isConfirmDialogTask.verificationRule(mBitmap)
 //                        StarWarEnvironment.bottomDeviceList.forEach {
 //                            it.verificationRule(mBitmap)
 //                        }
@@ -266,7 +267,12 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                         mFunctionBlock?.showView()
                         bind.okTv.isGone = true
                         nowMode = FUNCTION_MODE
+
+                        val codeStr = " ${JsonUtil.objectToString(bind.previewView.dotList)}"
+                        val clipData = ClipData.newPlainText("autoCode", codeStr)
+                        manager.setPrimaryClip(clipData)
                     }
+
                 }
                 OPT_AREA -> {
                     if (bind.previewView.areaList.isNotEmpty()) {

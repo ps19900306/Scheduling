@@ -53,7 +53,7 @@ abstract class BaseController(
         offsetX: Int = 0,
         offsetY: Int = 0
     ) {
-        if (listArea == null)
+        if (listArea.isNullOrEmpty())
             return
         var delayTime = 0L
         var clickTime = 0L
@@ -72,9 +72,7 @@ abstract class BaseController(
     }
 
     protected suspend fun click(task: ImgTask) {
-        if (task.clickArea != null) {
-            click(task.getOffsetX(), task.getOffsetY(), task.clickArea!!.toClickTask())
-        }
+        task?.getOfsArea()?.clickA()
     }
 
     protected suspend fun click(task: ImgTask, vararg click: ClickTask) {

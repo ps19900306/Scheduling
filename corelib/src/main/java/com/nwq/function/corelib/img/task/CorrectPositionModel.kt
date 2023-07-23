@@ -37,6 +37,7 @@ open class CorrectPositionModel(
         if (xRange == 0 && yRange == 0) {
             hasCorrect = true
         } else if (!everyRevalidation) {
+            //TODO 这里后面为了优化需要修改
 //            val spStr by SPRepoPrefix.getNowSPRepo().getRecordImgTaskDeviation(tag)
 //            if (!TextUtils.isEmpty(spStr)) {
 //                JsonUtil.anyToJsonObject<OffsetRecord>(spStr)?.let {

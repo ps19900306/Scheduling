@@ -2,7 +2,6 @@ package com.nwq.function.corelib.excuter.star_wars
 
 import android.graphics.Bitmap
 import com.nwq.function.corelib.img.task.HpTaskImpl
-import com.nwq.function.corelib.img.task.ImgTask
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 
 /**
@@ -12,13 +11,32 @@ Function description:
 这个是用来管理顶部的锁定的目标的
  */
 
-class TopTargetMonitor(val tagList: List<ImgTaskImpl1>, val hpList: List<HpTaskImpl>) {
+class TopTargetMonitor(
+    val tagList1: Array<ImgTaskImpl1>,
+    val hpList1: Array<HpTaskImpl>,
+    val tagList2: Array<ImgTaskImpl1>,
+    val hpList2: Array<HpTaskImpl>
+) {
+
+    private var tagList = tagList1
+    private var hpList = hpList1
+
+
+    fun openEndMenu(b: Boolean) {
+        if (b) {
+            tagList = tagList2
+            hpList = hpList2
+        } else {
+            tagList = tagList1
+            hpList = hpList1
+        }
+    }
 
     private val maxSize = tagList.size
     private val toleranceInterval = 15 * 1000
 
     private var numberOfRounds = 0
-     var lastTargetNumber = 0
+    var lastTargetNumber = 0
     private var lastHpTaskImpl: AttackTargetResult? = null
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
@@ -52,13 +70,16 @@ class TopTargetMonitor(val tagList: List<ImgTaskImpl1>, val hpList: List<HpTaskI
 
     //是否结束战斗了 默认是三轮
     fun isEndData(): Boolean {
-        val flag = numberOfRounds >= 3 && lastTargetNumber == 0
+        val flag = numberOfRounds >= 2 && lastTargetNumber == 0
         return flag
     }
 
     //这里表示过长时间数据异常 这里需要回去修正错误
     fun isNeedAbnormal(): Boolean {
-        return abnormalRecords < 1 || abnormalWaitEnd < 1
+        return abnormalRecords < 1
+    }
+    fun isWaitEnd(): Boolean {
+        return  abnormalWaitEnd < 1
     }
 
 
@@ -82,7 +103,7 @@ class TopTargetMonitor(val tagList: List<ImgTaskImpl1>, val hpList: List<HpTaskI
                 lastTimeStamp = nowTime
             }
             //这里表示刚好比最大值少了一个
-            if (nowNumber >= lastTargetNumber ) {
+            if (nowNumber >= lastTargetNumber) {
                 if (nowTime - lastTimeStamp > toleranceInterval * 6) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
@@ -92,7 +113,8 @@ class TopTargetMonitor(val tagList: List<ImgTaskImpl1>, val hpList: List<HpTaskI
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 } else if (nowNumber == lastTargetNumber && lastHpTaskImpl == nowAttack && (nowAttack?.task?.getNowPercent()
-                        ?: 0) == (lastHpTaskImpl?.task?.getNowPercent() ?: 0)  && (nowTime - lastTimeStamp > toleranceInterval)
+                        ?: 0) == (lastHpTaskImpl?.task?.getNowPercent()
+                        ?: 0) && (nowTime - lastTimeStamp > toleranceInterval)
                 ) {
                     needOpenReducer = true
                     lastTimeStamp = nowTime
@@ -103,8 +125,8 @@ class TopTargetMonitor(val tagList: List<ImgTaskImpl1>, val hpList: List<HpTaskI
                 needOpenReducer = false
                 lastTimeStamp = nowTime
             }
+            abnormalWaitEnd = maxAbnormal
         }
-        abnormalWaitEnd--
         lastTargetNumber = nowNumber
     }
 
