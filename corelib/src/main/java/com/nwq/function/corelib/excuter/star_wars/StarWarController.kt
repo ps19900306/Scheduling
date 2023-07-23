@@ -61,7 +61,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-    private suspend fun hasIntoGame(bitmap: Bitmap?): Boolean {
+    private suspend fun hasIntoGame(bitmap: Bitmap? = screenBitmap): Boolean {
         if (bitmap == null) return false
         return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check() && (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()))
     }
@@ -163,14 +163,14 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         if (en.isInSpaceStationT.check()) {
         } else if (en.isOpenPositionMenuT.check()) {
             //坐标菜单打开的
-            clickPositionMenu(warehouseIndex)
+            en.getPositionArea(warehouseIndex).clickA()
         } else if (en.isClosePositionMenuT.check()) {
             //坐标菜关闭的
             waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-            clickPositionMenu(warehouseIndex)
+            en.getPositionArea(warehouseIndex).clickA()
         } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) { //这里是坐标菜单被遮挡了
             waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-            clickPositionMenu(warehouseIndex)
+            en.getPositionArea(warehouseIndex).clickA()
         } else { //这里是没有在前台界面
             if (flag) {
                 theOutCheck()
@@ -239,28 +239,41 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
 
     protected suspend fun clickPositionMenu(index: Int) {
-
-        if (en.isClosePositionMenuT.check()) {
-            //坐标菜关闭的
-            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-
-        } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) { //这里是坐标菜单被遮挡了
-            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-
-        }
+        waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
+        en.getPositionArea(index).clickA()
     }
 
     //这个方法要将出现眼睛或者在空间站
-    protected suspend fun theOutCheck() {
-
+    protected suspend fun theOutCheck():Boolean {
+        var flag = true
+        var count = 20
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (hasIntoGame()) {
+                flag = false
+            } else if (en.isOpenBigMenuT.check()) {
+                en.closeBigMenuArea.clickA()
+            } else if (en.isConfirmDialogTask.check()) {
+                en.confirmDialogCancelArea.clickA()
+            } else if (en.isCanCollectGiftT.check()) {
+                en.closeCollectGiftArea.clickA()
+            } else if (count == 5) {
+                pressBackBtn()
+            }
+            count--
+        }
+        return !flag
     }
 
 
     protected fun unloadingCargo() {
-        TODO("Not yet implemented")
+
     }
 
     protected fun outGame() {
-        TODO("Not yet implemented")
+
     }
 }

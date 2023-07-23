@@ -380,11 +380,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 click(en.closeBigMenuArea)
             } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
                 click(en.confirmDialogEnsureArea)
-            } else if (count < maxCount - 10 && !en.isSailingT.verificationRule(screenBitmap) && en.isCloseEyeMenuT.verificationRule(
-                    screenBitmap
-                ) && en.isOpenEyeMenuT.verificationRule(
-                    screenBitmap
-                )
+            } else if (count < maxCount - 10 && !en.isSailingT.check() && en.isCloseEyeMenuT.check() && en.isOpenEyeMenuT.check()
             ) {
                 clickPositionMenu(warehouseIndex)
             }

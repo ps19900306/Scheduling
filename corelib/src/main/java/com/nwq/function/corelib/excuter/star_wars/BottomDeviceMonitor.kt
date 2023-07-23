@@ -260,11 +260,9 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         positionList: List<OptSlotInfo>,
         needCheckOpenList: MutableList<CoordinateArea>,
     ) {
-        Timber.d("筛选可以开启的 checkTimeOn BottomDeviceMonitor NWQ_ 2023/7/23");
         var lastItemOpenTime = 0L //这个是上个对象的打开时间
         positionList.forEach { d ->
-            if (nowtime - lastItemOpenTime > d.offsetInterval + d.selfInterval && nowtime - d.lastOpenedTime > d.selfInterval) {
-                Timber.d("进行添加 checkTimeOn BottomDeviceMonitor NWQ_ 2023/7/23");
+            if (nowtime - lastItemOpenTime > d.offsetInterval  && nowtime - d.lastOpenedTime > d.selfInterval) {
                 needCheckOpenList.add(d.clickArea)
                 d.lastOpenedTime = nowtime
             }

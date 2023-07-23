@@ -2194,4 +2194,8 @@ object StarWarEnvironment {
         )
     }
 
+    fun getPositionArea(index:Int):CoordinateArea{
+      return  CoordinateArea(447,440+(index*75),61,26)//这个是根据2个跳的距离(左边跳转的距离)
+    }
+
 }
