@@ -14,7 +14,7 @@ import timber.log.Timber
  * 不能实列化
  */
 abstract class ImgTask(
-    protected val iprList: List<IPR>,
+     val iprList: List<IPR>,
     protected val tag: String,
      val correctModel: CorrectPositionModel? = null
 ) : BasicImgTask() {
@@ -32,7 +32,6 @@ abstract class ImgTask(
         var backgroundErrorCount = 0
         iprList.forEach {
             if (!it.checkIpr(bitmap, offsetX, offsetY)) {
-                //Timber.d("${it.getCoordinatePoint()}");
                 if (it.getColorRule() is ColorRuleRatioImpl || it.getColorRule() is ColorRuleImpl) {
                     normalErrorCount++
                     if (normalErrorCount > nErrorTolerance) {
@@ -46,6 +45,12 @@ abstract class ImgTask(
                 } else {
                     return false
                 }
+            }
+        }
+        //智斗都符合的清空才记录修正点
+        if(normalErrorCount==0){
+            correctModel?.let {
+                it?.correctCoordinate(offsetX-it.supplementalValueX,offsetY- it.supplementalValueY)
             }
         }
         return true

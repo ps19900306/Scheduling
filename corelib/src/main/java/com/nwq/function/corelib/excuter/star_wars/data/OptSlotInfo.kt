@@ -10,8 +10,7 @@ Function description:
 
 data class OptSlotInfo(
     val clickArea: CoordinateArea,
-    val interval: Long,
     var lastOpenedTime: Long = 0L,
-    val offset: Int,
-    val offsetInterval: Long,
+    var selfInterval:Long = 30*1000L,
+    var offsetInterval:Long = 30*1000L
 )

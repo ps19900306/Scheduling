@@ -8,7 +8,9 @@ import com.nwq.function.corelib.auto_code.ui.data.FeaturePointKey
 import com.nwq.function.corelib.excuter.BaseController
 import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.img.pcheck.PointRules
+import com.nwq.function.corelib.img.rule.ColorRuleImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
+import com.nwq.function.corelib.img.task.HpTaskImpl
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,11 +27,65 @@ class GetColorController(acService: AccessibilityService, endLister: EndLister? 
     override fun startWork() {
         GlobalScope.launch(Dispatchers.Default) {
             delay(10000)
-            generalControlMethod()
+            getColor(StarWarEnvironment.isClosePositionMenuT)
         }
     }
 
 
+    suspend fun testTask(task: ImgTaskImpl1) {
+        var flag = true
+        var count = 40
+        featureKeyList.clear()
+        while (flag && count > 0 && runSwitch) {
+            val bitmap = takeScreenBitmap(Constant.fastClickInterval)
+            if (bitmap.isOrientation()) {
+                task.check()
+            } else {//这里没有横屏所以
+                flag = false
+            }
+        }
+    }
+
+
+    suspend fun getColor(task: ImgTaskImpl1) {
+        val pointList = mutableListOf<CoordinatePoint>()
+        task.iprList.forEach {
+            val rule = it.getColorRule()
+            if (rule is ColorRuleRatioImpl || rule is ColorRuleImpl) {
+                pointList.add(it.getCoordinatePoint())
+            }
+        }
+
+        var flag = true
+        var count = 40
+        featureKeyList.clear()
+        while (flag && count > 0 && runSwitch) {
+            val bitmap = takeScreenBitmap(Constant.fastClickInterval)
+            if (bitmap.isOrientation()) {
+                pointList.forEach {
+                    var intN = bitmap.getPixel(it.xI, it.yI)
+                    groupPoint(FeatureCoordinatePoint(0, 0, intN), intN)
+                }
+            } else {//这里没有横屏所以
+                if (featureKeyList.isNotEmpty()) {
+                    var number = 0
+                    var stringBuilder = StringBuilder()
+                    colorMaps.forEach { key, value ->
+                        allMaxRange(key, value)
+                        val oKey = key.colorRuleRatioImpl!!
+                        number++
+                        val tempStr =
+                            "val ruleRatio$number =  ColorRuleRatioImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)\n"
+                        stringBuilder.append(tempStr)
+                    }
+                    Timber.i("${stringBuilder.toString()}  result NWQQ_ 2023/7/23");
+                    featureKeyList.clear()
+                    colorMaps.clear()
+                    flag = false
+                }
+            }
+        }
+    }
 
 
     override suspend fun generalControlMethod() {
@@ -39,25 +95,21 @@ class GetColorController(acService: AccessibilityService, endLister: EndLister? 
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreenBitmap(Constant.fastClickInterval)
             if (bitmap.isOrientation()) {
-//                StarWarEnvironment.isShowLeftDialogBox.check()
-//                StarWarEnvironment.isShowRightDialogBox.check()
-//                count--
-
                 var intN = bitmap.getPixel(888, 531)
-                groupPoint(FeatureCoordinatePoint(0, 0,intN),intN)
+                groupPoint(FeatureCoordinatePoint(0, 0, intN), intN)
 
                 intN = bitmap.getPixel(913, 530)
-                groupPoint(FeatureCoordinatePoint(0, 0,intN),intN)
+                groupPoint(FeatureCoordinatePoint(0, 0, intN), intN)
 
                 intN = bitmap.getPixel(936, 531)
-                groupPoint(FeatureCoordinatePoint(0, 0,intN),intN)
+                groupPoint(FeatureCoordinatePoint(0, 0, intN), intN)
 
             } else {//这里没有横屏所以
                 if (featureKeyList.isNotEmpty()) {
                     var number = 0
                     var stringBuilder = StringBuilder()
-                    colorMaps.forEach{ key,value ->
-                        allMaxRange(key,value)
+                    colorMaps.forEach { key, value ->
+                        allMaxRange(key, value)
                         val oKey = key.colorRuleRatioImpl!!
                         number++
                         val tempStr =
@@ -139,16 +191,12 @@ class GetColorController(acService: AccessibilityService, endLister: EndLister? 
         key.colorRuleRatioImpl = data
     }
 
-    fun test1(){
-        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 34,23,68,41,61,37,
-            0.6214286F,0.42923078F,0.66195655F,0.42923078F,1.18125F, 0.9574468F)
-        val ruleRatio2 =  ColorRuleRatioImpl.getSimple( 40,27,96,59,84,53,
-            0.525F,0.36593407F,0.5775F,0.36593407F,1.2173913F, 0.99F)
-        val ruleRatio3 =  ColorRuleRatioImpl.getSimple( 55,39,160,104,135,89,
-            0.40042374F,0.31176472F,0.46893203F,0.31176472F,1.2532258F, 1.0485437F)
-        val ruleRatio4 =  ColorRuleRatioImpl.getSimple( 46,34,119,83,102,72,
-            0.44032258F,0.3424779F,0.50555557F,0.3424779F,1.2326087F, 1.0285715F)
-        val ruleRatio5 =  ColorRuleRatioImpl.getSimple( 130,99,112,92,193,162,
-            1.24F,0.9699029F,0.719337F,0.9699029F,0.62416667F, 0.5038044F)
+
+    fun  getColorResult(){
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 140,95,144,99,148,99,
+            1.0594594F,0.82956517F,1.078125F,0.82956517F,1.078125F, 0.8723077F)
+        val ruleRatio2 =  ColorRuleRatioImpl.getSimple( 96,79,139,116,214,180,
+            0.7406976F,0.6F,0.47537315F,0.6F,0.68955225F, 0.56911767F)
+
     }
 }

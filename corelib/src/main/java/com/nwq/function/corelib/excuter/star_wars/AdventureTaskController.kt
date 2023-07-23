@@ -2,6 +2,7 @@ package com.nwq.function.corelib.excuter.star_wars
 
 import android.accessibilityservice.AccessibilityService
 import com.nwq.function.corelib.Constant.doubleClickInterval
+import com.nwq.function.corelib.Constant.fastClickInterval
 import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.EndLister
@@ -207,11 +208,11 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     }
 
     //pickUp 是否是接取任务
-    private suspend fun clickTheDialogueClose(dCount: Int = 3): Boolean {
+    private suspend fun clickTheDialogueClose(dCount: Int = 5): Boolean {
         var flag = true
         var count = dCount
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(doubleClickInterval)) {
+            if (!takeScreen(fastClickInterval)) {
                 runSwitch = false
                 return false
             }
@@ -278,7 +279,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 count--
             }
         }
-        if (!flag && runSwitch) {
+        if (flag  &&  runSwitch) {
             nowTask = PICK_UP_TASK
             return
         }

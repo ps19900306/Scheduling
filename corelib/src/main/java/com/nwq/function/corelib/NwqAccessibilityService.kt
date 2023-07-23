@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.view.accessibility.AccessibilityEvent
 import com.nwq.function.corelib.excuter.BaseController
+import com.nwq.function.corelib.excuter.star_wars.AdventureTaskController
+import com.nwq.function.corelib.excuter.star_wars.GetColorController
 import com.nwq.function.corelib.excuter.star_wars.InterstellarMiners
 import com.nwq.function.corelib.utils.ContextUtil
 import timber.log.Timber
@@ -44,8 +46,9 @@ class NwqAccessibilityService : AccessibilityService() {
 
 
     private fun startOpt(outGame: Boolean = false) {
-        Timber.d("启动脚本 NwqAccessibilityService NWQ_ 2023/3/12");
-        val interstellarMiners=  InterstellarMiners(this)
+        Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
+        val interstellarMiners=  AdventureTaskController(this)
+
         interstellarMiners.startWork()
         cList.add(interstellarMiners)
     }

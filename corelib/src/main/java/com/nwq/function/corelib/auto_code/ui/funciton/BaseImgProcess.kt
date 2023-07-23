@@ -206,6 +206,7 @@ class BaseImgProcess(
                     list.find { it.mFeaturePointKey == darkestKey }?.let { darkPoint ->
                         darkPoint.isIdentificationKey = true
                         darkPoint.mDirectorPointKey = point.mFeaturePointKey
+                        darkPoint.mDirectorPoint = point
                     }
                 }
             }
@@ -215,6 +216,7 @@ class BaseImgProcess(
                 list.find { it.mFeaturePointKey == darkestKey }?.let { darkPoint ->
                     darkPoint.isIdentificationKey = true
                     darkPoint.mDirectorPointKey = point.mFeaturePointKey
+                    darkPoint.mDirectorPoint = point
                 }
             }
         }

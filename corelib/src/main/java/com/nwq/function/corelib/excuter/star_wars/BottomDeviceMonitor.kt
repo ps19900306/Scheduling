@@ -6,6 +6,7 @@ import com.nwq.function.corelib.excuter.star_wars.data.OptSlotInfo
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import com.nwq.function.corelib.utils.JsonUtil
 import com.nwq.function.corelib.utils.sp.SPRepoPrefix
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -81,14 +82,17 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             reducerList.clear()
         }
 
-        val timeOnList1 = JsonUtil.anyToJsonObject(spReo.timeOnList1) ?: listOf<Int>()
-        setOpenList1(timeOnList1)
+        JsonUtil.anyToJsonObject<List<Int>>(spReo.timeOnList1)?.let {
+            setOpenList1(it)
+        }
+        JsonUtil.anyToJsonObject<List<Int>>(spReo.timeOnList2)?.let {
+            setOpenList2(it)
+        }
+        JsonUtil.anyToJsonObject<List<Int>>(spReo.timeOnList3)?.let {
+            setOpenList3(it)
+        }
 
-        val timeOnList2 = JsonUtil.anyToJsonObject(spReo.timeOnList2) ?: listOf<Int>()
-        setOpenList2(timeOnList2)
-
-        val timeOnList3 = JsonUtil.anyToJsonObject(spReo.timeOnList3) ?: listOf<Int>()
-        setOpenList3(timeOnList3)
+        Timber.d("init ${intervalOpenList1.size}  ${intervalOpenList2.size} ${intervalOpenList3.size} NWQ_ 2023/7/23");
 
     }
 
@@ -98,13 +102,11 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         list.forEach { index ->
             if (index < TopOfst) {
                 listBot.getOrNull(index)?.let {
-                    if (!mutableList.contains(it))
-                        mutableList.add(it)
+                    if (!mutableList.contains(it)) mutableList.add(it)
                 }
             } else {
                 listTop.getOrNull(index - TopOfst - 1)?.let {
-                    if (!mutableList.contains(it))
-                        mutableList.add(it)
+                    if (!mutableList.contains(it)) mutableList.add(it)
                 }
             }
         }
@@ -112,14 +114,14 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
 
     private fun setList2(list: List<Int>, mutableList: MutableList<OptSlotInfo>, interval: Long) {
         mutableList.clear()
-        list.forEachIndexed { p, d ->
+        list.forEach { p ->
             val task = if (p < TopOfst) {
-                listBot.getOrNull(d)
+                listBot.getOrNull(p)
             } else {
-                listTop.getOrNull(d - TopOfst - 1)
+                listTop.getOrNull(p - TopOfst - 1)
             }
             task?.clickArea?.let { are ->
-                mutableList.add(OptSlotInfo(are, interval, 0, p, 30 * 1000L))
+                mutableList.add(OptSlotInfo(are, 0, interval))
             }
 
         }
@@ -138,7 +140,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         needOpenReducer = true
     }
 
-    fun clearData(){
+    fun clearData() {
         flag == 1
         abnormalRecords = maxAbnormal
     }
@@ -204,7 +206,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         if (openMaintenance) {
             maintenanceEquipment.forEach {
                 if (!it.verificationRule(bitmap)) {
-                    if (lastCloseItem.contains(it) && (System.currentTimeMillis() - lastChangeTime) < openInterval) {
+                    if (lastCloseItem.contains(it) && (System.currentTimeMillis() - lastChangeTime) > openInterval) {
                         nowClickList.add(it)
                         lastChangeTime = System.currentTimeMillis()
                     }
@@ -213,7 +215,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         } else {
             maintenanceEquipment.forEach {
                 if (it.verificationRule(bitmap)) {//这里判断是开启的
-                    if (!lastCloseItem.contains(it) && (System.currentTimeMillis() - lastChangeTime) < openInterval) {//这里判断是之前未打开
+                    if (!lastCloseItem.contains(it) && (System.currentTimeMillis() - lastChangeTime) > openInterval) {//这里判断是之前未打开
                         nowClickList.add(it)
                         lastChangeTime = System.currentTimeMillis()
                     }
@@ -241,7 +243,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         var nowTime = System.currentTimeMillis()
         checkTimeOn(nowTime, intervalOpenList1, clickAreaList)
         checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
-        checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
+        checkTimeOn(nowTime, intervalOpenList3, clickAreaList)
         normallyOpenList.getOrNull(0)?.let { task ->
             clickAreaList.map {
                 it.offsetX = task.getOffX()
@@ -258,26 +260,16 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         positionList: List<OptSlotInfo>,
         needCheckOpenList: MutableList<CoordinateArea>,
     ) {
-        var lastOpenedTime = 0L
+        Timber.d("筛选可以开启的 checkTimeOn BottomDeviceMonitor NWQ_ 2023/7/23");
+        var lastItemOpenTime = 0L //这个是上个对象的打开时间
         positionList.forEach { d ->
-            if (d.offset == 0) {
-                if (nowtime - d.lastOpenedTime > d.interval) {
-                    needCheckOpenList.add(d.clickArea)
-                    d.lastOpenedTime = nowtime
-                    return
-                } else {
-                    lastOpenedTime = d.lastOpenedTime
-                }
-            } else {
-                val intervalTime = nowtime - lastOpenedTime
-                if (d.offset * d.offsetInterval < intervalTime && intervalTime < (d.offset + 1) * d.offsetInterval && nowtime - d.lastOpenedTime > d.interval) {
-                    needCheckOpenList.add(d.clickArea)
-                    d.lastOpenedTime = nowtime
-                    return
-                }
+            if (nowtime - lastItemOpenTime > d.offsetInterval + d.selfInterval && nowtime - d.lastOpenedTime > d.selfInterval) {
+                Timber.d("进行添加 checkTimeOn BottomDeviceMonitor NWQ_ 2023/7/23");
+                needCheckOpenList.add(d.clickArea)
+                d.lastOpenedTime = nowtime
             }
+            lastItemOpenTime = d.lastOpenedTime
         }
+
     }
-
-
 }

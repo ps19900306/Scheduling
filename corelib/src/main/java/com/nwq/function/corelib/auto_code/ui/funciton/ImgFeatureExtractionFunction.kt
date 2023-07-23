@@ -23,6 +23,8 @@ import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.DELETE_PO
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.FILTER_OUT_AREAS
 import com.nwq.function.corelib.auto_code.ui.funciton.OptCmd.Companion.FIND_IMAGE_AREA
 import com.nwq.function.corelib.databinding.PartImgFeatureBinding
+import com.nwq.function.corelib.img.pcheck.TwoPointRule
+import com.nwq.function.corelib.img.rule.CompareDifferenceRuleImpl
 import com.nwq.function.corelib.utils.ToastHelper
 import com.nwq.function.corelib.utils.runOnUI
 import kotlinx.coroutines.Dispatchers
@@ -73,6 +75,7 @@ class ImgFeatureExtractionFunction(
     private var takePointCount: Int = 0
     private var minStep: Int = 0
     private var useInverseValue = false //true 背景点取相对颜色的反值， false 使用自己的颜色特性
+    private var useOffsetValue = true //true 底色进行取差值
     private var allPointKey = true//true 对全部的点规则生成特诊该规则
     private var sortByX = false//true 对全部的点规则生成特诊该规则
     private var findImageArea: CoordinateArea? = null
@@ -88,7 +91,8 @@ class ImgFeatureExtractionFunction(
             FunctionItemInfo(R.string.all_point_key, CHECK_TYPE, allPointKey),
             FunctionItemInfo(R.string.useBackground, CHECK_TYPE, useBackground),
             FunctionItemInfo(R.string.inverse_value, CHECK_TYPE, useInverseValue),
-            FunctionItemInfo(R.string.sort_by_x, CHECK_TYPE, useInverseValue),
+            FunctionItemInfo(R.string.offset_value, CHECK_TYPE, useOffsetValue),
+            FunctionItemInfo(R.string.sort_by_x, CHECK_TYPE, sortByX),
             FunctionItemInfo(R.string.feature, CHECK_TYPE, showFeature),
             FunctionItemInfo(R.string.boundary, CHECK_TYPE, showBoundary),
             FunctionItemInfo(R.string.take_point_interval, EDIT_TEXT_TYPE),
@@ -120,8 +124,7 @@ class ImgFeatureExtractionFunction(
                 }
                 R.string.mini_steps -> {
                     minStep = S.toIntOrNull() ?: 0
-                    if(minStep>0)
-                    mBaseImgProcess.minStep =minStep
+                    if (minStep > 0) mBaseImgProcess.minStep = minStep
                 }
             }
         }
@@ -146,7 +149,10 @@ class ImgFeatureExtractionFunction(
                 }
                 R.string.auto_exc -> {
                     mBaseImgProcess.autoExc(
-                        useBackground, takePointCount, allPointKey, useInverseValue
+                        useBackground,
+                        takePointCount,
+                        allPointKey,
+                        useInverseValue || useOffsetValue
                     )
                 }
                 R.string.auto_code -> {
@@ -160,7 +166,7 @@ class ImgFeatureExtractionFunction(
                 R.string.filter_out_areas -> {
                     mOptLister.requestArea(FILTER_OUT_AREAS)
                 }
-                R.string.full_screen->{
+                R.string.full_screen -> {
                     mOptLister.fullScreen()
                 }
 
@@ -184,7 +190,12 @@ class ImgFeatureExtractionFunction(
                     useInverseValue = data.isCheck
                     mFunctionItemAdapter.notifyItemChanged(position)
                 }
-                R.string.sort_by_x-> {
+                R.string.offset_value -> {
+                    data.isCheck = !data.isCheck
+                    useOffsetValue = data.isCheck
+                    mFunctionItemAdapter.notifyItemChanged(position)
+                }
+                R.string.sort_by_x -> {
                     data.isCheck = !data.isCheck
                     sortByX = data.isCheck
                     mFunctionItemAdapter.notifyItemChanged(position)
@@ -343,9 +354,10 @@ class ImgFeatureExtractionFunction(
 //               }
 //           }
 //        }
-        if(sortByX){
-            val tempLIST=   points.sortedByDescending {
-                it.x }
+        if (sortByX) {
+            val tempLIST = points.sortedByDescending {
+                it.x
+            }
             points.clear()
             points.addAll(tempLIST)
         }
@@ -415,9 +427,13 @@ class ImgFeatureExtractionFunction(
         stringBuilder.append(" val pointList = mutableListOf<IPR>()\n")
         points.forEach {
             stringBuilder.append(
-                "pointList.add(PointRule(CoordinatePoint(${startX + it.x}, ${startY + it.y}), ${
-                    it.toColorRuleStr(useInverseValue)
-                }))\n"
+                if(useOffsetValue  && it.mDirectorPoint!=null){
+                    "pointList.add(${it.toColorRuleStr(useInverseValue,useOffsetValue)})\n"
+                }else{
+                    "pointList.add(PointRule(CoordinatePoint(${startX + it.x}, ${startY + it.y}), ${
+                        it.toColorRuleStr(useInverseValue,useOffsetValue)
+                    }))\n"
+                }
             )
         }
         stringBuilder.append(" ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
@@ -425,8 +441,38 @@ class ImgFeatureExtractionFunction(
         return stringBuilder.toString()
     }
 
-    fun FeatureCoordinatePoint.toColorRuleStr(notValue: Boolean = false): String {
-        return if (notValue && mDirectorPointKey != null) {
+    private fun getOffset(a: Int, b: Int): Int {
+        val d = a - b
+        return if (d < -90) {
+            -30
+        } else if (d < -60) {
+            -20
+        } else if (d < -30) {
+            -15
+        } else if (d < 0) {
+            -10
+        } else if (d > 90) {
+            30
+        } else if (d > 60) {
+            20
+        } else if (d > 30) {
+            15
+        } else {
+            10
+        }
+    }
+
+    fun FeatureCoordinatePoint.toColorRuleStr(
+        notValue: Boolean = false, offsetValue: Boolean = true
+    ): String {
+        return if (offsetValue && mDirectorPoint != null) {
+            val redD = getOffset(mDirectorPoint!!.red, red)
+            val greenD = getOffset(mDirectorPoint!!.green, green)
+            val blueD  = getOffset(mDirectorPoint!!.blue, blue)
+            val sx= this@ImgFeatureExtractionFunction.startX
+            val sy= this@ImgFeatureExtractionFunction.startY
+            "TwoPointRule(CoordinatePoint(${sx + mDirectorPoint!!.x}, ${sy + mDirectorPoint!!.y}),CoordinatePoint(${sx + x}, ${sy + y}), CompareDifferenceRuleImpl.getSimple($redD,$greenD,$blueD))"
+        } else if (notValue && mDirectorPointKey != null) {
             if (mDirectorPointKey?.colorRuleRatioImpl != null) {
                 val oKey = mDirectorPointKey!!.colorRuleRatioImpl!!
                 (tempMap2[mDirectorPointKey!!]

@@ -57,7 +57,7 @@ open class CorrectPositionModel(
     }
 
 
-    private fun correctCoordinate(ofsX: Int, ofsY: Int, record: Boolean = true) {
+    fun correctCoordinate(ofsX: Int, ofsY: Int, record: Boolean = !everyRevalidation) {
         hasCorrect = true
         offsetX = ofsX
         offsetY = ofsY
@@ -123,13 +123,13 @@ open class CorrectPositionModel(
                             if (hasFailedPoint == null) {
                                 if (next.invoke(ofsX+supplementalValueX, ofsY+supplementalValueY, false)) {
                                     hasFind = true
-                                    correctCoordinate(ofsX, ofsY)
+                                 //correctCoordinate(ofsX, ofsY) //只在全部点都验证过的清空下才进行修正
                                     return
                                 }
                             }
                         } else {
                             if (next.invoke(ofsX+supplementalValueX, ofsY+supplementalValueY, false)) {
-                                correctCoordinate(ofsX, ofsY)
+                                //correctCoordinate(ofsX, ofsY)//只在全部点都验证过的清空下才进行修正
                                 return
                             }
                         }
