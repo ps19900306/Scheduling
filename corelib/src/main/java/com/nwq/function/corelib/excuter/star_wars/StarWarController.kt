@@ -257,10 +257,10 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
 
     protected fun unloadingCargo() {
-        TODO("Not yet implemented")
+
     }
 
     protected fun outGame() {
-        TODO("Not yet implemented")
+
     }
 }
