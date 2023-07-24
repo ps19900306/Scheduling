@@ -321,6 +321,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 topTargetMonitor.updateInfo(screenBitmap!!)
                 if (topTargetMonitor.needOpenReducer) {
                     bottomDeviceMonitor.openReducer()
+                }else{
+                    bottomDeviceMonitor.closeReducer()
                 }
                 if (topTargetMonitor.isWaitEnd()) {
                     if (!needBack) {
