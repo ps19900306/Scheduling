@@ -842,14 +842,6 @@ object StarWarEnvironment {
                 CoordinatePoint(1868, 615), ColorRuleRatioImpl.getSimple(177, 177, 177)
             )
         )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1876, 608), ColorRuleRatioUnImpl.getSimple(
-                    197, 117, 197, 117, 197, 117, 1.2F, 0.8F, 1.2F, 0.8F, 1.2F, 0.8F
-                )
-                //red26 green26 blue26
-            )
-        )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
@@ -1861,7 +1853,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(1704, 949), ruleRatio1
             //red213 green255 blue243
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 0,0, false)
+        val correctPositionModel =CorrectPositionModel(list, tag, 1,1, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(1704, 949), ruleRatio1
             //red213 green255 blue243
@@ -1887,7 +1879,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(1704, 835), ruleRatio1
             //red213 green254 blue240
         ))
-       val correctPositionModel =CorrectPositionModel(list, tag, 0, 0, false)
+       val correctPositionModel =CorrectPositionModel(list, tag, 1, 1, true)
         val pointList = mutableListOf<IPR>()
 
         pointList.add(PointRule(CoordinatePoint(1704, 835), ruleRatio1
@@ -2051,7 +2043,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(2184, 87), ruleRatio1
             //red173 green173 blue173
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val correctPositionModel =CorrectPositionModel(list, tag, 1, 1, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(2184, 87), ruleRatio1
             //red173 green173 blue173
@@ -2079,7 +2071,12 @@ object StarWarEnvironment {
         val tag = "topTargetHp"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 199,135,187,132,185,128,
             1.1437501F,0.8333333F,1.1694611F,0.8333333F,1.0968152F, 0.8835366F)
-        val correctPositionModel = null
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(2187, 108), ruleRatio1
+            //red173 green173 blue173
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 1, 1, false)
+
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(2262, 47), ruleRatio1
             //red169 green171 blue170 blockNumber1
@@ -2112,7 +2109,7 @@ object StarWarEnvironment {
     //这个是关闭右边菜单
     val topLockTargetList1 by lazy {
         var i = 8
-        val tag = "topLockTarget"
+        val tag = "topLock1Target"
         val task = topLockTarget
         val offset = -topItemInver
         arrayOf(
@@ -2130,7 +2127,7 @@ object StarWarEnvironment {
     //这个是打开右边菜单
     val topLockTargetList2 by lazy {
         var i = 8
-        val tag = "topLockTarget"
+        val tag = "topLock2Target"
         val task = topLockTarget
         val offset = -topItemInver
         arrayOf(
@@ -2147,35 +2144,65 @@ object StarWarEnvironment {
 
 
     val topTargetHpList1 by lazy {
-        var i =0
-        val tag = "topTargetHpTask"
+        var i = 8
+        val tag = "topTargetHp1Task"
         val task = topTargetHpTask
+        val offset = -topItemInver
         arrayOf(
-            task,
-            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+            task.copyOffset("$tag${--i}",offset*i,0),
+            task.copyOffset("$tag${--i}",offset*i,0),
+            task.copyOffset("$tag${--i}",offset*i,0),
+            task.copyOffset("$tag${--i}",offset*i,0),
+            task.copyOffset("$tag${--i}",offset*i,0),
+            task.copyOffset("$tag${--i}",offset*i,0),
+            task.copyOffset("$tag${--i}",offset*i,0),
+            task
         )
+//        var i =0
+//        val tag = "topTargetHpTask"
+//        val task = topTargetHpTask
+//        arrayOf(
+//            task,
+//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
+//        )
     }
 
     val topTargetHpList2 by lazy {
-        var i =0
-        val tag = "topTargetHpTask"
+
+        var i = 8
+        val tag = "topTargetHp2Task"
         val task = topTargetHpTask
+        val offset = -topItemInver
         arrayOf(
-            task,
-            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+            task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
+            task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
+            task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
+            task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
+            task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
+            task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
+            task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
+            task.copyOffset("$tag${--i}",-itemTopOffset,0),
         )
+
+//        var i =0
+//        val tag = "topTargetHpTask"
+//        val task = topTargetHpTask
+//        arrayOf(
+//            task,
+//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
+//        )
     }
 
     fun getPositionArea(index:Int):CoordinateArea{

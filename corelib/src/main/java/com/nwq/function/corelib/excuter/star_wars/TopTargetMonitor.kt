@@ -80,8 +80,9 @@ class TopTargetMonitor(
     fun isNeedAbnormal(): Boolean {
         return abnormalRecords < 1
     }
+
     fun isWaitEnd(): Boolean {
-        return  abnormalWaitEnd < 1
+        return abnormalWaitEnd < 1
     }
 
 
@@ -114,14 +115,24 @@ class TopTargetMonitor(
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                } else if ((nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber  && (nowAttack?.task?.getNowPercent()
-                        ?: 0) == (lastHpTaskImpl?.task?.getNowPercent()
-                        ?: 0)
-                ) {
-                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
-                    needOpenReducer = true
-                    lastTimeStamp = nowTime
                 }
+                else if (nowNumber == roundMaxNumber - 2 && (nowAttack?.index
+                        ?: 10) != roundMaxNumber && nowTime - lastTimeStamp > toleranceInterval*2
+                ) {
+                    lastTimeStamp = nowTime
+                    needOpenReducer = true
+                }
+
+//                else if (nowNumber != roundMaxNumber && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
+//                    && lastHpTaskImpl?.task == nowAttack?.task
+//                    && (nowAttack?.task?.getNowPercent()
+//                        ?: 0) == (lastHpTaskImpl?.task?.getNowPercent()
+//                        ?: 0)
+//                ) {
+//                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
+//                    needOpenReducer = true
+//                    lastTimeStamp = nowTime
+//                }
                 abnormalRecords--
             } else {
                 abnormalRecords = maxAbnormal
@@ -129,7 +140,7 @@ class TopTargetMonitor(
                 lastTimeStamp = nowTime
             }
             abnormalWaitEnd = waitEndMax
-            lastHpTaskImpl= nowAttack
+            lastHpTaskImpl = nowAttack
         }
         lastTargetNumber = nowNumber
     }

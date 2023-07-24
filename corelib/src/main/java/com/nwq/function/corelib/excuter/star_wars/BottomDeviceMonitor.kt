@@ -38,7 +38,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
     private val lastCloseItem = mutableListOf<ImgTaskImpl1>()
     private val lastClickArea = mutableListOf<CoordinateArea>()
     private var flag = 1  // 第一次取对比值 第二次才根据对进行开关
-    private val maxAbnormal = 4
+    private val maxAbnormal = 10
     private var abnormalRecords = maxAbnormal // 如果多次需要开启网子 可能就是卡脚本了
 
     //设置需要常开的设备
@@ -155,7 +155,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
     }
 
     //这里是需要点击的区域
-    suspend fun updateInfo(bitmap: Bitmap): MutableList<CoordinateArea>? {
+    suspend fun updateInfo(bitmap: Bitmap): List<CoordinateArea>? {
         flag++
         //第一次先记录开启状态，方便二次确认
         if (flag % 2 == 0) {
@@ -189,19 +189,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
                 }
             }
         }
-        //开启网子
-        if (needOpenReducer) {
-            reducerList.forEach {
-                if (!it.verificationRule(bitmap)) {
-                    if (lastCloseItem.contains(it)) {//如果二次都是关闭的则进行打开
-                        nowClickList.add(it)
-                        needOpenReducer = false
-                    }
-                } else if (!lastCloseItem.contains(it)) {
-                    needOpenReducer = false
-                }
-            }
-        }
+
         //开启维修设备
         if (openMaintenance) {
             maintenanceEquipment.forEach {
@@ -223,6 +211,21 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             }
         }
 
+        //开启网子
+        if (needOpenReducer) {
+            Timber.d("checkOpen needOpenReducer NWQ_ 2023/7/24");
+            reducerList.forEach {
+                if (!it.verificationRule(bitmap)) {
+                    if (lastCloseItem.contains(it)) {//如果二次都是关闭的则进行打开
+                        nowClickList.add(it)
+                        needOpenReducer = false
+                    }
+                } else if (!lastCloseItem.contains(it)) {
+                    needOpenReducer = false
+                }
+            }
+        }
+
         val clickAreaList = mutableListOf<CoordinateArea>()
         nowClickList.forEach {
             it.clickArea?.let {
@@ -236,22 +239,19 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             abnormalRecords--
         }
 
+
+        val tempList = lastClickArea
         lastClickArea.clear()
         lastClickArea.addAll(clickAreaList)
-
 
         var nowTime = System.currentTimeMillis()
         checkTimeOn(nowTime, intervalOpenList1, clickAreaList)
         checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
         checkTimeOn(nowTime, intervalOpenList3, clickAreaList)
-        normallyOpenList.getOrNull(0)?.let { task ->
-            clickAreaList.map {
-                it.offsetX = task.getOffX()
-                it.offsetY = task.getOffY()
-            }
-        }
 
-        return clickAreaList
+
+
+        return clickAreaList.filter { !tempList.contains(it) } //这里上次点击的区域这次不进行再次点击
     }
 
 

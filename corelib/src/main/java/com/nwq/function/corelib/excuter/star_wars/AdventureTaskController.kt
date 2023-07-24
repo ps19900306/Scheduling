@@ -110,8 +110,9 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         } else {
             if (needCancel) {
                 aboundTask()
-                click(en.goJiyuListMenuArea)//这里点击左边的进入任务
-                pickUpTask2()
+                needCancel=false
+//                click(en.goJiyuListMenuArea)//这里点击左边的进入任务
+//                pickUpTask2()
             } else {
                 //这里点击前往了
                 en.startJiyuBigArea.clickA()
@@ -125,12 +126,13 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     }
 
     private suspend fun aboundTask() {
-        en.openJiyuBigArea.clickA()
-        delay(doubleClickInterval)
-        en.abandonTaskArea.clickA()
-        delay(doubleClickInterval)
-        en.confirmDialogCancelArea.clickA()
-        delay(doubleClickInterval)
+       if(waitImgTask2(en.isQianWangTask,en.openJiyuBigArea)){
+           en.abandonTaskArea.clickA()
+           en.confirmDialogEnsureArea.clickA()
+           theOutCheck()
+       }else{
+           theOutCheck()
+       }
     }
 
     private suspend fun isHasJiyuTask(): Boolean {
@@ -177,8 +179,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         click(list)//这里接受全部的任务
         takeScreen(doubleClickInterval)
 
-        if(list.size>1 && en.isCanRefreshTask.check()){
-               en.refreshTaskArea.clickA()
+        if (list.size > 1 && en.isCanRefreshTask.check()) {
+            en.refreshTaskArea.clickA()
         }
         var flag = true
         var count = 10
@@ -282,7 +284,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 count--
             }
         }
-        if (flag  &&  runSwitch) {
+        if (flag && runSwitch) {
             nowTask = PICK_UP_TASK
             return
         }
@@ -379,6 +381,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 if (spReo.isPickupBox) {
                     unloadingCargo()
                 }
+                nowTask = PICK_UP_TASK
+                flag = false
             } else if (en.isOpenBigMenuT.verificationRule(screenBitmap)) {
                 click(en.closeBigMenuArea)
             } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
