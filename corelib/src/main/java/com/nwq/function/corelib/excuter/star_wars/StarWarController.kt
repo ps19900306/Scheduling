@@ -110,12 +110,13 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
     private suspend fun receiveDailyGift() {
         val hasTips = en.isGiftMenuTipsT.check()
-        if (hasTips) {
-            val isInSpace = en.isInSpaceStationT.check()
+        val isInSpace = en.isInSpaceStationT.check()
+        if (hasTips && isInSpace) {
             waitImgNotTask(en.isGiftMenuTipsT)
             if (waitImgTask(en.isCanCollectGiftT)) {
                 click(en.openCollectGiftArea.toClickTask())
-                if (isInSpace && en.isCollectChipT.check()) {
+                delay(normalClickInterval)
+                if (en.isCollectChipT.check()) {
                     delay(normalClickInterval)
                     click(en.collectChipMenuArea.toClickTask())
                     waitImgTask(en.isCollectChipMenuT)
