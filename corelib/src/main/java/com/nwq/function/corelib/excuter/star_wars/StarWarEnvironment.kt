@@ -1857,13 +1857,11 @@ object StarWarEnvironment {
         val tag = "isBottomDevice"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 227,153,266,199,255,186,
             0.90059286F,0.69324327F,0.9376543F,0.69324327F,1.1315068F, 0.937037F)
-        val ruleRatio2 =  ColorRuleRatioUnImpl.getSimple( 227,153,266,199,255,186,
-            0.90059286F,0.69324327F,0.9376543F,0.69324327F,1.1315068F, 0.937037F)
         val list = mutableListOf<PointRule>()
         list.add(PointRule(CoordinatePoint(1704, 949), ruleRatio1
             //red213 green255 blue243
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val correctPositionModel =CorrectPositionModel(list, tag, 0,0, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(1704, 949), ruleRatio1
             //red213 green255 blue243
@@ -1885,13 +1883,11 @@ object StarWarEnvironment {
         val tag = "isTopDevice"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 229,163,267,206,255,191,
             0.9125F,0.7055085F,0.9462963F,0.7055085F,1.1406819F, 0.93333334F)
-        val ruleRatio2 =  ColorRuleRatioUnImpl.getSimple( 229,163,267,206,255,191,
-            0.9125F,0.7055085F,0.9462963F,0.7055085F,1.1406819F, 0.93333334F)
         val list = mutableListOf<PointRule>()
         list.add(PointRule(CoordinatePoint(1704, 835), ruleRatio1
             //red213 green254 blue240
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+       val correctPositionModel =CorrectPositionModel(list, tag, 0, 0, false)
         val pointList = mutableListOf<IPR>()
 
         pointList.add(PointRule(CoordinatePoint(1704, 835), ruleRatio1
@@ -1992,11 +1988,6 @@ object StarWarEnvironment {
             task.copyOffset("$tag${++i}",0,offset*i),
         )
     }
-    //这个是点击区域
-    val bigNormalNextArea by lazy { CoordinateArea(1907,537,118,104)}
-    //这个是打开前往的
-    val bigNormalOpenArea by lazy { CoordinateArea(1313,532,557,110)}
-
 
     val openWarehouseItemArea by lazy { CoordinateArea(88,143,68,69)}
     val openJiYuItemArea by lazy { CoordinateArea(198,145,79,71)}
@@ -2046,7 +2037,6 @@ object StarWarEnvironment {
     val goJiyuListMenuArea by lazy { CoordinateArea(1207,740,650,111)} //前往公告版
     val startJiyuBigArea by lazy { CoordinateArea(1893,512,144,154)} //这个是打开对话框
     val openJiyuBigArea by lazy { CoordinateArea(1190,531,680,119)}  //这个是打开可以进行放弃
-
 
 
     private val itemTopOffset = 378  //X 条目X轴位 378

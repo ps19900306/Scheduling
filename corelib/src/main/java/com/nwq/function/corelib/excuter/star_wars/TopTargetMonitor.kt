@@ -3,6 +3,7 @@ package com.nwq.function.corelib.excuter.star_wars
 import android.graphics.Bitmap
 import com.nwq.function.corelib.img.task.HpTaskImpl
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -42,8 +43,9 @@ class TopTargetMonitor(
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
     var needOpenReducer = false
     private val maxAbnormal = 30
+    private val waitEndMax = 10
     private var abnormalRecords = maxAbnormal // 如果多次需要开启网子 可能就是卡脚本了
-    private var abnormalWaitEnd = maxAbnormal // 这个是用来修复
+    private var abnormalWaitEnd = waitEndMax // 这个是用来修复
 
 
     fun clearData() {
@@ -53,7 +55,7 @@ class TopTargetMonitor(
         lastTimeStamp = 0
         needOpenReducer = false
         abnormalRecords = maxAbnormal
-        abnormalWaitEnd = maxAbnormal
+        abnormalWaitEnd = waitEndMax
     }
 
     private var newAgainLock = false // 在一个回合里 第一次再次锁定则可以开一次网子
@@ -112,10 +114,11 @@ class TopTargetMonitor(
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                } else if ((nowTime - lastTimeStamp > toleranceInterval) &&nowNumber == lastTargetNumber  && (nowAttack?.task?.getNowPercent()
+                } else if ((nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber  && (nowAttack?.task?.getNowPercent()
                         ?: 0) == (lastHpTaskImpl?.task?.getNowPercent()
                         ?: 0)
                 ) {
+                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
                     needOpenReducer = true
                     lastTimeStamp = nowTime
                 }
@@ -125,7 +128,7 @@ class TopTargetMonitor(
                 needOpenReducer = false
                 lastTimeStamp = nowTime
             }
-            abnormalWaitEnd = maxAbnormal
+            abnormalWaitEnd = waitEndMax
             lastHpTaskImpl= nowAttack
         }
         lastTargetNumber = nowNumber

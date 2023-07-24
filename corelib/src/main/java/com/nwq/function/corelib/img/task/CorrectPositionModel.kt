@@ -61,12 +61,12 @@ open class CorrectPositionModel(
         hasCorrect = true
         offsetX = ofsX
         offsetY = ofsY
-        if (record) {
-            JsonUtil.objectToString(OffsetRecord(ofsX, ofsY)).let {
-                var spStr by SPRepoPrefix.getNowSPRepo().getRecordImgTaskDeviation(tag)
-                spStr = it
-            }
-        }
+//        if (record) {
+//            JsonUtil.objectToString(OffsetRecord(ofsX, ofsY)).let {
+//                var spStr by SPRepoPrefix.getNowSPRepo().getRecordImgTaskDeviation(tag)
+//                spStr = it
+//            }
+//        }
     }
 
     //这个next可能会被多次调用

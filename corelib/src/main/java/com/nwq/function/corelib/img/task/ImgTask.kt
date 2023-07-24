@@ -50,7 +50,7 @@ abstract class ImgTask(
         //智斗都符合的清空才记录修正点
         if(normalErrorCount==0){
             correctModel?.let {
-                it?.correctCoordinate(offsetX-it.supplementalValueX,offsetY- it.supplementalValueY)
+                it.correctCoordinate(offsetX-it.supplementalValueX,offsetY- it.supplementalValueY)
             }
         }
         return true
