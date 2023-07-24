@@ -108,7 +108,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         return !flag
     }
 
-    private suspend fun receiveDailyGift() {
+    private suspend fun receiveDailyGift() {0
         val hasTips = en.isGiftMenuTipsT.check()
         val isInSpace = en.isInSpaceStationT.check()
         if (hasTips && isInSpace) {
