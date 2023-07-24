@@ -117,20 +117,20 @@ class TopTargetMonitor(
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 }
-//                else if ((nowNumber == roundMaxNumber - 2 || nowNumber == roundMaxNumber - 1) && (nowAttack?.index
-//                        ?: 10) != roundMaxNumber && nowTime - lastTimeStamp > toleranceInterval * 2
-//                ) {
-//                    lastTimeStamp = nowTime
-//                    needOpenReducer = true
-//                }
-                else if (nowNumber != roundMaxNumber && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
-                    && lastHpTaskImpl?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 0) > 0
-                    && nowAttack?.task?.getNowPercent() == lastHpTaskImpl?.task?.getNowPercent()
+                else if ((nowNumber == roundMaxNumber - 2 || nowNumber == roundMaxNumber - 1) && (nowAttack?.index
+                        ?: 10) != roundMaxNumber && nowTime - lastTimeStamp > toleranceInterval * 2
                 ) {
-                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
-                    needOpenReducer = true
                     lastTimeStamp = nowTime
+                    needOpenReducer = true
                 }
+//                else if (nowNumber != roundMaxNumber && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
+//                    && lastHpTaskImpl?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 0) > 0
+//                    && nowAttack?.task?.getNowPercent() == lastHpTaskImpl?.task?.getNowPercent()
+//                ) {
+//                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
+//                    needOpenReducer = true
+//                    lastTimeStamp = nowTime
+//                }
                 abnormalRecords--
             } else {
                 abnormalRecords = maxAbnormal

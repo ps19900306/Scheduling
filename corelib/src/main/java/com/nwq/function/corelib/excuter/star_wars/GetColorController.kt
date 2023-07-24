@@ -27,7 +27,7 @@ class GetColorController(acService: AccessibilityService, endLister: EndLister? 
     override fun startWork() {
         GlobalScope.launch(Dispatchers.Default) {
             delay(10000)
-            getColor(StarWarEnvironment.isClosePositionMenuT)
+            getColor(StarWarEnvironment.isShowLeftDialogBox)
         }
     }
 
@@ -51,7 +51,7 @@ class GetColorController(acService: AccessibilityService, endLister: EndLister? 
         val pointList = mutableListOf<CoordinatePoint>()
         task.iprList.forEach {
             val rule = it.getColorRule()
-            if (rule is ColorRuleRatioImpl || rule is ColorRuleImpl) {
+            if (rule is ColorRuleRatioImpl || rule is ColorRuleImpl || it is PointRules) {
                 pointList.add(it.getCoordinatePoint())
             }
         }
@@ -61,6 +61,7 @@ class GetColorController(acService: AccessibilityService, endLister: EndLister? 
         featureKeyList.clear()
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreenBitmap(Constant.fastClickInterval)
+            task.verificationRule(bitmap)
             if (bitmap.isOrientation()) {
                 pointList.forEach {
                     var intN = bitmap.getPixel(it.xI, it.yI)

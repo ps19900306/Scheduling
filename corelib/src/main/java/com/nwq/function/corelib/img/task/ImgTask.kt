@@ -32,12 +32,12 @@ abstract class ImgTask(
         var backgroundErrorCount = 0
         iprList.forEach {
             if (!it.checkIpr(bitmap, offsetX, offsetY)) {
-                if (it.getColorRule() is ColorRuleRatioImpl || it.getColorRule() is ColorRuleImpl) {
+                if (it.getColorRule() is ColorRuleRatioImpl || it is PointRules) {
                     normalErrorCount++
                     if (normalErrorCount > nErrorTolerance) {
                         return false
                     }
-                } else if (it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl) {
+                } else if (it.getColorRule() is ColorRuleImpl || it.getColorRule() is ColorRuleUnImpl) {
                     backgroundErrorCount++
                     if (backgroundErrorCount > bErrorTolerance) {
                         return false
