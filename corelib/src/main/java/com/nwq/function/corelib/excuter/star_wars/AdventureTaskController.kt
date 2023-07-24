@@ -179,7 +179,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         click(list)//这里接受全部的任务
         takeScreen(doubleClickInterval)
 
-        if (list.size > 1 && en.isCanRefreshTask.check()) {
+        if (list.size >= 1 && en.isCanRefreshTask.check()) {
             en.refreshTaskArea.clickA()
         }
         var flag = true
