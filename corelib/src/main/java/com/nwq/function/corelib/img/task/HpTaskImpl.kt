@@ -30,17 +30,27 @@ open class HpTaskImpl(
             val x = correctModel.getOffsetXSupple()
             val y = correctModel.getOffsetYSupple()
             iprList.forEachIndexed { index, ipr ->
-                if (!ipr.checkIpr(bitmap, x, y)) {
+                if (ipr.checkIpr(bitmap, x, y)) {
                     lastP = index
-                    return true
+                    return index != 0
                 }
             }
         } else {
             correctModel?.let {
                 optClickTasks(bitmap, correctModel)
             }
+            val x = correctModel?.getOffsetXSupple() ?: 0
+            val y = correctModel?.getOffsetYSupple() ?: 0
+            iprList.forEachIndexed { index, ipr ->
+                if (ipr.checkIpr(bitmap, x, y)) {
+                    Timber.d("correct index$index verificationRule HpTaskImpl NWQ_ 2023/7/24");
+                    lastP = index
+                    return index != 0
+                }
+            }
         }
-        return false
+        lastP = iprList.size
+        return true
     }
 
 

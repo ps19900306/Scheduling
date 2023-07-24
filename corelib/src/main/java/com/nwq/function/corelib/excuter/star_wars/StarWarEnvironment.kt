@@ -337,46 +337,41 @@ object StarWarEnvironment {
     //开启左边位置菜单
     val isOpenPositionMenuT by lazy {
         val tag = "isOpenPosition"
-        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 164,108,170,113,174,115,
-            1.05F,0.83706295F,1.0664062F,0.83706295F,1.0740459F, 0.8664596F)
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 164,117,170,121,174,124,
+            1.05F,0.83706295F,1.05F,0.83706295F,1.057554F, 0.8637584F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(467, 286), ruleRatio1
-            //red129 green129 blue129 blockNumber1
+        list.add(PointRule(CoordinatePoint(483, 295), ruleRatio1
+            //red147 green147 blue147 blockNumber1
         ))
         val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(466, 292), ruleRatio1
-            //red129 green130 blue132 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(477, 307), ruleRatio1
+            //red157 green162 blue166 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(467, 286), ruleRatio1
-            //red129 green129 blue129 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(480, 303), ruleRatio1
+            //red146 green151 blue154 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(468, 298), ruleRatio1
-            //red131 green137 blue137 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(482, 299), ruleRatio1
+            //red141 green142 blue144 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(471, 304), ruleRatio1
-            //red128 green132 blue135 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(483, 295), ruleRatio1
+            //red147 green147 blue147 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(475, 310), ruleRatio1
-            //red136 green146 blue148 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(470, 301), ruleRatio1
+            //red139 green147 blue149 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(476, 296), ruleRatio1
+        pointList.add(PointRule(CoordinatePoint(468, 297), ruleRatio1
+            //red137 green145 blue147 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(467, 293), ruleRatio1
+            //red139 green143 blue144 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(474, 296), ruleRatio1
             //red144 green147 blue152 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(479, 304), ruleRatio1
-            //red153 green158 blue162 blockNumber1
-        ))
-        pointList.add(PointRule(CoordinatePoint(483, 286), ruleRatio1
-            //red129 green129 blue129 blockNumber1
-        ))
-        pointList.add(PointRule(CoordinatePoint(483, 298), ruleRatio1
-            //red130 green130 blue130 blockNumber1
-        ))
-        pointList.add(PointRule(CoordinatePoint(485, 292), ruleRatio1
-            //red130 green130 blue128 blockNumber1
-        ))
-        pointList.add(TwoPointRule(CoordinatePoint(483, 286),CoordinatePoint(486, 284), CompareDifferenceRuleImpl.getSimple(20,20,20)))
-        pointList.add(TwoPointRule(CoordinatePoint(479, 304),CoordinatePoint(482, 304), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(474, 296),CoordinatePoint(474, 292), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(470, 301),CoordinatePoint(467, 301), CompareDifferenceRuleImpl.getSimple(20,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(477, 307),CoordinatePoint(480, 307), CompareDifferenceRuleImpl.getSimple(30,30,30)))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
@@ -755,96 +750,101 @@ object StarWarEnvironment {
 
     val isCloseEyeMenuT by lazy {
         val tag = "isCloseEyeMenu"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 185,128,185,128,185,128,
+            1.05F,0.8885351F,1.05F,0.8885351F,1.0567307F, 0.9F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(2231, 603), ColorRuleRatioImpl.getSimple(158, 158, 158)))
-        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        list.add(PointRule(CoordinatePoint(2246, 614), ruleRatio1
+            //red147 green147 blue147 blockNumber1
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
-        pointList.add(
-            PointRule(
-                CoordinatePoint(2231, 603), ColorRuleRatioImpl.getSimple(158, 158, 158)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(2248, 604), ColorRuleRatioImpl.getSimple(159, 159, 159)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(2264, 606), ColorRuleRatioImpl.getSimple(163, 163, 163)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(2258, 610), ColorRuleRatioImpl.getSimple(169, 169, 169)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(2235, 611), ColorRuleRatioImpl.getSimple(167, 167, 167)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(2246, 615), ColorRuleRatioImpl.getSimple(177, 177, 177)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(2255, 607), ColorRuleRatioUnImpl.getSimple(
-                    198, 118, 198, 118, 198, 118, 1.2F, 0.8F, 1.2F, 0.8F, 1.2F, 0.8F
-                )
-                //red28 green28 blue28
-            )
-        )
+        pointList.add(PointRule(CoordinatePoint(2238, 607), ruleRatio1
+            //red159 green159 blue159 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(2255, 611), ruleRatio1
+            //red143 green143 blue143 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(2259, 603), ruleRatio1
+            //red152 green152 blue152 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(2254, 595), ruleRatio1
+            //red145 green145 blue145 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(2266, 607), ruleRatio1
+            //red156 green156 blue156 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(2236, 612), ruleRatio1
+            //red169 green169 blue169 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(2258, 614), ruleRatio1
+            //red158 green158 blue158 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(2247, 603), ruleRatio1
+            //red151 green151 blue151 blockNumber2
+        ))
+        pointList.add(PointRule(CoordinatePoint(2250, 606), ruleRatio1
+            //red155 green157 blue156 blockNumber2
+        ))
+        pointList.add(TwoPointRule(CoordinatePoint(2254, 595),CoordinatePoint(2252, 598), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(2250, 606),CoordinatePoint(2253, 606), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(2246, 614),CoordinatePoint(2246, 611), CompareDifferenceRuleImpl.getSimple(30,30,30)))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
     val openEyeMenuArea by lazy { CoordinateArea(2211, 570, 75, 71) }
 
+
+
+
+
+
     val isOpenEyeMenuT by lazy {
         val tag = "isOpenEyeMenu"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 185,126,185,126,185,125,
+            1.05F,0.88767123F,1.0651078F,0.88767123F,1.0651078F, 0.9F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(1876, 608), ColorRuleRatioImpl.getSimple(26, 26, 26)))
-        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        list.add(PointRule(CoordinatePoint(1858, 612), ruleRatio1
+            //red146 green146 blue146 blockNumber1
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1854, 603), ColorRuleRatioImpl.getSimple(158, 158, 158)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1884, 603), ColorRuleRatioImpl.getSimple(156, 156, 156)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1870, 605), ColorRuleRatioImpl.getSimple(159, 159, 159)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1859, 607), ColorRuleRatioImpl.getSimple(164, 164, 164)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1886, 607), ColorRuleRatioImpl.getSimple(163, 163, 163)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1879, 611), ColorRuleRatioImpl.getSimple(168, 168, 168)
-            )
-        )
-        pointList.add(
-            PointRule(
-                CoordinatePoint(1868, 615), ColorRuleRatioImpl.getSimple(177, 177, 177)
-            )
-        )
+        pointList.add(PointRule(CoordinatePoint(1858, 612), ruleRatio1
+            //red169 green169 blue169 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1851, 604), ruleRatio1
+            //red146 green146 blue146 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1867, 616), ruleRatio1
+            //red151 green151 blue151 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1876, 615), ruleRatio1
+            //red169 green169 blue169 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1859, 597), ruleRatio1
+            //red142 green142 blue142 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1860, 605), ruleRatio1
+            //red149 green149 blue149 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1885, 611), ruleRatio1
+            //red157 green157 blue157 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1888, 602), ruleRatio1
+            //red152 green152 blue152 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1879, 596), ruleRatio1
+            //red145 green145 blue145 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1869, 603), ruleRatio1
+            //red150 green150 blue150 blockNumber2
+        ))
+        pointList.add(PointRule(CoordinatePoint(1872, 606), ruleRatio1
+            //red156 green156 blue156 blockNumber2
+        ))
+        pointList.add(TwoPointRule(CoordinatePoint(1860, 605),CoordinatePoint(1863, 605), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(1872, 606),CoordinatePoint(1876, 606), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(1858, 612),CoordinatePoint(1856, 614), CompareDifferenceRuleImpl.getSimple(30,30,30)))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-
 
     //可以领取或者可以收集
     val isGiftMenuTipsT by lazy {
@@ -1198,7 +1198,6 @@ object StarWarEnvironment {
     }
 
 
-
     //这个是左边的大图
     private val itemOffset = 465  //X 条目X轴位移
     val item1IsNormalTask by lazy {
@@ -1258,49 +1257,40 @@ object StarWarEnvironment {
 
     val item1ZeroDistanceTask by lazy {
         val tag = "item1ZeroDistance"
-        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 155,103,161,108,161,108,
-            1.0191176F,0.8386364F,1.0116788F,0.8386364F,1.0580152F, 0.8780488F)
-        val ruleRatio2 =  ColorRuleRatioUnImpl.getSimple( 155,103,161,108,161,108,
-            1.0191176F,0.8386364F,1.0116788F,0.8386364F,1.0580152F, 0.8780488F)
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 159,106,164,110,162,109,
+            1.0339694F,0.85645163F,1.0431373F,0.85645163F,1.077451F, 0.89285713F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(606, 492), ColorRuleRatioImpl.getSimple(49,53,56)))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 10, true)
+        list.add(PointRule(CoordinatePoint(609, 495), ruleRatio1
+            //red133 green137 blue136 blockNumber1
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(609, 495), ruleRatio1
-            //red129 green133 blue134
-        ))
-        pointList.add(PointRule(CoordinatePoint(616, 496), ruleRatio1
-            //red116 green122 blue122
+            //red133 green137 blue136 blockNumber1
         ))
         pointList.add(PointRule(CoordinatePoint(608, 501), ruleRatio1
-            //red147 green153 blue153
-        ))
-        pointList.add(PointRule(CoordinatePoint(617, 502), ruleRatio1
-            //red120 green126 blue126
+            //red152 green156 blue155 blockNumber1
         ))
         pointList.add(PointRule(CoordinatePoint(608, 507), ruleRatio1
-            //red147 green153 blue153
+            //red152 green157 blue153 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(612, 511), ruleRatio1
+            //red120 green126 blue126 blockNumber1
         ))
         pointList.add(PointRule(CoordinatePoint(617, 508), ruleRatio1
-            //red120 green126 blue126
+            //red125 green129 blue130 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(612, 512), ruleRatio1
-            //red131 green137 blue137
+        pointList.add(PointRule(CoordinatePoint(617, 502), ruleRatio1
+            //red125 green129 blue128 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(606, 492), ruleRatio2
-            //red49 green53 blue56
+        pointList.add(PointRule(CoordinatePoint(616, 496), ruleRatio1
+            //red122 green126 blue125 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(613, 493), ruleRatio2
-            //red49 green53 blue56
-        ))
-        pointList.add(PointRule(CoordinatePoint(611, 509), ruleRatio2
-            //red55 green59 blue62
-        ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            nErrorTolerance=1
-        }
+        pointList.add(TwoPointRule(CoordinatePoint(609, 495),CoordinatePoint(609, 494), CompareDifferenceRuleImpl.getSimple(20,20,20)))
+        pointList.add(TwoPointRule(CoordinatePoint(616, 496),CoordinatePoint(616, 494), CompareDifferenceRuleImpl.getSimple(15,15,15)))
+        pointList.add(TwoPointRule(CoordinatePoint(612, 511),CoordinatePoint(612, 509), CompareDifferenceRuleImpl.getSimple(15,15,20)))
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-
 
 
 
@@ -1312,41 +1302,41 @@ object StarWarEnvironment {
     }
 
     val item1OneDistanceTask by lazy {
-        val tag = "item2OneDistance"
-        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 151,117,157,122,157,122,
-            1.0197841F,0.8602941F,1.0125F,0.8602941F,1.05F, 0.89357144F)
-        val ruleRatio2 =  ColorRuleRatioImpl.getSimple( 69,45,73,47,74,49,
-            1.0333333F,0.8169231F,1.0015385F,0.8169231F,1.05F, 0.83793104F)
+        val tag = "itemOne1Distance"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 143,102,148,106,149,107,
+            1.0423913F,0.8578125F,1.0275F,0.8578125F,1.05F, 0.8793893F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(1076, 495), ruleRatio1
-            //red130 green136 blue136
+        list.add(PointRule(CoordinatePoint(610, 495), ruleRatio1
+            //red114 green118 blue119 blockNumber1
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 10, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
         val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(1076, 495), ruleRatio1
-            //red130 green136 blue136
+        pointList.add(PointRule(CoordinatePoint(610, 495), ruleRatio1
+            //red114 green118 blue119 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1076, 501), ruleRatio1
-            //red137 green143 blue143
+        pointList.add(PointRule(CoordinatePoint(612, 498), ruleRatio1
+            //red123 green127 blue128 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1076, 507), ruleRatio1
-            //red137 green143 blue143
+        pointList.add(PointRule(CoordinatePoint(612, 501), ruleRatio1
+            //red123 green129 blue129 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1073, 512), ruleRatio1
-            //red134 green140 blue140
+        pointList.add(PointRule(CoordinatePoint(612, 504), ruleRatio1
+            //red123 green129 blue129 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1079, 512), ruleRatio1
-            //red135 green139 blue140
+        pointList.add(PointRule(CoordinatePoint(612, 507), ruleRatio1
+            //red124 green128 blue131 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1073, 492), ruleRatio2
-            //red51 green55 blue56
+        pointList.add(PointRule(CoordinatePoint(611, 510), ruleRatio1
+            //red120 green124 blue125 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1073, 504), ruleRatio2
-            //red52 green56 blue59
+        pointList.add(PointRule(CoordinatePoint(608, 511), ruleRatio1
+            //red118 green122 blue123 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1079, 509), ruleRatio2
-            //red58 green62 blue63
+        pointList.add(PointRule(CoordinatePoint(615, 511), ruleRatio1
+            //red120 green121 blue123 blockNumber1
         ))
+        pointList.add(TwoPointRule(CoordinatePoint(610, 495),CoordinatePoint(610, 494), CompareDifferenceRuleImpl.getSimple(15,15,15)))
+        pointList.add(TwoPointRule(CoordinatePoint(612, 507),CoordinatePoint(614, 507), CompareDifferenceRuleImpl.getSimple(20,20,20)))
         ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
             nErrorTolerance=1
         }
@@ -1354,9 +1344,9 @@ object StarWarEnvironment {
 
     val IsOneDistanceList by lazy {
         arrayOf(
-            item1OneDistanceTask.copyOffset("item1OneDistance",-itemOffset,0),
             item1OneDistanceTask,
-            item1OneDistanceTask.copyOffset("item3OneDistance",itemOffset,0))
+            item1OneDistanceTask.copyOffset("itemOne2Distance",itemOffset,0),
+            item1OneDistanceTask.copyOffset("itemOne3Distance",itemOffset*2,0))
     }
 
 
@@ -2072,39 +2062,28 @@ object StarWarEnvironment {
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 199,135,187,132,185,128,
             1.1437501F,0.8333333F,1.1694611F,0.8333333F,1.0968152F, 0.8835366F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(2187, 108), ruleRatio1
+        list.add(PointRule(CoordinatePoint(2171, 104), ruleRatio1
             //red173 green173 blue173
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 1, 1, false)
-
+        val correctPositionModel =CorrectPositionModel(list, tag, 3 ,3, false)
         val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(2262, 47), ruleRatio1
-            //red169 green171 blue170 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(2274, 85), ruleRatio1
+            //red172 green172 blue170 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(2172, 105), ruleRatio1
-            //red160 green162 blue161 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(2258, 37), ruleRatio1
+            //red161 green160 blue158 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(2256, 105), ruleRatio1
-            //red170 green174 blue173 blockNumber2
+        pointList.add(PointRule(CoordinatePoint(2210, 22), ruleRatio1
+            //red161 green165 blue166 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(2217, 30), ruleRatio1
-            //red157 green161 blue160 blockNumber2
+        pointList.add(PointRule(CoordinatePoint(2168, 56), ruleRatio1
+            //red172 green174 blue173 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(2187, 108), ruleRatio1
-            //red173 green175 blue174 blockNumber2
-        ))
-        pointList.add(PointRule(CoordinatePoint(2252, 89), ruleRatio1
-            //red173 green173 blue173 blockNumber3
-        ))
-        pointList.add(PointRule(CoordinatePoint(2215, 39), ruleRatio1
-            //red159 green157 blue158 blockNumber3
-        ))
-        pointList.add(PointRule(CoordinatePoint(2185, 80), ruleRatio1
-            //red169 green169 blue169 blockNumber3
+        pointList.add(PointRule(CoordinatePoint(2171, 104), ruleRatio1
+            //red162 green162 blue160 blockNumber1
         ))
         HpTaskImpl(pointList, tag, correctPositionModel)
     }
-
 
     //这个是关闭右边菜单
     val topLockTargetList1 by lazy {
@@ -2158,23 +2137,9 @@ object StarWarEnvironment {
             task.copyOffset("$tag${--i}",offset*i,0),
             task
         )
-//        var i =0
-//        val tag = "topTargetHpTask"
-//        val task = topTargetHpTask
-//        arrayOf(
-//            task,
-//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList1[i].correctModel),
-//        )
     }
 
     val topTargetHpList2 by lazy {
-
         var i = 8
         val tag = "topTargetHp2Task"
         val task = topTargetHpTask
@@ -2189,20 +2154,6 @@ object StarWarEnvironment {
             task.copyOffset("$tag${--i}",offset*i-itemTopOffset,0),
             task.copyOffset("$tag${--i}",-itemTopOffset,0),
         )
-
-//        var i =0
-//        val tag = "topTargetHpTask"
-//        val task = topTargetHpTask
-//        arrayOf(
-//            task,
-//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-//            task.copyHpOffset("$tag${++i}",topLockTargetList2[i].correctModel),
-//        )
     }
 
     fun getPositionArea(index:Int):CoordinateArea{
