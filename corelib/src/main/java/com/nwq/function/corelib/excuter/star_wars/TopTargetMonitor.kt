@@ -3,7 +3,6 @@ package com.nwq.function.corelib.excuter.star_wars
 import android.graphics.Bitmap
 import com.nwq.function.corelib.img.task.HpTaskImpl
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
-import timber.log.Timber
 
 /**
 create by: 86136
@@ -38,7 +37,7 @@ class TopTargetMonitor(
 
     private var numberOfRounds = 0
     var lastTargetNumber = 0
-    private var lastHpTaskImpl: AttackTargetResult? = null
+    private var lastAttack: AttackTargetResult? = null
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
     var needOpenReducer = false
@@ -51,7 +50,7 @@ class TopTargetMonitor(
     fun clearData() {
         numberOfRounds = 0
         lastTargetNumber = 0
-        lastHpTaskImpl = null
+        lastAttack = null
         lastTimeStamp = 0
         needOpenReducer = false
         abnormalRecords = maxAbnormal
@@ -112,6 +111,7 @@ class TopTargetMonitor(
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 } else if (nowNumber == roundMaxNumber - 1 && (nowAttack?.index
+                        ?: 10) != roundMaxNumber && (lastAttack?.index
                         ?: 10) != roundMaxNumber
                 ) {
                     lastTimeStamp = nowTime
@@ -138,7 +138,7 @@ class TopTargetMonitor(
                 lastTimeStamp = nowTime
             }
             abnormalWaitEnd = waitEndMax
-            lastHpTaskImpl = nowAttack
+            lastAttack = nowAttack
         }
         lastTargetNumber = nowNumber
     }

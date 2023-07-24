@@ -253,6 +253,16 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             abnormalRecords--
         }
 
+        newRemove.clear()
+        val resultList = mutableListOf<CoordinateArea>()
+        clickAreaList.forEach {
+           if(lastClickArea.contains(it) && !lastRemove.contains(it)){
+               newRemove.add(it)
+           }else{
+               resultList.add(it)
+           }
+        }
+
 
         val tempList = lastClickArea.toList()
 
@@ -265,10 +275,12 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         checkTimeOn(nowTime, intervalOpenList3, clickAreaList)
 
 
-
+        clickAreaList.filter { !tempList.contains(it) }
         return clickAreaList.filter { !tempList.contains(it) } //这里上次点击的区域这次不进行再次点击
     }
 
+    var lastRemove = mutableListOf<CoordinateArea>()
+    var newRemove = mutableListOf<CoordinateArea>()
 
     protected fun checkTimeOn(
         nowtime: Long,
