@@ -260,13 +260,18 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         positionList: List<OptSlotInfo>,
         needCheckOpenList: MutableList<CoordinateArea>,
     ) {
-        var lastItemOpenTime = 0L //这个是上个对象的打开时间
-        positionList.forEach { d ->
-            if (nowtime - lastItemOpenTime > d.offsetInterval  && nowtime - d.lastOpenedTime > d.selfInterval) {
+        var lastItemOpenTime = 0L //这里只取第一个为标准，不然会导致多设备不好用
+        positionList.forEachIndexed { p, d ->
+            if (p == 0) {
+                if (nowtime - d.lastOpenedTime > d.selfInterval) {
+                    needCheckOpenList.add(d.clickArea)
+                    d.lastOpenedTime = nowtime
+                }
+                lastItemOpenTime = d.lastOpenedTime
+            } else if ((nowtime - lastItemOpenTime) in d.offsetInterval * p..d.offsetInterval * (p + 1) && nowtime - d.lastOpenedTime > d.selfInterval) {
                 needCheckOpenList.add(d.clickArea)
                 d.lastOpenedTime = nowtime
             }
-            lastItemOpenTime = d.lastOpenedTime
         }
 
     }

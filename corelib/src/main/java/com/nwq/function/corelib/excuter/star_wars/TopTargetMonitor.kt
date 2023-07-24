@@ -112,7 +112,7 @@ class TopTargetMonitor(
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                } else if (nowNumber == lastTargetNumber && lastHpTaskImpl == nowAttack && (nowAttack?.task?.getNowPercent()
+                } else if (nowNumber == lastTargetNumber && lastHpTaskImpl?.task == nowAttack?.task && (nowAttack?.task?.getNowPercent()
                         ?: 0) == (lastHpTaskImpl?.task?.getNowPercent()
                         ?: 0) && (nowTime - lastTimeStamp > toleranceInterval)
                 ) {
@@ -126,6 +126,7 @@ class TopTargetMonitor(
                 lastTimeStamp = nowTime
             }
             abnormalWaitEnd = maxAbnormal
+            lastHpTaskImpl= nowAttack
         }
         lastTargetNumber = nowNumber
     }
