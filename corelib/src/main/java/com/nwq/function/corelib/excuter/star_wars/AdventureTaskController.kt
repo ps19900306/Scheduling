@@ -70,7 +70,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     monitoringReturnStatus()
                 }
                 ALL_COMPLETE -> {
-                    en.isInSpaceStationT
+                    pressHomeBtn()
                 }
                 CHECK_SHIP -> {
 
@@ -156,7 +156,10 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
     private suspend fun pickUpTask2() {
         val list = getPickUpArea()
-        //TODO 这里要判断是否完成的
+        if(en.isAllCompleteTask.check()){
+            nowTask = ALL_COMPLETE
+            return
+        }
         if (list == null) {
             //没有刷出来数据
             nowTask = ABNORMAL_STATE

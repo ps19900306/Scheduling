@@ -2160,4 +2160,33 @@ object StarWarEnvironment {
         return CoordinateArea(425,425+(index*75),60,62) //这个是根据2个跳的距离(左边跳转的距离)
     }
 
+
+    val isAllCompleteTask by lazy {
+        val tag = "isAllComplete"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 155,126,60,47,77,62,
+            2.912264F,2.2034483F,2.2369566F,2.2034483F,0.8342466F, 0.675F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(1103, 218), ruleRatio1
+            //red143 green56 blue73 blockNumber3
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 5, 1, true)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(1103, 218), ruleRatio1
+            //red143 green56 blue73 blockNumber3
+        ))
+        pointList.add(PointRule(CoordinatePoint(1103, 221), ruleRatio1
+            //red143 green56 blue73 blockNumber3
+        ))
+        pointList.add(PointRule(CoordinatePoint(1103, 227), ruleRatio1
+            //red143 green56 blue73 blockNumber3
+        ))
+        pointList.add(PointRule(CoordinatePoint(1074, 220), ruleRatio1
+            //red147 green54 blue72 blockNumber4
+        ))
+        pointList.add(PointRule(CoordinatePoint(1085, 229), ruleRatio1
+            //red145 green58 blue74 blockNumber7
+        ))
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
 }
