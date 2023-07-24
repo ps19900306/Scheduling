@@ -688,7 +688,7 @@ class BaseImgProcess(
         featureKeyList.filter { it.isChecked }.forEach { baseKey ->
             colorMaps[baseKey]?.filter { it.isIdentificationKey }?.groupBy { it.blockNumber }
                 ?.forEach { (i, list) ->
-                    list.sortedBy { it.x }.forEach { point ->
+                    list.sortedBy { it.sequenceNumber }.forEach { point ->
                         result.add(point)
                     }
                 }

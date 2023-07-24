@@ -2091,14 +2091,8 @@ object StarWarEnvironment {
             1.1437501F,0.8333333F,1.1694611F,0.8333333F,1.0968152F, 0.8835366F)
         val correctPositionModel = null
         val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(2274, 86), ruleRatio1
-            //red170 green172 blue171 blockNumber1
-        ))
         pointList.add(PointRule(CoordinatePoint(2262, 47), ruleRatio1
             //red169 green171 blue170 blockNumber1
-        ))
-        pointList.add(PointRule(CoordinatePoint(2195, 31), ruleRatio1
-            //red164 green168 blue171 blockNumber1
         ))
         pointList.add(PointRule(CoordinatePoint(2172, 105), ruleRatio1
             //red160 green162 blue161 blockNumber1

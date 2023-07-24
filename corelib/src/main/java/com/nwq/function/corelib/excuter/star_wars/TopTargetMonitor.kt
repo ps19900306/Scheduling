@@ -112,9 +112,9 @@ class TopTargetMonitor(
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                } else if (nowNumber == lastTargetNumber && lastHpTaskImpl?.task == nowAttack?.task && (nowAttack?.task?.getNowPercent()
+                } else if ((nowTime - lastTimeStamp > toleranceInterval) &&nowNumber == lastTargetNumber  && (nowAttack?.task?.getNowPercent()
                         ?: 0) == (lastHpTaskImpl?.task?.getNowPercent()
-                        ?: 0) && (nowTime - lastTimeStamp > toleranceInterval)
+                        ?: 0)
                 ) {
                     needOpenReducer = true
                     lastTimeStamp = nowTime

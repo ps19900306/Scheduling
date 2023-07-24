@@ -70,7 +70,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     monitoringReturnStatus()
                 }
                 ALL_COMPLETE -> {
-
+                    en.isInSpaceStationT
                 }
                 CHECK_SHIP -> {
 
