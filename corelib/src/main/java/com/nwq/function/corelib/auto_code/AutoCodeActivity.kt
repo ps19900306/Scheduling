@@ -152,17 +152,17 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                        StarWarEnvironment.topTargetHpList1.forEachIndexed {p,d->
-                           if(d.verificationRule(mBitmap)){
-                               Timber.d("List1 number:$p percent${d.getNowPercent()}  AutoCodeActivity NWQ_ 2023/7/24");
-                           }
-                        }
-                        StarWarEnvironment.topTargetHpList2.forEachIndexed {p,d->
-                            if(d.verificationRule(mBitmap)){
-                                Timber.d("List2 number:$p percent${d.getNowPercent()}  AutoCodeActivity NWQ_ 2023/7/24");
-                            }
-                        }
-                    //    StarWarEnvironment.isCanLockTask.verificationRule(mBitmap)
+//                        StarWarEnvironment.topTargetHpList1.forEachIndexed {p,d->
+//                           if(d.verificationRule(mBitmap)){
+//                               Timber.d("List1 number:$p percent${d.getNowPercent()}  AutoCodeActivity NWQ_ 2023/7/24");
+//                           }
+//                        }
+//                        StarWarEnvironment.topTargetHpList2.forEachIndexed {p,d->
+//                            if(d.verificationRule(mBitmap)){
+//                                Timber.d("List2 number:$p percent${d.getNowPercent()}  AutoCodeActivity NWQ_ 2023/7/24");
+//                            }
+//                        }
+                      StarWarEnvironment.isQianWangTask.verificationRule(mBitmap)
                     }
                     bind.indexLayout.root.isVisible = true
 //                    GlobalScope.launch(Dispatchers.Default) {
