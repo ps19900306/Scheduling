@@ -224,6 +224,20 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
                     needOpenReducer = false
                 }
             }
+        } else {
+            if (reducerList.find { !lastCloseItem.contains(it) }
+                    ?.verificationRule(bitmap) == true) {//这里表示有一个网子是开启的 这样取尝试开启其他网子
+                reducerList.forEach {
+                    if (!it.verificationRule(bitmap)) {
+                        if (lastCloseItem.contains(it)) {//如果二次都是关闭的则进行打开
+                            nowClickList.add(it)
+                            needOpenReducer = false
+                        }
+                    } else if (!lastCloseItem.contains(it)) {
+                        needOpenReducer = false
+                    }
+                }
+            }
         }
 
         val clickAreaList = mutableListOf<CoordinateArea>()
