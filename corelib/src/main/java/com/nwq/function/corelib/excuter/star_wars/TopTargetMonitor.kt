@@ -115,8 +115,7 @@ class TopTargetMonitor(
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                }
-                else if (nowNumber == roundMaxNumber - 2 && (nowAttack?.index
+                } else if ((nowNumber == roundMaxNumber - 2||nowNumber == roundMaxNumber - 1) && (nowAttack?.index
                         ?: 10) != roundMaxNumber && nowTime - lastTimeStamp > toleranceInterval*2
                 ) {
                     lastTimeStamp = nowTime

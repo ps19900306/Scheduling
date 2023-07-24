@@ -240,7 +240,8 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         }
 
 
-        val tempList = lastClickArea
+        val tempList = lastClickArea.toList()
+
         lastClickArea.clear()
         lastClickArea.addAll(clickAreaList)
 
