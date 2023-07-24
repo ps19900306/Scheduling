@@ -63,7 +63,8 @@ class TopTargetMonitor(
     //挡触发新的锁定
     fun onNewLock(): Boolean {
         lastTimeStamp = System.currentTimeMillis()
-        if (newAgainLock && lastTargetNumber > 4) {
+        if (newAgainLock && lastTargetNumber > 6) {
+            roundMaxNumber = 12 //这里需要根据情况开启网子了
             newAgainLock = false
             return true
         }
