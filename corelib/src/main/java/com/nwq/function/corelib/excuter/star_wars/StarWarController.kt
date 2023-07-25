@@ -281,5 +281,6 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
     protected fun outGame() {
 
+
     }
 }

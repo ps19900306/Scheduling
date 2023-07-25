@@ -13,6 +13,10 @@ import com.nwq.function.corelib.excuter.star_wars.AdventureTaskController
 import com.nwq.function.corelib.excuter.star_wars.GetColorController
 import com.nwq.function.corelib.excuter.star_wars.InterstellarMiners
 import com.nwq.function.corelib.utils.ContextUtil
+import com.nwq.function.corelib.utils.TimeUtils
+import com.nwq.function.corelib.utils.sp.SPRepo
+import com.nwq.function.corelib.utils.sp.SPRepoPrefix
+import com.nwq.function.corelib.utils.sp.SpConstant
 import timber.log.Timber
 
 
@@ -43,14 +47,24 @@ class NwqAccessibilityService : AccessibilityService() {
     val endLister = object : EndLister {
         override fun onEndLister() {
             cList.clear()
+            if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
+                SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
+            }
+            Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
+            if (SPRepo.continueToTheNext) {
+                val spReo = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+                    SPRepo.role = SpConstant.PREFIX_ROLE2
+                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2)
+                } else {
+                    SPRepo.role = SpConstant.PREFIX_ROLE1
+                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1)
+                }
+                if (spReo.nowSelectMode == SpConstant.MINER_MODEL || TimeUtils.isNewTaskDay(spReo.lastCompleteTime)) {
+                    startOpt(false)
+                }
+            }
         }
     }
-
-
-    private val onCompleteLister = {
-
-    }
-
 
     private fun startOpt(pressBackHome: Boolean = false) {
         Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
