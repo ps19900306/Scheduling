@@ -11,6 +11,7 @@ import com.nwq.function.corelib.img.rule.CompareDifferenceRuleImpl
 import com.nwq.function.corelib.img.task.CorrectPositionModel
 import com.nwq.function.corelib.img.task.HpTaskImpl
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
+import com.nwq.function.corelib.img.task.MultiImgContainmentTask
 
 /**
 create by: 86136
@@ -1400,7 +1401,7 @@ object StarWarEnvironment {
     }
 
 
-    val pickUp1ItemTask by lazy {
+    val pickUp1ItemTask1 by lazy {
         val tag = "pickUpItem"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 236,175,254,190,254,188,
             0.9879747F,0.78451324F,0.99615383F,0.78451324F,1.0794393F, 0.9F)
@@ -1410,7 +1411,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(759, 644), ruleRatio2
             //red44 green89 blue84
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 20, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(762, 647), ruleRatio1
             //red205 green230 blue227
@@ -1471,6 +1472,7 @@ object StarWarEnvironment {
         }
     }
 
+    val pickUp1ItemTask = MultiImgContainmentTask(arrayOf(pickUp1ItemTask2,pickUp1ItemTask1))
 
 
     val pickUpItemList by lazy {
@@ -1535,10 +1537,6 @@ object StarWarEnvironment {
         }
     }
 
-
-
-
-
     //接取任务 前往的点击区域
     val isQianWangTask by lazy {
         val tag = "isQianWang"
@@ -1572,12 +1570,6 @@ object StarWarEnvironment {
         pointList.add(TwoPointRule(CoordinatePoint(1602, 960),CoordinatePoint(1602, 964), CompareDifferenceRuleImpl.getSimple(10,15,15)))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-
-
-
-
-
-
 
     //点击前往区域
     val qianWangArea by lazy { CoordinateArea(1585,856,374,106)}
@@ -1700,7 +1692,7 @@ object StarWarEnvironment {
     }
 
 
-    val isConfirmDialogTask by lazy {
+    val isConfirmDialogTask1 by lazy {
         val tag = "isConfirmDialog"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 238,163,254,181,250,180,
             0.9882353F,0.7690141F,0.9972803F,0.7690141F,1.0790323F, 0.9F)
@@ -1752,7 +1744,7 @@ object StarWarEnvironment {
     }
 
 
-
+    val isConfirmDialogTask = MultiImgContainmentTask(arrayOf(isConfirmDialogTask1,isConfirmDialogTask2))
 
     val confirmDialogEnsureArea by lazy { CoordinateArea(1976,761,317,118)}
     val confirmDialogCancelArea by lazy { CoordinateArea(1639,763,318,119)}

@@ -257,7 +257,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             ) {
                 en.pickUpItemList[it].let {
                     if (it.verificationRule(screenBitmap)) {
-                        it.getOfsArea()?.let {
+                        it.containmentTask?.getOfsArea()?.let {
                             clickArea.add(it)
                         }
                     }

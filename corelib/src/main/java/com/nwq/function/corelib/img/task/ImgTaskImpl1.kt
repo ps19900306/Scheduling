@@ -22,8 +22,7 @@ open class ImgTaskImpl1(
 ) : ImgTask(iprList, tag, correctModel) {
 
 
-    var nErrorTolerance: Int = 0 //普通点容错
-    var bErrorTolerance: Int = iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl }.size -1 //背景点容错
+
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
