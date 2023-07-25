@@ -54,7 +54,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
                 pressHomeBtn()
                 delay(doubleClickInterval)
             }
-            val bitmap = takeScreenBitmap(doubleClickInterval)
+            val bitmap = takeScreenBitmap()
             if (bitmap.isOrientation()) {
                 pressHomeBtn()
                 delay(doubleClickInterval)

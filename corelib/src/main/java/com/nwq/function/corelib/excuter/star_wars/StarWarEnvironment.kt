@@ -1264,7 +1264,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(609, 495), ruleRatio1
             //red133 green137 blue136 blockNumber1
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 5, 20, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(609, 495), ruleRatio1
             //red133 green137 blue136 blockNumber1
@@ -1310,7 +1310,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(610, 495), ruleRatio1
             //red114 green118 blue119 blockNumber1
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 5, 20, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(610, 495), ruleRatio1
             //red114 green118 blue119 blockNumber1
@@ -1361,7 +1361,7 @@ object StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(765, 650), ruleRatio1 )
             //red196 green225 blue221 blockNumber1
         )
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(765, 650), ruleRatio1
             //red196 green225 blue221 blockNumber1
@@ -1472,9 +1472,7 @@ object StarWarEnvironment {
         }
     }
 
-    val pickUp1ItemTask = MultiImgContainmentTask(arrayOf(pickUp1ItemTask2,pickUp1ItemTask1))
-
-
+    private val pickUp1ItemTask = MultiImgContainmentTask(arrayOf(pickUp1ItemTask1,pickUp1ItemTask2,))
     val pickUpItemList by lazy {
         var i =0
         val tag = "pickUpItem"
@@ -1536,6 +1534,9 @@ object StarWarEnvironment {
             clickArea =refreshTaskArea
         }
     }
+
+
+
 
     //接取任务 前往的点击区域
     val isQianWangTask by lazy {

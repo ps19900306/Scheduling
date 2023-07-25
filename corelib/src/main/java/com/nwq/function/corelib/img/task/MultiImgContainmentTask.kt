@@ -28,7 +28,7 @@ class MultiImgContainmentTask(val list: Array<ImgTaskImpl1>) : BasicImgTask() {
     fun copyOffset(tag: String, offsetX: Int, offsetY: Int): MultiImgContainmentTask {
         val newImgTaskImpl1 = mutableListOf<ImgTaskImpl1>()
         list.forEach {
-            it.copyOffset(tag, offsetX, offsetY)
+            newImgTaskImpl1.add(it.copyOffset(tag, offsetX, offsetY))
         }
         return MultiImgContainmentTask(newImgTaskImpl1.toTypedArray())
     }
