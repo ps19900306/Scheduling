@@ -38,7 +38,7 @@ class TopTargetMonitor(
 
     private var numberOfRounds = 0
     var lastTargetNumber = 0
-    private var lastHpTaskImpl: AttackTargetResult? = null
+    private var lastResult: AttackTargetResult? = null
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
     var needOpenReducer = false
@@ -51,7 +51,7 @@ class TopTargetMonitor(
     fun clearData() {
         numberOfRounds = 0
         lastTargetNumber = 0
-        lastHpTaskImpl = null
+        lastResult = null
         lastTimeStamp = 0
         needOpenReducer = false
         abnormalRecords = maxAbnormal
@@ -124,8 +124,8 @@ class TopTargetMonitor(
 //                    needOpenReducer = true
 //                }
                 else if (nowNumber < roundMaxNumber - 1 && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
-                    && lastHpTaskImpl?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 100) > 0
-                    && nowAttack?.task?.getNowPercent() == lastHpTaskImpl?.task?.getNowPercent()
+                    && lastResult?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 100) > 0
+                    && nowAttack?.task?.getNowPercent() == lastResult?.task?.getNowPercent()
                 ) {
                     Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
                     needOpenReducer = true
@@ -138,7 +138,7 @@ class TopTargetMonitor(
                 lastTimeStamp = nowTime
             }
             abnormalWaitEnd = waitEndMax
-            lastHpTaskImpl = nowAttack
+            lastResult = nowAttack
         }
         lastTargetNumber = nowNumber
     }
