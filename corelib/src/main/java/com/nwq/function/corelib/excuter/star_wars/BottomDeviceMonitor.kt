@@ -143,6 +143,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
     fun clearData() {
         flag == 1
         abnormalRecords = maxAbnormal
+        lastClickArea.clear()
     }
 
     //设置开启维修设备
@@ -246,6 +247,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
                 clickAreaList.add(it)
             }
         }
+
         //这里不管定时开的设备，只管关键设备
         if (clickAreaList.find { lastClickArea.contains(it) } == null) {//这里表示点击效果无效
             abnormalRecords = maxAbnormal
@@ -253,21 +255,32 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             abnormalRecords--
         }
 
+        val resultList = mutableListOf<CoordinateArea>()
+        val tempRemove = mutableListOf<CoordinateArea>()
+        clickAreaList.forEach {
+            if (lastClickArea.contains(it) && !lastRemoved.contains(it)) {
+                tempRemove.add(it)
+            } else {
+                resultList.add(it)
+            }
+        }
 
-        val tempList = lastClickArea.toList()
-
+        lastRemoved.clear()
+        lastRemoved.addAll(tempRemove)
         lastClickArea.clear()
         lastClickArea.addAll(clickAreaList)
 
         var nowTime = System.currentTimeMillis()
-        checkTimeOn(nowTime, intervalOpenList1, clickAreaList)
-        checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
-        checkTimeOn(nowTime, intervalOpenList3, clickAreaList)
+        checkTimeOn(nowTime, intervalOpenList1, resultList)
+        checkTimeOn(nowTime, intervalOpenList2, resultList)
+        checkTimeOn(nowTime, intervalOpenList3, resultList)
 
 
 
-        return clickAreaList.filter { !tempList.contains(it) } //这里上次点击的区域这次不进行再次点击
+        return resultList //这里上次点击的区域这次不进行再次点击
     }
+
+    var lastRemoved = mutableListOf<CoordinateArea>()
 
 
     protected fun checkTimeOn(
