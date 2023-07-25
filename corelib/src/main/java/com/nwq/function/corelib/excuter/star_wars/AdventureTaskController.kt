@@ -160,10 +160,6 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
     private suspend fun pickUpTask2() {
         val list = getPickUpArea()
-        if (en.isAllCompleteTask.check()) {
-            nowTask = ALL_COMPLETE
-            return
-        }
         if (list == null) {
             //没有刷出来数据
             nowTask = ABNORMAL_STATE
@@ -183,10 +179,16 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 return
             }
         }
+        if (list.isEmpty()) {
+            nowTask = ABNORMAL_STATE
+            return
+        }
+
         click(list)//这里接受全部的任务
-        if (list.size >= 1 && en.isCanRefreshTask.check()) {
+        if (en.isCanRefreshTask.check()) {
             en.refreshTaskArea.clickA()
         }
+
 
         var flag = true
         var count = 10
@@ -212,7 +214,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             nowTask = BATTLE_NAVIGATION_MONITORING
             return
         } else {
-            nowTask = ABNORMAL_STATE
+            nowTask = ALL_COMPLETE
             return
         }
 
@@ -391,7 +393,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 }
                 nowTask = PICK_UP_TASK
                 needBack = false
-                if(needRestart == true){
+                if (needRestart == true) {
                     nowTask = RESTART_GAME
                 }
 
