@@ -21,8 +21,6 @@ Function description:
 
 class StarWarEnvironment {
 
-
-
     //正在加载游戏先不管
     val isLoadingGameT by lazy {
         val tag = "isLoadingGame"
@@ -2309,7 +2307,7 @@ class StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(1103, 218), ruleRatio1
             //red143 green56 blue73 blockNumber3
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 5, 1, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 10, 3, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(1103, 218), ruleRatio1
             //red143 green56 blue73 blockNumber3
@@ -2319,12 +2317,6 @@ class StarWarEnvironment {
         ))
         pointList.add(PointRule(CoordinatePoint(1103, 227), ruleRatio1
             //red143 green56 blue73 blockNumber3
-        ))
-        pointList.add(PointRule(CoordinatePoint(1074, 220), ruleRatio1
-            //red147 green54 blue72 blockNumber4
-        ))
-        pointList.add(PointRule(CoordinatePoint(1085, 229), ruleRatio1
-            //red145 green58 blue74 blockNumber7
         ))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
