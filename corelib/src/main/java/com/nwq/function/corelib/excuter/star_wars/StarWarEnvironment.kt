@@ -1,6 +1,5 @@
 package com.nwq.function.corelib.excuter.star_wars
 
-import android.content.ClipData
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.img.pcheck.*
@@ -17,9 +16,12 @@ import com.nwq.function.corelib.img.task.MultiImgContainmentTask
 create by: 86136
 create time: 2023/6/28 14:52
 Function description:
+ 这个是K40的环境
  */
 
-object StarWarEnvironment {
+class StarWarEnvironment {
+
+
 
     //正在加载游戏先不管
     val isLoadingGameT by lazy {

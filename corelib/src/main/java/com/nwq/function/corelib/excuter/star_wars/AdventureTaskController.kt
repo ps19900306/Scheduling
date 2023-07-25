@@ -7,6 +7,8 @@ import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.excuter.star_wars.data.QuickBigMenu
+import com.nwq.function.corelib.excuter.star_wars.function.BottomDeviceMonitor
+import com.nwq.function.corelib.excuter.star_wars.function.TopTargetMonitor
 import com.nwq.function.corelib.img.task.HpTaskImpl
 import kotlinx.coroutines.delay
 import timber.log.Timber

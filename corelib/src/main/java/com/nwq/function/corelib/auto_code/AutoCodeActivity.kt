@@ -101,7 +101,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
             FunctionItemInfo(R.string.add_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
 
-        )
+            )
     }
 
     private fun initIndex(controller: WindowInsetsControllerCompat) {
@@ -137,6 +137,9 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         bind.indexLayout.functionRecycler.adapter = mFunctionItemAdapter
         bind.indexLayout.functionRecycler.addItemDecoration(sd)
 
+        val starWarEnvironment by lazy {
+            StarWarEnvironment()
+        }
 
         mFunctionItemAdapter.setOnItemClickListener { adapter, view, position ->
             val data = functionList[position]
@@ -152,18 +155,19 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 }
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
-                        StarWarEnvironment.topDeviceList.forEachIndexed {p,d->
-                           if(d.verificationRule(mBitmap)){
 
-                           }
-                        }
-                        StarWarEnvironment.bottomDeviceList.forEachIndexed {p,d->
-                            if(d.verificationRule(mBitmap)){
+                        starWarEnvironment.topDeviceList.forEachIndexed { p, d ->
+                            if (d.verificationRule(mBitmap)) {
 
                             }
                         }
-                        StarWarEnvironment.topLockTargetList1.forEachIndexed {p,d->
-                            if(d.verificationRule(mBitmap)){
+                        starWarEnvironment.bottomDeviceList.forEachIndexed { p, d ->
+                            if (d.verificationRule(mBitmap)) {
+
+                            }
+                        }
+                        starWarEnvironment.topLockTargetList1.forEachIndexed { p, d ->
+                            if (d.verificationRule(mBitmap)) {
 
                             }
                         }
@@ -198,7 +202,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
     private var isFirst = true
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (nowMode) {
-            CREATE_IMAGE_FEATURE,GET_CLICK_AREA -> {
+            CREATE_IMAGE_FEATURE, GET_CLICK_AREA -> {
                 if (isFirst) {
                     if (ev.action == MotionEvent.ACTION_DOWN) {
                         starX = ev.x
@@ -259,9 +263,10 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                         nowMode = FUNCTION_MODE
                     }
                 }
-                GET_CLICK_AREA->{
+                GET_CLICK_AREA -> {
                     bind.previewView.oblongArea?.let {
-                        val codeStr = "val clickArea by lazy { CoordinateArea(${it.x},${it.y},${it.width},${it.height})}"
+                        val codeStr =
+                            "val clickArea by lazy { CoordinateArea(${it.x},${it.y},${it.width},${it.height})}"
                         val clipData = ClipData.newPlainText("autoCode", codeStr)
                         manager.setPrimaryClip(clipData)
                         bind.okTv.isGone = true
@@ -286,11 +291,14 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 OPT_AREA -> {
                     if (bind.previewView.areaList.isNotEmpty()) {
                         bind.okTv.isGone = true
-                        if(mFunctionBlock!=null){
-                            mFunctionBlock?.optArea(cmdInt, *bind.previewView.areaList.toTypedArray())
+                        if (mFunctionBlock != null) {
+                            mFunctionBlock?.optArea(
+                                cmdInt,
+                                *bind.previewView.areaList.toTypedArray()
+                            )
                             mFunctionBlock?.showView()
                             nowMode = FUNCTION_MODE
-                        }else{
+                        } else {
                             nowMode = NORMAL_MODE
                             bind.indexLayout.root.isVisible = true
                             bind.imgFeatureLayout.root.isGone = true
@@ -340,7 +348,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
     }
 
     override fun getClipboardManager(): ClipboardManager {
-      return  manager
+        return manager
     }
 
     override fun fullScreen() {
@@ -349,7 +357,6 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
 
 
     private var mFunctionBlock: FunctionBlock? = null
-
 
 
 }

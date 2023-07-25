@@ -33,7 +33,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         SPRepoPrefix.getNowSPRepo()
     }
     val warehouseIndex = spReo.fightBaseLocation
-    val en = StarWarEnvironment
+    val en = StarWarEnvironment()
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
     val APP_LOCATION_X
         get() = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
