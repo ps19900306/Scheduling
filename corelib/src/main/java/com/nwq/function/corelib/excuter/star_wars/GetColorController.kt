@@ -24,10 +24,11 @@ class GetColorController(acService: AccessibilityService, endLister: EndLister? 
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
 
-    override fun startWork() {
+    override fun startWork(pressBackHome: Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
             delay(10000)
             getColor(StarWarEnvironment.isShowLeftDialogBox)
+            endLister?.onEndLister()
         }
     }
 

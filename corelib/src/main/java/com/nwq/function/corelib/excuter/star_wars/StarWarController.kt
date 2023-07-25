@@ -48,8 +48,12 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         )
     }
 
-    override fun startWork() {
+    override fun startWork(pressBackHome: Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
+            if(pressBackHome){
+                pressHomeBtn()
+                delay(doubleClickInterval)
+            }
             val bitmap = takeScreenBitmap(doubleClickInterval)
             if (bitmap.isOrientation()) {
                 pressHomeBtn()
@@ -108,7 +112,8 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         return !flag
     }
 
-    private suspend fun receiveDailyGift() {0
+    private suspend fun receiveDailyGift() {
+        0
         val hasTips = en.isGiftMenuTipsT.check()
         val isInSpace = en.isInSpaceStationT.check()
         if (hasTips && isInSpace) {
@@ -245,7 +250,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
     //这个方法要将出现眼睛或者在空间站
-    protected suspend fun theOutCheck():Boolean {
+    protected suspend fun theOutCheck(): Boolean {
         var flag = true
         var count = 20
         while (flag && count > 0 && runSwitch) {

@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.view.accessibility.AccessibilityEvent
+import com.nwq.function.corelib.baseIf.CmdType
 import com.nwq.function.corelib.excuter.BaseController
+import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.excuter.star_wars.AdventureTaskController
 import com.nwq.function.corelib.excuter.star_wars.GetColorController
 import com.nwq.function.corelib.excuter.star_wars.InterstellarMiners
@@ -38,6 +40,11 @@ class NwqAccessibilityService : AccessibilityService() {
         }
     }
 
+    val endLister = object : EndLister {
+        override fun onEndLister() {
+            cList.clear()
+        }
+    }
 
 
     private val onCompleteLister = {
@@ -45,24 +52,34 @@ class NwqAccessibilityService : AccessibilityService() {
     }
 
 
-    private fun startOpt(outGame: Boolean = false) {
+    private fun startOpt(pressBackHome: Boolean = false) {
         Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
-        val interstellarMiners=  AdventureTaskController(this)
-
-        interstellarMiners.startWork()
+        val interstellarMiners = AdventureTaskController(this,endLister)
+        interstellarMiners.startWork(pressBackHome)
         cList.add(interstellarMiners)
     }
 
-
     fun dealEvent(intent: Intent) {
-        startOpt()
+        val cmd = intent.getIntExtra(Constant.CMD, CmdType.START)
+        when (cmd) {
+            CmdType.START -> {
+                startOpt()
+            }
+            CmdType.CLOSE -> {
+                cList.forEach { it.closeWork() }
+                cList.clear()
+            }
+            CmdType.CHECK_COLOR -> {
+                if (cList.find { it is GetColorController } == null) {
+                    Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
+                    val interstellarMiners = GetColorController(this,endLister)
+                    interstellarMiners.startWork()
+                    cList.add(interstellarMiners)
+                }
+            }
+        }
     }
 
-
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        // 获取包名
-
-    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -74,6 +91,10 @@ class NwqAccessibilityService : AccessibilityService() {
     private fun registerReceiver() {
         Timber.d("registerReceiver NwqAccessibilityService NWQ_ 2023/3/12");
         registerReceiver(communicationBroadcast, IntentFilter.create(Intent_Filter_TAG, "cmd/int"))
+    }
+
+    override fun onAccessibilityEvent(p0: AccessibilityEvent?) {
+
     }
 
 

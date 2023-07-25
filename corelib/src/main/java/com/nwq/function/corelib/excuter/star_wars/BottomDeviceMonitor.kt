@@ -288,19 +288,28 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         positionList: List<OptSlotInfo>,
         needCheckOpenList: MutableList<CoordinateArea>,
     ) {
-        var lastItemOpenTime = 0L //这里只取第一个为标准，不然会导致多设备不好用
-        positionList.forEachIndexed { p, d ->
-            if (p == 0) {
-                if (nowtime - d.lastOpenedTime > d.selfInterval) {
+        if (positionList[0].offsetInterval > 0) {
+            var lastItemOpenTime = 0L //这里只取第一个为标准，不然会导致多设备不好用
+            positionList.forEachIndexed { p, d ->
+                if (p == 0) {
+                    if (nowtime - d.lastOpenedTime > d.selfInterval) {
+                        needCheckOpenList.add(d.clickArea)
+                        d.lastOpenedTime = nowtime
+                    }
+                    lastItemOpenTime = d.lastOpenedTime
+                } else if ((nowtime - lastItemOpenTime) in d.offsetInterval * p..d.offsetInterval * (p + 1) && nowtime - d.lastOpenedTime > d.selfInterval) {
                     needCheckOpenList.add(d.clickArea)
                     d.lastOpenedTime = nowtime
                 }
-                lastItemOpenTime = d.lastOpenedTime
-            } else if ((nowtime - lastItemOpenTime) in d.offsetInterval * p..d.offsetInterval * (p + 1) && nowtime - d.lastOpenedTime > d.selfInterval) {
-                needCheckOpenList.add(d.clickArea)
+            }
+        } else { //如果offsetInterval 则认为是需要连续开启
+            val d = positionList[0]
+            if (nowtime - d.lastOpenedTime > d.selfInterval) {
                 d.lastOpenedTime = nowtime
+                positionList.forEach {
+                    needCheckOpenList.add(it.clickArea)
+                }
             }
         }
-
     }
 }
