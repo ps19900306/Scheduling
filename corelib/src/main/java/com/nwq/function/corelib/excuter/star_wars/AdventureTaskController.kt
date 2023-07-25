@@ -73,6 +73,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 }
                 ALL_COMPLETE -> {
                     pressHomeBtn()
+                    runSwitch = false
+                    endLister?.onEndLister()
                 }
                 CHECK_SHIP -> {
 
