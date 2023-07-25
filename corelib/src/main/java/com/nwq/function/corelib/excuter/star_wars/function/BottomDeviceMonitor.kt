@@ -76,6 +76,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             addAll(wholeBattleOpenList)
             addAll(roundBattleOpenList)
         })
+        
 
         var isCatchFoodSp = spReo.isCatchFood
         if (!isCatchFoodSp) {
