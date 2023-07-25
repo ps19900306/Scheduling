@@ -49,7 +49,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     //    var mEnterCombatStatus = false //这个是进入战斗的时间
     private var needBack = false
     private var needCancel = false
-
+    private var needRestart = false
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
@@ -353,8 +353,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                         Timber.d("bottomDeviceMonitor emergencyEvacuation NWQ_ 2023/7/22");
                         emergencyEvacuation()
                         nowTask = RESTART_GAME
-                        needCancel = true
                         needBack = true
+                        needRestart = true
                     }
                 } else if (needBack) { //如果没有目标 需要撤离则进行紧急撤了
                     emergencyEvacuation()
@@ -387,6 +387,10 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 }
                 nowTask = PICK_UP_TASK
                 needBack = false
+                if(needRestart == true){
+                    nowTask = RESTART_GAME
+                }
+
                 flag = false
             } else if (en.isOpenBigMenuT.verificationRule(screenBitmap)) {
                 click(en.closeBigMenuArea)
