@@ -50,7 +50,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
     override fun startWork(pressBackHome: Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
-            if(pressBackHome){
+            if (pressBackHome) {
                 pressHomeBtn()
                 delay(doubleClickInterval)
             }
@@ -113,7 +113,6 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
     private suspend fun receiveDailyGift() {
-        0
         val hasTips = en.isGiftMenuTipsT.check()
         val isInSpace = en.isInSpaceStationT.check()
         if (hasTips && isInSpace) {
@@ -279,8 +278,24 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
     }
 
-    protected fun outGame() {
-
-
+    protected suspend fun outGame():Boolean {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            val bitmap = takeScreenBitmap(doubleClickInterval)
+            if (bitmap.isOrientation()){
+                en.exitGameTask.list.forEach {
+                    if( it.check()){
+                        it.clickArea?.clickA()
+                    }else{
+                        pressBackBtn()
+                    }
+                }
+            }else{
+                flag = false
+            }
+            count--
+        }
+        return  !flag
     }
 }

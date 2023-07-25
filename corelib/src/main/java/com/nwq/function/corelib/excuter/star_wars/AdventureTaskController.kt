@@ -72,7 +72,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     monitoringReturnStatus()
                 }
                 ALL_COMPLETE -> {
-                    pressHomeBtn()
+                    outGame()
                     runSwitch = false
                     endLister?.onEndLister()
                 }
@@ -80,9 +80,13 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
                 }
                 RESTART_GAME -> {//这里先退出游戏再出去
-                    outGame()
-                    delay(doubleClickInterval)
-                    intoGame()
+                    if (outGame()) {
+                        delay(doubleClickInterval)
+                        intoGame()
+                    } else {
+                        pressHomeBtn()
+                        runSwitch = false
+                    }
                 }
                 ABNORMAL_STATE -> {
                     theOutCheck()

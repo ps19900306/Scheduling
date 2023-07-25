@@ -8,7 +8,9 @@ import androidx.annotation.RequiresApi
 import com.nwq.function.corelib.Constant
 import com.nwq.function.corelib.Constant.clickIntervals
 import com.nwq.function.corelib.Constant.fastClickInterval
+import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
+import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.click.SimpleClickUtils
 import com.nwq.function.corelib.click.task.ClickTask
 import com.nwq.function.corelib.img.task.BasicImgTask
@@ -330,4 +332,6 @@ abstract class BaseController(
     suspend fun CoordinateArea.clickA():Unit{
               click(this)
     }
+
+
 }

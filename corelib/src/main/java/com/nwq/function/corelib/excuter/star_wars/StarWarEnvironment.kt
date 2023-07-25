@@ -7,10 +7,7 @@ import com.nwq.function.corelib.img.rule.ColorRuleImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioUnImpl
 import com.nwq.function.corelib.img.rule.CompareDifferenceRuleImpl
-import com.nwq.function.corelib.img.task.CorrectPositionModel
-import com.nwq.function.corelib.img.task.HpTaskImpl
-import com.nwq.function.corelib.img.task.ImgTaskImpl1
-import com.nwq.function.corelib.img.task.MultiImgContainmentTask
+import com.nwq.function.corelib.img.task.*
 
 /**
 create by: 86136
@@ -1603,40 +1600,45 @@ class StarWarEnvironment {
     //接取任务 前往的点击区域
    private val isQianWangTask2 by lazy {
         val tag = "isQianWang"
-        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 53,42,100,83,95,77,
-            0.5578125F,0.45F,0.5884616F,0.45F,1.1476744F, 0.9296704F)
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 233,155,253,183,250,179,
+            0.977897F,0.7632353F,0.9906522F,0.7632353F,1.0807316F, 0.90398234F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(1587, 925), ruleRatio1
-            //red50 green95 blue90 blockNumber1
-        ))
+        list.add(PointRule(CoordinatePoint(1770, 903), ruleRatio1))
+            //red203 green229 blue226 blockNumber1
         val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(1587, 925), ruleRatio1
-            //red50 green95 blue90 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(1770, 903), ruleRatio1
+            //red203 green229 blue226 blockNumber1
         ))
-        pointList.add(PointRule(CoordinatePoint(1587, 937), ruleRatio1
-            //red49 green94 blue89 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(1777, 903), ruleRatio1
+            //red199 green224 blue220 blockNumber2
         ))
-        pointList.add(PointRule(CoordinatePoint(1589, 948), ruleRatio1
-            //red48 green93 blue88 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(1793, 918), ruleRatio1
+            //red205 green227 blue224 blockNumber3
         ))
-        pointList.add(PointRule(CoordinatePoint(1590, 960), ruleRatio1
-            //red49 green94 blue89 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(1781, 906), ruleRatio1
+            //red180 green206 blue203 blockNumber4
         ))
-        pointList.add(PointRule(CoordinatePoint(1602, 960), ruleRatio1
-            //red48 green95 blue89 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(1748, 908), ruleRatio1
+            //red206 green231 blue228 blockNumber5
         ))
-        pointList.add(PointRule(CoordinatePoint(1614, 960), ruleRatio1
-            //red48 green95 blue87 blockNumber1
+        pointList.add(PointRule(CoordinatePoint(1747, 922), ruleRatio1
+            //red186 green211 blue207 blockNumber5
         ))
-        pointList.add(TwoPointRule(CoordinatePoint(1587, 925),CoordinatePoint(1584, 925), CompareDifferenceRuleImpl.getSimple(10,15,15)))
-        pointList.add(TwoPointRule(CoordinatePoint(1602, 960),CoordinatePoint(1602, 964), CompareDifferenceRuleImpl.getSimple(10,15,15)))
+        pointList.add(PointRule(CoordinatePoint(1764, 924), ruleRatio1
+            //red184 green213 blue209 blockNumber6
+        ))
+        pointList.add(TwoPointRule(CoordinatePoint(1751, 899),CoordinatePoint(1748, 899), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(1781, 906),CoordinatePoint(1782, 903), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(1764, 924),CoordinatePoint(1764, 921), CompareDifferenceRuleImpl.getSimple(30,30,30)))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
 
-   val isQianWangTask = MultiImgContainmentTask(arrayOf(isQianWangTask1,isQianWangTask2))
 
+
+
+    val isQianWangTask = MultiImgContainmentTask(arrayOf(isQianWangTask1,isQianWangTask2))
     //点击前往区域
     val qianWangArea by lazy { CoordinateArea(1585,856,374,106)}
     //点击放弃任务
@@ -2298,21 +2300,107 @@ class StarWarEnvironment {
         return CoordinateArea(425,425+(index*75),60,62) //这个是根据2个跳的距离(左边跳转的距离)
     }
 
-
-    val isAllCompleteTask by lazy {
-        val tag = "isAllComplete"
-        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 155,126,60,47,77,62,
-            2.912264F,2.2034483F,2.2369566F,2.2034483F,0.8342466F, 0.675F)
+    val exitGameTask1 by lazy {
+        val tag = "exitGameTask"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 233,177,253,198,249,197,
+            0.9788136F,0.7929515F,0.9914163F,0.7929515F,1.0736487F, 0.90393007F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(1103, 221), ruleRatio1
-            //red143 green56 blue73 blockNumber3
-        ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 10, 5, true)
+        list.add(PointRule(CoordinatePoint(1050, 699), ruleRatio1))
+        //red203 green225 blue222 blockNumber1
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(1103, 221), ruleRatio1
-            //red143 green56 blue73 blockNumber3
+        pointList.add(PointRule(CoordinatePoint(1052, 690), ruleRatio1
+            //red197 green223 blue220 blockNumber1
         ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel)
+        pointList.add(PointRule(CoordinatePoint(1050, 699), ruleRatio1
+            //red203 green225 blue222 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(1037, 692), ruleRatio1
+            //red206 green231 blue227 blockNumber2
+        ))
+        pointList.add(PointRule(CoordinatePoint(1059, 692), ruleRatio1
+            //red200 green225 blue222 blockNumber4
+        ))
+        pointList.add(PointRule(CoordinatePoint(1058, 695), ruleRatio1
+            //red200 green225 blue222 blockNumber4
+        ))
+        pointList.add(PointRule(CoordinatePoint(1044, 700), ruleRatio1
+            //red208 green230 blue227 blockNumber5
+        ))
+        pointList.add(PointRule(CoordinatePoint(1044, 709), ruleRatio1
+            //red212 green232 blue230 blockNumber5
+        ))
+        pointList.add(PointRule(CoordinatePoint(1052, 711), ruleRatio1
+            //red201 green226 blue222 blockNumber5
+        ))
+        pointList.add(PointRule(CoordinatePoint(1044, 718), ruleRatio1
+            //red211 green233 blue230 blockNumber5
+        ))
+        pointList.add(PointRule(CoordinatePoint(1059, 708), ruleRatio1
+            //red210 green232 blue230 blockNumber5
+        ))
+        pointList.add(PointRule(CoordinatePoint(1059, 714), ruleRatio1
+            //red209 green231 blue228 blockNumber5
+        ))
+        pointList.add(PointRule(CoordinatePoint(1038, 709), ruleRatio1
+            //red200 green226 blue223 blockNumber8
+        ))
+        pointList.add(PointRule(CoordinatePoint(1034, 718), ruleRatio1
+            //red199 green224 blue221 blockNumber8
+        ))
+        pointList.add(TwoPointRule(CoordinatePoint(1052, 690),CoordinatePoint(1052, 687), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(1044, 709),CoordinatePoint(1041, 710), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        pointList.add(TwoPointRule(CoordinatePoint(1034, 718),CoordinatePoint(1037, 718), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            clickArea = CoordinateArea(1216,652,312,106)
+        }
     }
 
+    val exitGameTask2 by lazy {
+        val tag = "exitGameTask"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 114,90,114,90,114,90,
+            1.05F,0.9F,1.05F,0.9F,1.05F, 0.9F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(931, 814), ruleRatio1 ) )
+            //red101 green101 blue101 blockNumber1
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(931, 814), ruleRatio1
+            //red101 green101 blue101 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(931, 829), ruleRatio1
+            //red101 green101 blue101 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(918, 828), ruleRatio1
+            //red108 green108 blue108 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(946, 829), ruleRatio1
+            //red100 green100 blue100 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(916, 823), ruleRatio1
+            //red101 green101 blue101 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(933, 834), ruleRatio1
+            //red100 green100 blue100 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(931, 849), ruleRatio1
+            //red101 green101 blue101 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(946, 851), ruleRatio1
+            //red101 green101 blue101 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(917, 852), ruleRatio1
+            //red101 green101 blue101 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(949, 840), ruleRatio1
+            //red101 green101 blue101 blockNumber1
+        ))
+        pointList.add(TwoPointRule(CoordinatePoint(931, 814),CoordinatePoint(931, 812), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)))
+        pointList.add(TwoPointRule(CoordinatePoint(933, 834),CoordinatePoint(934, 835), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)))
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            clickArea = CoordinateArea(723,770,462,131)
+        }
+    }
+
+    val exitGameTask by lazy { MultiImgTask(arrayOf(exitGameTask1,exitGameTask2)) }
 }

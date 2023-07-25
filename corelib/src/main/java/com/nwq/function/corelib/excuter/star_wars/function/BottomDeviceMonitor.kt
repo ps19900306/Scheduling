@@ -24,9 +24,9 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
     private val reducerList = mutableListOf(listBot[0], listBot[3])//网子默认放的位置
     private val maintenanceEquipment = mutableListOf(listTop[0])//维修设备需要开启的
 
-    private var intervalTime1 = 165 * 1000L
+    private var intervalTime1 = 175 * 1000L
     private val intervalOpenList1 = mutableListOf<OptSlotInfo>()
-    private var intervalTime2 = 170 * 1000L
+    private var intervalTime2 = 175 * 1000L
     private val intervalOpenList2 = mutableListOf<OptSlotInfo>()
     private var intervalTime3 = 75 * 1000L
     private val intervalOpenList3 = mutableListOf<OptSlotInfo>()
