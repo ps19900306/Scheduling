@@ -148,7 +148,7 @@ abstract class BaseController(
     }
 
     protected suspend fun waitImgTask2(
-        task: ImgTask,
+        task: BasicImgTask,
         coordinateArea: CoordinateArea?,
         times: Int = waitTaskTime
     ): Boolean {

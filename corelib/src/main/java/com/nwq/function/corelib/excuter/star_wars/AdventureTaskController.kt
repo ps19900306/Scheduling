@@ -110,7 +110,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         } else {
             if (needCancel) {
                 aboundTask()
-                needCancel=false
+                needCancel = false
 //                click(en.goJiyuListMenuArea)//这里点击左边的进入任务
 //                pickUpTask2()
             } else {
@@ -126,13 +126,13 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     }
 
     private suspend fun aboundTask() {
-       if(waitImgTask2(en.isQianWangTask,en.openJiyuBigArea)){
-           en.abandonTaskArea.clickA()
-           en.confirmDialogEnsureArea.clickA()
-           theOutCheck()
-       }else{
-           theOutCheck()
-       }
+        if (waitImgTask2(en.isQianWangTask, en.openJiyuBigArea)) {
+            en.abandonTaskArea.clickA()
+            en.confirmDialogEnsureArea.clickA()
+            theOutCheck()
+        } else {
+            theOutCheck()
+        }
     }
 
     private suspend fun isHasJiyuTask(): Boolean {
@@ -156,7 +156,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
     private suspend fun pickUpTask2() {
         val list = getPickUpArea()
-        if(en.isAllCompleteTask.check()){
+        if (en.isAllCompleteTask.check()) {
             nowTask = ALL_COMPLETE
             return
         }
@@ -323,7 +323,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 topTargetMonitor.updateInfo(screenBitmap!!)
                 if (topTargetMonitor.needOpenReducer) {
                     bottomDeviceMonitor.openReducer()
-                }else{
+                } else {
                     bottomDeviceMonitor.closeReducer()
                 }
                 if (topTargetMonitor.isWaitEnd()) {
@@ -386,6 +386,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     unloadingCargo()
                 }
                 nowTask = PICK_UP_TASK
+                needBack = false
                 flag = false
             } else if (en.isOpenBigMenuT.verificationRule(screenBitmap)) {
                 click(en.closeBigMenuArea)

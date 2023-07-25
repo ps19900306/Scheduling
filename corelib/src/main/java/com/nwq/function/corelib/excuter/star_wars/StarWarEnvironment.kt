@@ -1536,10 +1536,72 @@ object StarWarEnvironment {
     }
 
 
-
+    //接取任务 前往的点击区域
+   private val isQianWangTask1 by lazy {
+        val tag = "isQianWang"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 234,181,253,201,250,198,
+            0.98122275F,0.7943478F,0.9942478F,0.7943478F,1.0733334F, 0.9F)
+        val ruleRatio2 =  ColorRuleRatioImpl.getSimple( 59,36,109,78,102,73,
+            0.590625F,0.41F,0.6346154F,0.41F,1.152439F, 0.9206897F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(1745, 893), ruleRatio2
+            //red46 green91 blue86
+        ))
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(1748, 896), ruleRatio1
+            //red204 green229 blue226
+        ))
+        pointList.add(PointRule(CoordinatePoint(1764, 896), ruleRatio1
+            //red209 green231 blue229
+        ))
+        pointList.add(PointRule(CoordinatePoint(1782, 896), ruleRatio1
+            //red205 green230 blue226
+        ))
+        pointList.add(PointRule(CoordinatePoint(1787, 902), ruleRatio1
+            //red202 green228 blue225
+        ))
+        pointList.add(PointRule(CoordinatePoint(1802, 902), ruleRatio1
+            //red203 green228 blue225
+        ))
+        pointList.add(PointRule(CoordinatePoint(1753, 906), ruleRatio1
+            //red207 green227 blue225
+        ))
+        pointList.add(PointRule(CoordinatePoint(1761, 907), ruleRatio1
+            //red206 green228 blue225
+        ))
+        pointList.add(PointRule(CoordinatePoint(1744, 910), ruleRatio1
+            //red206 green225 blue223
+        ))
+        pointList.add(PointRule(CoordinatePoint(1796, 910), ruleRatio1
+            //red212 green230 blue230
+        ))
+        pointList.add(PointRule(CoordinatePoint(1749, 917), ruleRatio1
+            //red207 green229 blue226
+        ))
+        pointList.add(PointRule(CoordinatePoint(1781, 920), ruleRatio1
+            //red205 green227 blue224
+        ))
+        pointList.add(PointRule(CoordinatePoint(1796, 921), ruleRatio1
+            //red205 green225 blue223
+        ))
+        pointList.add(PointRule(CoordinatePoint(1767, 923), ruleRatio1
+            //red210 green230 blue228
+        ))
+        pointList.add(PointRule(CoordinatePoint(1745, 893), ruleRatio2
+            //red46 green91 blue86
+        ))
+        pointList.add(PointRule(CoordinatePoint(1784, 917), ruleRatio2
+            //red47 green89 blue85
+        ))
+        pointList.add(PointRule(CoordinatePoint(1764, 920), ruleRatio2
+            //red44 green91 blue85
+        ))
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
 
     //接取任务 前往的点击区域
-    val isQianWangTask by lazy {
+   private val isQianWangTask2 by lazy {
         val tag = "isQianWang"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 53,42,100,83,95,77,
             0.5578125F,0.45F,0.5884616F,0.45F,1.1476744F, 0.9296704F)
@@ -1571,6 +1633,9 @@ object StarWarEnvironment {
         pointList.add(TwoPointRule(CoordinatePoint(1602, 960),CoordinatePoint(1602, 964), CompareDifferenceRuleImpl.getSimple(10,15,15)))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
+
+
+   val isQianWangTask = MultiImgContainmentTask(arrayOf(isQianWangTask1,isQianWangTask2))
 
     //点击前往区域
     val qianWangArea by lazy { CoordinateArea(1585,856,374,106)}
