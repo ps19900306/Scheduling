@@ -1,8 +1,9 @@
-package com.nwq.function.corelib.excuter.star_wars
+package com.nwq.function.corelib.excuter.star_wars.function
 
 import android.graphics.Bitmap
 import com.nwq.function.corelib.img.task.HpTaskImpl
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -37,7 +38,7 @@ class TopTargetMonitor(
 
     private var numberOfRounds = 0
     var lastTargetNumber = 0
-    private var lastAttack: AttackTargetResult? = null
+    private var lastResult: AttackTargetResult? = null
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
     var needOpenReducer = false
@@ -50,7 +51,7 @@ class TopTargetMonitor(
     fun clearData() {
         numberOfRounds = 0
         lastTargetNumber = 0
-        lastAttack = null
+        lastResult = null
         lastTimeStamp = 0
         needOpenReducer = false
         abnormalRecords = maxAbnormal
@@ -111,26 +112,19 @@ class TopTargetMonitor(
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 } else if (nowNumber == roundMaxNumber - 1 && (nowAttack?.index
-                        ?: 10) != roundMaxNumber && (lastAttack?.index
                         ?: 10) != roundMaxNumber
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 }
-                else if ((nowNumber == roundMaxNumber - 2 || nowNumber == roundMaxNumber - 1) && (nowAttack?.index
-                        ?: 10) != roundMaxNumber && nowTime - lastTimeStamp > toleranceInterval * 2
+                else if (nowNumber < roundMaxNumber - 1 && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
+                    && lastResult?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 100) > 0
+                    && nowAttack?.task?.getNowPercent() == lastResult?.task?.getNowPercent()
                 ) {
-                    lastTimeStamp = nowTime
+                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
                     needOpenReducer = true
+                    lastTimeStamp = nowTime
                 }
-//                else if (nowNumber != roundMaxNumber && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
-//                    && lastHpTaskImpl?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 0) > 0
-//                    && nowAttack?.task?.getNowPercent() == lastHpTaskImpl?.task?.getNowPercent()
-//                ) {
-//                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
-//                    needOpenReducer = true
-//                    lastTimeStamp = nowTime
-//                }
                 abnormalRecords--
             } else {
                 abnormalRecords = maxAbnormal
@@ -138,7 +132,7 @@ class TopTargetMonitor(
                 lastTimeStamp = nowTime
             }
             abnormalWaitEnd = waitEndMax
-            lastAttack = nowAttack
+            lastResult = nowAttack
         }
         lastTargetNumber = nowNumber
     }

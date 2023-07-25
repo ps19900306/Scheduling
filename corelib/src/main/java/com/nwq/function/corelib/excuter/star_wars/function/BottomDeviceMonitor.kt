@@ -1,4 +1,4 @@
-package com.nwq.function.corelib.excuter.star_wars
+package com.nwq.function.corelib.excuter.star_wars.function
 
 import android.graphics.Bitmap
 import com.nwq.function.corelib.area.CoordinateArea
@@ -76,6 +76,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             addAll(wholeBattleOpenList)
             addAll(roundBattleOpenList)
         })
+        
 
         var isCatchFoodSp = spReo.isCatchFood
         if (!isCatchFoodSp) {
@@ -143,6 +144,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
     fun clearData() {
         flag == 1
         abnormalRecords = maxAbnormal
+        lastClickArea.clear()
     }
 
     //设置开启维修设备
@@ -246,6 +248,7 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
                 clickAreaList.add(it)
             }
         }
+
         //这里不管定时开的设备，只管关键设备
         if (clickAreaList.find { lastClickArea.contains(it) } == null) {//这里表示点击效果无效
             abnormalRecords = maxAbnormal
@@ -253,53 +256,64 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
             abnormalRecords--
         }
 
-        newRemove.clear()
         val resultList = mutableListOf<CoordinateArea>()
+        val tempRemove = mutableListOf<CoordinateArea>()
         clickAreaList.forEach {
-           if(lastClickArea.contains(it) && !lastRemove.contains(it)){
-               newRemove.add(it)
-           }else{
-               resultList.add(it)
-           }
+            if (lastClickArea.contains(it) && !lastRemoved.contains(it)) {
+                tempRemove.add(it)
+            } else {
+                resultList.add(it)
+            }
         }
 
-
-        val tempList = lastClickArea.toList()
-
+        lastRemoved.clear()
+        lastRemoved.addAll(tempRemove)
         lastClickArea.clear()
         lastClickArea.addAll(clickAreaList)
 
         var nowTime = System.currentTimeMillis()
-        checkTimeOn(nowTime, intervalOpenList1, clickAreaList)
-        checkTimeOn(nowTime, intervalOpenList2, clickAreaList)
-        checkTimeOn(nowTime, intervalOpenList3, clickAreaList)
+        checkTimeOn(nowTime, intervalOpenList1, resultList)
+        checkTimeOn(nowTime, intervalOpenList2, resultList)
+        checkTimeOn(nowTime, intervalOpenList3, resultList)
 
 
-        clickAreaList.filter { !tempList.contains(it) }
-        return clickAreaList.filter { !tempList.contains(it) } //这里上次点击的区域这次不进行再次点击
+
+        return resultList //这里上次点击的区域这次不进行再次点击
     }
 
-    var lastRemove = mutableListOf<CoordinateArea>()
-    var newRemove = mutableListOf<CoordinateArea>()
+    var lastRemoved = mutableListOf<CoordinateArea>()
+
 
     protected fun checkTimeOn(
         nowtime: Long,
         positionList: List<OptSlotInfo>,
         needCheckOpenList: MutableList<CoordinateArea>,
     ) {
-        var lastItemOpenTime = 0L //这里只取第一个为标准，不然会导致多设备不好用
-        positionList.forEachIndexed { p, d ->
-            if (p == 0) {
-                if (nowtime - d.lastOpenedTime > d.selfInterval) {
+        if (positionList.isEmpty())
+            return
+
+        if (positionList[0].offsetInterval > 0) {
+            var lastItemOpenTime = 0L //这里只取第一个为标准，不然会导致多设备不好用
+            positionList.forEachIndexed { p, d ->
+                if (p == 0) {
+                    if (nowtime - d.lastOpenedTime > d.selfInterval) {
+                        needCheckOpenList.add(d.clickArea)
+                        d.lastOpenedTime = nowtime
+                    }
+                    lastItemOpenTime = d.lastOpenedTime
+                } else if ((nowtime - lastItemOpenTime) in d.offsetInterval * p..d.offsetInterval * (p + 1) && nowtime - d.lastOpenedTime > d.selfInterval) {
                     needCheckOpenList.add(d.clickArea)
                     d.lastOpenedTime = nowtime
                 }
-                lastItemOpenTime = d.lastOpenedTime
-            } else if ((nowtime - lastItemOpenTime) in d.offsetInterval * p..d.offsetInterval * (p + 1) && nowtime - d.lastOpenedTime > d.selfInterval) {
-                needCheckOpenList.add(d.clickArea)
+            }
+        } else { //如果offsetInterval 则认为是需要连续开启
+            val d = positionList[0]
+            if (nowtime - d.lastOpenedTime > d.selfInterval) {
                 d.lastOpenedTime = nowtime
+                positionList.forEach {
+                    needCheckOpenList.add(it.clickArea)
+                }
             }
         }
-
     }
 }

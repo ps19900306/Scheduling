@@ -16,8 +16,7 @@ open class ImgTaskImpl3(
     iprList: List<IPR>, tag: String, correctModel: CorrectPositionModel? = null
 ) : ImgTask(iprList, tag, correctModel) {
 
-    var nErrorTolerance: Int = 0 //普通点容错
-    var bErrorTolerance: Int = 2 //背景点容错
+
 
     suspend fun verificationRule(bitmap: Bitmap?,offest:Int): Boolean {
         if(bitmap == null)

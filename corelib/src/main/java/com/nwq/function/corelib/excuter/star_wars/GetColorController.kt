@@ -10,7 +10,6 @@ import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.img.pcheck.PointRules
 import com.nwq.function.corelib.img.rule.ColorRuleImpl
 import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
-import com.nwq.function.corelib.img.task.HpTaskImpl
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -18,16 +17,22 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+//Test
 class GetColorController(acService: AccessibilityService, endLister: EndLister? = null) :
     BaseController(acService, endLister) {
 
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     val featureKeyList = mutableListOf<FeaturePointKey>()
+    val starWarEnvironment by lazy {
+        StarWarEnvironment()
+    }
 
-    override fun startWork() {
+
+    override fun startWork(pressBackHome: Boolean) {
         GlobalScope.launch(Dispatchers.Default) {
             delay(10000)
-            getColor(StarWarEnvironment.isShowLeftDialogBox)
+            getColor(starWarEnvironment.isShowLeftDialogBox)
+            endLister?.onEndLister()
         }
     }
 

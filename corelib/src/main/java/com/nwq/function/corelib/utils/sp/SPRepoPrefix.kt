@@ -51,10 +51,10 @@ class SPRepoPrefix(val prefix: String) {
     val timeOnList3SP = SP(prefix + SpConstant.TIME_ON_LIST3, "[10]")
     var timeOnList3 by timeOnList3SP
 
-    val wholeBattleListSP = SP(prefix + SpConstant.WHOLE_BATTLE_LIST, "[1,8]")
+    val wholeBattleListSP = SP(prefix + SpConstant.WHOLE_BATTLE_LIST, "[1,2,4,5,8]")
     var wholeBattleList by wholeBattleListSP
 
-    val roundBattleListSP = SP(prefix + SpConstant.ROUND_BATTLE_LIST, "[4,5]")
+    val roundBattleListSP = SP(prefix + SpConstant.ROUND_BATTLE_LIST, "")
     var roundBattleList by roundBattleListSP
 
     val lastRefreshTimeSP = SP(prefix + SpConstant.LAST_REFRESH_TIME, 0L)//上次刷新
@@ -62,10 +62,6 @@ class SPRepoPrefix(val prefix: String) {
 
     val lastPickUpTaskTimeSP = SP(prefix + SpConstant.LAST_PICKUP_TASK_TIME, 0L)//上次截取任务
     var lastPickUpTaskTime by lastPickUpTaskTimeSP
-
-    //这个字段没用到了
-    val lastBackSpaceStationSP = SP(prefix + SpConstant.LAST_PICKUP_TASK_TIME, 0L)
-    var lastBackSpaceStation by lastBackSpaceStationSP
 
     val hasLegionnairesSP = SP(prefix + SpConstant.HAS_LEGIONNAIRES, false)
     var hasLegionnaires by hasLegionnairesSP

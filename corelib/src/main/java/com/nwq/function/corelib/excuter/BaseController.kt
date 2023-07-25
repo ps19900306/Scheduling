@@ -34,7 +34,7 @@ abstract class BaseController(
     var runSwitch = true
     private val waitTaskTime = 5
 
-    abstract fun startWork()
+    abstract fun startWork(pressBackHome: Boolean = false)
 
     abstract suspend fun generalControlMethod()
 
@@ -148,7 +148,7 @@ abstract class BaseController(
     }
 
     protected suspend fun waitImgTask2(
-        task: ImgTask,
+        task: BasicImgTask,
         coordinateArea: CoordinateArea?,
         times: Int = waitTaskTime
     ): Boolean {

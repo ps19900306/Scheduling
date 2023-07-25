@@ -43,9 +43,6 @@
             android:name=".ui.SettingModelActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SetRoleInfoActivity2"
-            android:exported="false" />
-        <activity
             android:name=".ui.GetColorActivity"
             android:exported="false" />
         <activity

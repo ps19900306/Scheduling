@@ -6,11 +6,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.view.accessibility.AccessibilityEvent
+import com.nwq.function.corelib.baseIf.CmdType
 import com.nwq.function.corelib.excuter.BaseController
+import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.excuter.star_wars.AdventureTaskController
 import com.nwq.function.corelib.excuter.star_wars.GetColorController
 import com.nwq.function.corelib.excuter.star_wars.InterstellarMiners
 import com.nwq.function.corelib.utils.ContextUtil
+import com.nwq.function.corelib.utils.TimeUtils
+import com.nwq.function.corelib.utils.sp.SPRepo
+import com.nwq.function.corelib.utils.sp.SPRepoPrefix
+import com.nwq.function.corelib.utils.sp.SpConstant
 import timber.log.Timber
 
 
@@ -38,31 +44,56 @@ class NwqAccessibilityService : AccessibilityService() {
         }
     }
 
-
-
-    private val onCompleteLister = {
-
+    val endLister = object : EndLister {
+        override fun onEndLister() {
+            cList.clear()
+            if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
+                SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
+            }
+            Timber.d("${SPRepo.role} onCompleteLister NwqAccessibilityService NWQ_ 2023/3/13");
+            if (SPRepo.continueToTheNext) {
+                val spReo = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
+                    SPRepo.role = SpConstant.PREFIX_ROLE2
+                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2)
+                } else {
+                    SPRepo.role = SpConstant.PREFIX_ROLE1
+                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1)
+                }
+                if (spReo.nowSelectMode == SpConstant.MINER_MODEL || TimeUtils.isNewTaskDay(spReo.lastCompleteTime)) {
+                    startOpt(false)
+                }
+            }
+        }
     }
 
-
-    private fun startOpt(outGame: Boolean = false) {
+    private fun startOpt(pressBackHome: Boolean = false) {
         Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
-        val interstellarMiners=  AdventureTaskController(this)
-
-        interstellarMiners.startWork()
+        val interstellarMiners = AdventureTaskController(this, endLister)
+        interstellarMiners.startWork(pressBackHome)
         cList.add(interstellarMiners)
     }
 
-
     fun dealEvent(intent: Intent) {
-        startOpt()
+        val cmd = intent.getIntExtra(Constant.CMD, CmdType.START)
+        when (cmd) {
+            CmdType.START -> {
+                startOpt(true)
+            }
+            CmdType.CLOSE -> {
+                cList.forEach { it.closeWork() }
+                cList.clear()
+            }
+            CmdType.CHECK_COLOR -> {
+                if (cList.find { it is GetColorController } == null) {
+                    Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
+                    val interstellarMiners = GetColorController(this, endLister)
+                    interstellarMiners.startWork()
+                    cList.add(interstellarMiners)
+                }
+            }
+        }
     }
 
-
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        // 获取包名
-
-    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -74,6 +105,10 @@ class NwqAccessibilityService : AccessibilityService() {
     private fun registerReceiver() {
         Timber.d("registerReceiver NwqAccessibilityService NWQ_ 2023/3/12");
         registerReceiver(communicationBroadcast, IntentFilter.create(Intent_Filter_TAG, "cmd/int"))
+    }
+
+    override fun onAccessibilityEvent(p0: AccessibilityEvent?) {
+
     }
 
 
