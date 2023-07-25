@@ -2304,18 +2304,12 @@ class StarWarEnvironment {
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 155,126,60,47,77,62,
             2.912264F,2.2034483F,2.2369566F,2.2034483F,0.8342466F, 0.675F)
         val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(1103, 218), ruleRatio1
+        list.add(PointRule(CoordinatePoint(1103, 221), ruleRatio1
             //red143 green56 blue73 blockNumber3
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 10, 3, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 10, 5, true)
         val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(1103, 218), ruleRatio1
-            //red143 green56 blue73 blockNumber3
-        ))
         pointList.add(PointRule(CoordinatePoint(1103, 221), ruleRatio1
-            //red143 green56 blue73 blockNumber3
-        ))
-        pointList.add(PointRule(CoordinatePoint(1103, 227), ruleRatio1
             //red143 green56 blue73 blockNumber3
         ))
         ImgTaskImpl1(pointList, tag, correctPositionModel)
