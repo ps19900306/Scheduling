@@ -54,7 +54,7 @@ class NwqAccessibilityService : AccessibilityService() {
 
     private fun startOpt(pressBackHome: Boolean = false) {
         Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
-        val interstellarMiners = AdventureTaskController(this,endLister)
+        val interstellarMiners = AdventureTaskController(this, endLister)
         interstellarMiners.startWork(pressBackHome)
         cList.add(interstellarMiners)
     }
@@ -63,7 +63,7 @@ class NwqAccessibilityService : AccessibilityService() {
         val cmd = intent.getIntExtra(Constant.CMD, CmdType.START)
         when (cmd) {
             CmdType.START -> {
-                startOpt()
+                startOpt(true)
             }
             CmdType.CLOSE -> {
                 cList.forEach { it.closeWork() }
@@ -72,7 +72,7 @@ class NwqAccessibilityService : AccessibilityService() {
             CmdType.CHECK_COLOR -> {
                 if (cList.find { it is GetColorController } == null) {
                     Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
-                    val interstellarMiners = GetColorController(this,endLister)
+                    val interstellarMiners = GetColorController(this, endLister)
                     interstellarMiners.startWork()
                     cList.add(interstellarMiners)
                 }

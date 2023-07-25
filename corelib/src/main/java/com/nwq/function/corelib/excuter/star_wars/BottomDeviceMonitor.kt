@@ -288,6 +288,9 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         positionList: List<OptSlotInfo>,
         needCheckOpenList: MutableList<CoordinateArea>,
     ) {
+        if (positionList.isEmpty())
+            return
+
         if (positionList[0].offsetInterval > 0) {
             var lastItemOpenTime = 0L //这里只取第一个为标准，不然会导致多设备不好用
             positionList.forEachIndexed { p, d ->
