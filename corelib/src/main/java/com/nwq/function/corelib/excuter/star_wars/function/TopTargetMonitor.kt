@@ -97,6 +97,7 @@ class TopTargetMonitor(
             } else {
                 lastTimeStamp = nowTime
                 newAgainLock = true
+                needOpenReducer = false
                 roundMaxNumber = 0
                 numberOfRounds++
             }
