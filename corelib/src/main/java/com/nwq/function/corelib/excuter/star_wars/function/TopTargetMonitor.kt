@@ -64,6 +64,8 @@ class TopTargetMonitor(
     fun onNewLock(): Boolean {
         lastTimeStamp = System.currentTimeMillis()
         if (newAgainLock && lastTargetNumber > 6) {
+
+
             newAgainLock = false
             return true
         }

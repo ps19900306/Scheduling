@@ -309,6 +309,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 delay(doubleClickInterval)
                 if (topTargetMonitor.onNewLock()) {
                     bottomDeviceMonitor.openReducer()
+                }else{
+                    bottomDeviceMonitor.closeReducer()
                 }
             } else if (topTargetMonitor.isEndData() && hasTaskDialogBox()) { //这里表示任务已经结束了
                 Timber.d("任务已经结束 AdventureTaskController NWQ_ 2023/7/23");

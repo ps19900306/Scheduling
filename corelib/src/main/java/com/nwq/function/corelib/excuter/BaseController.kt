@@ -290,7 +290,7 @@ abstract class BaseController(
     private suspend fun takeScreenShot(): Bitmap? = suspendCoroutine {
         screenBitmap?.recycle()
         screenBitmap = null
-        Timber.d("recycle takeScreen AccessibilityHelper NWQ_ 2023/3/12");
+        //Timber.d("recycle takeScreen BaseController NWQ_ 2023/3/12");
         acService.takeScreenshot(
             Display.DEFAULT_DISPLAY,
             acService.mainExecutor,
@@ -301,12 +301,12 @@ abstract class BaseController(
                     )
                     screenBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                     bitmap?.recycle()
-                    Timber.d("setScreenBitmap onSuccess AccessibilityHelper NWQ_ 2023/3/12");
+               //     Timber.d("setScreenBitmap onSuccess BaseController NWQ_ 2023/3/12");
                     it.resume(screenBitmap)
                 }
 
                 override fun onFailure(i: Int) {
-                    Timber.d("  onFailure AccessibilityHelper NWQ_ 2023/3/12");
+                    Timber.d("  onFailure BaseController NWQ_ 2023/3/12");
                     it.resume(null)
                 }
             })
