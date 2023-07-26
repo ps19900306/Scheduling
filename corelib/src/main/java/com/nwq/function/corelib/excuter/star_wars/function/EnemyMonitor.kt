@@ -15,10 +15,6 @@ class EnemyMonitor(val zeroList: Array<BasicImgTask>, val oneList: Array<BasicIm
 
 
     companion object {
-        private const val WHITE_TYPE = 0
-        private const val RED_TYPE = 1
-        private const val DANGEROUS_TYPE = 2
-        private const val SAFE_TYPE = 3
 
         private const val NO_NUMBER = 0
         private const val ONE_NUMBER = 1
@@ -56,12 +52,20 @@ class EnemyMonitor(val zeroList: Array<BasicImgTask>, val oneList: Array<BasicIm
         }
     }
 
-    fun getEnemyNumber():Int {
+    fun getEnemyNumber(): Int {
         var total = 0
         numberRecord.forEach {
             total += it
         }
         return total
+    }
+
+    fun canFight(): Boolean {
+        var total = 0
+        numberRecord.forEach {
+            total += it
+        }
+        return total <= 1 && safeLevel <= SMALL_ENEMY
     }
 
 
@@ -75,7 +79,7 @@ class EnemyMonitor(val zeroList: Array<BasicImgTask>, val oneList: Array<BasicIm
         numberRecord.forEach {
             total += it
         }
-        if (total > 2) {
+        if (total >= 2) {
             updateSafeLevel(VERY_DANGEROUS)
             return false
         } else if (total == 1) { //只有一个敌军先不判断

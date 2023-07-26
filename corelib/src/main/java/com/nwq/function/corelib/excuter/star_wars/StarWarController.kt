@@ -298,4 +298,14 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
         return  !flag
     }
+
+    protected suspend fun restartGame(){
+        if (outGame()) {
+            delay(doubleClickInterval)
+            intoGame()
+        } else {
+            pressHomeBtn()
+            runSwitch = false
+        }
+    }
 }

@@ -81,13 +81,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
                 }
                 RESTART_GAME -> {//这里先退出游戏再出去
-                    if (outGame()) {
-                        delay(doubleClickInterval)
-                        intoGame()
-                    } else {
-                        pressHomeBtn()
-                        runSwitch = false
-                    }
+                    restartGame()
                 }
                 ABNORMAL_STATE -> {
                     theOutCheck()
@@ -261,12 +255,12 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             return null
         }
         list.forEach {
-            if (en.IsZeroDistanceList[it].verificationRule(screenBitmap) || en.IsOneDistanceList[it].verificationRule(
+            if (en.IsZeroDistanceList[it].check() || en.IsOneDistanceList[it].verificationRule(
                     screenBitmap
                 )
             ) {
                 en.pickUpItemList[it].let {
-                    if (it.verificationRule(screenBitmap)) {
+                    if (it.check()) {
                         it.containmentTask?.getOfsArea()?.let {
                             clickArea.add(it)
                         }
@@ -288,12 +282,12 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 runSwitch = false
                 return
             }
-            if (en.isCanLockTask.verificationRule(screenBitmap)) {
+            if (en.isCanLockTask.check()) {
                 nowTask = COMBAT_MONITORING
                 flag = false
-            } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
+            } else if (en.isConfirmDialogTask.check()) {
                 click(en.confirmDialogEnsureArea)
-            } else if (en.isClosePositionMenuT.verificationRule(screenBitmap)) {
+            } else if (en.isClosePositionMenuT.check()) {
                 count--
             }
         }
@@ -324,10 +318,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 topTargetMonitor.clearData()
                 bottomDeviceMonitor.clearData()
                 return
-            } else if (needBack && (isInSailing(screenBitmap) || en.isInSpaceStationT.verificationRule(
-                    screenBitmap
-                ))
-            ) {//这里一般是血量异常或者卡住了
+            } else if (needBack && (isInSailing(screenBitmap) || en.isInSpaceStationT.check())) {//这里一般是血量异常或者卡住了
                 nowTask = MONITORING_RETURN_STATUS
                 return
             } else {
@@ -344,6 +335,10 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                         bottomDeviceMonitor.clearData()
                         nowTask = PICK_UP_TASK
                         clickTheDialogueClose()
+                        return
+                    } else {
+                        clickPositionMenu(warehouseIndex)
+                        nowTask = MONITORING_RETURN_STATUS
                         return
                     }
                 }
@@ -392,7 +387,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 runSwitch = false
                 return
             }
-            if (en.isInSpaceStationT.verificationRule(screenBitmap)) {
+            if (en.isInSpaceStationT.check()) {
                 if (spReo.isPickupBox) {
                     unloadingCargo()
                 }
@@ -402,9 +397,9 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     nowTask = RESTART_GAME
                 }
                 flag = false
-            } else if (en.isOpenBigMenuT.verificationRule(screenBitmap)) {
+            } else if (en.isOpenBigMenuT.check()) {
                 click(en.closeBigMenuArea)
-            } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
+            } else if (en.isConfirmDialogTask.check()) {
                 click(en.confirmDialogEnsureArea)
             } else if (en.isCanLockTask.check()) {
                 needBack = false
