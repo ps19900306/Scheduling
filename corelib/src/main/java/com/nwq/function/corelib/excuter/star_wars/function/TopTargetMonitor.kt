@@ -42,7 +42,7 @@ class TopTargetMonitor(
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
     var needOpenReducer = false
-    private val maxAbnormal = 30
+    private val maxAbnormal = 100
     private val waitEndMax = 10
     private var abnormalRecords = maxAbnormal // 如果多次需要开启网子 可能就是卡脚本了
     private var abnormalWaitEnd = waitEndMax // 这个是用来修复

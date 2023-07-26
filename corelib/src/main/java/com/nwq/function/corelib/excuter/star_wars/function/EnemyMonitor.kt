@@ -56,8 +56,16 @@ class EnemyMonitor(val zeroList: Array<BasicImgTask>, val oneList: Array<BasicIm
         }
     }
 
-    fun isSafe(): Boolean {
+    fun getEnemyNumber():Int {
+        var total = 0
+        numberRecord.forEach {
+            total += it
+        }
+        return total
+    }
 
+
+    fun isSafe(): Boolean {
         if (!toBeJudged && safeLevel == ABSOLUTELY_SAFE) {
             return true
         }

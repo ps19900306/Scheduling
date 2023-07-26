@@ -401,12 +401,16 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 if (needRestart == true) {
                     nowTask = RESTART_GAME
                 }
-
                 flag = false
             } else if (en.isOpenBigMenuT.verificationRule(screenBitmap)) {
                 click(en.closeBigMenuArea)
             } else if (en.isConfirmDialogTask.verificationRule(screenBitmap)) {
                 click(en.confirmDialogEnsureArea)
+            } else if (en.isCanLockTask.check()) {
+                needBack = false
+                needCancel = false
+                nowTask = COMBAT_MONITORING
+                flag = false
             } else if (count < maxCount - 10 && !en.isSailingT.check() && en.isCloseEyeMenuT.check() && en.isOpenEyeMenuT.check()
             ) {
                 clickPositionMenu(warehouseIndex)
