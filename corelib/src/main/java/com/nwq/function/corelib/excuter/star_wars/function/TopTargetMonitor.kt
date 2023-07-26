@@ -64,8 +64,6 @@ class TopTargetMonitor(
     fun onNewLock(): Boolean {
         lastTimeStamp = System.currentTimeMillis()
         if (newAgainLock && lastTargetNumber > 6) {
-
-
             newAgainLock = false
             return true
         }
@@ -112,13 +110,13 @@ class TopTargetMonitor(
                 if (nowTime - lastTimeStamp > toleranceInterval * 8) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                } else if (nowNumber == roundMaxNumber - 1 && (nowAttack?.index
+                } else if (newAgainLock && nowNumber == roundMaxNumber - 1 && (nowAttack?.index
                         ?: 10) != roundMaxNumber
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 }
-                else if ((!newAgainLock||nowNumber < roundMaxNumber - 1) && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
+                else if ((!newAgainLock || nowNumber < roundMaxNumber - 1) && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
                     && lastResult?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 100) > 0
                     && nowAttack?.task?.getNowPercent() == lastResult?.task?.getNowPercent()
                 ) {
