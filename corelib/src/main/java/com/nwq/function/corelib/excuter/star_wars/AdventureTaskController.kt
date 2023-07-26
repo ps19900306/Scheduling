@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import com.nwq.function.corelib.Constant.doubleClickInterval
 import com.nwq.function.corelib.Constant.fastClickInterval
 import com.nwq.function.corelib.Constant.normalClickInterval
+import com.nwq.function.corelib.Constant.tripleClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.excuter.star_wars.data.QuickBigMenu
@@ -171,7 +172,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         } else if (list.isEmpty()) {
             //没有可以领取的任务
             if (waitImgTask(en.isCanRefreshTask, 30 * 30)) {
-                takeScreen(doubleClickInterval)
+                takeScreen(tripleClickInterval)
                 val list1 = getPickUpArea()
                 if (list1.isNullOrEmpty()) {
                     nowTask = ABNORMAL_STATE
