@@ -90,7 +90,6 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 }
             }
         }
-
     }
 
     private suspend fun startGame() {

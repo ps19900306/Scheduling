@@ -64,7 +64,6 @@ class TopTargetMonitor(
     fun onNewLock(): Boolean {
         lastTimeStamp = System.currentTimeMillis()
         if (newAgainLock && lastTargetNumber > 6) {
-            roundMaxNumber = 12 //这里需要根据情况开启网子了
             newAgainLock = false
             return true
         }
@@ -108,7 +107,7 @@ class TopTargetMonitor(
             }
             //这里表示刚好比最大值少了一个
             if (nowNumber >= lastTargetNumber) {
-                if (nowTime - lastTimeStamp > toleranceInterval * 6) {
+                if (nowTime - lastTimeStamp > toleranceInterval * 8) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 } else if (nowNumber == roundMaxNumber - 1 && (nowAttack?.index
@@ -117,7 +116,7 @@ class TopTargetMonitor(
                     lastTimeStamp = nowTime
                     needOpenReducer = true
                 }
-                else if (nowNumber < roundMaxNumber - 1 && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
+                else if ((!newAgainLock||nowNumber < roundMaxNumber - 1) && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
                     && lastResult?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 100) > 0
                     && nowAttack?.task?.getNowPercent() == lastResult?.task?.getNowPercent()
                 ) {

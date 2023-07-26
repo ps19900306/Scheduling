@@ -31,7 +31,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
     suspend fun takeScreen(): Bitmap? = suspendCoroutine {
         screenBitmap?.recycle()
         screenBitmap = null
-        Timber.d("recycle takeScreen AccessibilityHelper NWQ_ 2023/3/12");
+        //Timber.d("recycle takeScreen AccessibilityHelper NWQ_ 2023/3/12");
         acService.takeScreenshot(Display.DEFAULT_DISPLAY,
             acService.mainExecutor,
             object : AccessibilityService.TakeScreenshotCallback {
@@ -41,7 +41,7 @@ class AccessibilityHelper(val acService: AccessibilityService) {
                     )
                     screenBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                     bitmap?.recycle()
-                    Timber.d("setScreenBitmap onSuccess AccessibilityHelper NWQ_ 2023/3/12");
+                 //   Timber.d("setScreenBitmap onSuccess AccessibilityHelper NWQ_ 2023/3/12");
                     it.resume(screenBitmap)
                 }
 

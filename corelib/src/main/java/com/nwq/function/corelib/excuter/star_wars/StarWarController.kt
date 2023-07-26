@@ -29,6 +29,7 @@ Function description:
 abstract class StarWarController(acService: AccessibilityService, endLister: EndLister? = null) :
     BaseController(acService, endLister) {
 
+
     protected val spReo by lazy {
         SPRepoPrefix.getNowSPRepo()
     }

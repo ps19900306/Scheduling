@@ -46,7 +46,6 @@ class NwqAccessibilityService : AccessibilityService() {
 
     val endLister = object : EndLister {
         override fun onEndLister() {
-            cList.clear()
             if (SPRepoPrefix.getNowSPRepo().nowSelectMode == SpConstant.FIGHT_MODEL) {
                 SPRepoPrefix.getNowSPRepo().lastCompleteTime = System.currentTimeMillis()
             }
@@ -77,6 +76,8 @@ class NwqAccessibilityService : AccessibilityService() {
         val cmd = intent.getIntExtra(Constant.CMD, CmdType.START)
         when (cmd) {
             CmdType.START -> {
+                cList.forEach { it.closeWork() }
+                cList.clear()
                 startOpt(true)
             }
             CmdType.CLOSE -> {
