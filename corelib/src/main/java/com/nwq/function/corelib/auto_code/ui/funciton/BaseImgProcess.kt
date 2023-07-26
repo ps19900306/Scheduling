@@ -664,9 +664,9 @@ class BaseImgProcess(
 
 
     fun getDatumPoint(datumPointSize: Int = 1): List<FeatureCoordinatePoint>? {
-        var list = colorMaps[differenceKey]?.filter { it.isIdentificationKey }
+        var list = colorMaps[differenceKey]?.filter { it.isIdentificationKey && it.mDirectorPoint==null && it.mDirectorPointKey==null }
         if (list.isNullOrEmpty()) {
-            list = colorMaps[brightestKey]?.filter { it.isIdentificationKey }
+            list = colorMaps[brightestKey]?.filter { it.isIdentificationKey  && it.mDirectorPoint==null && it.mDirectorPointKey==null }
         }
         if (list.isNullOrEmpty()) {
             //   Timber.d("没有获取到 getDatumPoint BaseImgProcess NWQ_ 2023/7/8");

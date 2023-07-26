@@ -12,7 +12,7 @@ create time: 2023/5/30 9:56
 Function description:
 所有的图片识别，点击区域全部使用lazy缓存
  */
-class BaseEnvironment {
+object BaseEnvironment {
 
     private val isOpenTask by lazy {
         val tag = "isOpen"
