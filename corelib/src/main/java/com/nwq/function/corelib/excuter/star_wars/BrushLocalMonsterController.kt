@@ -28,7 +28,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
     private val COMBAT_MONITORING = 3 //战斗监控阶段
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
 
-    // private val MONITORING_RETURN_STATUS_FIGHT = 5//返回空间站有敌军的时候
+
     private val OUT_STATUS = 5// 出战监听
     private val RESTART_GAME = 401//退出重新进入
 
@@ -39,6 +39,8 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
         TopTargetMonitor(
             en.topLockTargetList1, en.topTargetHpList1, en.topLockTargetList2, en.topTargetHpList2
         ).apply {
+            secondReducer = false
+            waitEndMax = 5
             openEndMenu(true)
         }
     }
@@ -71,25 +73,22 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                 COMBAT_MONITORING -> {
                     combatMonitoring()
                 }
-//                MONITORING_RETURN_STATUS -> {
-//                    monitoringReturnStatus()
-//                }
-//                ALL_COMPLETE -> {
-//                    outGame()
-//                    runSwitch = false
-//                    endLister?.onEndLister()
-//                }
-//                CHECK_SHIP -> {
-//
-//                }
-//                RESTART_GAME -> {//这里先退出游戏再出去
-//                    restartGame()
-//                }
-//                ABNORMAL_STATE -> {
-//                    theOutCheck()
-//                    clickPositionMenu(warehouseIndex)
-//                    nowTask = MONITORING_RETURN_STATUS
-//                }
+                ALL_COMPLETE -> {
+                    outGame()
+                    runSwitch = false
+                    endLister?.onEndLister()
+                }
+                CHECK_SHIP -> {
+
+                }
+                RESTART_GAME -> {//这里先退出游戏再出去
+                    restartGame()
+                }
+                ABNORMAL_STATE -> {
+                    theOutCheck()
+                    clickPositionMenu(warehouseIndex)
+                    nowTask = MONITORING_RETURN_STATUS
+                }
             }
         }
     }
@@ -119,6 +118,14 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                 runSwitch = false
                 return
             }
+            if (enemyMonitor.getEnemyNumber() > 0) {
+                topTargetMonitor.updateInfo(screenBitmap!!)
+                if (topTargetMonitor.lastTargetNumber > 0) { //这里表示被敌人拦下了 需要进行战斗
+                    nowTask = COMBAT_MONITORING
+                    flag = false
+                }
+            }
+
             if (en.isInSpaceStationT.check()) {
                 if (spReo.isPickupBox) {
                     unloadingCargo()
@@ -240,12 +247,6 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                 } else {
                     bottomDeviceMonitor.closeReducer()
                 }
-            } else if (topTargetMonitor.isEndData() && hasTaskDialogBox()) { //这里表示任务已经结束了
-                Timber.d("任务已经结束 AdventureTaskController NWQ_ 2023/7/23");
-                nowTask = LOOK_FOR_TARGET
-                topTargetMonitor.clearData()
-                bottomDeviceMonitor.clearData()
-                return
             } else if (needBack && (isInSailing(screenBitmap) || en.isInSpaceStationT.check())) {//这里一般是血量异常或者卡住了
                 nowTask = MONITORING_RETURN_STATUS
                 return

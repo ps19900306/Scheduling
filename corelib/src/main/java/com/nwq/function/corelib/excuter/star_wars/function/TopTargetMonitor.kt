@@ -42,9 +42,10 @@ class TopTargetMonitor(
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
     var needOpenReducer = false
-    private val maxAbnormal = 100
-    private val waitEndMax = 10
-    private var abnormalRecords = maxAbnormal // 如果多次需要开启网子 可能就是卡脚本了
+    private val maxAbnormal = 50
+    var waitEndMax = 10
+    var secondReducer = true //第二个目标时候开网子,这样一般远炮为false
+    private var abnormalRecords = maxAbnormal // 如果一直不能击杀则意味着 卡住了
     private var abnormalWaitEnd = waitEndMax // 这个是用来修复
 
 
@@ -63,9 +64,10 @@ class TopTargetMonitor(
     //新的一轮的 第二次锁定
     fun onNewAgainLock(): Boolean {
         lastTimeStamp = System.currentTimeMillis()
+        abnormalRecords = maxAbnormal
         if (newAgainLock && lastTargetNumber > 6) {
             newAgainLock = false
-            return true
+            return secondReducer
         }
         return false
     }
@@ -110,7 +112,7 @@ class TopTargetMonitor(
                 if (nowTime - lastTimeStamp > toleranceInterval * 8) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                } else if (newAgainLock && nowNumber == roundMaxNumber - 1 && (nowAttack?.index
+                } else if ( secondReducer&& newAgainLock && nowNumber == roundMaxNumber - 1 && (nowAttack?.index
                         ?: 10) != roundMaxNumber
                 ) {
                     lastTimeStamp = nowTime
