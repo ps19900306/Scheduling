@@ -60,8 +60,8 @@ class TopTargetMonitor(
 
     private var newAgainLock = false // 在一个回合里 第一次再次锁定则可以开一次网子
 
-    //挡触发新的锁定
-    fun onNewLock(): Boolean {
+    //新的一轮的 第二次锁定
+    fun onNewAgainLock(): Boolean {
         lastTimeStamp = System.currentTimeMillis()
         if (newAgainLock && lastTargetNumber > 6) {
             newAgainLock = false
@@ -115,9 +115,9 @@ class TopTargetMonitor(
                 ) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                }
-                else if ((!newAgainLock || nowNumber < roundMaxNumber - 1) && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
-                    && lastResult?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent() ?: 100) > 0
+                } else if ((!newAgainLock || nowNumber < roundMaxNumber - 1) && (nowTime - lastTimeStamp > toleranceInterval) && nowNumber == lastTargetNumber
+                    && lastResult?.index == nowAttack?.index && (nowAttack?.task?.getNowPercent()
+                        ?: 100) > 0
                     && nowAttack?.task?.getNowPercent() == lastResult?.task?.getNowPercent()
                 ) {
                     Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");

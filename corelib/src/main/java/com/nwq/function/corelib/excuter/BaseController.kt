@@ -157,7 +157,7 @@ abstract class BaseController(
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
-            if (!takeScreen(Constant.normalClickInterval)) {
+            if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
                 return false
             }

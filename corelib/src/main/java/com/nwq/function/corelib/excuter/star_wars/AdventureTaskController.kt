@@ -10,7 +10,6 @@ import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.excuter.star_wars.data.QuickBigMenu
 import com.nwq.function.corelib.excuter.star_wars.function.BottomDeviceMonitor
 import com.nwq.function.corelib.excuter.star_wars.function.TopTargetMonitor
-import com.nwq.function.corelib.img.task.HpTaskImpl
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -38,7 +37,6 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private val RESTART_GAME = 401//退出重新进入
     private val EXIT_GAME_ERROR = 1000//异常退出
     private var nowTask = START_GAME
-    private lateinit var listHp: List<HpTaskImpl>
     private val topTargetMonitor by lazy {
         TopTargetMonitor(
             en.topLockTargetList1, en.topTargetHpList1, en.topLockTargetList2, en.topTargetHpList2
@@ -282,6 +280,8 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 return
             }
             if (en.isCanLockTask.check()) {
+                topTargetMonitor.clearData()
+                bottomDeviceMonitor.clearData()
                 nowTask = COMBAT_MONITORING
                 flag = false
             } else if (en.isConfirmDialogTask.check()) {
@@ -298,8 +298,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
     private suspend fun combatMonitoring() {
         var flag = true
-        var count = 200
-        while (flag && count > 0 && runSwitch) {
+        while (flag && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return
@@ -307,7 +306,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             if (en.isCanLockTask.check()) {
                 en.lockTargetArea.clickA()
                 delay(doubleClickInterval)
-                if (topTargetMonitor.onNewLock()) {
+                if (topTargetMonitor.onNewAgainLock()) {
                     bottomDeviceMonitor.openReducer()
                 }else{
                     bottomDeviceMonitor.closeReducer()
@@ -367,13 +366,6 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     emergencyEvacuation()
                 }
             }
-        }
-
-        if (count < 0) {
-            emergencyEvacuation()
-            nowTask = MONITORING_RETURN_STATUS
-            needCancel = true
-            needBack = true
         }
     }
 

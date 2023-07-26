@@ -1,7 +1,15 @@
 package com.nwq.function.corelib.excuter.star_wars
 
 import android.accessibilityservice.AccessibilityService
+import com.nwq.function.corelib.Constant.doubleClickInterval
+import com.nwq.function.corelib.Constant.tripleClickInterval
+import com.nwq.function.corelib.area.CoordinateArea
 import com.nwq.function.corelib.excuter.EndLister
+import com.nwq.function.corelib.excuter.star_wars.function.BottomDeviceMonitor
+import com.nwq.function.corelib.excuter.star_wars.function.EnemyMonitor
+import com.nwq.function.corelib.excuter.star_wars.function.TopTargetMonitor
+import kotlinx.coroutines.delay
+import timber.log.Timber
 
 /**
 create by: 86136
@@ -9,33 +17,60 @@ create time: 2023/7/25 15:36
 Function description:
 这个是刷
  */
-class BrushLocalMonsterController (acService: AccessibilityService, endLister: EndLister? = null) :
-    StarWarController(acService, endLister){
+class BrushLocalMonsterController(acService: AccessibilityService, endLister: EndLister? = null) :
+    StarWarController(acService, endLister) {
+
+    private val ABNORMAL_STATE = Int.MAX_VALUE //异常状态修复
     private val DAMAGE = -100 //飞船已经损毁
     private val START_GAME = 0  //开始游戏
-    private val XU = 1 //接取任务
+    private val LOOK_FOR_TARGET = 1 //寻找异常目标
     private val BATTLE_NAVIGATION_MONITORING = 2//战斗飞行导航监控
     private val COMBAT_MONITORING = 3 //战斗监控阶段
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
+
+    // private val MONITORING_RETURN_STATUS_FIGHT = 5//返回空间站有敌军的时候
+    private val OUT_STATUS = 5// 出战监听
+    private val RESTART_GAME = 401//退出重新进入
+
     private val ALL_COMPLETE = 9//全部完成
     private val CHECK_SHIP = 10//检查船只
     private var nowTask = START_GAME
+    private val topTargetMonitor by lazy {
+        TopTargetMonitor(
+            en.topLockTargetList1, en.topTargetHpList1, en.topLockTargetList2, en.topTargetHpList2
+        ).apply {
+            openEndMenu(true)
+        }
+    }
+    private val bottomDeviceMonitor by lazy {
+        BottomDeviceMonitor(en.topDeviceList, en.bottomDeviceList)
+    }
+    private lateinit var enemyMonitor: EnemyMonitor
+    private lateinit var outSpaceArea: CoordinateArea
+    private var needBack = false
+    private var needRestart = false
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
             when (nowTask) {
-//                START_GAME -> {
-//                    startGame()
-//                }
-//                PICK_UP_TASK -> {
-//                    pickTask()
-//                }
-//                BATTLE_NAVIGATION_MONITORING -> {
-//                    startNavigationMonitoring()
-//                }
-//                COMBAT_MONITORING -> {
-//                    combatMonitoring()
-//                }
+                START_GAME -> {
+                    startGame()
+                }
+                MONITORING_RETURN_STATUS -> {
+                    monitoringReturnStatus()
+                }
+                OUT_STATUS -> {
+                    outSpace()
+                }
+                LOOK_FOR_TARGET -> {
+                    lookForTarget()
+                }
+                BATTLE_NAVIGATION_MONITORING -> {
+                    startNavigationMonitoring()
+                }
+                COMBAT_MONITORING -> {
+                    combatMonitoring()
+                }
 //                MONITORING_RETURN_STATUS -> {
 //                    monitoringReturnStatus()
 //                }
@@ -60,11 +95,205 @@ class BrushLocalMonsterController (acService: AccessibilityService, endLister: E
     }
 
     private suspend fun startGame() {
-//        topTargetMonitor.updateInfo(screenBitmap!!)
-//        if (topTargetMonitor.lastTargetNumber > 0 || en.isCanLockTask.check()) {
-//            nowTask = COMBAT_MONITORING
-//        } else {
-//            nowTask = PICK_UP_TASK
-//        }
+        if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) {
+            waitImgTask2(en.isOpenEyeMenuT, en.openEyeMenuArea)
+            //这里还需要打开本地的人员监控
+        }
+        topTargetMonitor.updateInfo(screenBitmap!!)
+        nowTask = if (topTargetMonitor.lastTargetNumber > 0 || en.isCanLockTask.check()) {
+            COMBAT_MONITORING
+        } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) {
+            LOOK_FOR_TARGET
+        } else {
+            MONITORING_RETURN_STATUS
+        }
     }
+
+    private suspend fun monitoringReturnStatus() {
+        Timber.d("monitoringReturnStatus BrushLocalMonsterController NWQ_ 2023/4/11");
+        var flag = true
+        val maxCount = 15 * 60
+        var count = maxCount
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (en.isInSpaceStationT.check()) {
+                if (spReo.isPickupBox) {
+                    unloadingCargo()
+                }
+                nowTask = OUT_STATUS
+                flag = false
+            } else if (en.isOpenBigMenuT.check()) {
+                click(en.closeBigMenuArea)
+            } else if (en.isConfirmDialogTask.check()) {
+                click(en.confirmDialogEnsureArea)
+            } else if (en.isCanLockTask.check()) {
+                nowTask = COMBAT_MONITORING
+                flag = false
+            } else if (count < maxCount - 10 && !en.isSailingT.check() && en.isCloseEyeMenuT.check() && en.isOpenEyeMenuT.check()
+            ) {
+                clickPositionMenu(warehouseIndex)
+            }
+            count--
+        }
+        if (count == 0 && flag) {
+            runSwitch = false
+            return
+        }
+    }
+
+    private suspend fun outSpace() {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            enemyMonitor.updateInfo(screenBitmap!!)
+            //这里需要保证先打开本地菜单
+            if (enemyMonitor.isSafe()) {
+                flag = false
+            }
+        }
+
+        outSpaceArea.clickA()
+        flag = true
+        count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(tripleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) {
+                nowTask = LOOK_FOR_TARGET
+                flag = false
+            } else if (en.isInSpaceStationT.check()) {
+                outSpaceArea.clickA()
+            }
+            count--
+        }
+
+        if (flag) {
+            nowTask = ABNORMAL_STATE
+        }
+    }
+
+    private suspend fun lookForTarget() {
+
+    }
+
+
+    private suspend fun startNavigationMonitoring() {
+        Timber.d("monitoringReturnStatus FightController NWQ_ 2023/4/11");
+        var flag = true
+        val maxCount = 20
+        var count = maxCount
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            enemyMonitor.updateInfo(screenBitmap!!)
+            if (!enemyMonitor.isSafe()) { //如果有敌军进行战斗返回监控
+                nowTask = MONITORING_RETURN_STATUS
+                clickPositionMenu(warehouseIndex)
+                flag = false
+            } else if (en.isCanLockTask.check()) {
+                topTargetMonitor.clearData()
+                bottomDeviceMonitor.clearData()
+                nowTask = COMBAT_MONITORING
+                flag = false
+            } else if (en.isConfirmDialogTask.check()) {
+                click(en.confirmDialogEnsureArea)
+            } else if (en.isClosePositionMenuT.check()) {
+                count--
+            }
+        }
+        if (flag && runSwitch) {
+            nowTask = LOOK_FOR_TARGET
+            return
+        }
+    }
+
+
+    private suspend fun combatMonitoring() {
+        var flag = true
+        while (flag && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            //每一轮发现敌人都有优先撤离
+            enemyMonitor.updateInfo(screenBitmap!!)
+            if (!enemyMonitor.isSafe()) {
+                emergencyEvacuation()
+            }
+
+            if (en.isCanLockTask.check()) {
+                en.lockTargetArea.clickA()
+                delay(doubleClickInterval)
+                if (topTargetMonitor.onNewAgainLock()) {
+                    bottomDeviceMonitor.openReducer()
+                } else {
+                    bottomDeviceMonitor.closeReducer()
+                }
+            } else if (topTargetMonitor.isEndData() && hasTaskDialogBox()) { //这里表示任务已经结束了
+                Timber.d("任务已经结束 AdventureTaskController NWQ_ 2023/7/23");
+                nowTask = LOOK_FOR_TARGET
+                topTargetMonitor.clearData()
+                bottomDeviceMonitor.clearData()
+                return
+            } else if (needBack && (isInSailing(screenBitmap) || en.isInSpaceStationT.check())) {//这里一般是血量异常或者卡住了
+                nowTask = MONITORING_RETURN_STATUS
+                return
+            } else {
+                topTargetMonitor.updateInfo(screenBitmap!!)
+                if (topTargetMonitor.needOpenReducer) {
+                    bottomDeviceMonitor.openReducer()
+                } else {
+                    bottomDeviceMonitor.closeReducer()
+                }
+                if (topTargetMonitor.isWaitEnd()) {
+                    if (!needBack) {
+                        Timber.d("topTargetMonitor isWaitEnd NWQ_ 2023/7/22");
+                        topTargetMonitor.clearData()
+                        bottomDeviceMonitor.clearData()
+                        nowTask = LOOK_FOR_TARGET
+                        return
+                    } else {
+                        clickPositionMenu(warehouseIndex)
+                        nowTask = MONITORING_RETURN_STATUS
+                        return
+                    }
+                }
+
+                if (!needBack && topTargetMonitor.isNeedAbnormal()) {
+                    if (topTargetMonitor.isNeedAbnormal()) {
+                        Timber.d("topTargetMonitor emergencyEvacuation NWQ_ 2023/7/22");
+                        emergencyEvacuation()
+                        nowTask = MONITORING_RETURN_STATUS
+                        needBack = true
+                    }
+                }
+                if (topTargetMonitor.lastTargetNumber > 0) {
+                    val listArea = bottomDeviceMonitor.updateInfo(screenBitmap!!)
+                    click(listArea)
+                    if (bottomDeviceMonitor.isNeedAbnormal()) {
+                        Timber.d("bottomDeviceMonitor emergencyEvacuation NWQ_ 2023/7/22");
+                        emergencyEvacuation()
+                        nowTask = RESTART_GAME
+                        needBack = true
+                        needRestart = true
+                    }
+                } else if (needBack) { //如果没有目标 需要撤离则进行紧急撤了
+                    emergencyEvacuation()
+                }
+            }
+        }
+    }
+
+
 }
