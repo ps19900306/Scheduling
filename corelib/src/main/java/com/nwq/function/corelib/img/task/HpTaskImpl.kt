@@ -43,7 +43,6 @@ open class HpTaskImpl(
             val y = correctModel?.getOffsetYSupple() ?: 0
             iprList.forEachIndexed { index, ipr ->
                 if (ipr.checkIpr(bitmap, x, y)) {
-                    Timber.d("correct index$index verificationRule HpTaskImpl NWQ_ 2023/7/24");
                     lastP = index
                     return index != 0
                 }
@@ -81,7 +80,7 @@ open class HpTaskImpl(
 
     fun getNowPercent(): Int {
         val percent = (((iprList.size - lastP) * 100F) / iprList.size).toInt()
-        Timber.d("getNowPercent $percent  needOpenReducer NWQ_ 2023/7/24");
+//        Timber.d("getNowPercent $percent  needOpenReducer NWQ_ 2023/7/24");
         return percent
     }
 

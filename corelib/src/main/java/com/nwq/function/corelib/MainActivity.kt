@@ -90,12 +90,4 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    private suspend fun startOCR(): String {
-        return withContext(Dispatchers.IO) {
-            delay(2000)
-            Timber.d("Thread startOCR: ${Thread.currentThread().name}")
-            "sdf"
-        }
-    }
 }
