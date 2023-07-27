@@ -350,13 +350,11 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 }
 
                 if (!needBack && topTargetMonitor.isNeedAbnormal()) {
-                    if (topTargetMonitor.isNeedAbnormal()) {
-                        Timber.d("topTargetMonitor emergencyEvacuation NWQ_ 2023/7/22");
-                        emergencyEvacuation()
-                        nowTask = MONITORING_RETURN_STATUS
-                        needCancel = true
-                        needBack = true
-                    }
+                    Timber.d("topTargetMonitor emergencyEvacuation NWQ_ 2023/7/22");
+                    emergencyEvacuation()
+                    nowTask = MONITORING_RETURN_STATUS
+                    needCancel = true
+                    needBack = true
                 }
                 if (topTargetMonitor.lastTargetNumber > 0) {
                     val listArea = bottomDeviceMonitor.updateInfo(screenBitmap!!)

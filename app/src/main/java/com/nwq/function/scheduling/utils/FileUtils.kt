@@ -3,10 +3,8 @@ package com.nwq.function.scheduling.utils
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.icu.text.IDNA
 import android.net.Uri
 import android.os.Environment
-import android.os.FileUtils
 import android.provider.MediaStore
 import timber.log.Timber
 import java.io.*
