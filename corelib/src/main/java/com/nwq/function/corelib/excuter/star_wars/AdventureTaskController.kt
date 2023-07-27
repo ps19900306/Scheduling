@@ -248,11 +248,20 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             //卡住了没有刷出来任务
             return null
         }
-        list.forEach {
-            if (en.IsZeroDistanceList[it].check() || en.IsOneDistanceList[it].verificationRule(
-                    screenBitmap
-                )
-            ) {
+        val stanceList =
+            list.filter { en.IsZeroDistanceList[it].check() || en.IsOneDistanceList[it].check() }
+        if (stanceList.size > 1) { //这样做是为了挡第一条目符合规则则默认第三个也符合规则
+            for (p in stanceList[0]..stanceList[stanceList.size - 1]) {
+                en.pickUpItemList[p].let {
+                    if (it.check()) {
+                        it.containmentTask?.getOfsArea()?.let {
+                            clickArea.add(it)
+                        }
+                    }
+                }
+            }
+        } else {
+            stanceList.forEach {
                 en.pickUpItemList[it].let {
                     if (it.check()) {
                         it.containmentTask?.getOfsArea()?.let {
