@@ -42,7 +42,7 @@ class TopTargetMonitor(
     private var roundMaxNumber = 0
     private var lastTimeStamp = 0L//用于记录没有变化的时间戳
     var needOpenReducer = false
-    private val maxAbnormal = 100
+    private val maxAbnormal = 150
     var waitEndMax = 10
     var secondReducer = true //第二个目标时候开网子,这样一般远炮为false
     private var abnormalRecords = maxAbnormal // 如果一直不能击杀则意味着 卡住了
