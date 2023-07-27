@@ -303,6 +303,7 @@ abstract class BaseController(
                     bitmap?.recycle()
                //     Timber.d("setScreenBitmap onSuccess BaseController NWQ_ 2023/3/12");
                     it.resume(screenBitmap)
+                    screenshotResult.hardwareBuffer.close()
                 }
 
                 override fun onFailure(i: Int) {
