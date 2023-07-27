@@ -29,6 +29,10 @@ Function description:
 abstract class StarWarController(acService: AccessibilityService, endLister: EndLister? = null) :
     BaseController(acService, endLister) {
 
+    protected val MONITORING_RETURN_STATUS = Int.MIN_VALUE//返回空间站监听
+    protected val ABNORMAL_STATE = Int.MAX_VALUE //异常状态修复
+    protected val START_GAME = 0  //开始游戏
+    protected var nowTask = START_GAME
 
     protected val spReo by lazy {
         SPRepoPrefix.getNowSPRepo()
@@ -164,27 +168,33 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
 
+    var lastEmergencyTime = 0L //这里防止撤退点击的过快
     //这个是在战斗中飞回
-    protected suspend fun emergencyEvacuation(flag: Boolean = true) {
-        if (en.isInSpaceStationT.check()) {
-        } else if (en.isOpenPositionMenuT.check()) {
-            //坐标菜单打开的
-            en.getPositionArea(warehouseIndex).clickA()
-        } else if (en.isClosePositionMenuT.check()) {
-            //坐标菜关闭的
-            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-            en.getPositionArea(warehouseIndex).clickA()
-        } else if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) { //这里是坐标菜单被遮挡了
-            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-            en.getPositionArea(warehouseIndex).clickA()
-        } else { //这里是没有在前台界面
-            if (flag) {
-                theOutCheck()
-                waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-                emergencyEvacuation(false)
-            }
+    protected suspend fun emergencyEvacuation() {
+        if (System.currentTimeMillis() - lastEmergencyTime > 10000L) {
+            lastEmergencyTime = System.currentTimeMillis()
+            clickPositionMenu(warehouseIndex)
         }
     }
+
+    private suspend fun openPositionMenu() {
+        if (!en.isOpenEyeMenuT.check() && !en.isCloseEyeMenuT.check()) {
+            theOutCheck()
+        }
+        if (en.isClosePositionMenuT.check()) { //如果菜单是关闭的
+            waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
+        }
+
+        //if(en) //这里要判断是切换到
+
+    }
+
+
+    protected suspend fun clickPositionMenu(index: Int) {
+        openPositionMenu()
+        en.getPositionArea(index).clickA()
+    }
+
 
     protected suspend fun ensureOpenBigMenuArea(@QuickBigMenu index: Int): Boolean {
         var flag = true
@@ -244,11 +254,6 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
 
-    protected suspend fun clickPositionMenu(index: Int) {
-        waitImgTask2(en.isOpenPositionMenuT, en.openPositionArea)
-        en.getPositionArea(index).clickA()
-    }
-
     //这个方法要将出现眼睛或者在空间站
     protected suspend fun theOutCheck(): Boolean {
         var flag = true
@@ -279,28 +284,28 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
     }
 
-    protected suspend fun outGame():Boolean {
+    protected suspend fun outGame(): Boolean {
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreenBitmap(doubleClickInterval)
-            if (bitmap.isOrientation()){
+            if (bitmap.isOrientation()) {
                 en.exitGameTask.list.forEach {
-                    if( it.check()){
+                    if (it.check()) {
                         it.clickArea?.clickA()
-                    }else{
+                    } else {
                         pressBackBtn()
                     }
                 }
-            }else{
+            } else {
                 flag = false
             }
             count--
         }
-        return  !flag
+        return !flag
     }
 
-    protected suspend fun restartGame(){
+    protected suspend fun restartGame() {
         if (outGame()) {
             delay(doubleClickInterval)
             intoGame()
@@ -308,5 +313,18 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             pressHomeBtn()
             runSwitch = false
         }
+    }
+
+    protected suspend fun onComplete(){
+        outGame()
+        emergencyEvacuation()
+        runSwitch = false
+        endLister?.onEndLister()
+    }
+
+    protected suspend fun abnormalState(){
+        theOutCheck()
+        emergencyEvacuation()
+        nowTask = MONITORING_RETURN_STATUS
     }
 }

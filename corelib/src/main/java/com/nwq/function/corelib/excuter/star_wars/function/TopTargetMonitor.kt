@@ -47,7 +47,7 @@ class TopTargetMonitor(
     var secondReducer = true //第二个目标时候开网子,这样一般远炮为false
     private var abnormalRecords = maxAbnormal // 如果一直不能击杀则意味着 卡住了
     private var abnormalWaitEnd = waitEndMax // 这个是用来修复
-
+    var fewerTargets = false //目标减少
 
     fun clearData() {
         numberOfRounds = 0
@@ -110,10 +110,11 @@ class TopTargetMonitor(
             }
             //这里表示刚好比最大值少了一个
             if (nowNumber >= lastTargetNumber) {
+                fewerTargets = false
                 if (nowTime - lastTimeStamp > toleranceInterval * 8) {
                     lastTimeStamp = nowTime
                     needOpenReducer = true
-                } else if ( secondReducer&& newAgainLock && nowNumber == roundMaxNumber - 1 && (nowAttack?.index
+                } else if (secondReducer && newAgainLock && nowNumber == roundMaxNumber - 1 && (nowAttack?.index
                         ?: 10) != roundMaxNumber
                 ) {
                     lastTimeStamp = nowTime
@@ -123,12 +124,13 @@ class TopTargetMonitor(
                         ?: 100) > 0
                     && nowAttack?.task?.getNowPercent() == lastResult?.task?.getNowPercent()
                 ) {
-                    Timber.d("XYETUAI DEBG needOpenReducer NWQ_ 2023/7/24");
+                    Timber.d("血条减少速度过慢 needOpenReducer NWQ_ 2023/7/24");
                     needOpenReducer = true
                     lastTimeStamp = nowTime
-                }
-                abnormalRecords--
+                } else
+                    abnormalRecords--
             } else {
+                fewerTargets = true
                 abnormalRecords = maxAbnormal
                 needOpenReducer = false
                 lastTimeStamp = nowTime

@@ -24,19 +24,14 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
 
     private val DAMAGE = -100 //飞船已经损毁
-    private val START_GAME = 0  //开始游戏
     private val PICK_UP_TASK = 1 //接取任务
     private val BATTLE_NAVIGATION_MONITORING = 2//战斗飞行导航监控
     private val COMBAT_MONITORING = 3 //战斗监控阶段
-    private val MONITORING_RETURN_STATUS = 4//返回空间站监听
     private val ALL_COMPLETE = 9//全部完成
     private val CHECK_SHIP = 10//检查船只
-
-    private val ABNORMAL_STATE = Int.MAX_VALUE //异常状态修复
     private val EXIT_GAME = 400//正常退出
     private val RESTART_GAME = 401//退出重新进入
     private val EXIT_GAME_ERROR = 1000//异常退出
-    private var nowTask = START_GAME
     private val topTargetMonitor by lazy {
         TopTargetMonitor(
             en.topLockTargetList1, en.topTargetHpList1, en.topLockTargetList2, en.topTargetHpList2
@@ -71,9 +66,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     monitoringReturnStatus()
                 }
                 ALL_COMPLETE -> {
-                    outGame()
-                    runSwitch = false
-                    endLister?.onEndLister()
+                    onComplete()
                 }
                 CHECK_SHIP -> {
 

@@ -20,21 +20,17 @@ Function description:
 class BrushLocalMonsterController(acService: AccessibilityService, endLister: EndLister? = null) :
     StarWarController(acService, endLister) {
 
-    private val ABNORMAL_STATE = Int.MAX_VALUE //异常状态修复
+
     private val DAMAGE = -100 //飞船已经损毁
-    private val START_GAME = 0  //开始游戏
+
     private val LOOK_FOR_TARGET = 1 //寻找异常目标
     private val BATTLE_NAVIGATION_MONITORING = 2//战斗飞行导航监控
     private val COMBAT_MONITORING = 3 //战斗监控阶段
-    private val MONITORING_RETURN_STATUS = 4//返回空间站监听
-
-
     private val OUT_STATUS = 5// 出战监听
     private val RESTART_GAME = 401//退出重新进入
-
     private val ALL_COMPLETE = 9//全部完成
     private val CHECK_SHIP = 10//检查船只
-    private var nowTask = START_GAME
+
     private val topTargetMonitor by lazy {
         TopTargetMonitor(
             en.topLockTargetList1, en.topTargetHpList1, en.topLockTargetList2, en.topTargetHpList2
@@ -74,9 +70,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                     combatMonitoring()
                 }
                 ALL_COMPLETE -> {
-                    outGame()
-                    runSwitch = false
-                    endLister?.onEndLister()
+                    onComplete()
                 }
                 CHECK_SHIP -> {
 
@@ -86,7 +80,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                 }
                 ABNORMAL_STATE -> {
                     theOutCheck()
-                    clickPositionMenu(warehouseIndex)
+                    emergencyEvacuation()
                     nowTask = MONITORING_RETURN_STATUS
                 }
             }
@@ -141,7 +135,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                 flag = false
             } else if (count < maxCount - 10 && !en.isSailingT.check() && en.isCloseEyeMenuT.check() && en.isOpenEyeMenuT.check()
             ) {
-                clickPositionMenu(warehouseIndex)
+                emergencyEvacuation()
             }
             count--
         }
@@ -206,7 +200,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
             enemyMonitor.updateInfo(screenBitmap!!)
             if (!enemyMonitor.isSafe()) { //如果有敌军进行战斗返回监控
                 nowTask = MONITORING_RETURN_STATUS
-                clickPositionMenu(warehouseIndex)
+                emergencyEvacuation()
                 flag = false
             } else if (en.isCanLockTask.check()) {
                 topTargetMonitor.clearData()
@@ -237,6 +231,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
             enemyMonitor.updateInfo(screenBitmap!!)
             if (!enemyMonitor.isSafe()) {
                 emergencyEvacuation()
+                needBack = true
             }
 
             if (en.isCanLockTask.check()) {
@@ -252,6 +247,9 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                 return
             } else {
                 topTargetMonitor.updateInfo(screenBitmap!!)
+                if (needBack && topTargetMonitor.fewerTargets) {//这里没减少一次目标点击一次撤离
+                    emergencyEvacuation()
+                }
                 if (topTargetMonitor.needOpenReducer) {
                     bottomDeviceMonitor.openReducer()
                 } else {
@@ -265,7 +263,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                         nowTask = LOOK_FOR_TARGET
                         return
                     } else {
-                        clickPositionMenu(warehouseIndex)
+                        emergencyEvacuation()
                         nowTask = MONITORING_RETURN_STATUS
                         return
                     }
