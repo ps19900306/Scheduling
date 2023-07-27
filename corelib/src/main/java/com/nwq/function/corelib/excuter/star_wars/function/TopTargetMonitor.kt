@@ -127,8 +127,8 @@ class TopTargetMonitor(
                     Timber.d("血条减少速度过慢 needOpenReducer NWQ_ 2023/7/24");
                     needOpenReducer = true
                     lastTimeStamp = nowTime
-                } else
-                    abnormalRecords--
+                }
+                abnormalRecords--
             } else {
                 fewerTargets = true
                 abnormalRecords = maxAbnormal
