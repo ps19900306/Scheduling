@@ -263,7 +263,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
 
     private suspend fun startNavigationMonitoring() {
-        Timber.d("monitoringReturnStatus AdventureTaskController NWQ_ 2023/4/11");
+        Timber.d("startNavigationMonitoring AdventureTaskController NWQ_ 2023/4/11");
         var flag = true
         val maxCount = 20
         var count = maxCount
