@@ -181,6 +181,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
         var flag = true
         var count = 10
+        var hasEndNormal = false
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(normalClickInterval)) {
                 runSwitch = false
@@ -188,6 +189,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             }
             if (en.isEndNormalList.find { it.check() } != null) {
                 click(en.endNormalArea)
+                hasEndNormal = true
             } else if (en.isQianWangTask.check()) {
                 delay(normalClickInterval)
                 click(en.qianWangArea)
@@ -202,9 +204,11 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             clickTheDialogueClose()
             nowTask = BATTLE_NAVIGATION_MONITORING
             return
-        } else {
+        } else if (!hasEndNormal) {
             nowTask = ALL_COMPLETE
             return
+        } else {
+            nowTask = ABNORMAL_STATE
         }
 
     }
@@ -301,7 +305,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                 delay(doubleClickInterval)
                 if (topTargetMonitor.onNewAgainLock()) {
                     bottomDeviceMonitor.openReducer()
-                }else{
+                } else {
                     bottomDeviceMonitor.closeReducer()
                 }
             } else if (topTargetMonitor.isEndData() && hasTaskDialogBox()) { //这里表示任务已经结束了

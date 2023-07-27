@@ -38,8 +38,18 @@ object TimeUtils {
         val calendar = Calendar.getInstance();
         val day = calendar.get(Calendar.DAY_OF_WEEK)
         if (day == Calendar.THURSDAY) {
-            if (calendar.get(Calendar.HOUR_OF_DAY) == 8) {
-                return ((2 + Math.random() * 0.1) * Constant.Hour).toLong()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+            return when (hour) {
+                8 -> {
+                    1 * Constant.Hour + (60 - minute) * Constant.MINUTE
+                }
+                9 -> {
+                    (60 - minute) * Constant.MINUTE
+                }
+                else -> {
+                    0
+                }
             }
         }
         return 0

@@ -12,6 +12,7 @@ import com.nwq.function.corelib.excuter.EndLister
 import com.nwq.function.corelib.excuter.star_wars.data.QuickBigMenu
 import com.nwq.function.corelib.img.task.BasicImgTask
 import com.nwq.function.corelib.img.task.ImgTaskImpl1
+import com.nwq.function.corelib.utils.TimeUtils
 import com.nwq.function.corelib.utils.sp.SPRepo
 import com.nwq.function.corelib.utils.sp.SPRepoPrefix
 import com.nwq.function.corelib.utils.sp.SpConstant
@@ -92,6 +93,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreenBitmap(doubleClickInterval)
             if (bitmap.isOrientation()) {
+                delay(TimeUtils.getDelayStart())
                 if (en.isLoadingGameT.check()) {
                 } else if (en.isAnnouncementT.check()) {
                     click(en.isAnnouncementT, en.closeAnnouncementArea.toClickTask())
