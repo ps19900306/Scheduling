@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Environment
 import android.os.FileUtils
 import android.provider.MediaStore
-import com.nwq.function.scheduling.core_code.ocr.OrcUtils
 import timber.log.Timber
 import java.io.*
 

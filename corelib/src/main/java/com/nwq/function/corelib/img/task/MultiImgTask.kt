@@ -9,6 +9,7 @@ Function description:
  */
 
 class MultiImgTask(val list: Array<ImgTaskImpl1>) : BasicImgTask() {
+
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         return list.find { it.verificationRule(bitmap) } != null
     }

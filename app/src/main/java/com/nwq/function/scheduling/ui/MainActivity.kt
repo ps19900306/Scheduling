@@ -2,17 +2,14 @@ package com.nwq.function.scheduling.ui
 
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import com.googlecode.tesseract.android.TessBaseAPI
 import com.nwq.function.scheduling.auto_code.ui.AutoCodeActivity
 import com.nwq.function.scheduling.core_code.CmdType
 import com.nwq.function.scheduling.core_code.Constant
 import com.nwq.function.scheduling.databinding.ActivityMainBinding
-import com.nwq.function.scheduling.utils.FileUtils
 import com.nwq.function.scheduling.utils.singleClick
 import com.nwq.function.scheduling.utils.sp.SPRepo
 import com.nwq.function.scheduling.utils.sp.SPRepoPrefix

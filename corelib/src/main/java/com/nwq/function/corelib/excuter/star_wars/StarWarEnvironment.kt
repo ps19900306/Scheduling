@@ -2403,5 +2403,7 @@ class StarWarEnvironment {
         }
     }
 
-    val exitGameTask by lazy { MultiImgTask(arrayOf(exitGameTask1,exitGameTask2)) }
+    val exitGameTask by lazy {
+        MultiImgTask(arrayOf(exitGameTask1,exitGameTask2))
+    }
 }
