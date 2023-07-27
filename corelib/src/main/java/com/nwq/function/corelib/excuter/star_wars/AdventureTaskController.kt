@@ -121,6 +121,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     private suspend fun aboundTask() {
         if (waitImgTask2(en.isQianWangTask, en.openJiyuBigArea)) {
             en.abandonTaskArea.clickA()
+            delay(normalClickInterval)
             en.confirmDialogEnsureArea.clickA()
             theOutCheck()
         } else {
