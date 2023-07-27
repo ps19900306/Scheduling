@@ -302,8 +302,9 @@ abstract class BaseController(
                     screenBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                     bitmap?.recycle()
                //     Timber.d("setScreenBitmap onSuccess BaseController NWQ_ 2023/3/12");
-                    it.resume(screenBitmap)
                     screenshotResult.hardwareBuffer.close()
+                    it.resume(screenBitmap)
+
                 }
 
                 override fun onFailure(i: Int) {

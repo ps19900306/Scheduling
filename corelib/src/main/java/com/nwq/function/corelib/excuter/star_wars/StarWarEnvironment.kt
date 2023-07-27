@@ -1209,7 +1209,7 @@ class StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(614, 322), ruleRatio1
             //red123 green137 blue137
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(628, 320), ruleRatio1
             //red118 green132 blue132
@@ -1262,7 +1262,7 @@ class StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(609, 495), ruleRatio1
             //red133 green137 blue136 blockNumber1
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 2, 5, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 2, 5, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(609, 495), ruleRatio1
             //red133 green137 blue136 blockNumber1
@@ -1308,7 +1308,7 @@ class StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(610, 495), ruleRatio1
             //red114 green118 blue119 blockNumber1
         ))
-        val correctPositionModel =CorrectPositionModel(list, tag, 2, 5, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 2, 5, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(610, 495), ruleRatio1
             //red114 green118 blue119 blockNumber1
@@ -1359,7 +1359,7 @@ class StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(765, 650), ruleRatio1 )
             //red196 green225 blue221 blockNumber1
         )
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(765, 650), ruleRatio1
             //red196 green225 blue221 blockNumber1
