@@ -79,9 +79,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
                     restartGame()
                 }
                 ABNORMAL_STATE -> {
-                    theOutCheck()
-                    emergencyEvacuation()
-                    nowTask = MONITORING_RETURN_STATUS
+                   abnormalState()
                 }
             }
         }
@@ -170,6 +168,7 @@ class BrushLocalMonsterController(acService: AccessibilityService, endLister: En
             }
             if (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()) {
                 nowTask = LOOK_FOR_TARGET
+                openPositionMenu()
                 flag = false
             } else if (en.isInSpaceStationT.check()) {
                 outSpaceArea.clickA()

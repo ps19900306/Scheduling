@@ -177,7 +177,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-    private suspend fun openPositionMenu() {
+    protected suspend fun openPositionMenu() {
         if (!en.isOpenEyeMenuT.check() && !en.isCloseEyeMenuT.check()) {
             theOutCheck()
         }

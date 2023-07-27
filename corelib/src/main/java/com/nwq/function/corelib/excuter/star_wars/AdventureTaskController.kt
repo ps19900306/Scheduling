@@ -289,7 +289,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         }
     }
 
-    private suspend fun combatMonitoring() {
+    private suspend fun combatMonitoring() {;
         var flag = true
         while (flag && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
