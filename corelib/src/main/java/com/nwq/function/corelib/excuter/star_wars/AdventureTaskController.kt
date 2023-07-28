@@ -239,9 +239,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
     }
 
 
-    //放弃任务
-
-
+    //
     private suspend fun getPickUpArea(): MutableList<CoordinateArea>? {
         val clickArea = mutableListOf<CoordinateArea>()
         val list = waitImgTaskList(en.IsNormalTaskList)
@@ -249,29 +247,38 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
             //卡住了没有刷出来任务
             return null
         }
-        val stanceList =
-            list.filter { en.IsZeroDistanceList[it].check() || en.IsOneDistanceList[it].check() }
-        if (stanceList.size > 1) { //这样做是为了挡第一条目符合规则则默认第三个也符合规则
-            for (p in stanceList[0]..stanceList[stanceList.size - 1]) {
-                en.pickUpItemList[p].let {
-                    if (it.check()) {
-                        it.containmentTask?.getOfsArea()?.let {
-                            clickArea.add(it)
-                        }
-                    }
-                }
-            }
-        } else {
-            stanceList.forEach {
+        val isCanClickArea = list.filter { en.pickUpItemList[it].check() }
+
+        val zeroList = mutableListOf<CoordinateArea>()
+        isCanClickArea.forEach {
+            if (en.IsZeroDistanceList[it].check()) {
                 en.pickUpItemList[it].let {
-                    if (it.check()) {
-                        it.containmentTask?.getOfsArea()?.let {
-                            clickArea.add(it)
-                        }
+                    it.containmentTask?.getOfsArea()?.let { area ->
+                        zeroList.add(area)
                     }
                 }
             }
         }
+        if (zeroList.size > 1) {
+            zeroList.shuffle()
+        }
+        clickArea.addAll(zeroList)
+
+        val oneList = mutableListOf<CoordinateArea>()
+        isCanClickArea.forEach {
+            if (en.IsOneDistanceList[it].check()) {
+                en.pickUpItemList[it].let {
+                    it.containmentTask?.getOfsArea()?.let { area ->
+                        zeroList.add(area)
+                    }
+                }
+            }
+        }
+        if (oneList.size > 1) {
+            oneList.shuffle()
+        }
+        clickArea.addAll(oneList)
+
         return clickArea
     }
 
