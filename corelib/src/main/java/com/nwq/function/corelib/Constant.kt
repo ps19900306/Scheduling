@@ -13,7 +13,7 @@ object Constant {
 
     const val STANDARD_CLICK_INTERVAL = 2000
     val fastClickInterval
-        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.2 + 0.3)).toLong()
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.4)).toLong()
 
     val normalClickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.7)).toLong()
@@ -27,7 +27,7 @@ object Constant {
     val quadrupleClickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 3.2)).toLong()
 
-
+   //  6个号 出四个  3个出二个 出六个号
     val clickDuration
         get() = (200 * (Math.random() + 0.5)).toLong()
 

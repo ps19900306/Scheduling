@@ -277,8 +277,8 @@ class BottomDeviceMonitor(val listTop: Array<ImgTaskImpl1>, val listBot: Array<I
         checkTimeOn(nowTime, intervalOpenList3, resultList)
 
 
-
-        return resultList //这里上次点击的区域这次不进行再次点击
+        resultList.shuffle()
+        return  resultList//这里上次点击的区域这次不进行再次点击
     }
 
     var lastRemoved = mutableListOf<CoordinateArea>()
