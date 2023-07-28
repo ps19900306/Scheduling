@@ -251,7 +251,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         val isCanClickArea = list.filter { en.pickUpItemList[it].check() }
 
         val zeroList = mutableListOf<CoordinateArea>()
-        isCanClickArea.forEach {
+        isCanClickArea.forEach {it ->
             if (en.IsZeroDistanceList[it].check()) {
                 en.pickUpItemList[it].let {
                     it.containmentTask?.getOfsArea()?.let { area ->
@@ -266,11 +266,11 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
         clickArea.addAll(zeroList)
 
         val oneList = mutableListOf<CoordinateArea>()
-        isCanClickArea.forEach {
+        isCanClickArea.forEach { it ->
             if (en.IsOneDistanceList[it].check()) {
                 en.pickUpItemList[it].let {
                     it.containmentTask?.getOfsArea()?.let { area ->
-                        zeroList.add(area)
+                        oneList.add(area)
                     }
                 }
             }
