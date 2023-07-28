@@ -67,7 +67,10 @@ class TopTargetMonitor(
         abnormalRecords = maxAbnormal
         if (newAgainLock && lastTargetNumber > 6) {
             newAgainLock = false
-            return secondReducer
+            needOpenReducer = secondReducer
+            return needOpenReducer
+        } else {
+            needOpenReducer = false
         }
         return false
     }
