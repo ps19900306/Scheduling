@@ -176,6 +176,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
 
         click(list)//这里接受全部的任务
         if (en.isCanRefreshTask.check()) {
+            delay(normalClickInterval)
             en.refreshTaskArea.clickA()
         }
 
