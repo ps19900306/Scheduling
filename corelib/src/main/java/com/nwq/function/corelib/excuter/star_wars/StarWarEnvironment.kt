@@ -1842,7 +1842,6 @@ class StarWarEnvironment {
             1.25F,0.9699029F,0.7291666F,0.9699029F,0.62765366F, 0.5065574F)
 
         val ruleList = listOf(ruleRatio1,ruleRatio2,ruleRatio3,ruleRatio4,ruleRatio5,ruleRatio6,ruleRatio7,ruleRatio8)
-        val ruleRatioNot =  ColorRuleImpl.getAllLess( 120)
 
         val correctPositionModel = null
         val pointList = mutableListOf<IPR>()
@@ -1855,12 +1854,7 @@ class StarWarEnvironment {
         pointList.add(PointRules(CoordinatePoint(936, 531), ruleList
             //red41 green74 blue67
         ))
-        pointList.add(PointRule(CoordinatePoint(901, 531), ruleRatioNot
-            //red28 green28 blue28
-        ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            nErrorTolerance = 1
-        }
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
     val rightDialogArea by lazy { CoordinateArea(1656,345,420,143)}
@@ -1886,7 +1880,6 @@ class StarWarEnvironment {
 
         val ruleList = listOf(ruleRatio1,ruleRatio2,ruleRatio3,ruleRatio4,ruleRatio5,ruleRatio6,ruleRatio7,ruleRatio8)
         val correctPositionModel = null
-        val ruleRatioNot =  ColorRuleImpl.getAllLess( 120)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRules(CoordinatePoint(2025, 467), ruleList
             //red61 green153 blue130
@@ -1897,12 +1890,7 @@ class StarWarEnvironment {
         pointList.add(PointRules(CoordinatePoint(2071, 467), ruleList
             //red41 green74 blue67
         ))
-        pointList.add(PointRule(CoordinatePoint(1502, 480), ruleRatioNot
-            //red28 green28 blue28
-        ))
-        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            nErrorTolerance = 1
-        }
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
 
