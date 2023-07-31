@@ -180,7 +180,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
     protected suspend fun openPositionMenu() {
-        if (!en.isOpenEyeMenuT.check() && !en.isCloseEyeMenuT.check()) {
+        if (!en.isOpenEyeMenuT.check() && !en.isCloseEyeMenuT.check() && !en.isInSpaceStationT.check()) {
             theOutCheck()
         }
         if (en.isClosePositionMenuT.check()) { //如果菜单是关闭的
