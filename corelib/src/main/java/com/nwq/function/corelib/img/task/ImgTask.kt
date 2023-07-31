@@ -20,7 +20,7 @@ abstract class ImgTask(
 ) : BasicImgTask() {
 
     var nErrorTolerance: Int = 0 //普通点容错
-    var bErrorTolerance: Int = iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl }.size -1 //背景点容错
+    var bErrorTolerance: Int = iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size -1 //背景点容错
 
     var clickArea: CoordinateArea? = null //如果
 

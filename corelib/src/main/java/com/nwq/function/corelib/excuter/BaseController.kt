@@ -6,11 +6,10 @@ import android.os.Build
 import android.view.Display
 import androidx.annotation.RequiresApi
 import com.nwq.function.corelib.Constant
-import com.nwq.function.corelib.Constant.clickIntervals
+import com.nwq.function.corelib.Constant.clickDuration
 import com.nwq.function.corelib.Constant.fastClickInterval
 import com.nwq.function.corelib.Constant.normalClickInterval
 import com.nwq.function.corelib.area.CoordinateArea
-import com.nwq.function.corelib.area.CoordinatePoint
 import com.nwq.function.corelib.click.SimpleClickUtils
 import com.nwq.function.corelib.click.task.ClickTask
 import com.nwq.function.corelib.img.task.BasicImgTask
@@ -63,7 +62,7 @@ abstract class BaseController(
             if (clickTime > 0) {
                 delayTime += clickTime + fastClickInterval
             }
-            clickTime = clickIntervals
+            clickTime = clickDuration
             ClickTask(listOf(it.coordinate), delayTime, clickTime)
         }
         SimpleClickUtils.optClickTasks(acService, offsetX, offsetY, *(clickList.toTypedArray()))

@@ -1,11 +1,8 @@
 package com.nwq.function.corelib.area
 
 import android.graphics.Bitmap
-import com.nwq.function.corelib.Constant.clickIntervals
+import com.nwq.function.corelib.Constant.clickDuration
 import com.nwq.function.corelib.click.task.ClickTask
-import com.nwq.function.corelib.img.pcheck.PointRule
-import com.nwq.function.corelib.img.task.CorrectPositionModel
-import com.nwq.function.corelib.img.task.ImgTaskImpl1
 
 /**
 create by: 86136
@@ -37,7 +34,7 @@ class CoordinateArea(
 
 
     fun toClickTask(): ClickTask {
-        return ClickTask(listOf(coordinate), 0, clickIntervals)
+        return ClickTask(listOf(coordinate), 0, clickDuration)
     }
 
 

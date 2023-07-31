@@ -36,7 +36,7 @@ open class ImgTaskImpl1(
         } else {
             optClickTasks(bitmap, correctModel)
         }
-        //  Timber.d("$tag:$result  x:${correctModel?.offsetX} y:${correctModel?.offsetY}  NWQ_ 2023/5/26");
+          Timber.d("$tag:$result  x:${correctModel?.offsetX} y:${correctModel?.offsetY}  NWQ_ 2023/5/26");
         return result
     }
 

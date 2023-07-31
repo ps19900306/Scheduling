@@ -27,11 +27,9 @@ object Constant {
     val quadrupleClickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 3.2)).toLong()
 
-   //  6个号 出四个  3个出二个 出六个号
+
+
+
     val clickDuration
-        get() = (200 * (Math.random() + 0.5)).toLong()
-
-
-    val clickIntervals
-        get() = ((Math.random() * 0.7 + 1) * 200).toLong()
+        get() = ((Math.random() * 0.5 + 1) * 150).toLong()
 }

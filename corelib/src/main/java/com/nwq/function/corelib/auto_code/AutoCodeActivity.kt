@@ -28,6 +28,7 @@ import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFuncti
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
 import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment
+import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironmentK30
 import com.nwq.function.corelib.utils.JsonUtil
 import com.nwq.function.corelib.utils.singleClick
 import kotlinx.coroutines.Dispatchers
@@ -138,7 +139,7 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
         bind.indexLayout.functionRecycler.addItemDecoration(sd)
 
         val starWarEnvironment by lazy {
-            StarWarEnvironment()
+            StarWarEnvironmentK30()
         }
 
         mFunctionItemAdapter.setOnItemClickListener { adapter, view, position ->
@@ -156,22 +157,19 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                 R.string.test_pick_up_points -> {
                     GlobalScope.launch(Dispatchers.Default) {
 
-                        starWarEnvironment.topDeviceList.forEachIndexed { p, d ->
-                            if (d.verificationRule(mBitmap)) {
+//                        starWarEnvironment.isInSpaceStationT.verificationRule(mBitmap)
+//                        starWarEnvironment.isOpenPositionMenuT.verificationRule(mBitmap)
+//                        starWarEnvironment.isClosePositionMenuT.verificationRule(mBitmap)
+//                        starWarEnvironment.isOpenEyeMenuT.verificationRule(mBitmap)
+//                        starWarEnvironment.isCloseEyeMenuT.verificationRule(mBitmap)
 
-                            }
+                        starWarEnvironment.isZeroEnemyList.forEach {
+                              it.verificationRule(mBitmap)
                         }
-                        starWarEnvironment.bottomDeviceList.forEachIndexed { p, d ->
-                            if (d.verificationRule(mBitmap)) {
 
-                            }
+                        starWarEnvironment.isOneEnemyList.forEach {
+                            it.verificationRule(mBitmap)
                         }
-                        starWarEnvironment.topLockTargetList1.forEachIndexed { p, d ->
-                            if (d.verificationRule(mBitmap)) {
-
-                            }
-                        }
-//                      StarWarEnvironment.isQianWangTask.verificationRule(mBitmap)
                     }
                     bind.indexLayout.root.isVisible = true
 //                    GlobalScope.launch(Dispatchers.Default) {
