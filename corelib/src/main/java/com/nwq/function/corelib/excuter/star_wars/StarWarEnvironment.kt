@@ -1096,6 +1096,8 @@ class StarWarEnvironment {
     }
 
 
+
+
     val isOpenWarehouseBigMenuTask by lazy {
         val tag = "isOpenWarehouseBigMenu"
         val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 196,148,207,157,203,154,

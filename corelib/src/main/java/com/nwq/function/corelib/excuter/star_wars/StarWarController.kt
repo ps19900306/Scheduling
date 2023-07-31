@@ -39,7 +39,8 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         SPRepoPrefix.getNowSPRepo()
     }
     val warehouseIndex = spReo.fightBaseLocation
-    val en = StarWarEnvironment()
+    val en = StarWarEnvironmentK30()
+
     var APP_LOCATION_Y = 1 //APP位于当前页的第一行
     val APP_LOCATION_X
         get() = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
@@ -127,18 +128,12 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
             if (waitImgTask(en.isCanCollectGiftT)) {
                 click(en.openCollectGiftArea.toClickTask())
                 delay(normalClickInterval)
-                if (en.isCollectChipT.check()) {
-                    delay(normalClickInterval)
-                    click(en.collectChipMenuArea.toClickTask())
-                    waitImgTask(en.isCollectChipMenuT)
-                    delay(normalClickInterval)
-                    click(en.CloseCollectChipMenuArea.toClickTask())
-                    delay(normalClickInterval)
-                    waitImgNotTask(en.isHasTakeTask, en.hasTakeArea)
-                } else {
-                    delay(normalClickInterval)
-                    click(en.closeCollectGiftArea.toClickTask())
-                }
+                click(en.collectChipMenuArea.toClickTask())
+                waitImgTask(en.isCollectChipMenuT)
+                delay(normalClickInterval)
+                click(en.CloseCollectChipMenuArea.toClickTask())
+                delay(normalClickInterval)
+                en.hasTakeArea.clickA()
             }
         }
     }
@@ -171,6 +166,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
 
     var lastEmergencyTime = 0L //这里防止撤退点击的过快
+
     //这个是在战斗中飞回
     protected suspend fun emergencyEvacuation() {
         if (System.currentTimeMillis() - lastEmergencyTime > 10000L) {
@@ -317,14 +313,14 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
         }
     }
 
-    protected suspend fun onComplete(){
+    protected suspend fun onComplete() {
         outGame()
         emergencyEvacuation()
         runSwitch = false
         endLister?.onEndLister()
     }
 
-    protected suspend fun abnormalState(){
+    protected suspend fun abnormalState() {
         theOutCheck()
         emergencyEvacuation()
         nowTask = MONITORING_RETURN_STATUS
