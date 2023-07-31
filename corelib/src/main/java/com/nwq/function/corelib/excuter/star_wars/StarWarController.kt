@@ -176,7 +176,7 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
     }
 
     protected suspend fun openPositionMenu() {
-        if (!en.isOpenEyeMenuT.check() && !en.isCloseEyeMenuT.check()) {
+        if (!en.isOpenEyeMenuT.check() && !en.isCloseEyeMenuT.check() && !en.isInSpaceStationT.check()) {
             theOutCheck()
         }
         if (en.isClosePositionMenuT.check()) { //如果菜单是关闭的
@@ -253,7 +253,8 @@ abstract class StarWarController(acService: AccessibilityService, endLister: End
 
 
     //这个方法要将出现眼睛或者在空间站
-    protected suspend fun theOutCheck(): Boolean {
+    protected suspend fun
+            theOutCheck(): Boolean {
         var flag = true
         var count = 20
         while (flag && count > 0 && runSwitch) {
