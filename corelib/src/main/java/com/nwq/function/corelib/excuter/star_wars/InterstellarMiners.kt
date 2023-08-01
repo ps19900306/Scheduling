@@ -42,7 +42,10 @@ class InterstellarMiners(acService: AccessibilityService, endLister: EndLister? 
     private val bottomDeviceMonitor by lazy {
         BottomDeviceMonitor(en.topDeviceList, en.bottomDeviceList)
     }
-    private lateinit var enemyMonitor: EnemyMonitor
+    private val enemyMonitor by lazy {
+        EnemyMonitor(en.isZeroEnemyList, en.isOneEnemyList)
+    }
+
     private lateinit var outSpaceArea: CoordinateArea
     private var needBack = false
     private var needRestart = false

@@ -31,5 +31,5 @@ object Constant {
 
 
     val clickDuration
-        get() = ((Math.random() * 0.5 + 1) * 150).toLong()
+        get() = ((Math.random() * 0.5 + 1) * 120).toLong()
 }
