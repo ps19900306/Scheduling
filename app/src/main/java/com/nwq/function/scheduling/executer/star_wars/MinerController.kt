@@ -68,7 +68,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     //
     val startTime = System.currentTimeMillis()
-    val maxTime = Constant.Hour * 8
+    val maxTime = Constant.Hour * (10 + Math.random() * 2)
 
     override suspend fun generalControlMethod() {
         while (runSwitch) {
@@ -142,19 +142,10 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 }
             }
             if (System.currentTimeMillis() - startTime > maxTime) {
-                val spReo = if (SPRepo.role == SpConstant.PREFIX_ROLE1) {
-                    SPRepo.role = SpConstant.PREFIX_ROLE2
-                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE2)
-                } else {
-                    SPRepo.role = SpConstant.PREFIX_ROLE1
-                    SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1)
-                }
-                if (spReo.nowSelectMode == SpConstant.MINER_MODEL || TimeUtils.isNewTaskDay(spReo.lastCompleteTime)) {
-                    nowStep = EXIT_OPT
-                    return
-                }
-            } else if (System.currentTimeMillis() - startTime > maxTime * 1.4) {
                 nowStep = EXIT_OPT
+                runSwitch = false
+                pressHomeBtn()
+                pressHomeBtn()
                 return
             }
 
@@ -438,9 +429,12 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     private suspend fun exitGame() {
-        theOutCheck()
-        clickJumpCollectionAddress(warehouseIndex, false)
-        delay(doubleClickInterval)
-        optExitGame()
+        runSwitch =false
+        pressHomeBtn()
+        pressHomeBtn()
+//        theOutCheck()
+//        clickJumpCollectionAddress(warehouseIndex, false)
+//        delay(doubleClickInterval)
+
     }
 }

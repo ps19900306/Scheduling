@@ -1,16 +1,24 @@
 package com.nwq.function.scheduling.executer.star_wars
 
+
+import com.nwq.function.scheduling.executer.img.pcheck.IPR
+import com.nwq.function.scheduling.executer.img.task.CorrectPositionModel
+import com.nwq.function.scheduling.executer.img.task.ImgTaskImpl1
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.Coordinate
 import com.nwq.function.scheduling.core_code.PixelsInfo
-import com.nwq.function.scheduling.core_code.PositionLength
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.core_code.img.FindImgTask
 import com.nwq.function.scheduling.core_code.img.FindPointByColorTask
 import com.nwq.function.scheduling.core_code.img.ImgUtils
 import com.nwq.function.scheduling.core_code.img.PointColorVerification
 import com.nwq.function.scheduling.core_code.img.PointColorVerification.TwoPointTask
+import com.nwq.function.scheduling.executer.area.CoordinatePoint
 import com.nwq.function.scheduling.executer.base.VisualEnvironment
+import com.nwq.function.scheduling.executer.img.pcheck.PointRule
+import com.nwq.function.scheduling.executer.img.pcheck.TwoPointRule
+import com.nwq.function.scheduling.executer.img.rule.ColorRuleRatioImpl
+import com.nwq.function.scheduling.executer.img.rule.CompareDifferenceRuleImpl
 import com.nwq.function.scheduling.executer.star_wars.rule.*
 import timber.log.Timber
 
@@ -640,18 +648,102 @@ class BaseVisualEnvironment(helper: AccessibilityHelper) : VisualEnvironment(hel
         )
     }
 
-    fun selectRole(): Boolean {
-        val list = listOf(
-            verificationTask(535, 605, SelectRoleRule),
-            verificationTask(546, 604, SelectRoleRule),
-            verificationTask(540, 598, SelectRoleRule),
-            verificationTask(549, 611, SelectRoleRule),
-            verificationTask(541, 605, AllLess70Rule),
-        )
-        return ImgUtils.performPointsColorVerification(
-            list, screenBitmap, 0
-        )
+   suspend fun selectRole(): Boolean {
+      return  isSelectRoleT.verificationRule(screenBitmap)
     }
+
+    val isSelectRoleT by lazy {
+        val tag = "isSelectRole"
+        val ruleRatio1 = ColorRuleRatioImpl.getSimple(
+            163, 135, 163, 135, 165, 135,
+            1.05F, 0.9F, 1.0637255F, 0.9F, 1.0637255F, 0.88846153F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(
+                CoordinatePoint(524, 595), ruleRatio1
+                //red155 green155 blue157 blockNumber1
+            )
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(
+                CoordinatePoint(524, 595), ruleRatio1
+                //red155 green155 blue157 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(535, 595), ruleRatio1
+                //red155 green155 blue155 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(524, 606), ruleRatio1
+                //red155 green155 blue157 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(546, 595), ruleRatio1
+                //red155 green155 blue155 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(532, 612), ruleRatio1
+                //red154 green154 blue154 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(543, 612), ruleRatio1
+                //red154 green154 blue154 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(537, 599), ruleRatio1
+                //red155 green155 blue155 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(552, 609), ruleRatio1
+                //red155 green155 blue155 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(540, 608), ruleRatio1
+                //red155 green155 blue155 blockNumber1
+            )
+        )
+        pointList.add(
+            PointRule(
+                CoordinatePoint(544, 602), ruleRatio1
+                //red155 green155 blue155 blockNumber2
+            )
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(524, 595),
+                CoordinatePoint(522, 595),
+                CompareDifferenceRuleImpl.getSimple(30, 30, 30)
+            )
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(543, 612),
+                CoordinatePoint(543, 614),
+                CompareDifferenceRuleImpl.getSimple(30, 30, 30)
+            )
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
 
     fun isOpenBigMenu(): Boolean {
         val list = listOf(

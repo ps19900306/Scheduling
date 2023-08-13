@@ -31,8 +31,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private val ALL_COMPLETE = 9//返回空间站监听
     private val CHECK_SHIP = 10//检查船只
 
+    private val JIAN_TIAN_FUBEN = -10000 //异常状态
+    private val START_AI = -1000
     private val ABNORMAL_STATE = 1000 //异常状态
     private val EXIT_OPT = 10000 //异常状态
+
 
     private val STATUS_DETERMINATION = 1000000//这个是进行状态判定
     private val receiveAdvancedTasks = false //是否接受高级任务
@@ -95,30 +98,35 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
         if (intoGame()) {
-            if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
-                nowStep = COMBAT_MONITORING
-            } else {
-                if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
-                    harvestVegetableController.startCollectVegetables()
-                    delay(normalClickInterval)
-                } else if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
-                    harvestVegetableController.addPlanetaryTime()
-                    delay(normalClickInterval)
-                }
-                nowStep = CHECK_SHIP
-            }
+            nowStep = START_AI
+//            if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
+//                nowStep = COMBAT_MONITORING
+//            } else {
+//                if (openHarvestVegetablesSP && System.currentTimeMillis() - spReo.resourcesCollectTime > spReo.collectInterval * Constant.Hour) {
+//                    harvestVegetableController.startCollectVegetables()
+//                    delay(normalClickInterval)
+//                } else if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+//                    harvestVegetableController.addPlanetaryTime()
+//                    delay(normalClickInterval)
+//                }
+//                nowStep = CHECK_SHIP
+//            }
         } else {
-            onComplete.invoke()
+            pressHomeBtn()
+            //onComplete.invoke()
         }
     }
 
     private suspend fun exitGame() {
-        theOutCheck()
-        if (!visual.isInSpaceStation()) {
-            clickJumpCollectionAddress(warehouseIndex, false)
-        }
-        delay(doubleClickInterval)
-        optExitGame()
+        runSwitch =false
+        pressHomeBtn()
+        pressHomeBtn()
+//        theOutCheck()
+//        if (!visual.isInSpaceStation()) {
+//            clickJumpCollectionAddress(warehouseIndex, false)
+//        }
+//        delay(doubleClickInterval)
+//        optExitGame()
     }
 
     override suspend fun generalControlMethod() {
@@ -152,9 +160,95 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 CHECK_SHIP -> {
                     checkShip()
                 }
+                JIAN_TIAN_FUBEN -> {
+                    jianTianFuben()
+                }
+                START_AI -> {
+                    startAi()
+                }
             }
         }
     }
+
+    val maxTime = Constant.Hour * 5
+    var statTime = System.currentTimeMillis()
+    private suspend fun jianTianFuben() {
+        nowStep = BATTLE_NAVIGATION_MONITORING
+        var flag = true
+        val maxCount = (150 + Math.random() * 50).toInt()
+        var count = maxCount
+        var lastType = -1
+        val OpenBigMenu = 1
+        val ClosePositionMenu = 2
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                return
+            }
+            if (visual.isOpenBigMenu()) {
+                if (lastType == OpenBigMenu) {
+                    count--
+                } else {
+                    lastType = OpenBigMenu
+                    count = maxCount
+                }
+            } else if (visual.isClosePositionMenu() && visual.getTagNumber() <= 0) {
+                if (lastType == ClosePositionMenu) {
+                    count--
+                } else {
+                    lastType = ClosePositionMenu
+                    count = maxCount
+                }
+            } else {
+                lastType = -1
+                count = maxCount
+            }
+        }
+
+        if (System.currentTimeMillis() - statTime >= maxTime) {
+            runSwitch = false
+            pressHomeBtn()
+            return
+        } else {
+            nowStep = START_AI
+        }
+
+    }
+
+    var cout=4
+    private suspend fun startAi() {
+        var flag = true
+        var count = 6
+        cout--
+        if(cout<=0){
+            runSwitch = false
+            pressHomeBtn()
+            return
+        }
+        while (flag && count > 0 && runSwitch) {
+            if (!takeScreen(doubleClickInterval)) {
+                runSwitch = false
+                pressHomeBtn()
+                return
+            }
+            if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
+                flag = false
+            } else if (visual.isInSpaceStation()) {
+                if (outSpaceStation()) {
+                    delay(tripleClickInterval)
+                    click(constant.getTopEquipArea(2))
+                    nowStep = JIAN_TIAN_FUBEN
+                } else {
+                    runSwitch = false
+                    pressHomeBtn()
+                    return
+                }
+            }
+            count--
+        }
+    }
+
 
     private suspend fun checkShip() {
         if (spReo.lastStatus != SpConstant.VEGETABLE && spReo.lastStatus != SpConstant.VEGETABLES) {
@@ -947,7 +1041,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         click(constant.dialogDetermineArea)
         delay(normalClickInterval)
         takeScreen(doubleClickInterval)
-   ensureCloseDetermine()
+        ensureCloseDetermine()
     }
 
 
