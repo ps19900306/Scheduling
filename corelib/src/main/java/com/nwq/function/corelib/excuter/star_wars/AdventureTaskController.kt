@@ -75,9 +75,7 @@ class AdventureTaskController(acService: AccessibilityService, endLister: EndLis
                     restartGame()
                 }
                 ABNORMAL_STATE -> {
-                    theOutCheck()
-                    clickPositionMenu(warehouseIndex)
-                    nowTask = MONITORING_RETURN_STATUS
+                    outGame()
                 }
             }
         }

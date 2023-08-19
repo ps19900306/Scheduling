@@ -11,7 +11,7 @@ create time: 2023/7/25 15:29
 Function description:
  */
 
-class EnemyMonitor(val zeroList: Array<BasicImgTask>, val oneList: Array<BasicImgTask>) {
+class EnemyMonitor(private val zeroList: Array<ImgTaskImpl1>, private val oneList: Array<ImgTaskImpl1>) {
 
 
     companion object {

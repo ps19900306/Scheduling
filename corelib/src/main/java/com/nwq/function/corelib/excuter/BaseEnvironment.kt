@@ -28,4 +28,5 @@ object BaseEnvironment {
         CoordinateArea(1, 1, 1, 1, 0, 0)
     }
 
+
 }
