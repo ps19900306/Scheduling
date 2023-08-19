@@ -3261,4 +3261,43 @@ object StarWarEnvironmentK30 {
         )
     }
 
+
+    val isOpenLocalListTask by lazy {
+        val tag = "isOpen"
+        val ruleRatio1 =  ColorRuleRatioImpl.getSimple( 169,122,181,131,179,133,
+            0.99246573F,0.8088607F,0.9934132F,0.8088607F,1.0712837F, 0.8878378F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(547, 152), ruleRatio1
+            //red142 green152 blue151 blockNumber1
+        ))
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(552, 144), ruleRatio1
+            //red147 green159 blue157 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(542, 145), ruleRatio1
+            //red142 green152 blue151 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(553, 150), ruleRatio1
+            //red149 green161 blue159 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(547, 152), ruleRatio1
+            //red152 green162 blue161 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(559, 152), ruleRatio1
+            //red151 green163 blue161 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(553, 155), ruleRatio1
+            //red149 green161 blue159 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(543, 157), ruleRatio1
+            //red156 green168 blue166 blockNumber1
+        ))
+        pointList.add(PointRule(CoordinatePoint(556, 159), ruleRatio1
+            //red157 green169 blue167 blockNumber1
+        ))
+        pointList.add(TwoPointRule(CoordinatePoint(553, 150),CoordinatePoint(550, 155), CompareDifferenceRuleImpl.getSimple(30,30,30)))
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
 }

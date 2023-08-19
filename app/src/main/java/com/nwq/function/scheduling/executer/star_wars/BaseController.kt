@@ -408,7 +408,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var count = 3
         while (flag && count > 0 && runSwitch) {
             takeScreen(doubleClickInterval)
-            if (visual.isOpenLocalList()) {
+            if (en.isOpenLocalListTask.check()) {
                 flag = false
             } else if (visual.isOpenPositionMenu()) {
                 click(constant.closePositionArea)
@@ -427,7 +427,7 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         var count = 3
         while (flag && count > 0 && runSwitch) {
             takeScreen(normalClickInterval)
-            if (!visual.isOpenLocalList()) {
+            if (!en.isOpenLocalListTask.check()) {
                 flag = false
             } else if (visual.isOpenPositionMenu()) {
                 click(constant.isOpenPositionArea)
