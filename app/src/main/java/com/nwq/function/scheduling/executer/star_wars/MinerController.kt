@@ -102,7 +102,7 @@ class MinerController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
-        if (intoGame()) {
+        if (intoGameV1()) {
             if (visual.isInSpaceStation()) {
                 nowStep = MONITORING_RETURN_STATUS
             } else if (visual.warehouseIsFull()) {

@@ -100,7 +100,7 @@ class SPRepoPrefix(val prefix: String) {
     val collectIntervalSP = SP(prefix + SpConstant.COLLECT_INTERVAL, 72)
     var collectInterval by collectIntervalSP
 
-    val addIntervalSP = SP(prefix + SpConstant.ADD_INTERVAL, 12)
+    val addIntervalSP = SP(prefix + SpConstant.ADD_INTERVAL, 6)
     var addInterval by addIntervalSP
 
     //采矿的

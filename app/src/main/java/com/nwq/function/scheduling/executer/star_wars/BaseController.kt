@@ -18,6 +18,7 @@ import timber.log.Timber
 
 abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : TravelController(p, c) {
 
+    protected val en=StarWarEnvironmentK30
 
     protected val spReo by lazy {
         SPRepoPrefix.getNowSPRepo()
@@ -88,6 +89,40 @@ abstract class BaseController(p: AccessibilityHelper, c: () -> Boolean) : Travel
         }
         if (!flag) dailyGiftPack()
 
+        return !flag
+    }
+
+
+    //进入游戏的进入逻辑
+    protected suspend fun intoGameV1(): Boolean {
+        var flag = true
+        var count = 20
+        while (flag && count > 0 && runSwitch) {
+            val bitmap = takeScreenBitmap(doubleClickInterval)
+            if (bitmap.isOrientation()) {
+                delay(TimeUtils.getDelayStart())
+                if (en.isLoadingGameT.check()) {
+                } else if (en.isAnnouncementT.check()) {
+                    click(en.isAnnouncementT, en.closeAnnouncementArea)
+                } else if (en.isUpdateGameT.check()) {
+                    click(en.isUpdateGameT, en.updateGameArea)
+                    delay(tripleClickInterval)
+                } else if (en.isStartGameT.check()) {
+                    click(en.isStartGameT, en.isStartGameArea)
+                } else if (en.isSelectRoleT.check()) {
+                    click(en.isSelectRoleT, en.selectRoleArea)
+                } else if (en.isOpenBigMenuT.check()) {
+                    click(en.isOpenBigMenuT, en.closeBigMenuArea)
+                } else if (visual.hasIntoGame()) {
+                    dailyGiftPack()
+                    flag = false
+                }
+            } else {//这里没有横屏所以
+                click(constant.getAppArea())
+                delay(tripleClickInterval)
+                count--
+            }
+        }
         return !flag
     }
 

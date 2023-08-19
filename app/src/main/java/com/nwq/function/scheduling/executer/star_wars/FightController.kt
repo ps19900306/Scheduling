@@ -97,7 +97,11 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         delay(2000)
         click(constant.getAppArea())
         delay(doubleClickInterval * 2)
-        if (intoGame()) {
+        if (intoGameV1()) {
+            if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
+                harvestVegetableController.addPlanetaryTime()
+                delay(normalClickInterval)
+            }
             nowStep = START_AI
 //            if (visual.hasGroupLock() || visual.getTagNumber() > 1) {
 //                nowStep = COMBAT_MONITORING
@@ -106,8 +110,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 //                    harvestVegetableController.startCollectVegetables()
 //                    delay(normalClickInterval)
 //                } else if (celestialList.isNotEmpty() && System.currentTimeMillis() - spReo.resourcesAddTime > spReo.addInterval * Constant.Hour) {
-//                    harvestVegetableController.addPlanetaryTime()
-//                    delay(normalClickInterval)
+
 //                }
 //                nowStep = CHECK_SHIP
 //            }
@@ -118,7 +121,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     }
 
     private suspend fun exitGame() {
-        runSwitch =false
+        runSwitch = false
         pressHomeBtn()
         pressHomeBtn()
 //        theOutCheck()
@@ -170,10 +173,9 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
         }
     }
 
-    val maxTime = Constant.Hour * 5
+    val maxTime = Constant.Hour * 6
     var statTime = System.currentTimeMillis()
     private suspend fun jianTianFuben() {
-        nowStep = BATTLE_NAVIGATION_MONITORING
         var flag = true
         val maxCount = (150 + Math.random() * 50).toInt()
         var count = maxCount
@@ -185,14 +187,16 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 runSwitch = false
                 return
             }
-            if (visual.isOpenBigMenu()) {
+            if (en.isOpenBigMenuT.check()) {
                 if (lastType == OpenBigMenu) {
                     count--
                 } else {
                     lastType = OpenBigMenu
                     count = maxCount
                 }
-            } else if (visual.isClosePositionMenu() && visual.getTagNumber() <= 0) {
+            } else if ((en.isClosePositionMenuT.check()||en.isOpenPositionMenuT.check()
+                        ||en.isCloseEyeMenuT.check() ||en.isOpenEyeMenuT.check())
+                && !judgeIsOpen(weaponPosition) && visual.getTagNumber() <= 0) {
                 if (lastType == ClosePositionMenu) {
                     count--
                 } else {
@@ -215,12 +219,12 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     }
 
-    var cout=4
+    var cout = 5
     private suspend fun startAi() {
         var flag = true
         var count = 6
         cout--
-        if(cout<=0){
+        if (cout <= 0) {
             runSwitch = false
             pressHomeBtn()
             return
@@ -244,8 +248,21 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     pressHomeBtn()
                     return
                 }
+            } else if(en.isClosePositionMenuT.check()||en.isOpenPositionMenuT.check()
+                ||en.isCloseEyeMenuT.check() ||en.isOpenEyeMenuT.check()){
+                if (cout == 4) {
+                    delay(tripleClickInterval * 4)
+                }
+                click(constant.getTopEquipArea(2))
+                nowStep = JIAN_TIAN_FUBEN
             }
             count--
+        }
+
+        if (flag && count <= 0) {
+            click(constant.getTopEquipArea(2))
+            nowStep = JIAN_TIAN_FUBEN
+            return
         }
     }
 
@@ -988,7 +1005,6 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private suspend fun clickTheDialogueCloseYunShu(count: Int = 4): Boolean {
         var hasClickConversation = false
         var flag = count
-
         Timber.d("clickTheDialogueClose clickTheDialogueCloseYunShu NWQ_ 2023/3/10");
         while (flag > 0 && runSwitch) {
             takeScreen(fastClickInterval)

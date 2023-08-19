@@ -4,8 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.nwq.function.scheduling.core_code.Area
 import com.nwq.function.scheduling.core_code.SwipeArea
+import com.nwq.function.scheduling.core_code.click.ClickTask
 import com.nwq.function.scheduling.core_code.click.DirectionType
 import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
+import com.nwq.function.scheduling.executer.area.CoordinateArea
+import com.nwq.function.scheduling.executer.img.task.BasicImgTask
+import com.nwq.function.scheduling.executer.img.task.ImgTask
 import com.nwq.function.scheduling.utils.JsonUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -81,6 +85,29 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
         return takeScreen()
     }
 
+
+    protected suspend fun takeScreenBitmap(delayTime: Long = 0): Bitmap {
+        if (delayTime > 0) {
+            delay(delayTime)
+        }
+        var bitmap: Bitmap? = null
+        do {
+            bitmap =  helper.takeScreen()
+            if (bitmap == null) {
+                delay(2000)
+            }
+        } while (bitmap == null)
+        return bitmap
+    }
+
+    fun Bitmap.isOrientation(): Boolean {
+        return width > height
+    }
+
+    suspend fun BasicImgTask.check():Boolean{
+        return this.verificationRule(screenBitmap)
+    }
+
     //如果截图失败则等待二秒后继续截图
     suspend fun takeScreen(): Boolean {
         var bitmap: Bitmap? = null
@@ -114,6 +141,15 @@ abstract class TravelController(val helper: AccessibilityHelper, val onComplete:
             helper.click(x = it.x, y = it.y, delayTime = delayTime)
         }
     }
+
+
+    protected suspend fun click(task: ImgTask,  area: CoordinateArea) {
+        area.coordinate.let {
+            helper.click(x = it.x, y = it.y, delayTime = 0)
+        }
+    }
+
+
 
     suspend fun click(area: List<Area>) {
         helper.click(area)
