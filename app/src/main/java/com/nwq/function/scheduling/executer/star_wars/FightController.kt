@@ -63,6 +63,8 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     private val roundBattleOpenList by lazy {
         JsonUtil.anyToJsonObject(spReo.roundBattleList) ?: listOf<Int>()
     }
+    private val checkOpenList = listOf(0, 1, 2, 3, 4, 5)
+
     var isCatchFoodSp = spReo.isCatchFood
     private val catchFoodList by lazy {
         if (isCatchFoodSp) listOf<Int>(1 + BotOfst, 4 + BotOfst)
@@ -177,35 +179,17 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
     var statTime = System.currentTimeMillis()
     private suspend fun jianTianFuben() {
         var flag = true
-        val maxCount = (150 + Math.random() * 50).toInt()
+        val maxCount = (150 + Math.random() * 60).toInt()
         var count = maxCount
-        var lastType = -1
-        val OpenBigMenu = 1
-        val ClosePositionMenu = 2
         while (flag && count > 0 && runSwitch) {
             if (!takeScreen(doubleClickInterval)) {
                 runSwitch = false
                 return
             }
-            if (en.isOpenBigMenuT.check()) {
-                if (lastType == OpenBigMenu) {
-                    count--
-                } else {
-                    lastType = OpenBigMenu
-                    count = maxCount
-                }
-            } else if ((en.isClosePositionMenuT.check()||en.isOpenPositionMenuT.check()
-                        ||en.isCloseEyeMenuT.check() ||en.isOpenEyeMenuT.check())
-                && !judgeIsOpen(weaponPosition) && visual.getTagNumber() <= 0) {
-                if (lastType == ClosePositionMenu) {
-                    count--
-                } else {
-                    lastType = ClosePositionMenu
-                    count = maxCount
-                }
-            } else {
-                lastType = -1
+            if (checkEquipStatusOpen(checkOpenList).size > 0 || visual.getTagNumber() > 0|| en.isOpenPositionMenuT.check()) {//有设备是开启的 或者目标大于零
                 count = maxCount
+            } else {
+                count--
             }
         }
 
@@ -235,33 +219,35 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 pressHomeBtn()
                 return
             }
-            if (visual.isOpenBigMenu()) {
-                click(constant.closeBigMenuArea)
+            if (checkEquipStatusOpen(checkOpenList).size > 0 || visual.getTagNumber() > 0 ) {
                 flag = false
+                nowStep = JIAN_TIAN_FUBEN
+            } else if (visual.isOpenBigMenu()) {
+                click(constant.closeBigMenuArea)
             } else if (visual.isInSpaceStation()) {
                 if (outSpaceStation()) {
+                    flag = false
                     delay(tripleClickInterval)
                     click(constant.getTopEquipArea(2))
                     nowStep = JIAN_TIAN_FUBEN
                 } else {
                     runSwitch = false
                     pressHomeBtn()
-                    return
                 }
-            } else if(en.isClosePositionMenuT.check()||en.isOpenPositionMenuT.check()
-                ||en.isCloseEyeMenuT.check() ||en.isOpenEyeMenuT.check()){
+            } else if (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check() || en.isCloseEyeMenuT.check() || en.isOpenEyeMenuT.check()) {
                 if (cout == 4) {
                     delay(tripleClickInterval * 4)
                 }
+                flag = false
                 click(constant.getTopEquipArea(2))
                 nowStep = JIAN_TIAN_FUBEN
             }
             count--
         }
 
-        if (flag && count <= 0) {
-            click(constant.getTopEquipArea(2))
-            nowStep = JIAN_TIAN_FUBEN
+        if(flag && count<=0){
+            runSwitch = false
+            pressHomeBtn()
             return
         }
     }
