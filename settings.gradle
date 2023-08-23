@@ -18,4 +18,5 @@ dependencyResolutionManagement {
 rootProject.name = "Scheduling"
 include ':app'
 include ':corelib'
-include ':mylibrary'
+include ':Corelibrary'
+include ':autocodeapp'

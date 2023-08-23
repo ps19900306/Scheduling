@@ -10,4 +10,5 @@ Function description:
 
 class LinePath(list:List<PathPoint>) {
 
+
 }

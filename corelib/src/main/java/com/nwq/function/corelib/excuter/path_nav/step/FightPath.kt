@@ -9,4 +9,5 @@ Function description:
  */
 
 class FightPath(list:List<PathPoint>) {
+
 }
