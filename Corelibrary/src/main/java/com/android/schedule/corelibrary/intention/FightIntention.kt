@@ -8,4 +8,5 @@ Function description:
 
 class FightIntention {
 
+
 }

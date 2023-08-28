@@ -6,5 +6,6 @@ create time: 2023/8/23 17:25
 Function description:
  */
 
-abstract class BasicIntention() {
+abstract class BasicIntention(val list: List<IntentionPoint>) {
+
 }

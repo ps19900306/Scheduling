@@ -6,5 +6,6 @@ create time: 2023/8/23 17:26
 Function description:
  */
 
-class MainPathIntention {
+class FightPathIntention {
+
 }
