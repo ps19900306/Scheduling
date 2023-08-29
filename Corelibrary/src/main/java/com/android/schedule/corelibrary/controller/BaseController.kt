@@ -13,21 +13,19 @@ abstract class BaseController(
     val onEnd: () -> Unit,
 ) {
 
-    fun startGame() {
-
-    }
 
 
-    fun endGame() {
-
-    }
+    abstract fun start()
 
 
-    fun onPause() {
+    abstract  fun end()
 
-    }
 
-    fun onResume() {
+    abstract fun onPause()
 
-    }
+
+    abstract fun onResume()
+
+
+
 }
