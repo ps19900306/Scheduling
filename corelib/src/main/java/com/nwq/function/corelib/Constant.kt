@@ -8,8 +8,7 @@ object Constant {
 
     const val CMD = "cmd"
     //这个不要随便修改
-    val clickDuration
-        get() = ((Math.random() * 0.5 + 1) * 120).toLong()
+    val clickDuration get() = ((Math.random() * 0.5 + 1) * 120).toLong()
     const val Hour = 1000L * 60 * 60
     const val MINUTE = 1000L * 60
 

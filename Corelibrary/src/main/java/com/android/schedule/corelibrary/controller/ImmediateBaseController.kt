@@ -13,7 +13,6 @@ class ImmediateBaseController(acService: AccessibilityService,
                               onEnd: () -> Unit,):BaseController(acService,onEnd) {
 
 
-
     override fun start() {
 
     }

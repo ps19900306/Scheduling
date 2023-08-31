@@ -9,4 +9,13 @@ object SetConstant {
 
     var uiAdaptation: UiAdaptation? = null
 
+    const val Hour = 1000L * 60 * 60
+    const val MINUTE = 1000L * 60
+
+    //这里是点击的间隔
+    val clickDuration get() = ((Math.random() * 2 + 1) * 40).toLong()
+
+//    val fastClickInterval
+//        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.4)).toLong()
+
 }
