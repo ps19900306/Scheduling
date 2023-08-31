@@ -11,7 +11,7 @@ Function description:
 class IntentionPoint(val coordinatePoint: CoordinatePoint,
                      val pathId:Int,//这个是规划路径的编号
                      val sequenceNumber:Int,//这个是序列编号
-                     ) {
+) {
 
 
 }

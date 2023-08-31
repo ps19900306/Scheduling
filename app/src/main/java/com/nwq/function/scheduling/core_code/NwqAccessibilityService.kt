@@ -10,7 +10,6 @@ import com.nwq.function.scheduling.core_code.contract.AccessibilityHelper
 import com.nwq.function.scheduling.executer.base.TravelController
 import com.nwq.function.scheduling.executer.buddha.DevelopController
 import com.nwq.function.scheduling.executer.star_wars.*
-import com.nwq.function.scheduling.executer.test.ClickTestController
 import com.nwq.function.scheduling.utils.ContextUtil
 import com.nwq.function.scheduling.utils.TimeUtils
 import com.nwq.function.scheduling.utils.sp.SPRepo
@@ -54,7 +53,7 @@ class NwqAccessibilityService : AccessibilityService() {
                 SPRepo.role = SpConstant.PREFIX_ROLE1
                 SPRepoPrefix.getSPRepo(SpConstant.PREFIX_ROLE1)
             }
-            if (spReo.nowSelectMode == SpConstant.MINER_MODEL || TimeUtils.isNewTaskDay(spReo.lastCompleteTime)) {
+            if (spReo.nowSelectMode == SpConstant.MINER_MODEL ) {
                 startOpt(true)
             }
         }

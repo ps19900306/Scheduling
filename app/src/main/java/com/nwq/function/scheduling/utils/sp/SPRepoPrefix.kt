@@ -23,7 +23,7 @@ class SPRepoPrefix(val prefix: String) {
     var lastStatus by SP(prefix + SpConstant.RUN_STATE, NORMAL)
 
 
-    var dailytaskstime by SP(prefix + SpConstant.DAILY_TASKS_TIME, 0L)
+    var dailytaskstime by SP(prefix + SpConstant.DAILY_TASKS_TIME, 0)
 
     //战斗的
     val fightBaseLocationSP = SP(prefix + SpConstant.BASE_LOCATION, 0)
