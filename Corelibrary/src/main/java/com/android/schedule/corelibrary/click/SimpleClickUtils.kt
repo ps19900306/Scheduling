@@ -13,6 +13,7 @@ Function description:
  */
 object SimpleClickUtils {
 
+
     suspend fun optClickTasks(
         aService: AccessibilityService, offsetX: Int, offsetY: Int, vararg clickTask: ClickTask
     ): Boolean = suspendCoroutine {

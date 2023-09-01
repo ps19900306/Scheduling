@@ -8,8 +8,7 @@ create time: 2023/8/31 15:25
 Function description:
  */
 
-class ExhaustionControl : BasicExhaustion() {
-
+object ExhaustionControl : BasicExhaustion() {
 
     private val FULL_STATE = 1
     private val SLIGHT_EXHAUSTION = 2
@@ -20,13 +19,14 @@ class ExhaustionControl : BasicExhaustion() {
     private var FULL_STATE_TIME = 1 * SetConstant.Hour
     private var SLIGHT_EXHAUSTION_TIME = 2 * SetConstant.Hour
     private var SOME_EXHAUSTION_TIME = 1 * SetConstant.Hour
-    private var VERY_EXHAUSTING_TIME = 0.5 * SetConstant.Hour//触发这个点的时候就必须要休息
+    private var VERY_EXHAUSTING_TIME = 30 * SetConstant.MINUTE//触发这个点的时候就必须要休息
     private val MAXWORKERTIME = 8 * SetConstant.Hour//最大工作时间
 
     private var Coefficient = 1.0   //每次休息后会越来越容易疲惫
 
     private var NOW_STATE = FULL_STATE
 
+    private val RestBasicTime = 30 * SetConstant.MINUTE
 
     private var startTime = System.currentTimeMillis()
     private var stepStartTime = System.currentTimeMillis()
@@ -62,8 +62,135 @@ class ExhaustionControl : BasicExhaustion() {
         }
     }
 
+    override fun onRestComplete() {
+        startTime = System.currentTimeMillis()
+        stepStartTime = System.currentTimeMillis()
 
-//   override fun getOptStatusType(): Int {
-//
-//   }
+        val flag = Math.random() * 0.2 + 0.6
+
+        FULL_STATE_TIME = (flag * FULL_STATE_TIME).toLong()
+        SLIGHT_EXHAUSTION_TIME = (flag * SLIGHT_EXHAUSTION_TIME).toLong()
+        SOME_EXHAUSTION_TIME = (flag * SOME_EXHAUSTION_TIME).toLong()
+        VERY_EXHAUSTING_TIME = (flag * VERY_EXHAUSTING_TIME).toLong() //触发这个点的时候就必须要休息
+
+        Coefficient *= flag
+    }
+
+    //是否进行休息
+    override fun whetherToRest(): Long {
+        if (NOW_STATE == FULL_STATE || NOW_STATE == SLIGHT_EXHAUSTION) {
+            return 0L
+        }
+        if (NOW_STATE == NEED_REST) {
+            return getRestTime()
+        }
+        val random = Math.random()
+        if (SOME_EXHAUSTION == NOW_STATE && random > 0.8) {
+            return getRestTime()
+        }
+        if (random > 0.4) {
+            return getRestTime()
+        }
+        return 0L
+    }
+
+    override fun getRestTime(): Long {
+        val random = Math.random()
+        return ((1.5 - random * 0.5) * RestBasicTime).toLong()
+    }
+
+    override fun getClickDuration(): Long {
+        return when (getOptStatusType()) {
+            OptStatusType.PRECISION -> {
+                (Math.random() * 20 + 50).toLong()
+            }
+            OptStatusType.CARELESS -> {
+                (Math.random() * 60 + 40).toLong()
+            }
+            OptStatusType.REDUNDANCY -> {
+                (Math.random() * 50 + 80).toLong()
+            }
+            OptStatusType.BLUNDER, OptStatusType.FAILURE -> {
+                (Math.random() * 80 + 30).toLong()
+            }
+            else -> {
+                super.getClickDuration()
+            }
+        }
+    }
+
+    override fun getClickInterval(): Long {
+        return when (getOptStatusType()) {
+            OptStatusType.PRECISION -> {
+                (Math.random() * 200 + 300).toLong()
+            }
+            OptStatusType.CARELESS -> {
+                (Math.random() * 1000 + 1000).toLong()
+            }
+            OptStatusType.REDUNDANCY -> {
+                (Math.random() * 4000 + 4000).toLong()
+            }
+            OptStatusType.BLUNDER, OptStatusType.FAILURE -> {
+                (Math.random() * 10000 + 10000).toLong()
+            }
+            else -> {
+                super.getClickDuration()
+            }
+        }
+    }
+
+
+    //这里根据状态获取不同操作精度
+    override fun getOptStatusType(): Int {
+        val random = Math.random()
+        return when (NOW_STATE) {
+            FULL_STATE -> {
+                if (random > 0.8) {
+                    OptStatusType.CARELESS
+                } else if (random > 0.99) {
+                    OptStatusType.REDUNDANCY
+                } else {
+                    OptStatusType.PRECISION
+                }
+            }
+            SLIGHT_EXHAUSTION -> {
+                if (random > 0.65) {
+                    OptStatusType.CARELESS
+                } else if (random > 0.95) {
+                    OptStatusType.REDUNDANCY
+                } else if (random > 0.99) {
+                    OptStatusType.BLUNDER
+                } else {
+                    OptStatusType.PRECISION
+                }
+            }
+            SOME_EXHAUSTION -> {
+                if (random > 0.5) {
+                    OptStatusType.CARELESS
+                } else if (random > 0.9) {
+                    OptStatusType.REDUNDANCY
+                } else if (random > 0.95) {
+                    OptStatusType.BLUNDER
+                } else {
+                    OptStatusType.PRECISION
+                }
+            }
+            VERY_EXHAUSTING -> {
+                if (random > 0.3) {
+                    OptStatusType.CARELESS
+                } else if (random > 0.8) {
+                    OptStatusType.REDUNDANCY
+                } else if (random > 0.95) {
+                    OptStatusType.BLUNDER
+                } else if (random > 0.99) {
+                    OptStatusType.FAILURE
+                } else {
+                    OptStatusType.PRECISION
+                }
+            }
+            else -> {
+                OptStatusType.PRECISION
+            }
+        }
+    }
 }
