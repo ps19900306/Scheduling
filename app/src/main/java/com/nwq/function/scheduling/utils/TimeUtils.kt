@@ -10,7 +10,7 @@ object TimeUtils {
 
     fun isNewTaskDay(spReo: SPRepoPrefix): Boolean {
         val nowDate = Date(System.currentTimeMillis())
-        if (spReo.dailytaskstime == 0) {
+        if (spReo.dailytaskstime == 0 || spReo.dailytaskstime > 365) {
             spReo.dailytaskstime = nowDate.day
             return true
         }

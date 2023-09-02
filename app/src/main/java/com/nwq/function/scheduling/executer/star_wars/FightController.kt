@@ -186,14 +186,14 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 runSwitch = false
                 return
             }
-            if (checkEquipStatusOpen(checkOpenList).size > 0 || visual.getTagNumber() > 0|| en.isOpenPositionMenuT.check()) {//有设备是开启的 或者目标大于零
+            if (checkEquipStatusOpen(checkOpenList).size > 0 || visual.getTagNumber() > 0 || en.isOpenPositionMenuT.check()) {//有设备是开启的 或者目标大于零
                 count = maxCount
             } else {
                 count--
             }
         }
 
-        if (System.currentTimeMillis() - statTime >= maxTime) {
+        if (System.currentTimeMillis() - statTime >= maxTime + (cout - 5) * 10 * Constant.MINUTE) {
             runSwitch = false
             pressHomeBtn()
             return
@@ -203,7 +203,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
 
     }
 
-    var cout = 5
+    var cout = 6
     private suspend fun startAi() {
         var flag = true
         var count = 6
@@ -219,7 +219,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                 pressHomeBtn()
                 return
             }
-            if (checkEquipStatusOpen(checkOpenList).size > 0 || visual.getTagNumber() > 0 ) {
+            if (checkEquipStatusOpen(checkOpenList).size > 0 || visual.getTagNumber() > 0) {
                 flag = false
                 nowStep = JIAN_TIAN_FUBEN
             } else if (visual.isOpenBigMenu()) {
@@ -235,7 +235,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
                     pressHomeBtn()
                 }
             } else if (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check() || en.isCloseEyeMenuT.check() || en.isOpenEyeMenuT.check()) {
-                if (cout == 4) {
+                if (cout == 5) {
                     delay(tripleClickInterval * 4)
                 }
                 flag = false
@@ -245,7 +245,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             count--
         }
 
-        if(flag && count<=0){
+        if (flag && count <= 0) {
             runSwitch = false
             pressHomeBtn()
             return
