@@ -2,6 +2,7 @@ package com.android.schedule.corelibrary.img.img_rule
 
 import android.graphics.Bitmap
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleImpl
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioUnImpl
@@ -21,8 +22,15 @@ abstract class ImgTask(
 
     var nErrorTolerance: Int = 0 //普通点容错
     var bErrorTolerance: Int = iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size -1 //背景点容错
-
     var clickArea: CoordinateArea? = null //如果
+
+
+
+
+    var  openArea: ClickArea? = null
+    var  endArea: ClickArea? = null
+    var  closeArea: ClickArea? = null
+
 
     protected fun checkImgTask(
         bitmap: Bitmap,
@@ -69,15 +77,6 @@ abstract class ImgTask(
 
     fun getOffsetY(): Int {
         return correctModel?.getOffsetYSupple() ?: 0
-    }
-
-    //这里只修正相对偏差值 不修正补充的
-    fun getOfsArea(): CoordinateArea? {
-        clickArea?.let {
-            it.offsetX = getOffX()
-            it.offsetY = getOffY()
-        }
-        return clickArea
     }
 
     //这里没有补充值

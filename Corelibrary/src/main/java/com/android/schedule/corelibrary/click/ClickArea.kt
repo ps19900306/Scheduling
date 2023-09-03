@@ -33,36 +33,36 @@ class ClickArea(
     private val centerPoint = CoordinatePoint(x + width / 2, y + height / 2) //中心点
     private val minimumDiameter = (if (width > height) height else width) / 2  //最小半径
 
-    fun toClickTask(): ClickTask {
+    fun toClickTask(delayTime: Long = 0L, ofstX: Int = 0, ofstY: Int = 0): ClickTask {
         return if (!isRotundity) {
-            builderSquare()
+            builderSquare(delayTime,offsetX+ofstX,offsetY+ofstY)
         } else {
-            builderRotundity()
+            builderRotundity(delayTime,offsetX+ofstX,offsetY+ofstY)
         }
     }
 
 
-    private fun builderSquare(): ClickTask {
+    private fun builderSquare(delayTime: Long,ofstX:Int,ofstY:Int): ClickTask {
         val type = ExhaustionControl.getOptStatusType()
         val list = when (type) {
             PRECISION -> {
                 val point1 = CoordinatePoint(
-                    (x + (Math.random() * 0.8 + 0.1) * width).toFloat() + offsetX,
-                    (y + (Math.random() * 0.8 + 0.1) * height).toFloat() + offsetY
+                    (x + (Math.random() * 0.8 + 0.1) * width).toFloat() + ofstX,
+                    (y + (Math.random() * 0.8 + 0.1) * height).toFloat() + ofstY
                 )
                 listOf(point1)
             }
             CARELESS -> {
                 val point1 = CoordinatePoint(
-                    (x + (Math.random() * 1.05 - 0.1) * width).toFloat() + offsetX,
-                    (y + (Math.random() * 1.05 - 0.1) * height).toFloat() + offsetY
+                    (x + (Math.random() * 1.05 - 0.1) * width).toFloat() + ofstX,
+                    (y + (Math.random() * 1.05 - 0.1) * height).toFloat() + ofstY
                 )
                 listOf(point1)
             }
             else -> {
                 val point1 = CoordinatePoint(
-                    (x + Math.random() * width).toFloat() + offsetX,
-                    (y + Math.random() * height).toFloat() + offsetY
+                    (x + Math.random() * width).toFloat() + ofstX,
+                    (y + Math.random() * height).toFloat() + ofstY
                 )
                 val point2 = CoordinatePoint(
                     point1.xD + (Math.random() - 0.5) * 0.05 * width,
@@ -71,27 +71,33 @@ class ClickArea(
                 listOf(point1, point2)
             }
         }
-        return ClickTask(list, 0, ExhaustionControl.getClickDuration())
+        return ClickTask(list, delayTime, ExhaustionControl.getClickDuration())
     }
 
 
-    private fun builderRotundity(): ClickTask {
+    private fun builderRotundity(delayTime: Long,ofstX:Int,ofstY:Int): ClickTask {
         val type = ExhaustionControl.getOptStatusType()
         val du = Math.random() * 2 * Math.PI
         val list = when (type) {
             PRECISION -> {
-                val length = Math.random() * 0.9 * minimumDiameter
-                val point1 = CoordinatePoint(x + Math.cos(du) * length, y + +Math.sin(du) * length)
+                val length = Math.random() * 0.8 * minimumDiameter
+                val point1 = CoordinatePoint(
+                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                )
                 listOf(point1)
             }
             CARELESS -> {
-                val length = Math.random() * 1.2 * minimumDiameter
-                val point1 = CoordinatePoint(x + Math.cos(du) * length, y + +Math.sin(du) * length)
+                val length = Math.random() * 1.1 * minimumDiameter
+                val point1 = CoordinatePoint(
+                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                )
                 listOf(point1)
             }
             else -> {
                 val length = Math.random() * minimumDiameter
-                val point1 = CoordinatePoint(x + Math.cos(du) * length, y + +Math.sin(du) * length)
+                val point1 = CoordinatePoint(
+                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                )
                 val point2 = CoordinatePoint(
                     point1.xD + (Math.random() - 0.5) * 0.05 * width,
                     point1.yD + (Math.random() - 0.5) * 0.05 * height
@@ -99,7 +105,7 @@ class ClickArea(
                 listOf(point1, point2)
             }
         }
-        return ClickTask(list, 0, ExhaustionControl.getClickDuration())
+        return ClickTask(list, delayTime, ExhaustionControl.getClickDuration())
     }
 
 }

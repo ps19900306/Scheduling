@@ -173,7 +173,6 @@ abstract class BaseController(
     }
 
 
-
     protected suspend fun waitImgNotTask(task: ImgTask, times: Int = waitTaskTime): Boolean {
         return waitImgNotTask(task, task.clickArea, times)
     }

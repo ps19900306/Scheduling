@@ -1,5 +1,6 @@
 package com.android.schedule.corelibrary.expand
 
+import android.graphics.Bitmap
 import android.view.View
 import android.widget.Checkable
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +44,14 @@ var <T : View> T.lastClickTime: Long
     set(value) = setTag(1766613352, value)
     get() = getTag(1766613352) as? Long ?: 0
 
+
+fun Bitmap.isLandscape(): Boolean {
+    return width > height
+}
+
+fun Bitmap.isVertical(): Boolean {
+    return height > width
+}
 
 fun CoroutineScope.runOnUI(doInUI: suspend CoroutineScope.() -> Unit): Job {
     return launch(Dispatchers.Main.immediate) { doInUI() }

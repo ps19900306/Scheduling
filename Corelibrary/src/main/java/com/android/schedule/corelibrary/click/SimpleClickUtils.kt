@@ -13,7 +13,7 @@ Function description:
  */
 object SimpleClickUtils {
 
-
+     //不建议在这里使用offsetX  offsetY
     suspend fun optClickTasks(
         aService: AccessibilityService, offsetX: Int, offsetY: Int, vararg clickTask: ClickTask
     ): Boolean = suspendCoroutine {

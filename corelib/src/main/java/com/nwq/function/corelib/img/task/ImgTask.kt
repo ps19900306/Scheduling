@@ -22,6 +22,7 @@ abstract class ImgTask(
     var nErrorTolerance: Int = 0 //普通点容错
     var bErrorTolerance: Int = iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size -1 //背景点容错
 
+    var openArea: CoordinateArea? = null //如果
     var clickArea: CoordinateArea? = null //如果
 
     protected fun checkImgTask(
@@ -89,9 +90,5 @@ abstract class ImgTask(
     fun getOffY(): Int {
         return correctModel?.offsetY ?: 0
     }
-
-
-
-
 
 }

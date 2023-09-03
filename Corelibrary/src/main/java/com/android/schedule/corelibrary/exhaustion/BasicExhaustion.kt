@@ -8,6 +8,12 @@ Function description:
  */
 open class BasicExhaustion {
 
+    protected val FULL_STATE = 1
+    protected val SLIGHT_EXHAUSTION = 2
+    protected val SOME_EXHAUSTION = 4
+    protected val VERY_EXHAUSTING = 8 //触发这个点的时候就必须要休息
+    protected val NEED_REST = 16 //触发这个点的时候就必须要休息
+
     open fun updateStatus() {
 
     }

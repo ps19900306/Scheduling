@@ -193,7 +193,7 @@ class FightController(p: AccessibilityHelper, c: () -> Boolean) : BaseController
             }
         }
 
-        if (System.currentTimeMillis() - statTime >= maxTime + (cout - 5) * 10 * Constant.MINUTE) {
+        if (System.currentTimeMillis() - statTime >= maxTime + ( 6- cout) * 10 * Constant.MINUTE) {
             runSwitch = false
             pressHomeBtn()
             return

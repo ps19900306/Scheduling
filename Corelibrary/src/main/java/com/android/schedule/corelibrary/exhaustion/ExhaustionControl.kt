@@ -1,6 +1,8 @@
 package com.android.schedule.corelibrary.exhaustion
 
 import com.android.schedule.corelibrary.SetConstant
+import com.android.schedule.corelibrary.click.ClickArea
+import com.android.schedule.corelibrary.click.ClickTask
 
 /**
 create by: 86136
@@ -10,13 +12,8 @@ Function description:
 
 object ExhaustionControl : BasicExhaustion() {
 
-    private val FULL_STATE = 1
-    private val SLIGHT_EXHAUSTION = 2
-    private val SOME_EXHAUSTION = 4
-    private val VERY_EXHAUSTING = 8 //触发这个点的时候就必须要休息
-    private val NEED_REST = 16 //触发这个点的时候就必须要休息
 
-    private var FULL_STATE_TIME = 1 * SetConstant.Hour
+    private var FULL_STATE_TIME = 30 * SetConstant.MINUTE
     private var SLIGHT_EXHAUSTION_TIME = 2 * SetConstant.Hour
     private var SOME_EXHAUSTION_TIME = 1 * SetConstant.Hour
     private var VERY_EXHAUSTING_TIME = 30 * SetConstant.MINUTE//触发这个点的时候就必须要休息
@@ -102,16 +99,16 @@ object ExhaustionControl : BasicExhaustion() {
     override fun getClickDuration(): Long {
         return when (getOptStatusType()) {
             OptStatusType.PRECISION -> {
-                (Math.random() * 20 + 50).toLong()
-            }
-            OptStatusType.CARELESS -> {
                 (Math.random() * 60 + 40).toLong()
             }
+            OptStatusType.CARELESS -> {
+                (Math.random() * 100 + 30).toLong()
+            }
             OptStatusType.REDUNDANCY -> {
-                (Math.random() * 50 + 80).toLong()
+                (Math.random() * 50 + 100).toLong()
             }
             OptStatusType.BLUNDER, OptStatusType.FAILURE -> {
-                (Math.random() * 80 + 30).toLong()
+                (Math.random() * 100 + 50).toLong()
             }
             else -> {
                 super.getClickDuration()
@@ -125,13 +122,13 @@ object ExhaustionControl : BasicExhaustion() {
                 (Math.random() * 200 + 300).toLong()
             }
             OptStatusType.CARELESS -> {
-                (Math.random() * 1000 + 1000).toLong()
+                (Math.random() * 2000 + 1000).toLong()
             }
             OptStatusType.REDUNDANCY -> {
-                (Math.random() * 4000 + 4000).toLong()
+                (Math.random() * 8000 + 4000).toLong()
             }
             OptStatusType.BLUNDER, OptStatusType.FAILURE -> {
-                (Math.random() * 10000 + 10000).toLong()
+                (Math.random() * 20000 + 5000).toLong()
             }
             else -> {
                 super.getClickDuration()
@@ -158,8 +155,10 @@ object ExhaustionControl : BasicExhaustion() {
                     OptStatusType.CARELESS
                 } else if (random > 0.95) {
                     OptStatusType.REDUNDANCY
-                } else if (random > 0.99) {
+                } else if (random > 0.98) {
                     OptStatusType.BLUNDER
+                } else if (random > 0.995) {
+                    OptStatusType.FAILURE
                 } else {
                     OptStatusType.PRECISION
                 }
@@ -171,6 +170,8 @@ object ExhaustionControl : BasicExhaustion() {
                     OptStatusType.REDUNDANCY
                 } else if (random > 0.95) {
                     OptStatusType.BLUNDER
+                } else if (random > 0.99) {
+                    OptStatusType.FAILURE
                 } else {
                     OptStatusType.PRECISION
                 }
@@ -193,4 +194,24 @@ object ExhaustionControl : BasicExhaustion() {
             }
         }
     }
+
+
+    fun areaToClickTask(
+        list: List<ClickArea>,
+        offsetX: Int = 0,
+        offsetY: Int = 0,
+        canMiss: Boolean = false
+    ): List<ClickTask> {
+        val resultList = mutableListOf<ClickTask>()
+        var delayTime = 0L
+        list.forEach {
+            if (canMiss && getOptStatusType() < OptStatusType.FAILURE) {
+                val task = it.toClickTask(delayTime, offsetX, offsetY)
+                delayTime = delayTime + task.delayTime + task.duration
+                resultList.add(task)
+            }
+        }
+        return resultList
+    }
+
 }
