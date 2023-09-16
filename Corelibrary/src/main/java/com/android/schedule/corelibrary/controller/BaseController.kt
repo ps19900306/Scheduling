@@ -39,10 +39,12 @@ abstract class BaseController(
 
 
 
+    
 
 
-
-    //**这一块是截图的核心逻辑
+    /***
+     * 这一块是截图的核心逻辑
+     */
     protected suspend fun takeScreen(delayTime: Long = 0): Bitmap {
         if (delayTime > 0) {
             delay(delayTime)

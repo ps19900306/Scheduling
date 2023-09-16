@@ -5,6 +5,7 @@ create by: 86136
 create time: 2023/9/1 9:25
 Function description:
 这个是基础类也是
+这个类是为了尽可能的模拟操作 规避检测
  */
 open class BasicExhaustion {
 
@@ -22,11 +23,11 @@ open class BasicExhaustion {
         return 0L
     }
 
-    open fun getOptStatusType(): Int {
-        return OptStatusType.PRECISION
+    open fun getOptInterval(): Int {
+        return OptInterval.PRECISION
     }
 
-    open fun getClickDuration(): Long {
+    open fun getClickDuration(int: Int = OptDuration.QUICK): Long {
         return ((Math.random() * 2 + 1) * 40).toLong()
     }
 
@@ -39,4 +40,17 @@ open class BasicExhaustion {
     }
 
     open fun onRestComplete() {}
+
+
+    //请求可以操作的时间
+    open suspend fun requestedOperation(): Long {
+        return Long.MAX_VALUE
+    }
+
+
+    //操作结束进行提交
+    open suspend fun operationEnded(): Boolean {
+        return true
+    }
+
 }

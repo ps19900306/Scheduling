@@ -96,116 +96,278 @@ object ExhaustionControl : BasicExhaustion() {
         return ((1.5 - random * 0.5) * RestBasicTime).toLong()
     }
 
-    override fun getClickDuration(): Long {
-        return when (getOptStatusType()) {
-            OptStatusType.PRECISION -> {
+    override fun getClickDuration(type: Int): Long {
+        return when (type) {
+            OptDuration.QUICK -> {
                 (Math.random() * 60 + 40).toLong()
             }
-            OptStatusType.CARELESS -> {
+            OptDuration.SLOW -> {
                 (Math.random() * 100 + 30).toLong()
             }
-            OptStatusType.REDUNDANCY -> {
+            OptDuration.QUICK_LARGE_RANDOM -> {
                 (Math.random() * 50 + 100).toLong()
             }
-            OptStatusType.BLUNDER, OptStatusType.FAILURE -> {
+            OptDuration.SLOW_LARGE_RANDOM -> {
                 (Math.random() * 100 + 50).toLong()
             }
             else -> {
-                super.getClickDuration()
+                (Math.random() * 60 + 40).toLong()
             }
         }
     }
 
+
     override fun getClickInterval(): Long {
-        return when (getOptStatusType()) {
-            OptStatusType.PRECISION -> {
-                (Math.random() * 200 + 300).toLong()
+        return when (getOptInterval()) {
+            OptInterval.PRECISION -> {
+                (Math.random() * 200 + 400).toLong()
             }
-            OptStatusType.CARELESS -> {
-                (Math.random() * 2000 + 1000).toLong()
+            OptInterval.CARELESS -> {
+                (Math.random() * 400 + 450).toLong()
             }
-            OptStatusType.REDUNDANCY -> {
-                (Math.random() * 8000 + 4000).toLong()
+            OptInterval.REDUNDANCY -> {
+                (Math.random() * 200 + 500).toLong()
             }
-            OptStatusType.BLUNDER, OptStatusType.FAILURE -> {
-                (Math.random() * 20000 + 5000).toLong()
+            OptInterval.BLUNDER, OptInterval.FAILURE -> {
+                (Math.random() * 500 + 300).toLong()
             }
             else -> {
-                super.getClickDuration()
+                (Math.random() * 200 + 400).toLong()
             }
         }
     }
 
 
     //这里根据状态获取不同操作精度
-    override fun getOptStatusType(): Int {
+    override fun getOptInterval(): Int {
         val random = Math.random()
         return when (NOW_STATE) {
             FULL_STATE -> {
                 if (random > 0.8) {
-                    OptStatusType.CARELESS
+                    OptInterval.CARELESS
                 } else if (random > 0.99) {
-                    OptStatusType.REDUNDANCY
+                    OptInterval.REDUNDANCY
                 } else {
-                    OptStatusType.PRECISION
+                    OptInterval.PRECISION
                 }
             }
             SLIGHT_EXHAUSTION -> {
                 if (random > 0.65) {
-                    OptStatusType.CARELESS
+                    OptInterval.CARELESS
                 } else if (random > 0.95) {
-                    OptStatusType.REDUNDANCY
+                    OptInterval.REDUNDANCY
                 } else if (random > 0.98) {
-                    OptStatusType.BLUNDER
+                    OptInterval.BLUNDER
                 } else if (random > 0.995) {
-                    OptStatusType.FAILURE
+                    OptInterval.FAILURE
                 } else {
-                    OptStatusType.PRECISION
+                    OptInterval.PRECISION
                 }
             }
             SOME_EXHAUSTION -> {
                 if (random > 0.5) {
-                    OptStatusType.CARELESS
+                    OptInterval.CARELESS
                 } else if (random > 0.9) {
-                    OptStatusType.REDUNDANCY
+                    OptInterval.REDUNDANCY
                 } else if (random > 0.95) {
-                    OptStatusType.BLUNDER
+                    OptInterval.BLUNDER
                 } else if (random > 0.99) {
-                    OptStatusType.FAILURE
+                    OptInterval.FAILURE
                 } else {
-                    OptStatusType.PRECISION
+                    OptInterval.PRECISION
                 }
             }
             VERY_EXHAUSTING -> {
                 if (random > 0.3) {
-                    OptStatusType.CARELESS
+                    OptInterval.CARELESS
                 } else if (random > 0.8) {
-                    OptStatusType.REDUNDANCY
+                    OptInterval.REDUNDANCY
                 } else if (random > 0.95) {
-                    OptStatusType.BLUNDER
+                    OptInterval.BLUNDER
                 } else if (random > 0.99) {
-                    OptStatusType.FAILURE
+                    OptInterval.FAILURE
                 } else {
-                    OptStatusType.PRECISION
+                    OptInterval.PRECISION
                 }
             }
             else -> {
-                OptStatusType.PRECISION
+                OptInterval.PRECISION
+            }
+        }
+    }
+
+    fun getClickParameter(): ClickParameter {
+        val random = Math.random()
+        return ClickParameter(getOptRange(random), getOptSlide(random), getOptDuration(random))
+    }
+
+    private fun getOptDuration(random: Double): Int {
+        return when (NOW_STATE) {
+            FULL_STATE -> {
+                if (random > 0.6) {
+                    OptDuration.SLOW
+                } else if (random > 0.7) {
+                    OptDuration.QUICK_LARGE_RANDOM
+                } else if (random > 0.9) {
+                    OptDuration.SLOW_LARGE_RANDOM
+                } else {
+                    OptDuration.QUICK
+                }
+            }
+            SLIGHT_EXHAUSTION -> {
+                if (random > 0.65) {
+                    OptDuration.SLOW
+                } else if (random > 0.95) {
+                    OptDuration.QUICK_LARGE_RANDOM
+                } else if (random > 0.98) {
+                    OptDuration.SLOW_LARGE_RANDOM
+                } else {
+                    OptDuration.QUICK
+                }
+            }
+            SOME_EXHAUSTION -> {
+                if (random > 0.5) {
+                    OptDuration.SLOW
+                } else if (random > 0.9) {
+                    OptDuration.QUICK_LARGE_RANDOM
+                } else if (random > 0.95) {
+                    OptDuration.SLOW_LARGE_RANDOM
+                } else {
+                    OptDuration.QUICK
+                }
+            }
+            VERY_EXHAUSTING -> {
+                if (random > 0.3) {
+                    OptDuration.SLOW
+                } else if (random > 0.8) {
+                    OptDuration.QUICK_LARGE_RANDOM
+                } else if (random > 0.95) {
+                    OptDuration.SLOW_LARGE_RANDOM
+                } else {
+                    OptDuration.QUICK
+                }
+            }
+            else -> {
+                OptDuration.QUICK
             }
         }
     }
 
 
+    private fun getOptRange(random: Double): Int {
+        return when (NOW_STATE) {
+            FULL_STATE -> {
+                if (random > 0.5) {
+                    OptRange.WIDE_RANGE
+                } else if (random > 0.7) {
+                    OptRange.FULL_RANGE
+                } else if (random > 0.9) {
+                    OptRange.ALL_OPT_RANGE
+                } else if (random > 0.95) {
+                    OptRange.BEYOND_RANGE
+                } else {
+                    OptRange.SMALL_PRECISION
+                }
+            }
+            SLIGHT_EXHAUSTION -> {
+                if (random > 0.3) {
+                    OptRange.WIDE_RANGE
+                } else if (random > 0.5) {
+                    OptRange.FULL_RANGE
+                } else if (random > 0.7) {
+                    OptRange.ALL_OPT_RANGE
+                } else if (random > 0.92) {
+                    OptRange.BEYOND_RANGE
+                } else {
+                    OptRange.SMALL_PRECISION
+                }
+            }
+            SOME_EXHAUSTION -> {
+                if (random > 0.2) {
+                    OptRange.WIDE_RANGE
+                } else if (random > 0.4) {
+                    OptRange.FULL_RANGE
+                } else if (random > 0.6) {
+                    OptRange.ALL_OPT_RANGE
+                } else if (random > 0.9) {
+                    OptRange.BEYOND_RANGE
+                } else {
+                    OptRange.SMALL_PRECISION
+                }
+            }
+            VERY_EXHAUSTING -> {
+                if (random > 0.1) {
+                    OptRange.WIDE_RANGE
+                } else if (random > 0.3) {
+                    OptRange.FULL_RANGE
+                } else if (random > 0.5) {
+                    OptRange.ALL_OPT_RANGE
+                } else if (random > 0.8) {
+                    OptRange.BEYOND_RANGE
+                } else {
+                    OptRange.SMALL_PRECISION
+                }
+            }
+            else -> {
+                OptRange.SMALL_PRECISION
+            }
+        }
+    }
+
+    private fun getOptSlide(random: Double): Int {
+        return when (NOW_STATE) {
+            FULL_STATE -> {
+                if (random > 0.9) {
+                    OptSlide.SLIDE_ONE
+                } else if (random > 0.99) {
+                    OptSlide.SLIDE_TWO
+                } else {
+                    OptSlide.NOT_SLIDE
+                }
+            }
+            SLIGHT_EXHAUSTION -> {
+                if (random > 0.85) {
+                    OptSlide.SLIDE_ONE
+                } else if (random > 0.985) {
+                    OptSlide.SLIDE_TWO
+                } else {
+                    OptSlide.NOT_SLIDE
+                }
+            }
+            SOME_EXHAUSTION -> {
+                if (random > 0.8) {
+                    OptSlide.SLIDE_ONE
+                } else if (random > 0.98) {
+                    OptSlide.SLIDE_TWO
+                } else {
+                    OptSlide.NOT_SLIDE
+                }
+            }
+            VERY_EXHAUSTING -> {
+                if (random > 0.7) {
+                    OptSlide.SLIDE_ONE
+                } else if (random > 0.95) {
+                    OptSlide.SLIDE_TWO
+                } else {
+                    OptSlide.NOT_SLIDE
+                }
+            }
+            else -> {
+                OptRange.SMALL_PRECISION
+            }
+        }
+    }
+
+
+
+
     fun areaToClickTask(
-        list: List<ClickArea>,
-        offsetX: Int = 0,
-        offsetY: Int = 0,
-        canMiss: Boolean = false
+        list: List<ClickArea>, offsetX: Int = 0, offsetY: Int = 0, canMiss: Boolean = false
     ): List<ClickTask> {
         val resultList = mutableListOf<ClickTask>()
         var delayTime = 0L
         list.forEach {
-            if (canMiss && getOptStatusType() < OptStatusType.FAILURE) {
+            if (canMiss && getOptInterval() < OptInterval.FAILURE) {
                 val task = it.toClickTask(delayTime, offsetX, offsetY)
                 delayTime = delayTime + task.delayTime + task.duration
                 resultList.add(task)

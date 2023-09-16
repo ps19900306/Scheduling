@@ -1,22 +1,21 @@
 package com.android.schedule.corelibrary.exhaustion
 
 import androidx.annotation.IntDef
-import java.lang.annotation.RetentionPolicy
 
 @IntDef(
-    OptStatusType.PRECISION,//精准操作
+    OptInterval.PRECISION,//精准操作
 
-    OptStatusType.CARELESS,//粗心
+    OptInterval.CARELESS,//粗心
 
-    OptStatusType.REDUNDANCY,//多余的操作
+    OptInterval.REDUNDANCY,//多余的操作
 
-    OptStatusType.BLUNDER,//失误 有机会失败
+    OptInterval.BLUNDER,//失误 有机会失败
 
-    OptStatusType.FAILURE,//
+    OptInterval.FAILURE,//
 
 
 )
-annotation class OptStatusType() {
+annotation class OptInterval() {
     companion object {
         const val PRECISION = 1
         const val CARELESS = 2
