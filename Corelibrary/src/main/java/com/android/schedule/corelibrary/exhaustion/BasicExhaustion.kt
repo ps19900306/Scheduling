@@ -42,15 +42,6 @@ open class BasicExhaustion {
     open fun onRestComplete() {}
 
 
-    //请求可以操作的时间
-    open suspend fun requestedOperation(): Long {
-        return Long.MAX_VALUE
-    }
 
-
-    //操作结束进行提交
-    open suspend fun operationEnded(): Boolean {
-        return true
-    }
 
 }

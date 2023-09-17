@@ -9,6 +9,7 @@ object SetConstant {
 
     var uiAdaptation: UiAdaptation? = null
 
+    const val SECOND = 1000L
     const val Hour = 1000L * 60 * 60
     const val MINUTE = 1000L * 60
 
