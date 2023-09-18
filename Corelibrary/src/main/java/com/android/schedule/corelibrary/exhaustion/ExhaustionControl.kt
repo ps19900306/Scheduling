@@ -14,9 +14,9 @@ object ExhaustionControl : BasicExhaustion() {
 
 
     private var FULL_STATE_TIME = 30 * SetConstant.MINUTE
-    private var SLIGHT_EXHAUSTION_TIME = 2 * SetConstant.Hour
-    private var SOME_EXHAUSTION_TIME = 1 * SetConstant.Hour
-    private var VERY_EXHAUSTING_TIME = 30 * SetConstant.MINUTE//触发这个点的时候就必须要休息
+    private var SLIGHT_EXHAUSTION_TIME = 2 * SetConstant.Hour + FULL_STATE_TIME
+    private var SOME_EXHAUSTION_TIME = 1 * SetConstant.Hour + SLIGHT_EXHAUSTION_TIME
+    private var VERY_EXHAUSTING_TIME = 30 * SetConstant.MINUTE + SOME_EXHAUSTION_TIME  //触发这个点的时候就必须要休息
     private val MAXWORKERTIME = 8 * SetConstant.Hour//最大工作时间
 
     private var Coefficient = 1.0   //每次休息后会越来越容易疲惫
@@ -26,34 +26,30 @@ object ExhaustionControl : BasicExhaustion() {
     private val RestBasicTime = 30 * SetConstant.MINUTE
 
     private var startTime = System.currentTimeMillis()
-    private var stepStartTime = System.currentTimeMillis()
+
 
     //更新状态
     override fun updateStatus() {
         var nowTime = System.currentTimeMillis()
         when (NOW_STATE) {
             FULL_STATE -> {
-                if (nowTime - stepStartTime >= FULL_STATE_TIME) {
+                if (nowTime - startTime >= FULL_STATE_TIME) {
                     NOW_STATE = SLIGHT_EXHAUSTION
-                    stepStartTime = System.currentTimeMillis()
                 }
             }
             SLIGHT_EXHAUSTION -> {
-                if (nowTime - stepStartTime >= SLIGHT_EXHAUSTION_TIME) {
+                if (nowTime - startTime >= SLIGHT_EXHAUSTION_TIME) {
                     NOW_STATE = SOME_EXHAUSTION
-                    stepStartTime = System.currentTimeMillis()
                 }
             }
             SOME_EXHAUSTION -> {
-                if (nowTime - stepStartTime >= SOME_EXHAUSTION_TIME) {
+                if (nowTime - startTime >= SOME_EXHAUSTION_TIME) {
                     NOW_STATE = VERY_EXHAUSTING
-                    stepStartTime = System.currentTimeMillis()
                 }
             }
             VERY_EXHAUSTING -> {
-                if (nowTime - stepStartTime >= VERY_EXHAUSTING_TIME) {
+                if (nowTime - startTime >= VERY_EXHAUSTING_TIME) {
                     NOW_STATE = NEED_REST
-                    stepStartTime = System.currentTimeMillis()
                 }
             }
         }
@@ -61,8 +57,6 @@ object ExhaustionControl : BasicExhaustion() {
 
     override fun onRestComplete() {
         startTime = System.currentTimeMillis()
-        stepStartTime = System.currentTimeMillis()
-
         val flag = Math.random() * 0.2 + 0.6
 
         FULL_STATE_TIME = (flag * FULL_STATE_TIME).toLong()
@@ -357,8 +351,6 @@ object ExhaustionControl : BasicExhaustion() {
             }
         }
     }
-
-
 
 
     fun areaToClickTask(

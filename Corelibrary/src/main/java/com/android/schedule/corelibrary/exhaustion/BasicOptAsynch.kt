@@ -10,8 +10,8 @@ open class BasicOptAsynch {
 
 
     //请求操作
-    open suspend fun getWaitTime(): Long {
-        return 0
+    open suspend fun getOptInfo(): OptAsynchInfo? {
+        return null
     }
 
     //请求操作
