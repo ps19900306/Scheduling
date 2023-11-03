@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Talker</string>
+    <string name="accessibility_service_label">Talker</string>
+    <string name="accessibility_service_description">Talker</string>
+    <string name="ok">确定</string>
+    <string name="clear">清除</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>

@@ -27,14 +27,13 @@ import com.nwq.function.corelib.auto_code.ui.data.FunctionItemInfo
 import com.nwq.function.corelib.auto_code.ui.funciton.ImgFeatureExtractionFunction
 import com.nwq.function.corelib.auto_code.ui.funciton.OptLister
 import com.nwq.function.corelib.databinding.ActivityAutoCodeBinding
-import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironment
 import com.nwq.function.corelib.excuter.star_wars.StarWarEnvironmentK30
 import com.nwq.function.corelib.utils.JsonUtil
 import com.nwq.function.corelib.utils.singleClick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
+
 
 class AutoCodeActivity : AppCompatActivity(), OptLister {
 
@@ -230,17 +229,26 @@ class AutoCodeActivity : AppCompatActivity(), OptLister {
                     }
                 } else {
                     if (ev.action == MotionEvent.ACTION_MOVE) {
-                        bind.previewView.setArea(CoordinateArea(starX, starY, ev.x, ev.y))
+                        val coordinateArea= createCoordinateArea(starX, starY, ev.x, ev.y)
+                        bind.previewView.setArea(coordinateArea)
                     } else if (ev.action == MotionEvent.ACTION_UP) {
+                        val coordinateArea= createCoordinateArea(starX, starY, ev.x, ev.y)
                         bind.previewView.setArea(null)
-                        bind.previewView.addArea(CoordinateArea(starX, starY, ev.x, ev.y))
+                        bind.previewView.addArea(coordinateArea)
                         isFirst = true
                     }
                 }
             }
         }
-
         return super.onTouchEvent(ev)
+    }
+
+    private fun createCoordinateArea(x1: Float, y1: Float, x2: Float, y2: Float):CoordinateArea {
+      return  if(x1+x1 > x2+y2){
+            CoordinateArea(x2,y2,x1,y1)
+        }else{
+            CoordinateArea(x1,y1, x2,y2)
+        }
     }
 
 

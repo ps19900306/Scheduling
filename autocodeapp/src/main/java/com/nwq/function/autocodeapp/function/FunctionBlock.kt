@@ -13,6 +13,7 @@ interface FunctionBlock {
 
     fun optPoint(@OptCmd cmd: Int, vararg coordinatePoint: CoordinatePoint)
 
+
     fun optArea(@OptCmd cmd: Int, vararg area: CoordinateArea)
 
     fun generateCode()
@@ -20,4 +21,7 @@ interface FunctionBlock {
     fun hideView()
 
     fun showView()
+
+
+
 }

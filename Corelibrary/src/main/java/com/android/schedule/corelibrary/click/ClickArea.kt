@@ -6,8 +6,6 @@ import com.android.schedule.corelibrary.exhaustion.ClickParameter
 import com.android.schedule.corelibrary.exhaustion.ExhaustionControl
 import com.android.schedule.corelibrary.exhaustion.OptRange
 import com.android.schedule.corelibrary.exhaustion.OptSlide
-import com.android.schedule.corelibrary.exhaustion.OptStatusType.Companion.CARELESS
-import com.android.schedule.corelibrary.exhaustion.OptStatusType.Companion.PRECISION
 
 /**
 create by: 86136

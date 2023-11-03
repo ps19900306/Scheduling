@@ -12,7 +12,6 @@ create by: 86136
 create time: 2023/8/28 10:06
 Function description:
  */
-
 abstract class TurnBaseController(
     acService: AccessibilityService,
     onEnd: () -> Unit,
@@ -94,7 +93,6 @@ abstract class TurnBaseController(
         }
     }
 
-
     fun areaToClickTask(
         list: List<ClickArea>,
         offsetX: Int = 0,
@@ -124,4 +122,5 @@ abstract class TurnBaseController(
     protected fun setOptAsynch(optAsynch: BasicOptAsynch) {
         mOptAsynch = optAsynch
     }
+    
 }

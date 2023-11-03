@@ -1,5 +1,7 @@
 package com.android.schedule.corelibrary.area
 
+import com.android.schedule.corelibrary.SetConstant
+
 
 /**
 create by: 86136
@@ -12,16 +14,42 @@ open class CoordinateArea(
     var y: Int,
     var width: Int,
     var height: Int,
+    var isRound: Boolean = false
 ) {
+
+    val xF by lazy {
+        ((SetConstant.uiAdaptation?.getWidthRadio() ?: 1.0) * x).toFloat()
+    }
+
+    val yF by lazy {
+        ((SetConstant.uiAdaptation?.getHeightRadio() ?: 1.0) * y).toFloat()
+    }
+
+    val xI by lazy {
+        ((SetConstant.uiAdaptation?.getWidthRadio() ?: 1.0) * x).toInt()
+    }
+
+    val yI by lazy {
+        ((SetConstant.uiAdaptation?.getHeightRadio() ?: 1.0) * y).toInt()
+    }
+
+
+    val xD by lazy {
+        (SetConstant.uiAdaptation?.getWidthRadio() ?: 1.0) * x
+    }
+
+    val yD by lazy {
+        (SetConstant.uiAdaptation?.getHeightRadio() ?: 1.0) * y
+    }
 
 //    var offsetX: Int = 0,
 //    var offsetY: Int = 0
-//    constructor(
-//        x: Float,
-//        y: Float,
-//        endX: Float,
-//        endY: Float,
-//    ) : this(x.toInt(), y.toInt(), (endX - x).toInt(), (endY - y).toInt(), 0, 0)
+    constructor(
+        x: Float,
+        y: Float,
+        endX: Float,
+        endY: Float,
+    ) : this(x.toInt(), y.toInt(), (endX - x).toInt(), (endY - y).toInt())
 //
 //    fun setOffset(ofstX: Int, ofstY: Int) {
 //        offsetX = ofstX

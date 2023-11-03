@@ -352,20 +352,4 @@ object ExhaustionControl : BasicExhaustion() {
         }
     }
 
-
-    fun areaToClickTask(
-        list: List<ClickArea>, offsetX: Int = 0, offsetY: Int = 0, canMiss: Boolean = false
-    ): List<ClickTask> {
-        val resultList = mutableListOf<ClickTask>()
-        var delayTime = 0L
-        list.forEach {
-            if (canMiss && getOptInterval() < OptInterval.FAILURE) {
-                val task = it.toClickTask(delayTime, offsetX, offsetY)
-                delayTime = delayTime + task.delayTime + task.duration
-                resultList.add(task)
-            }
-        }
-        return resultList
-    }
-
 }

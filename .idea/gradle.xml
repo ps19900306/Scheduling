@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/autocodeapp" />
             <option value="$PROJECT_DIR$/calendarmanager" />
             <option value="$PROJECT_DIR$/corelib" />
+            <option value="$PROJECT_DIR$/talker" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -15,9 +15,10 @@ class FeatureCoordinatePoint(
 ) {
 
     companion object {
-        const val NONE = 1
-        const val INTERNAL_TYPE = 2
-        const val BOUNDARY_TYPE = 4
+        const val NONE = -1
+        const val BOUNDARY_TYPE = 0
+        const val INTERNAL_TYPE = 1
+
     }
 
     constructor(colorInt: Int) : this(
@@ -74,7 +75,27 @@ class FeatureCoordinatePoint(
     }
 
 
-    var positionType: Int = NONE //是否是在组的边界点上
+    //这个是内部点的排序
+    fun continuePathInternal(p: FeatureCoordinatePoint): FeatureCoordinatePoint? {
+        if (!hasContinuousSet) { //如果没有被设置则进行设置
+            previousPoint = p
+            hasContinuousSet = true
+            startX = p.startY
+            startY = p.startY
+            sequenceNumber = p.sequenceNumber + 1
+        }
+        return if (hasFindRound) {
+            null
+        } else if (isInternal()) {
+            hasFindRound = true
+            this
+        } else {
+            null
+        }
+    }
+
+
+    var positionType: Int = NONE //这里写的是位置大深度，为0则是边界，大于零才具有深度
 
     fun hasJudeType(): Boolean {
         return positionType != NONE
@@ -84,12 +105,16 @@ class FeatureCoordinatePoint(
         positionType = BOUNDARY_TYPE
     }
 
-    fun setInternal() {
-        positionType = INTERNAL_TYPE
+    fun setNone() {
+        positionType = NONE
     }
 
     fun isInternal(): Boolean {
-        return positionType == INTERNAL_TYPE
+        return positionType > BOUNDARY_TYPE
+    }
+
+    fun setInternal(i: Int = INTERNAL_TYPE) {
+        positionType = i
     }
 
 
