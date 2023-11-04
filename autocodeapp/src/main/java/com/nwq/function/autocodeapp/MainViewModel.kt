@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.nwq.function.autocodeapp.data.FeatureCoordinatePoint
+import com.nwq.function.autocodeapp.data.FeaturePointBlock
 import com.nwq.function.autocodeapp.data.FeaturePointKey
 import kotlin.math.abs
 
@@ -138,17 +139,16 @@ class MainViewModel : ViewModel() {
 
     //生成普通图片特征值
     suspend fun autoCodeNormalImg() {
-//        colorMaps.forEach { it ->
-//            if (it.key.isChecked) {
-//                markBoundaryInternal(it.value)
-//                val result = obtainFeaturePoints(
-//                    it.value,
-//                    if (takePointCount > 0) takePointCount else TAKE_POINT_COUNT
-//                )
-//                if (useBackground) addBackground(result)
-//            }
-//        }
-//
+        colorMaps.forEach { it ->
+            if (it.key.isChecked) {
+                markBoundaryInternal(it.value)
+                val list = getPointBlock(it.value, 5, false)
+                obtainFeatureImg(list.sortedByDescending { it.perimeter })
+
+                // addBackground
+            }
+        }
+
     }
 
 
@@ -192,7 +192,7 @@ class MainViewModel : ViewModel() {
             }
         }
 
-        //这里
+        //这里标记内部点的层数
         var number = FeatureCoordinatePoint.BOUNDARY_TYPE
         var list = originalList.filter { it.positionType == FeatureCoordinatePoint.BOUNDARY_TYPE }
         number++
@@ -210,52 +210,13 @@ class MainViewModel : ViewModel() {
     }
 
 
-    //获取特征点，这里使用边界点
-    private fun obtainFeaturePoints(
-        allList: MutableList<FeatureCoordinatePoint>, takePointCount: Int
-    ): List<FeatureCoordinatePoint> {
-
-        val originalList = allList.filter { it.isBoundary() }
-
-        //将所有位置置为空
-        originalList.forEach {
-            it.hasContinuousSet = false
-            it.hasFindRound = false
-            it.isAdd = false
-        }
-
-        val list = mutableListOf<FeatureCoordinatePoint>()
-        var startPoint = originalList.find { !it.hasContinuousSet }//&& it.isBoundary()
-
-        var i = 0
-        while (startPoint != null) {
-            startPoint.setStartPosition()
-            val extremePoints = groupBlock(startPoint, i, originalList.size, takePointCount)
-            list.addAll(extremePoints)
-            startPoint = originalList.find { !it.hasContinuousSet }//&& it.isBoundary()
-        }
-
-        //尽量选择内部点进行判定，这样可以减少一点范围误差
-        val result = list.map { point ->
-            getPointSurround(
-                point, 2, true, true
-            ).filter { it.mFeaturePointKey == point.mFeaturePointKey }//过滤为同一个类型的图
-                .sortedByDescending { it.positionType }//这里设置深度最高的点 避免边界点的透明度
-                .get(0)
-        }
-        result.forEach { it.isIdentificationKey = true }
-        return result
-    }
-
-
     //这里根据颜色是否联通进行分块
     private fun getPointBlock(
         allList: MutableList<FeatureCoordinatePoint>, minStep: Int = 5, hasInternal: Boolean = false
-    ) {
-
-
+    ): MutableList<FeaturePointBlock> {
         val originalList = allList.filter { it.isBoundary() }
 
+        val result = mutableListOf<FeaturePointBlock>()
         //将所有位置置为空
         allList.forEach {
             it.hasContinuousSet = false
@@ -264,44 +225,44 @@ class MainViewModel : ViewModel() {
         }
 
 
-        val list = mutableListOf<FeatureCoordinatePoint>()
         var startPoint = originalList.find { !it.hasContinuousSet }//&& it.isBoundary()
 
         var i = 0
         while (startPoint != null) {
             startPoint.setStartPosition()
 
-
-            val extremePoints = groupBlock(startPoint, i, originalList.size, minStep)
-            list.addAll(extremePoints)
+            groupBlock(startPoint, i, minStep, hasInternal)?.let {
+                result.add(it)
+            }
             startPoint = originalList.find { !it.hasContinuousSet }//&& it.isBoundary()
             i++
         }
+        return result
     }
 
-    private fun groupBlock(
-        startPoint: FeatureCoordinatePoint,
-        sortNumber: Int,
-        minStep: Int = 5,
-        includeInternal: Boolean = false,
-    ) {
-        val result = mutableListOf<List<FeatureCoordinatePoint>>()
 
-        //这里先根据边界点进行分界限
-        val blockList = mutableListOf<FeatureCoordinatePoint>()
-        blockList.add(startPoint)
+    //也是对点进行分类
+    private fun groupBlock(
+        startPoint: FeatureCoordinatePoint,//开始的起点
+        sortNumber: Int,//排序的序列号
+        minPerimeter: Int = 5,//最小路径 ，如果边界小于这个则不进行添加
+        includeInternal: Boolean = false,//是否包含内部点
+    ): FeaturePointBlock? {
+        //这里先根据边界点进行分界限 添加外部点
+        val boundaryList = mutableListOf<FeatureCoordinatePoint>()
+        boundaryList.add(startPoint)
         val oldList = mutableListOf(startPoint)
         val newList = mutableListOf<FeatureCoordinatePoint>()
-        var step = 0
+        var perimeter = 0
         while (!oldList.isEmpty()) {
-            step++
+            perimeter++
             newList.clear()
             oldList.forEach { point ->
                 getPointSurround(point, 1, true, false).forEach { nextPoint ->
                     if (nextPoint.mFeaturePointKey == point.mFeaturePointKey) {
                         nextPoint.continuePath(point)?.apply {
                             newList.add(nextPoint)
-                            blockList.add(nextPoint)
+                            boundaryList.add(nextPoint)
                         }
                     }
                 }
@@ -311,113 +272,51 @@ class MainViewModel : ViewModel() {
         }
 
         //如果边框过于小这个点就没有什么意义
-        if (step > minStep) {
-
+        if (perimeter > minPerimeter) {
             if (includeInternal) {
+                var depth = 0  //这个用于找深度最高的点
+
                 oldList.clear()
-                oldList.addAll(blockList)
+                oldList.addAll(boundaryList)
+                val internalList = mutableListOf<FeatureCoordinatePoint>()
+
+
                 while (!oldList.isEmpty()) {
+                    depth++
+                    newList.clear()
                     oldList.forEach { point ->
                         getPointSurround(point, 1, true, false).forEach { nextPoint ->
                             if (nextPoint.mFeaturePointKey == point.mFeaturePointKey) {
                                 nextPoint.continuePathInternal(point)?.apply {
                                     newList.add(nextPoint)
-                                    blockList.add(nextPoint)
+                                    internalList.add(nextPoint)
                                 }
                             }
                         }
                     }
+
+                    oldList.clear()
+                    oldList.addAll(newList)
                 }
 
-                blockList.forEach {
+                boundaryList.forEach {
                     it.blockNumber = sortNumber
                 }
 
-            } else {
-
-                blockList.forEach {
+                internalList.forEach {
                     it.blockNumber = sortNumber
                 }
-            }
-        }
 
-
-    }
-
-
-    //对相同的特征色值的 根据连接度对组进行分块
-    private fun groupBlock(
-//这里是根据起始点进行眼神
-        startPoint: FeatureCoordinatePoint,
-        sortNumber: Int,
-        allSize: Int, //这个是已经作为关键点添加了的
-        takePoints: Int,
-        minStep: Int = 5,
-    ): List<FeatureCoordinatePoint> {
-
-        //当前的一个连续的块
-        val blockList = mutableListOf<FeatureCoordinatePoint>()
-        blockList.add(startPoint)
-
-        val oldList = mutableListOf(startPoint)
-        val newList = mutableListOf<FeatureCoordinatePoint>()
-        val extremePoints = mutableListOf<FeatureCoordinatePoint>()//端点，就是找不延续的点了
-        var step = 0
-        while (!oldList.isEmpty()) {
-            step++
-            newList.clear()
-            oldList.forEach { point ->
-                getPointSurround(point, 1, true, false).forEach { nextPoint ->
-                    nextPoint.continuePath(point)?.apply {
-                        newList.add(nextPoint)
-                        blockList.add(nextPoint)
-                    }
-                }
-            }
-            oldList.clear()
-            oldList.addAll(newList)
-        }
-
-
-        val temp = (allSize * step) / (takePoints * blockList.size)
-        val pickingInterval = if (temp > 1) {
-            if (temp > step) {
-                step - 1
+                return FeaturePointBlock(boundaryList, perimeter, internalList, depth)
             } else {
-                temp
+                boundaryList.forEach {
+                    it.blockNumber = sortNumber
+                }
+                return FeaturePointBlock(boundaryList, perimeter)
             }
         } else {
-            1
+            return null
         }
-
-        // 单独的孤点这里不做处理
-        if (step >= minStep) for (i in 0..step step pickingInterval) {
-            blockList.filter { it.sequenceNumber == i }.forEach {
-                if (!it.isAdd) {
-                    extremePoints.add(it)
-                    it.isAdd = true
-                    getPointSurround(
-                        it,
-                        (pickingInterval / 2 + 1).coerceAtMost(5),
-                        true,
-                        false,
-                    ).forEach { nextPoint ->
-                        if (it.mFeaturePointKey == nextPoint.mFeaturePointKey && nextPoint.hasContinuousSet && (abs(
-                                nextPoint.x - it.x
-                            ) + abs(nextPoint.y - it.y) < 6)
-                        ) {
-                            nextPoint.isAdd = true
-                        }
-                        false
-                    }
-                }
-            }
-        }
-        extremePoints.forEach {
-            it.blockNumber = sortNumber
-        }
-
-        return extremePoints
     }
 
 
@@ -472,6 +371,75 @@ class MainViewModel : ViewModel() {
         }
         return if (sortDistance) list.sortedBy { abs(it.x - point.x) + abs(it.y - point.y) }
         else list
+    }
+
+
+    /**
+     * 这里提取特征点
+     * 这里默认取五个点
+     */
+    private fun obtainFeatureImg(list: List<FeaturePointBlock>) {
+        val featureList = mutableListOf<FeatureCoordinatePoint>()
+
+        if (list.size > 5) {
+
+        } else if (list.size > 2) {
+
+        } else {
+
+        }
+
+    }
+
+    //取外部点
+    private fun obtainBoundaryPoint(
+        block: FeaturePointBlock, number: Int, keyPointList: MutableList<FeatureCoordinatePoint>
+    ) {
+        val times = (number - 1) / 2
+
+        val result = mutableListOf<FeatureCoordinatePoint>()
+        //先添加首点和尾点
+        block.boundaryList.find { it.sequenceNumber == 0 }?.let {
+            result.add(it)
+        }
+        block.boundaryList.find { it.sequenceNumber == block.perimeter }
+            ?: block.boundaryList.find { it.sequenceNumber == block.perimeter - 1 }?.let {
+                result.add(it)
+            }
+
+
+        val distance = block.perimeter / times
+        //这里添加中间点
+        if (distance >= 5) {
+            for (i in distance..block.perimeter - distance step distance) {
+                block.boundaryList.filter { it.sequenceNumber == i }.let {
+                    result.addAll(it)
+                }
+            }
+        }
+
+
+        //这里添加深度最高的点，是为了考虑透明度
+        result.forEach { point ->
+            if (!point.isAdd) {
+                val list = getPointSurround(
+                    point, 3, true, true
+                ).filter { it.mFeaturePointKey == point.mFeaturePointKey }
+                    .sortedByDescending { it.positionType }
+                list.getOrNull(0)?.let {
+                    keyPointList.add(it)
+                }
+                list.forEach { it.isAdd = true }
+            }
+        }
+
+    }
+
+    //取内部点
+    private fun obtainInternalPoint(block: FeaturePointBlock, keyPointList: MutableList<FeatureCoordinatePoint>) {
+        block.internalList?.sortedByDescending { it.positionType }?.getOrNull(0)?.let {
+            keyPointList.add(it)
+        }
     }
 
 }
