@@ -1,11 +1,19 @@
 package com.nwq.function.autocodeapp
 
 import android.graphics.Bitmap
+import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.expand.runOnIO
+import com.android.schedule.corelibrary.expand.runOnUI
+import com.android.schedule.corelibrary.utils.ToastHelper
+import com.luck.picture.lib.utils.ToastUtils
 import com.nwq.function.autocodeapp.data.FeatureCoordinatePoint
 import com.nwq.function.autocodeapp.data.FeaturePointBlock
 import com.nwq.function.autocodeapp.data.FeaturePointKey
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 
@@ -23,33 +31,43 @@ class MainViewModel : ViewModel() {
      */
     private val pointNumberThreshold = 20 //如果特征值的点数过少则无视掉
     val featureKeyList = mutableListOf<FeaturePointKey>()
+    var featureKeyLiveData = MutableLiveData<List<FeaturePointKey>>(listOf())
     var colorMaps = mutableMapOf<FeaturePointKey, MutableList<FeatureCoordinatePoint>>()
     private lateinit var featureArray: Array<Array<FeatureCoordinatePoint>>
     private var brightestKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
 
+
+
     //选择区域
-    suspend fun preprocessData() {
+    fun preprocessData() {
         val are = coordinateArea ?: return
         val bitmap = srcBitmap ?: return
-        val dataList = mutableListOf<Array<FeatureCoordinatePoint>>()
-        var data = mutableListOf<FeatureCoordinatePoint>()
 
-        are.getBitmapPixList(bitmap).forEachIndexed { y, arry ->
-            if (y != 0) {//因为y=0时候第一组数据还未写入
+        viewModelScope.launch {
+            runOnIO {
+                val dataList = mutableListOf<Array<FeatureCoordinatePoint>>()
+                var data = mutableListOf<FeatureCoordinatePoint>()
+
+                are.getBitmapPixList(bitmap).forEachIndexed { y, arry ->
+                    if (y != 0) {//因为y=0时候第一组数据还未写入
+                        dataList.add(data.toTypedArray())
+                        data.clear()
+                    }
+                    arry.forEachIndexed { x, colorInt ->
+                        val point = FeatureCoordinatePoint(x, y, colorInt)
+                        groupPoint(point, colorInt)
+                        data.add(point)
+                    }
+                }
                 dataList.add(data.toTypedArray())
-                data.clear()
-            }
-            arry.forEachIndexed { x, colorInt ->
-                val point = FeatureCoordinatePoint(x, y, colorInt)
-                groupPoint(point, colorInt)
-                data.add(point)
+                featureArray = dataList.toTypedArray()
+                organizeColorMaps()
+                featureKeyLiveData.postValue(featureKeyList)
+                ToastHelper.showLongToastSafe("数据预处理完成")
             }
         }
-        dataList.add(data.toTypedArray())
-        featureArray = dataList.toTypedArray()
-        organizeColorMaps()
     }
 
     private fun CoordinateArea.getBitmapPixList(bitmap: Bitmap): MutableList<IntArray> {
@@ -126,6 +144,7 @@ class MainViewModel : ViewModel() {
                 it.isChecked = false
             }
         }
+        featureKeyLiveData.postValue(featureKeyList)
     }
 
 
@@ -138,21 +157,22 @@ class MainViewModel : ViewModel() {
     }
 
     //生成普通图片特征值
-    suspend fun autoCodeNormalImg() {
-        colorMaps.forEach { it ->
-            if (it.key.isChecked) {
-                markBoundaryInternal(it.value)
-                val list = getPointBlock(it.value, 5, false)
-                obtainFeatureImg(list.sortedByDescending { it.perimeter })
-
-                // addBackground
+    fun autoCodeNormalImg() {
+        viewModelScope.launch {
+            colorMaps.forEach { it ->
+                if (it.key.isChecked) {
+                    markBoundaryInternal(it.value)
+                    val list = getPointBlock(it.value, 5, false)
+                    obtainFeatureImg(list.sortedByDescending { it.perimeter })
+                    ToastHelper.showLongToastSafe("自动处理图片完成")
+                }
             }
         }
-
     }
 
 
-    private fun addBackground(result: List<FeatureCoordinatePoint>) {
+    private fun addBackground(result: MutableList<FeatureCoordinatePoint>) {
+        val backList = mutableListOf<FeatureCoordinatePoint>()
         if (result.size > 1) {
             for (i in result.indices step result.size / 2) {
                 result.getOrNull(i)?.let { point ->
@@ -161,6 +181,7 @@ class MainViewModel : ViewModel() {
                         darkPoint.isIdentificationKey = true
                         darkPoint.mDirectorPointKey = point.mFeaturePointKey
                         darkPoint.mDirectorPoint = point
+                        backList.add(darkPoint)
                     }
                 }
             }
@@ -171,9 +192,11 @@ class MainViewModel : ViewModel() {
                     darkPoint.isIdentificationKey = true
                     darkPoint.mDirectorPointKey = point.mFeaturePointKey
                     darkPoint.mDirectorPoint = point
+                    backList.add(darkPoint)
                 }
             }
         }
+        result.addAll(backList)
     }
 
 
@@ -378,34 +401,29 @@ class MainViewModel : ViewModel() {
      * 这里提取特征点
      * 这里默认取五个点
      */
-    private fun obtainFeatureImg(list: List<FeaturePointBlock>) {
-        val featureList = mutableListOf<FeatureCoordinatePoint>()
+    private fun obtainFeatureImg(list: List<FeaturePointBlock>): MutableList<FeatureCoordinatePoint> {
+        val keyPointList = mutableListOf<FeatureCoordinatePoint>()
 
-        if (list.size > 5) {
-
-        } else if (list.size > 2) {
-
-        } else {
-
+        list.forEach {
+            obtainBoundaryPoint(it, 5, keyPointList)
         }
-
+        addBackground(keyPointList)
+        return keyPointList
     }
 
     //取外部点
     private fun obtainBoundaryPoint(
-        block: FeaturePointBlock, number: Int, keyPointList: MutableList<FeatureCoordinatePoint>
+        block: FeaturePointBlock,
+        number: Int,
+        keyPointList: MutableList<FeatureCoordinatePoint>,
     ) {
         val times = (number - 1) / 2
 
         val result = mutableListOf<FeatureCoordinatePoint>()
-        //先添加首点和尾点
+        //先添加首点
         block.boundaryList.find { it.sequenceNumber == 0 }?.let {
             result.add(it)
         }
-        block.boundaryList.find { it.sequenceNumber == block.perimeter }
-            ?: block.boundaryList.find { it.sequenceNumber == block.perimeter - 1 }?.let {
-                result.add(it)
-            }
 
 
         val distance = block.perimeter / times
@@ -417,6 +435,12 @@ class MainViewModel : ViewModel() {
                 }
             }
         }
+
+        //最后添加尾点
+        block.boundaryList.find { it.sequenceNumber == block.perimeter }
+            ?: block.boundaryList.find { it.sequenceNumber == block.perimeter - 1 }?.let {
+                result.add(it)
+            }
 
 
         //这里添加深度最高的点，是为了考虑透明度
@@ -436,10 +460,14 @@ class MainViewModel : ViewModel() {
     }
 
     //取内部点
-    private fun obtainInternalPoint(block: FeaturePointBlock, keyPointList: MutableList<FeatureCoordinatePoint>) {
+    private fun obtainInternalPoint(
+        block: FeaturePointBlock, keyPointList: MutableList<FeatureCoordinatePoint>
+    ) {
+
         block.internalList?.sortedByDescending { it.positionType }?.getOrNull(0)?.let {
             keyPointList.add(it)
         }
+
     }
 
 }

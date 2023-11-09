@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity() {
             FunctionItemInfo(R.string.select_picture, BUTTON_TYPE),
             FunctionItemInfo(R.string.select_critical_area, BUTTON_TYPE),
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
+
+            FunctionItemInfo(R.string.merge, BUTTON_TYPE),
             FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.characters_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.shadow_feature_extraction, BUTTON_TYPE),
@@ -71,15 +73,18 @@ class MainActivity : AppCompatActivity() {
 
         bind.btnOk.singleClick {
             when (nowMode) {
-                R.string.select_critical_area->{
+                R.string.select_critical_area -> {
                     bind.functionGroup.isVisible = true
                     bind.btnOk.isVisible = false
                     nowMode = NORMAL_MODE
+                    viewModel.preprocessData()
                 }
             }
         }
-    }
+        viewModel.featureKeyLiveData.observe(this){
 
+        }
+    }
 
 
     private fun initIndex(controller: WindowInsetsControllerCompat) {
@@ -117,15 +122,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.string.select_critical_area -> {//这里选择关键区域
                     bind.functionGroup.isVisible = false
-                    bind.btnOk.isVisible=true
-                    nowMode= R.string.select_critical_area
+                    bind.btnOk.isVisible = true
+                    nowMode = R.string.select_critical_area
                 }
-                R.string.preview->{
+                R.string.preview -> {
 
                 }
-
+                R.string.merge -> {
+                    viewModel.mergeKey()
+                }
                 R.string.image_feature_extraction -> {
-
+                    viewModel.autoCodeNormalImg()
                 }
                 R.string.characters_feature_extraction -> {
 
@@ -145,8 +152,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     companion object {
         val NORMAL_MODE = Int.MAX_VALUE   //普通模式
     }
@@ -160,11 +165,11 @@ class MainActivity : AppCompatActivity() {
     private var nowMode = NORMAL_MODE
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
-        if(nowMode == NORMAL_MODE){
+        if (nowMode == NORMAL_MODE) {
             return super.onTouchEvent(ev)
         }
         when (nowMode) {
-            R.string.select_critical_area->{
+            R.string.select_critical_area -> {
                 if (isFirst) {
                     if (ev.action == MotionEvent.ACTION_DOWN) {
                         starX = ev.x
@@ -173,10 +178,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     if (ev.action == MotionEvent.ACTION_MOVE) {
-                        val coordinateArea= createCoordinateArea(starX, starY, ev.x, ev.y)
+                        val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y)
                         bind.previewView.setArea(coordinateArea)
                     } else if (ev.action == MotionEvent.ACTION_UP) {
-                        val coordinateArea= createCoordinateArea(starX, starY, ev.x, ev.y)
+                        val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y)
                         bind.previewView.setArea(null)
                         bind.previewView.addArea(coordinateArea)
                         viewModel.coordinateArea = coordinateArea
@@ -189,11 +194,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun createCoordinateArea(x1: Float, y1: Float, x2: Float, y2: Float):CoordinateArea {
-        return  if(x1+x1 > x2+y2){
-            CoordinateArea(x2,y2,x1,y1)
-        }else{
-            CoordinateArea(x1,y1, x2,y2)
+    private fun createCoordinateArea(x1: Float, y1: Float, x2: Float, y2: Float): CoordinateArea {
+        return if (x1 + x1 > x2 + y2) {
+            CoordinateArea(x2, y2, x1, y1)
+        } else {
+            CoordinateArea(x1, y1, x2, y2)
         }
     }
 

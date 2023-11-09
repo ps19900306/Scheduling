@@ -381,14 +381,6 @@ class ImgFeatureExtractionFunction(
                     stringBuilder.append(tempStr)
                     tempMap[it.mFeaturePointKey!!] = "ruleRatio$number"
                 }
-//                else if(!useInverseValue || it.mFeaturePointKey?.isChecked?:false){
-//                    val oKey = it.mFeaturePointKey!!.colorRuleRatioImpl!!
-//                    number++
-//                    val tempStr =
-//                        "val ruleRatio$number =  ColorRuleRatioImpl.getSimple(" + " ${oKey.maxRed},${oKey.minRed},${oKey.maxGreen},${oKey.minGreen},${oKey.maxBlue},${oKey.minBlue},\n" + " ${oKey.redToGreenMax}F,${oKey.redToGreenMin}F,${oKey.redToBlueMax}F,${oKey.redToGreenMin}F,${oKey.greenToBlueMax}F, ${oKey.greenToBlueMin}F)\n"
-//                    stringBuilder.append(tempStr)
-//                    tempMap[it.mFeaturePointKey!!] = "ruleRatio$number"
-//                }
             }
 
             if (useInverseValue && tempMap2[it.mFeaturePointKey!!] == null && it.mFeaturePointKey?.isChecked ?: false) {
