@@ -1,7 +1,12 @@
 package com.nwq.function.autocodeapp
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,6 +23,8 @@ import kotlin.math.abs
 
 
 class MainViewModel : ViewModel() {
+
+    val TAG = "MainViewModel"
 
     //原图
     var srcBitmap: Bitmap? = null
@@ -38,36 +45,31 @@ class MainViewModel : ViewModel() {
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
 
-
+    lateinit var manager: ClipboardManager
 
     //选择区域
     fun preprocessData() {
         val are = coordinateArea ?: return
         val bitmap = srcBitmap ?: return
+        val dataList = mutableListOf<Array<FeatureCoordinatePoint>>()
+        var data = mutableListOf<FeatureCoordinatePoint>()
 
-        viewModelScope.launch {
-            runOnIO {
-                val dataList = mutableListOf<Array<FeatureCoordinatePoint>>()
-                var data = mutableListOf<FeatureCoordinatePoint>()
-
-                are.getBitmapPixList(bitmap).forEachIndexed { y, arry ->
-                    if (y != 0) {//因为y=0时候第一组数据还未写入
-                        dataList.add(data.toTypedArray())
-                        data.clear()
-                    }
-                    arry.forEachIndexed { x, colorInt ->
-                        val point = FeatureCoordinatePoint(x, y, colorInt)
-                        groupPoint(point, colorInt)
-                        data.add(point)
-                    }
-                }
+        are.getBitmapPixList(bitmap).forEachIndexed { y, arry ->
+            if (y != 0) {//因为y=0时候第一组数据还未写入
                 dataList.add(data.toTypedArray())
-                featureArray = dataList.toTypedArray()
-                organizeColorMaps()
-                featureKeyLiveData.postValue(featureKeyList)
-                ToastHelper.showLongToastSafe("数据预处理完成")
+                data.clear()
+            }
+            arry.forEachIndexed { x, colorInt ->
+                val point = FeatureCoordinatePoint(x, y, colorInt)
+                groupPoint(point, colorInt)
+                data.add(point)
             }
         }
+        dataList.add(data.toTypedArray())
+        featureArray = dataList.toTypedArray()
+        organizeColorMaps()
+        featureKeyLiveData.postValue(featureKeyList)
+        // ToastHelper.showLongToastSafe("数据预处理完成")
     }
 
     private fun CoordinateArea.getBitmapPixList(bitmap: Bitmap): MutableList<IntArray> {
@@ -163,8 +165,16 @@ class MainViewModel : ViewModel() {
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value)
                     val list = getPointBlock(it.value, 5, false)
-                    obtainFeatureImg(list.sortedByDescending { it.perimeter })
-                    ToastHelper.showLongToastSafe("自动处理图片完成")
+                    val result = obtainFeatureImg(list.sortedByDescending { it.perimeter })
+                    Log.i(TAG, "自动处理图片完成")
+                    GenerateCodeUtils.autoImgCode(
+                        coordinateArea?.x ?: 0,
+                        coordinateArea?.y ?: 0,
+                        result
+                    )?.let { resultStr ->
+                        val clipData = ClipData.newPlainText("autoCode", resultStr)
+                        manager.setPrimaryClip(clipData)
+                    }
                 }
             }
         }
@@ -443,7 +453,7 @@ class MainViewModel : ViewModel() {
             }
 
 
-        //这里添加深度最高的点，是为了考虑透明度
+        //这里添加深度最高的点，是为了考虑透
         result.forEach { point ->
             if (!point.isAdd) {
                 val list = getPointSurround(

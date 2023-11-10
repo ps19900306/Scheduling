@@ -6,9 +6,9 @@ import java.lang.StringBuilder
 object GenerateCodeUtils {
 
 
-    private fun autoImgCode(sx: Int, sy: Int, data: List<FeatureCoordinatePoint>) {
+    fun autoImgCode(sx: Int, sy: Int, data: List<FeatureCoordinatePoint>): String? {
         if (data.isNullOrEmpty() || data.size == 1) {
-            return
+            return null
         }
 
         val datums = data.subList(0, 1)
@@ -33,7 +33,7 @@ object GenerateCodeUtils {
         }
         stringBuilder.append(" ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
         stringBuilder.append("}  \n")
-        stringBuilder.toString()
+        return stringBuilder.toString()
     }
 
 
@@ -68,7 +68,7 @@ object GenerateCodeUtils {
             val blueD = getOffset(mDirectorPoint!!.blue, blue)
             "TwoPointRule(CoordinatePoint(${sx + mDirectorPoint!!.x}, ${sy + mDirectorPoint!!.y}),CoordinatePoint(${sx + x}, ${sy + y}), CompareDifferenceRuleImpl.getSimple($redD,$greenD,$blueD))"
         } else {
-            "PointRule(CoordinatePoint(${startX + x}, ${startY + y}), ColorRuleRatioImpl.getSimple(${red},${green},${blue}))\n"
+            "PointRule(CoordinatePoint(${sx + x}, ${sy + y}), ColorRuleRatioImpl.getSimple(${red},${green},${blue}))\n"
         }
     }
 }

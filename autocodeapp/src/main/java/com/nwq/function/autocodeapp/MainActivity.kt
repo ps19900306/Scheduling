@@ -1,5 +1,8 @@
 package com.nwq.function.autocodeapp
 
+import android.content.ClipboardManager
+import android.content.Context
+
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -8,6 +11,7 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -15,22 +19,29 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.expand.singleClick
+import com.android.schedule.corelibrary.utils.ContextUtil
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.nwq.function.autocodeapp.adapter.FeatureKeyAdapter
 import com.nwq.function.autocodeapp.adapter.FunctionItemAdapter
 import com.nwq.function.autocodeapp.adapter.FunctionItemAdapter.Companion.BUTTON_TYPE
 import com.nwq.function.autocodeapp.data.FunctionItemInfo
 import com.nwq.function.autocodeapp.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity() : AppCompatActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
     lateinit var bind: ActivityMainBinding
+
+    val manager: ClipboardManager by lazy {
+        getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    }
+
 
     private lateinit var mFunctionItemAdapter: FunctionItemAdapter
     private val functionList by lazy {
@@ -64,6 +75,8 @@ class MainActivity : AppCompatActivity() {
 
         bind = ActivityMainBinding.inflate(LayoutInflater.from(this))
 
+        viewModel.manager = manager
+        ContextUtil.context = applicationContext
         initIndex(controller)
         setContentView(bind.root)
 
@@ -82,18 +95,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewModel.featureKeyLiveData.observe(this){
-
+          val  mFeatureKeyAdapter =
+                FeatureKeyAdapter(viewModel.featureKeyList, viewModel.colorMaps)
+          bind.colorRecycler.adapter =  mFeatureKeyAdapter
         }
+
+
     }
 
 
     private fun initIndex(controller: WindowInsetsControllerCompat) {
         val spanCount = 3
         val sd = GridSpacingItemDecoration(spanCount, 8, true)
+        //统一处理二个显示的数据
         bind.functionRecycler.layoutManager = GridLayoutManager(this, spanCount)
+
         mFunctionItemAdapter = FunctionItemAdapter(functionList)
         bind.functionRecycler.adapter = mFunctionItemAdapter
+
         bind.functionRecycler.addItemDecoration(sd)
+
 
         mFunctionItemAdapter.setOnItemClickListener { adapter, view, position ->
             val data = functionList[position]
@@ -195,13 +216,52 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun createCoordinateArea(x1: Float, y1: Float, x2: Float, y2: Float): CoordinateArea {
-        return if (x1 + x1 > x2 + y2) {
+        return if (x1 + y1 > x2 + y2) {
             CoordinateArea(x2, y2, x1, y1)
         } else {
             CoordinateArea(x1, y1, x2, y2)
         }
     }
 
+
+//    val isOpenTask by lazy {
+//        val tag = "isOpen"
+//        val list = mutableListOf<PointRule>()
+//        PointRule(CoordinatePoint(28, 11), ColorRuleRatioImpl.getSimple(221,220,202))
+//        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+//        val pointList = mutableListOf<IPR>()
+//        pointList.add(PointRule(CoordinatePoint(62, 20), ColorRuleRatioImpl.getSimple(222,221,203))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(13, 34), ColorRuleRatioImpl.getSimple(226,212,175))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(39, 45), ColorRuleRatioImpl.getSimple(230,213,159))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(13, 19), ColorRuleRatioImpl.getSimple(220,218,197))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(26, 20), ColorRuleRatioImpl.getSimple(224,219,197))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(11, 31), ColorRuleRatioImpl.getSimple(217,217,181))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(25, 34), ColorRuleRatioImpl.getSimple(224,215,176))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(30, 18), ColorRuleRatioImpl.getSimple(223,221,198))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(43, 22), ColorRuleRatioImpl.getSimple(224,220,191))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(27, 32), ColorRuleRatioImpl.getSimple(225,214,182))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(40, 35), ColorRuleRatioImpl.getSimple(224,216,170))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(48, 17), ColorRuleRatioImpl.getSimple(222,222,198))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(59, 24), ColorRuleRatioImpl.getSimple(222,218,193))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(43, 24), ColorRuleRatioImpl.getSimple(224,219,189))
+//        )
+//        pointList.add(PointRule(CoordinatePoint(55, 36), ColorRuleRatioImpl.getSimple(229,218,172))
+//        )
+//        ImgTaskImpl1(pointList, tag, correctPositionModel)
+//    }
 
 }
 

@@ -45,6 +45,7 @@
         android:id="@+id/expandBtn"
         style="@style/normalTitleTv"
         android:layout_width="80dp"
+        android:visibility="gone"
         android:text="@string/expand"
         app:layout_constraintBottom_toBottomOf="@+id/attributeText"
         app:layout_constraintStart_toEndOf="@+id/attributeText"
