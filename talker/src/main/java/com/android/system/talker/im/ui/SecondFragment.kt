@@ -1,22 +1,22 @@
 package com.android.system.talker.im.ui
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.R
 import com.android.system.talker.databinding.FragmentSecondBinding
-import com.tencent.imsdk.v2.V2TIMConversationResult
+import com.tencent.imsdk.v2.V2TIMFriendAddApplication
 import com.tencent.imsdk.v2.V2TIMFriendInfo
 import com.tencent.imsdk.v2.V2TIMFriendOperationResult
 import com.tencent.imsdk.v2.V2TIMFriendshipListener
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMValueCallback
+
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -51,13 +51,15 @@ class SecondFragment : Fragment() {
                 }
 
                 override fun onSuccess(list: List<V2TIMFriendInfo>?) {
-                    L.i("imsdk getFriendList   success ");
+                    L.i("imsdk getFriendList   success  ${list?.size}");
                 }
             })
 
 
         binding.AddFriendBtn.singleClick {
-
+            binding.userIdEdt.text.toString().let {
+                addFriend(it)
+            }
         }
 
         V2TIMManager.getFriendshipManager().setFriendListener(object : V2TIMFriendshipListener() {
@@ -73,8 +75,19 @@ class SecondFragment : Fragment() {
     }
 
 
-    fun addFriend(){
+    fun addFriend(userId:String){
+        val application = V2TIMFriendAddApplication(userId)
+        application.setAddType(V2TIMFriendInfo.V2TIM_FRIEND_TYPE_BOTH);
+        V2TIMManager.getFriendshipManager()
+            .addFriend(application, object : V2TIMValueCallback<V2TIMFriendOperationResult?> {
+                override fun onSuccess(v2TIMFriendOperationResult: V2TIMFriendOperationResult?) {
+                    L.i("imsdk addFriend   success ");
+                }
 
+                override fun onError(code: Int, desc: String) {
+                    L.i("imsdk addFriend failure, code: $code desc: $desc");
+                }
+            })
     }
 
 
