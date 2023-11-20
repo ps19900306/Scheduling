@@ -18,7 +18,7 @@ import com.tencent.imsdk.v2.V2TIMValueCallback
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class ConversationListFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
 
@@ -27,8 +27,7 @@ class FirstFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
@@ -42,7 +41,14 @@ class FirstFragment : Fragment() {
         binding.friendBtn.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
-        V2TIMManager.getConversationManager().getConversationList(0, Integer.MAX_VALUE,
+        refreshConversation()
+    }
+
+
+    private fun refreshConversation() {
+        V2TIMManager.getConversationManager().getConversationList(
+            0,
+            Integer.MAX_VALUE,
             object : V2TIMValueCallback<V2TIMConversationResult> {
                 override fun onError(code: Int, desc: String?) {
                     L.i("imsdk failure, code: $code desc: $desc");
@@ -56,8 +62,7 @@ class FirstFragment : Fragment() {
                         Log.i("imsdk", "success showName:" + v2TIMConversation.showName)
                     }
                 }
-            }
-        )
+            })
     }
 
 

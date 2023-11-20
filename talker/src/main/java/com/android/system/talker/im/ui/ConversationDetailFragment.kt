@@ -10,6 +10,8 @@ import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.R
 import com.android.system.talker.databinding.FragmentSecondBinding
+import com.android.system.talker.view.SimpleViewAdapter
+import com.android.system.talker.view.SimpleViewData
 import com.tencent.imsdk.v2.V2TIMFriendAddApplication
 import com.tencent.imsdk.v2.V2TIMFriendInfo
 import com.tencent.imsdk.v2.V2TIMFriendOperationResult
@@ -21,7 +23,7 @@ import com.tencent.imsdk.v2.V2TIMValueCallback
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class SecondFragment : Fragment() {
+class ConversationDetailFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
 
@@ -44,23 +46,14 @@ class SecondFragment : Fragment() {
             findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
         }
 
-        V2TIMManager.getFriendshipManager()
-            .getFriendList(object : V2TIMValueCallback<List<V2TIMFriendInfo>> {
-                override fun onError(code: Int, desc: String?) {
-                    L.i("imsdk failure, code: $code desc: $desc");
-                }
-
-                override fun onSuccess(list: List<V2TIMFriendInfo>?) {
-                    L.i("imsdk getFriendList   success  ${list?.size}");
-                }
-            })
-
 
         binding.AddFriendBtn.singleClick {
             binding.userIdEdt.text.toString().let {
                 addFriend(it)
             }
         }
+
+        refreshFriend()
 
         V2TIMManager.getFriendshipManager().setFriendListener(object : V2TIMFriendshipListener() {
 
@@ -82,6 +75,7 @@ class SecondFragment : Fragment() {
             .addFriend(application, object : V2TIMValueCallback<V2TIMFriendOperationResult?> {
                 override fun onSuccess(v2TIMFriendOperationResult: V2TIMFriendOperationResult?) {
                     L.i("imsdk addFriend   success ");
+                    refreshFriend()
                 }
 
                 override fun onError(code: Int, desc: String) {
@@ -90,6 +84,25 @@ class SecondFragment : Fragment() {
             })
     }
 
+
+
+    fun refreshFriend(){
+        V2TIMManager.getFriendshipManager()
+            .getFriendList(object : V2TIMValueCallback<List<V2TIMFriendInfo>> {
+                override fun onError(code: Int, desc: String?) {
+                    L.i("imsdk failure, code: $code desc: $desc");
+                }
+
+                override fun onSuccess(list: List<V2TIMFriendInfo>?) {
+                    list?.map { SimpleViewData(it.userID) }?.let {
+                        binding.recyclerview.adapter = SimpleViewAdapter(it){
+
+                        }
+                    }
+
+                }
+            })
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
