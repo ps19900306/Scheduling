@@ -10,7 +10,6 @@ import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.R
 import com.android.system.talker.databinding.FragmentFriendListBinding
-
 import com.android.system.talker.view.SimpleViewAdapter
 import com.android.system.talker.view.SimpleViewData
 import com.tencent.imsdk.v2.V2TIMFriendAddApplication
@@ -24,7 +23,7 @@ import com.tencent.imsdk.v2.V2TIMValueCallback
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class ConversationDetailFragment : Fragment() {
+class FriendListFragment : Fragment() {
 
     private var _binding: FragmentFriendListBinding? = null
 
@@ -97,7 +96,6 @@ class ConversationDetailFragment : Fragment() {
                 override fun onSuccess(list: List<V2TIMFriendInfo>?) {
                     list?.map { SimpleViewData(it.userID) }?.let {
                         binding.recyclerview.adapter = SimpleViewAdapter(it){
-
 
                         }
                     }

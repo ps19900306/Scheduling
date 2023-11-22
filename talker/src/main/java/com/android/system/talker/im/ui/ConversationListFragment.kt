@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.R
-import com.android.system.talker.databinding.FragmentFirstBinding
+import com.android.system.talker.databinding.FragmentConversationListBinding
 import com.tencent.imsdk.v2.V2TIMConversationResult
 import com.tencent.imsdk.v2.V2TIMManager
 import com.tencent.imsdk.v2.V2TIMValueCallback
@@ -20,7 +20,7 @@ import com.tencent.imsdk.v2.V2TIMValueCallback
  */
 class ConversationListFragment : Fragment() {
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentConversationListBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -30,7 +30,7 @@ class ConversationListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentConversationListBinding.inflate(inflater, container, false)
         return binding.root
 
     }

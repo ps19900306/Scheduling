@@ -9,20 +9,58 @@
         android:id="@+id/FirstFragment"
         android:name="com.android.system.talker.im.ui.ConversationListFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_conversation_list">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_GroupListFragment"
+            app:destination="@id/GroupListFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.android.system.talker.im.ui.FriendFragment"
+        android:name="com.android.system.talker.im.ui.FriendListFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        tools:layout="@layout/fragment_friend_list">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_SecondFragment_to_GroupListFragment"
+            app:destination="@id/GroupListFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/GroupListFragment"
+        android:name="com.android.system.talker.im.ui.GroupListFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_group_list">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_GroupListFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_GroupListFragment_to_GroupMemberListFragment"
+            app:destination="@id/GroupMemberListFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/GroupMemberListFragment"
+        android:name="com.android.system.talker.im.ui.GroupMemberListFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_group_member_list">
+
+        <argument
+            android:name="group_id"
+            app:argType="string" />
+
+
     </fragment>
 </navigation>
