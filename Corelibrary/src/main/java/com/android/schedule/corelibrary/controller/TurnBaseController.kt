@@ -1,10 +1,12 @@
 package com.android.schedule.corelibrary.controller
 
 import android.accessibilityservice.AccessibilityService
+import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.ClickTask
 import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.exhaustion.*
+import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
 import kotlinx.coroutines.delay
 
 /**
@@ -17,6 +19,19 @@ abstract class TurnBaseController(
     onEnd: () -> Unit,
 ) : BaseController(acService, onEnd) {
 
+    val STANDARD_CLICK_INTERVAL = 2000
+
+    val fastClickInterval
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.4)).toLong()
+
+    val normalClickInterval
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.7)).toLong()
+
+    val doubleClickInterval
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.6 + 1.6)).toLong()
+
+    val tripleClickInterval
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.8 + 2.4)).toLong()
 
     override fun start() {
 
@@ -32,6 +47,10 @@ abstract class TurnBaseController(
 
     override fun onResume() {
 
+    }
+
+    protected suspend fun click(announcementT: ImgTaskImpl1, clickArea: ClickArea) {
+        click(clickArea, announcementT.getOffsetX(), announcementT.getOffsetY())
     }
 
 
@@ -122,5 +141,5 @@ abstract class TurnBaseController(
     protected fun setOptAsynch(optAsynch: BasicOptAsynch) {
         mOptAsynch = optAsynch
     }
-    
+
 }

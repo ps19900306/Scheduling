@@ -50,4 +50,10 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="harvest_setting">收菜设置</string>
+    <string name="task_setting">际遇设置</string>
+    <string name="daily_gifts">每日优惠礼物</string>
+    <string name="supply_materials">补给物资领取</string>
+    <string name="mining_setting">挖矿设置</string>
+    <string name="local_exception_setting">本地异常设置</string>
 </resources>

@@ -7,6 +7,7 @@ import android.view.Display
 import androidx.annotation.RequiresApi
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.expand.isVertical
+import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import kotlinx.coroutines.delay
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -114,4 +115,10 @@ abstract class BaseController(
                 }
             })
     }
+
+    suspend fun BasicImgTask.check():Boolean{
+        return this.verificationRule(screenBitmap)
+    }
+
+
 }

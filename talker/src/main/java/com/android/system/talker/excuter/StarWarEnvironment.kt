@@ -1,17 +1,23 @@
-package com.nwq.function.corelib.excuter.star_wars
+package com.android.system.talker.excuter
 
-import com.nwq.function.corelib.area.CoordinateArea
-import com.nwq.function.corelib.area.CoordinatePoint
-import com.nwq.function.corelib.img.pcheck.IPR
-import com.nwq.function.corelib.img.pcheck.PointRule
-import com.nwq.function.corelib.img.pcheck.PointRules
-import com.nwq.function.corelib.img.pcheck.TwoPointRule
-import com.nwq.function.corelib.img.rule.ColorRuleImpl
-import com.nwq.function.corelib.img.rule.ColorRuleRatioImpl
-import com.nwq.function.corelib.img.rule.CompareDifferenceRuleImpl
-import com.nwq.function.corelib.img.task.*
 
-class StarWarEnvironmentK30 {
+import com.android.schedule.corelibrary.area.CoordinatePoint
+import com.android.schedule.corelibrary.click.ClickArea
+import com.android.schedule.corelibrary.img.color_rule.ColorRuleImpl
+import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
+import com.android.schedule.corelibrary.img.color_rule.CompareDifferenceRuleImpl
+import com.android.schedule.corelibrary.img.img_rule.CorrectPositionModel
+import com.android.schedule.corelibrary.img.img_rule.HpTaskImpl
+import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
+import com.android.schedule.corelibrary.img.img_rule.MultiImgContainmentTask
+import com.android.schedule.corelibrary.img.img_rule.MultiImgTask
+import com.android.schedule.corelibrary.img.point_rule.IPR
+import com.android.schedule.corelibrary.img.point_rule.PointRule
+import com.android.schedule.corelibrary.img.point_rule.PointRules
+import com.android.schedule.corelibrary.img.point_rule.TwoPointRule
+
+
+class StarWarEnvironment {
 
     val isLoadingGameT by lazy {
         val tag = "isLoadingGame"
@@ -180,7 +186,7 @@ class StarWarEnvironmentK30 {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-    val closeAnnouncementArea by lazy { CoordinateArea(1917, 90, 70, 67) }
+    val closeAnnouncementArea by lazy { ClickArea(1917, 90, 70, 67) }
 
 
     val isStartGameT by lazy {
@@ -252,7 +258,7 @@ class StarWarEnvironmentK30 {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-    val isStartGameArea by lazy { CoordinateArea(1002, 758, 419, 147) }
+    val isStartGameArea by lazy { ClickArea(1002, 758, 419, 147) }
 
 
     val isSelectRoleT by lazy {
@@ -346,7 +352,7 @@ class StarWarEnvironmentK30 {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-    val selectRoleArea by lazy { CoordinateArea(543, 313, 241, 263) }
+    val selectRoleArea by lazy { ClickArea(543, 313, 241, 263) }
 
     val isClosePositionMenuT by lazy {
         val tag = "isClosePositionMenuT"
@@ -427,7 +433,7 @@ class StarWarEnvironmentK30 {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-    val openPositionArea by lazy { CoordinateArea(96, 258, 80, 77) }
+    val openPositionArea by lazy { ClickArea(96, 258, 80, 77) }
 
 
     val isOpenPositionMenuT by lazy {
@@ -704,7 +710,7 @@ class StarWarEnvironmentK30 {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-    val closeBigMenuArea by lazy { CoordinateArea(2185, 27, 78, 73) }
+    val closeBigMenuArea by lazy { ClickArea(2185, 27, 78, 73) }
 
 
     val isSailingT by lazy {
@@ -838,7 +844,7 @@ class StarWarEnvironmentK30 {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-    val openEyeMenuArea by lazy { CoordinateArea(2197, 568, 75, 77) }
+    val openEyeMenuArea by lazy { ClickArea(2197, 568, 75, 77) }
 
 
 
@@ -986,7 +992,7 @@ class StarWarEnvironmentK30 {
             clickArea = openGiftMenuArea
         }
     }
-    val openGiftMenuArea by lazy { CoordinateArea(115, 516, 61, 65) }
+    val openGiftMenuArea by lazy { ClickArea(115, 516, 61, 65) }
 
 
     val isCanCollectGiftT by lazy {
@@ -1042,10 +1048,10 @@ class StarWarEnvironmentK30 {
     }
 
     //领取礼物
-    val openCollectGiftArea by lazy { CoordinateArea(442, 723, 335, 60) }
-    val closeCollectGiftArea by lazy { CoordinateArea(1902, 150, 60, 63) }
+    val openCollectGiftArea by lazy { ClickArea(442, 723, 335, 60) }
+    val closeCollectGiftArea by lazy { ClickArea(1902, 150, 60, 63) }
 
-    val collectChipMenuArea by lazy { CoordinateArea(1797, 153, 61, 57) }
+    val collectChipMenuArea by lazy { ClickArea(1797, 153, 61, 57) }
 
 
     val isCollectChipMenuT by lazy {
@@ -1093,9 +1099,9 @@ class StarWarEnvironmentK30 {
             clickArea = CollectChipArea
         }
     }
-    val CollectChipArea by lazy { CoordinateArea(1635, 881, 347, 89) }
-    val CloseCollectChipMenuArea by lazy { CoordinateArea(1922, 97, 58, 64) } //未点击一件领取点这里关闭
-    val hasTakeArea by lazy { CoordinateArea(816, 483, 766, 508) } //点击了一键领取点击这里关闭
+    val CollectChipArea by lazy { ClickArea(1635, 881, 347, 89) }
+    val CloseCollectChipMenuArea by lazy { ClickArea(1922, 97, 58, 64) } //未点击一件领取点这里关闭
+    val hasTakeArea by lazy { ClickArea(816, 483, 766, 508) } //点击了一键领取点击这里关闭
 
 
     //打开了机遇大菜单
@@ -1704,7 +1710,7 @@ class StarWarEnvironmentK30 {
 
 
     //pickUpTask
-    val pickUpTaskArea by lazy { CoordinateArea(566, 623, 449, 72) }
+    val pickUpTaskArea by lazy { ClickArea(566, 623, 449, 72) }
     val pickUp1ItemTask2 by lazy {
         val tag = "pickUpItem"
         val ruleRatio1 = ColorRuleRatioImpl.getSimple(
@@ -1813,7 +1819,7 @@ class StarWarEnvironmentK30 {
     }
 
 
-    val refreshTaskArea by lazy { CoordinateArea(1311, 177, 245, 88) }
+    val refreshTaskArea by lazy { ClickArea(1311, 177, 245, 88) }
 
     //是否可以刷新任务
     val isCanRefreshTask by lazy {
@@ -2026,13 +2032,13 @@ class StarWarEnvironmentK30 {
     val isQianWangTask = MultiImgContainmentTask(arrayOf(isQianWangTask1))
 
     //点击前往区域
-    val qianWangArea by lazy { CoordinateArea(1583, 853, 378, 109) }
+    val qianWangArea by lazy { ClickArea(1583, 853, 378, 109) }
 
     //点击放弃任务
-    val abandonTaskArea by lazy { CoordinateArea(1733, 197, 225, 79) }
+    val abandonTaskArea by lazy { ClickArea(1733, 197, 225, 79) }
 
 
-    val endNormalArea by lazy { CoordinateArea(2088, 332, 115, 111) }
+    val endNormalArea by lazy { ClickArea(2088, 332, 115, 111) }
 
     //右边的正常的图片
     val isEndNormalTask by lazy {
@@ -2225,11 +2231,11 @@ class StarWarEnvironmentK30 {
 
     val isConfirmDialogTask = MultiImgContainmentTask(arrayOf(isConfirmDialogTask2))
 
-    val confirmDialogEnsureArea by lazy { CoordinateArea(1960, 761, 318, 120) }
-    val confirmDialogCancelArea by lazy { CoordinateArea(622, 767, 316, 108) }
+    val confirmDialogEnsureArea by lazy { ClickArea(1960, 761, 318, 120) }
+    val confirmDialogCancelArea by lazy { ClickArea(622, 767, 316, 108) }
 
 
-    val leftDialogArea by lazy { CoordinateArea(335, 373, 617, 185) }
+    val leftDialogArea by lazy { ClickArea(335, 373, 617, 185) }
 
     //左边的对话框
     val isShowLeftDialogBox by lazy {
@@ -2302,7 +2308,7 @@ class StarWarEnvironmentK30 {
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
-    val rightDialogArea by lazy { CoordinateArea(1521, 305, 557, 177) }
+    val rightDialogArea by lazy { ClickArea(1521, 305, 557, 177) }
     val isShowRightDialogBox by lazy {
         val tag = "isShowRightDialog"
 
@@ -2468,10 +2474,10 @@ class StarWarEnvironmentK30 {
             nErrorTolerance = 2
         }
     }
-    val lockTargetArea by lazy { CoordinateArea(1391, 640, 96, 96) }
+    val lockTargetArea by lazy { ClickArea(1391, 640, 96, 96) }
 
 
-    val bottomDeviceArea by lazy { CoordinateArea(1643, 952, 92, 88) }
+    val bottomDeviceArea by lazy { ClickArea(1643, 952, 92, 88) }
     val isBottomDeviceTask by lazy {
         val tag = "isBottomDevice"
         val ruleRatio1 = ColorRuleRatioImpl.getSimple(
@@ -2499,7 +2505,7 @@ class StarWarEnvironmentK30 {
     }
 
 
-    val topDeviceArea by lazy { CoordinateArea(1650, 838, 76, 80) }
+    val topDeviceArea by lazy { ClickArea(1650, 838, 76, 80) }
     val isTopDeviceTask by lazy {
         val tag = "isTopDevice"
         val ruleRatio1 = ColorRuleRatioImpl.getSimple(
@@ -2648,9 +2654,9 @@ class StarWarEnvironmentK30 {
         )
     }
 
-    val openWarehouseItemArea by lazy { CoordinateArea(103, 146, 65, 64) }
-    val openJiYuItemArea by lazy { CoordinateArea(222, 151, 63, 56) }
-    val openCaiItemArea by lazy { CoordinateArea(343, 152, 59, 55) }
+    val openWarehouseItemArea by lazy { ClickArea(103, 146, 65, 64) }
+    val openJiYuItemArea by lazy { ClickArea(222, 151, 63, 56) }
+    val openCaiItemArea by lazy { ClickArea(343, 152, 59, 55) }
 
 
     val isNojiYuTask by lazy {
@@ -2723,9 +2729,9 @@ class StarWarEnvironmentK30 {
     }
 
 
-    val goJiyuListMenuArea by lazy { CoordinateArea(1208, 742, 650, 106) } //前往公告版
-    val startJiyuBigArea by lazy { CoordinateArea(1895, 516, 148, 147) } //这个是打开对话框
-    val openJiyuBigArea by lazy { CoordinateArea(1285, 532, 560, 109) }  //这个是打开可以进行放弃
+    val goJiyuListMenuArea by lazy { ClickArea(1208, 742, 650, 106) } //前往公告版
+    val startJiyuBigArea by lazy { ClickArea(1895, 516, 148, 147) } //这个是打开对话框
+    val openJiyuBigArea by lazy { ClickArea(1285, 532, 560, 109) }  //这个是打开可以进行放弃
 
 
     private val itemTopOffset = 378  //X 条目X轴位 378
@@ -2889,8 +2895,8 @@ class StarWarEnvironmentK30 {
         )
     }
 
-    fun getPositionArea(index: Int): CoordinateArea {
-        return CoordinateArea(431, 425 + (index * 75), 75, 59) //这个是根据2个跳的距离(左边跳转的距离)
+    fun getPositionArea(index: Int): ClickArea {
+        return ClickArea(431, 425 + (index * 75), 75, 59) //这个是根据2个跳的距离(左边跳转的距离)
     }
 
 
@@ -2967,7 +2973,7 @@ class StarWarEnvironmentK30 {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
-    val updateGameArea by lazy { CoordinateArea(1206, 663, 317, 108) }
+    val updateGameArea by lazy { ClickArea(1206, 663, 317, 108) }
 
 
     /**
@@ -3071,7 +3077,7 @@ class StarWarEnvironmentK30 {
             )
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            clickArea = CoordinateArea(1215, 653, 310, 104)
+            clickArea = ClickArea(1215, 653, 310, 104)
         }
     }
 
@@ -3159,7 +3165,7 @@ class StarWarEnvironmentK30 {
             )
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            clickArea = CoordinateArea(780, 771, 352, 125)
+            clickArea = ClickArea(780, 771, 352, 125)
         }
     }
 
