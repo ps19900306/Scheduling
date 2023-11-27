@@ -2,6 +2,7 @@ package com.android.schedule.corelibrary.img.img_rule
 
 import android.graphics.Bitmap
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRule
 import kotlin.coroutines.resume
@@ -79,7 +80,7 @@ open class ImgTaskImpl1(
         newCorrectModel.supplementalValueY = offsetY
 
         val coordinateArea = if (clickArea != null) {
-            CoordinateArea(
+            ClickArea(
                 clickArea!!.x + offsetX,
                 clickArea!!.y + offsetY,
                 clickArea!!.width,

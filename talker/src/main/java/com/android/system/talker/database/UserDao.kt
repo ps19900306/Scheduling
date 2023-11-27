@@ -7,6 +7,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import com.android.system.talker.enums.ShipType
 
 
@@ -20,7 +21,12 @@ public interface UserDao{
     @Delete
     fun delete(userDb: UserDb)
 
-    @Query("SELECT * FROM USERS")
+    @Update
+    fun update(userDb: UserDb)
+
+
+    @Query("SELECT" +
+            " * FROM USERS")
     fun list():List<UserDb>
 
     @Query("UPDATE USERS SET isChecked  = 0 ")

@@ -47,7 +47,9 @@ data class TaskDb(
         return nameResInt
     }
 
-
+    override fun getLocalType(): Int {
+        return baseLocation
+    }
 }
 
 

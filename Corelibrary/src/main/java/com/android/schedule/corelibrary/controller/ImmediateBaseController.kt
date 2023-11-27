@@ -9,8 +9,7 @@ Function description:
  这个是即时的
  */
 
-class ImmediateBaseController(acService: AccessibilityService,
-                              onEnd: () -> Unit,):BaseController(acService,onEnd) {
+class ImmediateBaseController(acService: AccessibilityService):BaseController(acService) {
 
 
     override fun start() {

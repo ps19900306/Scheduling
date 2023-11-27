@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.expand.isVertical
 import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
+import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import kotlinx.coroutines.delay
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -19,9 +20,7 @@ Function description:
  */
 
 abstract class BaseController(
-    val acService: AccessibilityService,
-    val onEnd: () -> Unit,
-) {
+    val acService: AccessibilityService, ) {
 
     var screenBitmap: Bitmap? = null
     var runSwitch = true
@@ -119,6 +118,15 @@ abstract class BaseController(
     suspend fun BasicImgTask.check():Boolean{
         return this.verificationRule(screenBitmap)
     }
+
+    fun pressBackBtn() {
+        acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+    }
+
+    fun pressHomeBtn() {
+        acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+    }
+
 
 
 }

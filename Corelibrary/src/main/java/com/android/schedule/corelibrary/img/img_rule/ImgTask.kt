@@ -22,7 +22,7 @@ abstract class ImgTask(
 
     var nErrorTolerance: Int = 0 //普通点容错
     var bErrorTolerance: Int = iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size -1 //背景点容错
-    var clickArea: CoordinateArea? = null //如果
+    var clickArea: ClickArea? = null //如果
 
 
 
@@ -71,11 +71,11 @@ abstract class ImgTask(
     }
 
     //这里有补充值
-    fun getOffsetX(): Int {
+    override fun getOffsetX(): Int {
         return correctModel?.getOffsetXSupple() ?: 0
     }
 
-    fun getOffsetY(): Int {
+    override fun getOffsetY(): Int {
         return correctModel?.getOffsetYSupple() ?: 0
     }
 

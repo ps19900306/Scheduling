@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.android.system.talker.R
+import com.android.system.talker.enums.MenuType
+import com.android.system.talker.enums.ShipType
 
 
 @Entity(tableName = "vegetables")
@@ -37,9 +39,14 @@ data class VegetableDb(
     //功能的序列号
     var sort: Int = -1,
 
-    var switch: Boolean = false
+    var switch: Boolean = false,
 
-) : BasicFunctionItem {
+    //这个用于记录之前的船的状态
+    val shipType: Int = ShipType.VEGETABLE_SHIP,
+
+    val menuType: Int = MenuType.PLANETARY_MINE
+
+    ) : BasicFunctionItem {
     override fun setSwitchStatus(b: Boolean) {
         switch = b
     }
@@ -58,6 +65,10 @@ data class VegetableDb(
 
     override fun getIdName(): Int {
         return nameResInt
+    }
+
+    override fun getLocalType(): Int {
+        return baseLocation
     }
 
 

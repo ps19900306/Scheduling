@@ -6,6 +6,8 @@ import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.ClickTask
 import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.exhaustion.*
+import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
+import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
 import kotlinx.coroutines.delay
 
@@ -16,8 +18,7 @@ Function description:
  */
 abstract class TurnBaseController(
     acService: AccessibilityService,
-    onEnd: () -> Unit,
-) : BaseController(acService, onEnd) {
+) : BaseController(acService) {
 
     val STANDARD_CLICK_INTERVAL = 2000
 
@@ -32,6 +33,11 @@ abstract class TurnBaseController(
 
     val tripleClickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.8 + 2.4)).toLong()
+
+
+    val screenshotInterval
+        get() = doubleClickInterval
+
 
     override fun start() {
 
@@ -49,8 +55,8 @@ abstract class TurnBaseController(
 
     }
 
-    protected suspend fun click(announcementT: ImgTaskImpl1, clickArea: ClickArea) {
-        click(clickArea, announcementT.getOffsetX(), announcementT.getOffsetY())
+    protected suspend fun click(imgTask: BasicImgTask, clickArea: ClickArea) {
+        click(clickArea, imgTask.getOffsetX(), imgTask.getOffsetY())
     }
 
 
@@ -141,5 +147,72 @@ abstract class TurnBaseController(
     protected fun setOptAsynch(optAsynch: BasicOptAsynch) {
         mOptAsynch = optAsynch
     }
+
+
+    protected suspend fun optTaskOperation(
+        pTask: BasicImgTask? = null,//前置图片
+        clickArea: ClickArea? = null,//点击区域
+        eTask: BasicImgTask,//结束图片，出现这样的情况结束
+        endClickArea: ClickArea? = null,//结束的店家
+        times: Int = 5
+    ): Boolean {
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (eTask.check()) {
+                endClickArea?.let { click(eTask, it) }
+                return true
+            }
+            if (pTask != null) {
+                if (pTask.check()) {
+                    clickArea?.let { click(pTask, it) }
+                }
+            } else {
+                clickArea?.let { click(it) }
+            }
+            count--
+        }
+        return false
+    }
+
+    protected suspend fun optTaskOperationList(
+        list: List<TaskOperation>,
+        endTask: BasicImgTask,
+        times: Int = 5
+    ): Boolean {
+        var flag = true
+        var count = times
+        while (flag && count > 0 && runSwitch) {
+            if (taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (endTask.check()) {
+                flag = false
+                return true
+            }
+            list.forEach { taskOpt ->
+                if (taskOpt.eTask?.check() == true) {
+                    taskOpt.endClickArea?.let { click(taskOpt.eTask, it) }
+                }
+                if (taskOpt.pTask != null) {
+                    if (taskOpt.pTask.check()) {
+                        taskOpt.clickArea?.let { click(taskOpt.pTask, it) }
+                    }
+                } else {
+                    taskOpt.clickArea?.let { click(it) }
+                }
+            }
+            count--
+        }
+        return false
+    }
+
+
+
 
 }

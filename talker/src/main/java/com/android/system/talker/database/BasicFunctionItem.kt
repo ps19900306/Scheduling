@@ -11,4 +11,6 @@ interface BasicFunctionItem {
     fun setSortNumber(i:Int)
 
     fun getIdName():Int
+
+    fun getLocalType():Int
 }

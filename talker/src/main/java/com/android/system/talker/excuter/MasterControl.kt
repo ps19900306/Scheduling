@@ -8,8 +8,7 @@ import com.android.system.talker.database.AppDataBase
 class MasterControl(
     val dataBase: AppDataBase,
     acService: AccessibilityService,
-    onEnd: () -> Unit,
-) : TurnBaseController(acService, onEnd) {
+) : TurnBaseController(acService) {
 
 
 
