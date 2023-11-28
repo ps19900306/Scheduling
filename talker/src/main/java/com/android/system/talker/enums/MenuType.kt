@@ -18,6 +18,6 @@ annotation class MenuType {
         const val TASK = 1 //际遇任务
         const val PLANETARY_MINE = 2 //  行星矿
         const val AGREEMENT = 3 //合作协议
-        const val GAME_ACTIVITY = 5 //游戏活动
+        const val GAME_ACTIVITY = 4 //游戏活动
     }
 }

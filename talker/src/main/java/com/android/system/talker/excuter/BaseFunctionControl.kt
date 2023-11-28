@@ -7,6 +7,7 @@ import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
+import com.android.system.talker.enums.MenuType
 import kotlinx.coroutines.delay
 
 abstract class BaseFunctionControl(
@@ -169,14 +170,106 @@ abstract class BaseFunctionControl(
             return true
         }
         //TODO这里需要进行换船
-        userDb.shipType=shipType
+        userDb.shipType = shipType
         dataBase.getUserDao().update(userDb)
         return false
     }
 
 
-     fun openFunctionMenu(type:Int){ //MenuType
+    fun openFunctionMenu(type: Int) { //MenuType
 
     }
 
+    protected suspend fun ensureOpenBigMenuArea(@MenuType index: Int): Boolean {
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isOpenBigMenuT.check()) {
+                when (index) {
+                    MenuType.WAREHOUSE -> {
+                        if (en.isOpenWarehouseBigMenuTask.check()) {
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.c()
+                        }
+                    }
+
+                    MenuType.TASK -> {
+                        if (en.isOpenJiyuBigMenuTask.check()) {
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.c()
+                        }
+                    }
+
+                    MenuType.PLANETARY_MINE -> {
+                        if (en.isOpenCaiBigMenuTask.check()) {
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.c()
+                        }
+                    }
+                    MenuType.AGREEMENT -> {
+                        if(en.isOpenAgreementTask.check()){
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.c()
+                        }
+                    }
+                    MenuType.GAME_ACTIVITY -> {
+                         if(en.isOpenGameActivityTask.check()){
+                             flag = false
+                         } else {
+                             en.closeBigMenuArea.c()
+                         }
+                    }
+
+                }
+            } else {
+                if(userDb.shortcutMenu1 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+
+                }else if(userDb.shortcutMenu2 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+
+                }else if(userDb.shortcutMenu3 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+
+                }else if(userDb.shortcutMenu4 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+
+                }else{
+
+                }
+
+                //这里判断有图行再进行点击防止被阻挡导致错点
+//                when (index) {
+//                    QuickBigMenu.WAREHOUSE_BIG_MUNU_P -> {
+//                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                            //en.openWarehouseItemArea.clickA()
+//                        }
+//                    }
+//
+//                    QuickBigMenu.TASK_BIG_MUNU_P -> {
+//                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+//                            en.openJiYuItemArea.clickA()
+//                        }
+//                    }
+//
+//                    QuickBigMenu.PLANETARY_ORE_MUNU_P -> {
+//                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+//                            en.openCaiItemArea.clickA()
+//                        }
+//                    }
+//                }
+            }
+            count--
+        }
+        return !flag
+    }
+
+
+    suspend fun ClickArea.c() {
+        click(this)
+    }
 }

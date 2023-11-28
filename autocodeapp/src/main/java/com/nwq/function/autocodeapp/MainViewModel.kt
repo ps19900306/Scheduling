@@ -198,6 +198,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun autoCodeNormalRichImg(previewView: PreviewImageView) {
+        previewView.clearPoint()
         viewModelScope.launch(Dispatchers.IO) {
             val result = mutableListOf<FeatureCoordinatePoint>()
             //这里每个模块单独找颜色
