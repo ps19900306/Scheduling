@@ -3,6 +3,7 @@ package com.nwq.function.autocodeapp
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.graphics.Bitmap
+import android.text.style.BackgroundColorSpan
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -166,12 +167,11 @@ class MainViewModel : ViewModel() {
             colorMaps.forEach { it ->
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value)
-                    val list = getPointBlockList(it.value, 5, false)
-                    result.addAll(obtainFeatureImg(list,8))
+                    val list = getPointBlockList(it.value, 5, true)
+                    result.addAll(obtainFeatureImg(list, 8,true))
+                    Log.i(TAG, "自动处理图片完成")
                 }
-                Log.i(TAG, "自动处理图片完成")
             }
-
 
 
             GenerateCodeUtils.autoImgCode(
@@ -198,17 +198,33 @@ class MainViewModel : ViewModel() {
     }
 
 
-    private fun addBackground(result: MutableList<FeatureCoordinatePoint>) {
+    private fun addBackground(result: MutableList<FeatureCoordinatePoint>, count: Int) {
+        if (count <= 0)
+            return
+
         val backList = mutableListOf<FeatureCoordinatePoint>()
         if (result.size > 1) {
-            for (i in result.indices step result.size / 2) {
-                result.getOrNull(i)?.let { point ->
+            if (count == 1) {
+                result.getOrNull(result.size / 2)?.let { point ->
                     val list = getPointSurround(point, 5, true, false, true)
                     list.find { it.mFeaturePointKey == darkestKey }?.let { darkPoint ->
                         darkPoint.isIdentificationKey = true
                         darkPoint.mDirectorPointKey = point.mFeaturePointKey
                         darkPoint.mDirectorPoint = point
                         backList.add(darkPoint)
+                    }
+                }
+            } else {
+                val step = if (count < result.size) (result.size / count) else 1
+                for (i in result.indices step step) {
+                    result.getOrNull(i)?.let { point ->
+                        val list = getPointSurround(point, 5, true, false, true)
+                        list.find { it.mFeaturePointKey == darkestKey }?.let { darkPoint ->
+                            darkPoint.isIdentificationKey = true
+                            darkPoint.mDirectorPointKey = point.mFeaturePointKey
+                            darkPoint.mDirectorPoint = point
+                            backList.add(darkPoint)
+                        }
                     }
                 }
             }
@@ -429,14 +445,21 @@ class MainViewModel : ViewModel() {
      */
     private fun obtainFeatureImg(
         list: List<FeaturePointBlock>,
-        distance: Int = 8
+        distance: Int = 8,
+        addBack: Boolean = false,
     ): MutableList<FeatureCoordinatePoint> {
         val keyPointList = mutableListOf<FeatureCoordinatePoint>()
 
-        list.forEach {
-            obtainBoundaryPoint(it, distance, keyPointList)
+        val addBackgroundCount = if (!addBack) {
+            0
+        } else if (list.size > 1) {
+            1
+        } else {
+            3
         }
-        addBackground(keyPointList)
+        list.forEach {
+            obtainBoundaryPoint(it, distance, keyPointList, addBackgroundCount)
+        }
         return keyPointList
     }
 
@@ -445,6 +468,7 @@ class MainViewModel : ViewModel() {
         block: FeaturePointBlock,
         distance: Int,
         keyPointList: MutableList<FeatureCoordinatePoint>,
+        addBackgroundCount: Int = 0
     ) {
 
         val result = mutableListOf<FeatureCoordinatePoint>()
@@ -458,10 +482,11 @@ class MainViewModel : ViewModel() {
             for (i in distance..block.perimeter - distance step distance) {
                 block.boundaryList.filter { it.sequenceNumber == i }.forEach { point ->
                     //如果附近的点已经添加则不进行添加
-                    if (keyPointList.find { abs(it.x - point.x) < 4 && abs(it.y - point.y) < 4 }
-                        == null
-                    )
+                    if (keyPointList.find { abs(it.x - point.x) < 4 && abs(it.y - point.y) < 4 } == null
+                        && result.find { abs(it.x - point.x) < 4 && abs(it.y - point.y) < 4 } == null
+                    ) {
                         result.add(point)
+                    }
                 }
             }
         }
@@ -474,20 +499,26 @@ class MainViewModel : ViewModel() {
             }
 
 
+        val result1 = mutableListOf<FeatureCoordinatePoint>()
         //这里添加深度最高的点，是为了考虑透
         result.forEach { point ->
             if (!point.isAdd) {
                 val list = getPointSurround(
-                    point, 2, true, true
-                ).filter { it.mFeaturePointKey == point.mFeaturePointKey  && it.blockNumber == point.blockNumber}
+                    point, 1, true, true
+                ).filter { it.mFeaturePointKey == point.mFeaturePointKey && it.blockNumber == point.blockNumber }
                     .sortedByDescending { it.positionType }
                 list.getOrNull(0)?.let {
+
                     it.sequenceNumber = point.sequenceNumber
-                    keyPointList.add(it)
+                    result1.add(it)
                 }
                 list.forEach { it.isAdd = true }
             }
         }
+
+        addBackground(result1, addBackgroundCount)
+        keyPointList.addAll(result1)
+
 
     }
 
