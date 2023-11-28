@@ -168,9 +168,62 @@ class MainViewModel : ViewModel() {
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value)
                     val list = getPointBlockList(it.value, 5, true)
-                    result.addAll(obtainFeatureImg(list, 8,true))
+                    result.addAll(obtainFeatureImg(list, 8, true))
                     Log.i(TAG, "自动处理图片完成")
                 }
+            }
+
+
+            GenerateCodeUtils.autoImgCode(
+                coordinateArea?.x ?: 0,
+                coordinateArea?.y ?: 0,
+                result
+            )?.let { resultStr ->
+                val clipData = ClipData.newPlainText("autoCode", resultStr)
+                manager.setPrimaryClip(clipData)
+
+                runOnUI {
+                    result.forEach {
+                        previewView.addDot(
+                            CoordinatePoint(
+                                (coordinateArea?.x ?: 0) + it.x,
+                                (coordinateArea?.y ?: 0) + it.y
+                            )
+                        )
+                    }
+                }
+            }
+            Log.i(TAG, "自动代码生成完成")
+        }
+    }
+
+    fun autoCodeNormalRichImg(previewView: PreviewImageView) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = mutableListOf<FeatureCoordinatePoint>()
+            //这里每个模块单独找颜色
+            colorMaps.forEach { it ->
+                if (it.key.isChecked) {
+                    markBoundaryInternal(it.value)
+                    val list = getPointBlockList(it.value, 5, true)
+
+                    if (list.size > 3) {
+                        list.sortedByDescending {
+                            it.perimeter
+                        }.apply {
+                            for (i in 0..2) {
+                                list.getOrNull(i)?.let { pointBlock ->
+                                    obtainInternalPoint(pointBlock, result)
+                                }
+                            }
+                        }
+                    } else {
+                        list.forEach { pointBlock ->
+                            obtainInternalPoint(pointBlock, result)
+                        }
+                    }
+                    Log.i(TAG, "自动处理图片完成")
+                }
+
             }
 
 
@@ -463,6 +516,7 @@ class MainViewModel : ViewModel() {
         return keyPointList
     }
 
+
     //取外部点
     private fun obtainBoundaryPoint(
         block: FeaturePointBlock,
@@ -532,5 +586,9 @@ class MainViewModel : ViewModel() {
         }
 
     }
+
+
+
+
 
 }

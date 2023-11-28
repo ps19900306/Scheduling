@@ -62,6 +62,9 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.characters_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.shadow_feature_extraction, BUTTON_TYPE),
+            FunctionItemInfo(R.string.rich_color_image_recognition, BUTTON_TYPE),
+
+
 
             FunctionItemInfo(R.string.add_rectangle_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.add_circular_click_are, BUTTON_TYPE),
@@ -179,11 +182,15 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.characters_feature_extraction -> {
-
+                    viewModel.autoCodeNormalImg(bind.previewView)
                 }
 
                 R.string.shadow_feature_extraction -> {
 
+                }
+
+                R.string.rich_color_image_recognition->{
+                    viewModel.autoCodeNormalRichImg(bind.previewView)
                 }
 
                 R.string.add_rectangle_click_are -> {//矩形点击区域
@@ -355,6 +362,7 @@ class MainActivity() : AppCompatActivity() {
         )
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
+
 
 
 
