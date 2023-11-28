@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.nwq.function.autocodeapp.R
 
@@ -28,10 +29,13 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
 
     val dotList = mutableListOf<CoordinatePoint>()
     var areaList = mutableListOf<CoordinateArea>()
+    var lineList = mutableListOf<CoordinateLine>()
 
     //单区域预览
     var oblongArea: CoordinateArea? = null
 
+    //单区域预览
+    var oblongLine: CoordinateLine? = null
 
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PreviewImageView)
@@ -58,6 +62,10 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         invalidate()
     }
 
+    fun setLine(line: CoordinateLine?) {
+        oblongLine = line
+        invalidate()
+    }
 
     fun addArea(coordinate: CoordinateArea): Boolean {
         if (!areaList.contains(coordinate)) {
@@ -66,6 +74,20 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
             return true
         }
         return false
+    }
+
+    fun addLine(line: CoordinateLine): Boolean {
+        if (!lineList.contains(line)) {
+            lineList.add(line)
+            invalidate()
+            return true
+        }
+        return false
+    }
+
+    fun clearLine() {
+        oblongLine = null
+        areaList.clear()
     }
 
     fun removeArea(coordinate: CoordinateArea) {
@@ -78,8 +100,6 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
     fun clearArea() {
         areaList.clear()
     }
-
-
 
 
     fun addDot(coordinate: CoordinatePoint): Boolean {
@@ -136,6 +156,13 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
                 )
             }
         }
+        lineList.forEach { line ->
+            canvas.drawLine(line.startP.xF, line.startP.yF, line.endP.xF, line.endP.yF, oblongPaint)
+        }
+
+        oblongLine?.let { line ->
+            canvas.drawLine(line.startP.xF, line.startP.yF, line.endP.xF, line.endP.yF, oblongPaint)
+        }
 
         oblongArea?.let {
             canvas.drawRect(
@@ -146,8 +173,9 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
                 oblongPaint
             )
         }
-    }
 
+
+    }
 
 
 }

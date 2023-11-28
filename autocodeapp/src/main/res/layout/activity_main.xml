@@ -60,6 +60,8 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
+
+
     <Button
         android:id="@+id/btnOk"
         app:layout_constraintTop_toTopOf="parent"
@@ -67,8 +69,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
         android:text="@string/ok"
+        android:alpha="0.5"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        />
+        android:visibility="visible" />
+
+    <EditText
+        android:id="@+id/edit"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/btnOk"
+        app:layout_constraintEnd_toStartOf="@+id/btnOk"
+        android:alpha="0.5"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible"/>
+
+    <Button
+        android:id="@+id/addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/btnOk"
+        app:layout_constraintStart_toEndOf="@+id/btnOk"
+        android:text="@string/add"
+        android:layout_marginStart="8dp"
+        android:alpha="0.5"
+        android:visibility="visible"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

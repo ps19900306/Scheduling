@@ -19,6 +19,7 @@
     <string name="characters_feature_extraction">文字识别</string>
     <string name="shadow_feature_extraction">阴影识别</string>
     <string name="rich_color_image_recognition">富颜色图片识别</string>
+    <string name="calculate_space">测距</string>
 
     <string name="merge">合并</string>
     <string name="background">设为底色</string>

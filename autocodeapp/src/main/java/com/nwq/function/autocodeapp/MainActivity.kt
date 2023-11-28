@@ -63,6 +63,7 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.characters_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.shadow_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.rich_color_image_recognition, BUTTON_TYPE),
+            FunctionItemInfo(R.string.calculate_space, BUTTON_TYPE),
 
 
 
@@ -192,6 +193,12 @@ class MainActivity() : AppCompatActivity() {
                 R.string.rich_color_image_recognition->{
                     viewModel.autoCodeNormalRichImg(bind.previewView)
                 }
+                R.string.calculate_space->{
+                    bind.functionGroup.isVisible = false
+                    bind.btnOk.isVisible = true
+                    bind.previewView.invalidate()
+                    nowMode = R.string.calculate_space
+                }
 
                 R.string.add_rectangle_click_are -> {//矩形点击区域
 
@@ -239,8 +246,8 @@ class MainActivity() : AppCompatActivity() {
                         bind.previewView.setArea(coordinateArea)
                     } else if (ev.action == MotionEvent.ACTION_UP) {
                         val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y)
-                        bind.previewView.setArea(null)
-                        bind.previewView.addArea(coordinateArea)
+                        bind.previewView.setArea(coordinateArea)
+                        //bind.previewView.addArea(coordinateArea)
                         viewModel.coordinateArea = coordinateArea
                         isFirst = true
                     }
