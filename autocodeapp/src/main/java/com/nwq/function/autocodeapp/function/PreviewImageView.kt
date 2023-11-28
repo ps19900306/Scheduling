@@ -80,6 +80,8 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
     }
 
 
+
+
     fun addDot(coordinate: CoordinatePoint): Boolean {
         if (!dotList.contains(coordinate)) {
             dotList.add(coordinate)
@@ -145,4 +147,7 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
             )
         }
     }
+
+
+
 }

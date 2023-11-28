@@ -14,6 +14,7 @@ object GenerateCodeUtils {
         val datums = data.subList(0, 1)
         val points = data.subList(1, data.size)
 
+
         //这里进行代码生成
         val stringBuilder = StringBuilder()
         stringBuilder.append("val isOpenTask by lazy {  \n")
@@ -66,9 +67,9 @@ object GenerateCodeUtils {
             val redD = getOffset(mDirectorPoint!!.red, red)
             val greenD = getOffset(mDirectorPoint!!.green, green)
             val blueD = getOffset(mDirectorPoint!!.blue, blue)
-            "TwoPointRule(CoordinatePoint(${sx + mDirectorPoint!!.x}, ${sy + mDirectorPoint!!.y}),CoordinatePoint(${sx + x}, ${sy + y}), CompareDifferenceRuleImpl.getSimple($redD,$greenD,$blueD))"
+            "TwoPointRule(CoordinatePoint(${sx + mDirectorPoint!!.x}, ${sy + mDirectorPoint!!.y}),CoordinatePoint(${sx + x}, ${sy + y}), CompareDifferenceRuleImpl.getSimple($redD,$greenD,$blueD)) // sequenceNumber:${mDirectorPoint!!.sequenceNumber}sequenceNumber blockNumber: $${mDirectorPoint!!.blockNumber}  positionType:$${mDirectorPoint!!.blockNumber} \n"
         } else {
-            "PointRule(CoordinatePoint(${sx + x}, ${sy + y}), ColorRuleRatioImpl.getSimple(${red},${green},${blue}))\n"
+            "PointRule(CoordinatePoint(${sx + x}, ${sy + y}), ColorRuleRatioImpl.getSimple(${red},${green},${blue}))\n // sequenceNumber:$sequenceNumber blockNumber: $blockNumber  positionType:$positionType \n"
         }
     }
 }

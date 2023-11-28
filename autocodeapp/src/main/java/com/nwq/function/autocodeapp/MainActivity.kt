@@ -11,14 +11,21 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.expand.singleClick
+import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
+import com.android.schedule.corelibrary.img.color_rule.CompareDifferenceRuleImpl
+import com.android.schedule.corelibrary.img.img_rule.CorrectPositionModel
+import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
+import com.android.schedule.corelibrary.img.point_rule.IPR
+import com.android.schedule.corelibrary.img.point_rule.PointRule
+import com.android.schedule.corelibrary.img.point_rule.TwoPointRule
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -58,6 +65,7 @@ class MainActivity() : AppCompatActivity() {
 
             FunctionItemInfo(R.string.add_rectangle_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.add_circular_click_are, BUTTON_TYPE),
+            FunctionItemInfo(R.string.background, BUTTON_TYPE),
 
             )
     }
@@ -92,12 +100,18 @@ class MainActivity() : AppCompatActivity() {
                     nowMode = NORMAL_MODE
                     viewModel.preprocessData()
                 }
+
+                R.string.preview -> {
+                    bind.functionGroup.isVisible = true
+                    bind.btnOk.isVisible = false
+                    nowMode = NORMAL_MODE
+                }
             }
         }
-        viewModel.featureKeyLiveData.observe(this){
-          val  mFeatureKeyAdapter =
+        viewModel.featureKeyLiveData.observe(this) {
+            val mFeatureKeyAdapter =
                 FeatureKeyAdapter(viewModel.featureKeyList, viewModel.colorMaps)
-          bind.colorRecycler.adapter =  mFeatureKeyAdapter
+            bind.colorRecycler.adapter = mFeatureKeyAdapter
         }
 
 
@@ -123,6 +137,7 @@ class MainActivity() : AppCompatActivity() {
                     controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
                     controller.hide(WindowInsetsCompat.Type.navigationBars())
                 }
+
                 R.string.select_picture -> {
                     PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
                         .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
@@ -141,33 +156,47 @@ class MainActivity() : AppCompatActivity() {
                             override fun onCancel() {}
                         })
                 }
+
                 R.string.select_critical_area -> {//这里选择关键区域
                     bind.functionGroup.isVisible = false
                     bind.btnOk.isVisible = true
                     nowMode = R.string.select_critical_area
                 }
-                R.string.preview -> {
 
+                R.string.preview -> {
+                    bind.functionGroup.isVisible = false
+                    bind.btnOk.isVisible = true
+                    bind.previewView.invalidate()
+                    nowMode = R.string.preview
                 }
+
                 R.string.merge -> {
                     viewModel.mergeKey()
                 }
+
                 R.string.image_feature_extraction -> {
-                    viewModel.autoCodeNormalImg()
+                    viewModel.autoCodeNormalImg(bind.previewView)
                 }
+
                 R.string.characters_feature_extraction -> {
 
                 }
+
                 R.string.shadow_feature_extraction -> {
 
                 }
+
                 R.string.add_rectangle_click_are -> {//矩形点击区域
 
                 }
+
                 R.string.add_circular_click_are -> {//点击圆形区域
 
                 }
 
+                R.string.background->{
+                    viewModel.setDarkestFeature()
+                }
             }
         }
     }
@@ -224,44 +253,99 @@ class MainActivity() : AppCompatActivity() {
     }
 
 
-//    val isOpenTask by lazy {
-//        val tag = "isOpen"
-//        val list = mutableListOf<PointRule>()
-//        PointRule(CoordinatePoint(28, 11), ColorRuleRatioImpl.getSimple(221,220,202))
-//        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
-//        val pointList = mutableListOf<IPR>()
-//        pointList.add(PointRule(CoordinatePoint(62, 20), ColorRuleRatioImpl.getSimple(222,221,203))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(13, 34), ColorRuleRatioImpl.getSimple(226,212,175))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(39, 45), ColorRuleRatioImpl.getSimple(230,213,159))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(13, 19), ColorRuleRatioImpl.getSimple(220,218,197))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(26, 20), ColorRuleRatioImpl.getSimple(224,219,197))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(11, 31), ColorRuleRatioImpl.getSimple(217,217,181))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(25, 34), ColorRuleRatioImpl.getSimple(224,215,176))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(30, 18), ColorRuleRatioImpl.getSimple(223,221,198))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(43, 22), ColorRuleRatioImpl.getSimple(224,220,191))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(27, 32), ColorRuleRatioImpl.getSimple(225,214,182))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(40, 35), ColorRuleRatioImpl.getSimple(224,216,170))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(48, 17), ColorRuleRatioImpl.getSimple(222,222,198))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(59, 24), ColorRuleRatioImpl.getSimple(222,218,193))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(43, 24), ColorRuleRatioImpl.getSimple(224,219,189))
-//        )
-//        pointList.add(PointRule(CoordinatePoint(55, 36), ColorRuleRatioImpl.getSimple(229,218,172))
-//        )
-//        ImgTaskImpl1(pointList, tag, correctPositionModel)
-//    }
+    val isOpenTask by lazy {
+        val tag = "isOpen"
+        val list = mutableListOf<PointRule>()
+        PointRule(CoordinatePoint(139, 48), ColorRuleRatioImpl.getSimple(225,234,233))
+        // sequenceNumber:0 blockNumber: 0  positionType:2
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(143, 48), ColorRuleRatioImpl.getSimple(226,235,234))
+            // sequenceNumber:8 blockNumber: 0  positionType:2
+        )
+        pointList.add(PointRule(CoordinatePoint(139, 49), ColorRuleRatioImpl.getSimple(225,234,233))
+            // sequenceNumber:8 blockNumber: 0  positionType:2
+        )
+        pointList.add(PointRule(CoordinatePoint(151, 47), ColorRuleRatioImpl.getSimple(226,235,232))
+            // sequenceNumber:16 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(147, 47), ColorRuleRatioImpl.getSimple(226,235,232))
+            // sequenceNumber:16 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(159, 47), ColorRuleRatioImpl.getSimple(226,235,234))
+            // sequenceNumber:24 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(155, 47), ColorRuleRatioImpl.getSimple(226,235,234))
+            // sequenceNumber:24 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(170, 47), ColorRuleRatioImpl.getSimple(227,236,235))
+            // sequenceNumber:38 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(137, 58), ColorRuleRatioImpl.getSimple(217,240,234))
+            // sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(143, 58), ColorRuleRatioImpl.getSimple(224,236,234))
+            // sequenceNumber:8 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(141, 61), ColorRuleRatioImpl.getSimple(224,236,236))
+            // sequenceNumber:8 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(151, 58), ColorRuleRatioImpl.getSimple(221,236,233))
+            // sequenceNumber:16 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(149, 61), ColorRuleRatioImpl.getSimple(222,237,232))
+            // sequenceNumber:16 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(159, 58), ColorRuleRatioImpl.getSimple(222,237,234))
+            // sequenceNumber:24 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(157, 61), ColorRuleRatioImpl.getSimple(222,237,234))
+            // sequenceNumber:24 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(173, 59), ColorRuleRatioImpl.getSimple(220,235,232))
+            // sequenceNumber:38 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(137, 68), ColorRuleRatioImpl.getSimple(215,240,236))
+            // sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(143, 68), ColorRuleRatioImpl.getSimple(219,238,234))
+            // sequenceNumber:8 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(138, 74), ColorRuleRatioImpl.getSimple(217,233,230))
+            // sequenceNumber:8 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(150, 71), ColorRuleRatioImpl.getSimple(221,237,234))
+            // sequenceNumber:16 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(146, 74), ColorRuleRatioImpl.getSimple(221,231,230))
+            // sequenceNumber:16 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(158, 71), ColorRuleRatioImpl.getSimple(221,237,234))
+            // sequenceNumber:24 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(154, 74), ColorRuleRatioImpl.getSimple(221,231,232))
+            // sequenceNumber:24 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(166, 71), ColorRuleRatioImpl.getSimple(222,238,235))
+            // sequenceNumber:32 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(162, 74), ColorRuleRatioImpl.getSimple(222,232,233))
+            // sequenceNumber:32 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(173, 72), ColorRuleRatioImpl.getSimple(217,236,232))
+            // sequenceNumber:39 blockNumber: 2  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(139, 48),CoordinatePoint(139, 43), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:0sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(159, 58),CoordinatePoint(159, 54), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:24sequenceNumber blockNumber: $1  positionType:$1
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
+
+
+
+
 
 }
 

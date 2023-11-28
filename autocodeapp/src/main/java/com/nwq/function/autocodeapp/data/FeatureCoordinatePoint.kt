@@ -3,6 +3,7 @@ package com.nwq.function.autocodeapp.data
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import com.android.schedule.corelibrary.area.CoordinatePoint
 
 /**
 create by: 86136
@@ -18,7 +19,6 @@ class FeatureCoordinatePoint(
         const val NONE = -1
         const val BOUNDARY_TYPE = 0
         const val INTERNAL_TYPE = 1
-
     }
 
     constructor(colorInt: Int) : this(
@@ -34,7 +34,7 @@ class FeatureCoordinatePoint(
     var mFeaturePointKey: FeaturePointKey? = null
     var mOriginalPointKey: FeaturePointKey? = null //如果进行了合并，这个是原来的的值
     var mDirectorPointKey: FeaturePointKey? = null //如果进行了取背景色这个是 进行取背景色的色值
-    var mDirectorPoint:FeatureCoordinatePoint?=null
+    var mDirectorPoint: FeatureCoordinatePoint? = null
 
     //这里又来排顺序的
     var hasContinuousSet = false //是否被设置 边界点或者内部点
@@ -49,7 +49,7 @@ class FeatureCoordinatePoint(
         hasContinuousSet = true
         hasFindRound = true
         startX = x
-        startY = x
+        startY = y
         sequenceNumber = 0
     }
 
@@ -60,7 +60,7 @@ class FeatureCoordinatePoint(
         if (!hasContinuousSet) { //如果没有被设置则进行设置
             previousPoint = p
             hasContinuousSet = true
-            startX = p.startY
+            startX = p.startX
             startY = p.startY
             sequenceNumber = p.sequenceNumber + 1
         }
@@ -80,7 +80,7 @@ class FeatureCoordinatePoint(
         if (!hasContinuousSet) { //如果没有被设置则进行设置
             previousPoint = p
             hasContinuousSet = true
-            startX = p.startY
+            startX = p.startX
             startY = p.startY
             sequenceNumber = p.sequenceNumber + 1
         }

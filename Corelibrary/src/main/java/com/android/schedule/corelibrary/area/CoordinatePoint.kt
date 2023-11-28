@@ -7,7 +7,7 @@ create time: 2023/5/5 10:43
 Function description:
 这里不用INT,这样生成的坐标带小数，触发点击更好用
  */
-class CoordinatePoint(private var x: Float, private var y: Float) {
+open class CoordinatePoint(private var x: Float, private var y: Float) {
 
 
     constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat()) {
