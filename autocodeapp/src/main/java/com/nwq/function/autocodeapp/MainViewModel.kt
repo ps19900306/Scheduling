@@ -9,7 +9,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
+import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.expand.runOnUI
 import com.nwq.function.autocodeapp.data.FeatureCoordinatePoint
 import com.nwq.function.autocodeapp.data.FeaturePointBlock
@@ -181,7 +183,6 @@ class MainViewModel : ViewModel() {
             )?.let { resultStr ->
                 val clipData = ClipData.newPlainText("autoCode", resultStr)
                 manager.setPrimaryClip(clipData)
-
                 runOnUI {
                     result.forEach {
                         previewView.addDot(
@@ -196,6 +197,7 @@ class MainViewModel : ViewModel() {
             Log.i(TAG, "自动代码生成完成")
         }
     }
+
 
     fun autoCodeNormalRichImg(previewView: PreviewImageView) {
         previewView.clearPoint()
@@ -249,6 +251,67 @@ class MainViewModel : ViewModel() {
             }
             Log.i(TAG, "自动代码生成完成")
         }
+    }
+
+    fun builderClickArea(coordinateArea: CoordinateArea?, list: List<CoordinateLine>) {
+        val builder = StringBuilder()
+        if (list.isEmpty() && coordinateArea == null) {
+            return
+        } else if (list.isEmpty()) {
+            coordinateArea!!.apply {
+                builder.append("val clickArea = ClickArea($xI,$yI,$width,$height,$isRound)")
+            }
+        } else if (coordinateArea == null) {
+            var spaceDistance = 0
+            var distanceCount = 0
+            builder.append("//")
+            list.forEach {
+                val desX = abs(it.startP.xI - it.endP.xI)
+                val desY = abs(it.startP.yI - it.endP.yI)
+                distanceCount += it.distance
+                spaceDistance += Math.max(desX, desY)
+                builder.append("desX:$desX desY:$desY  distance${it.distance}")
+
+            }
+            builder.append("\n")
+            builder.append("val standardDistance = ${spaceDistance / distanceCount}")
+
+        } else {
+            var spaceDistance = 0
+            var distanceCount = 0
+            builder.append("//")
+            list.forEach {
+                val desX = abs(it.startP.xI - it.endP.xI)
+                val desY = abs(it.startP.yI - it.endP.yI)
+                distanceCount += it.distance
+                spaceDistance += Math.max(desX, desY)
+                builder.append("desX:$desX desY:$desY  distance${it.distance}")
+
+            }
+            builder.append("\n")
+            //builder.append("val standardDistance = ${spaceDistance / distanceCount}")
+
+            var isLan = false
+            list.getOrNull(0)?.let {
+                val desX = abs(it.startP.xI - it.endP.xI)
+                val desY = abs(it.startP.yI - it.endP.yI)
+                if (desX > desY) {
+                    isLan = true
+                }
+            }
+
+            coordinateArea.apply {
+                builder.append(" fun getClickArea(offset: Int): ClickArea {")
+                if(isLan){
+                    builder.append("return  ClickArea($xI + offset* ${spaceDistance / distanceCount},$yI,$width,$height,$isRound)")
+                }else{
+                    builder.append("return  ClickArea($xI,$yI+ offset* ${spaceDistance / distanceCount},$width,$height,$isRound)")
+                }
+                builder.append("}")
+            }
+        }
+        val clipData = ClipData.newPlainText("autoCode", builder.toString())
+        manager.setPrimaryClip(clipData)
     }
 
 
@@ -587,9 +650,6 @@ class MainViewModel : ViewModel() {
         }
 
     }
-
-
-
 
 
 }

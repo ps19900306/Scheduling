@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
@@ -100,18 +101,54 @@ class MainActivity() : AppCompatActivity() {
             when (nowMode) {
                 R.string.select_critical_area -> {
                     bind.functionGroup.isVisible = true
-                    bind.btnOk.isVisible = false
+                    bind.optGroup.isVisible = false
                     nowMode = NORMAL_MODE
                     viewModel.preprocessData()
                 }
 
                 R.string.preview -> {
                     bind.functionGroup.isVisible = true
-                    bind.btnOk.isVisible = false
+                    bind.optGroup.isVisible = false
                     nowMode = NORMAL_MODE
+                }
+                R.string.calculate_space->{
+                    bind.functionGroup.isVisible = true
+                    bind.optGroup.isVisible = false
+                    nowMode = NORMAL_MODE
+                    viewModel.builderClickArea(bind.previewView.oblongArea,bind.previewView.lineList)
+                }
+                R.string.add_rectangle_click_are->{
+                    bind.functionGroup.isVisible = true
+                    bind.optGroup.isVisible = false
+                    nowMode = NORMAL_MODE
+                    viewModel.builderClickArea(bind.previewView.oblongArea,bind.previewView.lineList)
+                }
+                R.string.add_circular_click_are->{
+                    bind.functionGroup.isVisible = true
+                    bind.optGroup.isVisible = false
+                    nowMode = NORMAL_MODE
+                    viewModel.builderClickArea(bind.previewView.oblongArea,bind.previewView.lineList)
                 }
             }
         }
+
+        bind.addBtn.singleClick {
+            when (nowMode) {
+                R.string.calculate_space ->{
+                    bind.previewView.oblongLine?.let {
+                        it.distance  = bind.edit.text.toString().toIntOrNull()?:1
+                        bind.previewView.addLine(it)
+                    }
+                }
+                R.string.add_rectangle_click_are ->{
+                    nowMode= R.string.calculate_space
+                }
+                R.string.add_circular_click_are ->{
+                    nowMode= R.string.calculate_space
+                }
+            }
+        }
+
         viewModel.featureKeyLiveData.observe(this) {
             val mFeatureKeyAdapter =
                 FeatureKeyAdapter(viewModel.featureKeyList, viewModel.colorMaps)
@@ -194,18 +231,30 @@ class MainActivity() : AppCompatActivity() {
                     viewModel.autoCodeNormalRichImg(bind.previewView)
                 }
                 R.string.calculate_space->{
+                    bind.previewView.setArea(null)
+                    bind.previewView.clearLine()
                     bind.functionGroup.isVisible = false
-                    bind.btnOk.isVisible = true
+                    bind.optGroup.isVisible = true
                     bind.previewView.invalidate()
                     nowMode = R.string.calculate_space
                 }
 
                 R.string.add_rectangle_click_are -> {//矩形点击区域
-
+                    bind.previewView.setArea(null)
+                    bind.previewView.clearLine()
+                    bind.functionGroup.isVisible = false
+                    bind.optGroup.isVisible = true
+                    bind.previewView.invalidate()
+                    nowMode = R.string.add_rectangle_click_are
                 }
 
                 R.string.add_circular_click_are -> {//点击圆形区域
-
+                    bind.previewView.setArea(null)
+                    bind.previewView.clearLine()
+                    bind.functionGroup.isVisible = false
+                    bind.optGroup.isVisible = true
+                    bind.previewView.invalidate()
+                    nowMode = R.string.add_circular_click_are
                 }
 
                 R.string.background->{
@@ -253,16 +302,73 @@ class MainActivity() : AppCompatActivity() {
                     }
                 }
             }
+            R.string.calculate_space -> {
+                if (isFirst) {
+                    if (ev.action == MotionEvent.ACTION_DOWN) {
+                        starX = ev.x
+                        starY = ev.y
+                        isFirst = false
+                    }
+                } else {
+                    if (ev.action == MotionEvent.ACTION_MOVE) {
+                        val coordinateLine = CoordinateLine(CoordinatePoint(starX, starY),CoordinatePoint(ev.x, ev.y) )
+                        bind.previewView.setLine(coordinateLine)
+                    } else if (ev.action == MotionEvent.ACTION_UP) {
+                        val coordinateLine = CoordinateLine(CoordinatePoint(starX, starY),CoordinatePoint(ev.x, ev.y) )
+                        bind.previewView.setLine(coordinateLine)
+                        isFirst = true
+                    }
+                }
+            }
+            R.string.add_rectangle_click_are->{
+                if (isFirst) {
+                    if (ev.action == MotionEvent.ACTION_DOWN) {
+                        starX = ev.x
+                        starY = ev.y
+                        isFirst = false
+                    }
+                } else {
+                    if (ev.action == MotionEvent.ACTION_MOVE) {
+                        val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y)
+                        bind.previewView.setArea(coordinateArea)
+                    } else if (ev.action == MotionEvent.ACTION_UP) {
+                        val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y)
+                        bind.previewView.setArea(coordinateArea)
+                        viewModel.coordinateArea = coordinateArea
+                        isFirst = true
+                    }
+                }
+            }
+            R.string.add_circular_click_are->{
+                if (isFirst) {
+                    if (ev.action == MotionEvent.ACTION_DOWN) {
+                        starX = ev.x
+                        starY = ev.y
+                        isFirst = false
+                    }
+                } else {
+                    if (ev.action == MotionEvent.ACTION_MOVE) {
+                        val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y,true)
+                        bind.previewView.setArea(coordinateArea)
+                    } else if (ev.action == MotionEvent.ACTION_UP) {
+                        val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y,true)
+                        bind.previewView.setArea(coordinateArea)
+                        viewModel.coordinateArea = coordinateArea
+                        isFirst = true
+                    }
+                }
+            }
+
         }
         return super.onTouchEvent(ev)
     }
 
 
-    private fun createCoordinateArea(x1: Float, y1: Float, x2: Float, y2: Float): CoordinateArea {
+    private fun createCoordinateArea(x1: Float, y1: Float, x2: Float, y2: Float,b: Boolean = false): CoordinateArea {
         return if (x1 + y1 > x2 + y2) {
-            CoordinateArea(x2, y2, x1, y1)
+            CoordinateArea(x2, y2, x1, y1,b)
         } else {
-            CoordinateArea(x1, y1, x2, y2)
+            CoordinateArea(x1, y1, x2, y2,b)
         }
     }
 

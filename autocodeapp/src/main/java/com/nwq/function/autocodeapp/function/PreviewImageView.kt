@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
+import com.android.schedule.corelibrary.click.ClickArea
 import com.nwq.function.autocodeapp.R
 
 /**
@@ -165,17 +166,27 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         }
 
         oblongArea?.let {
-            canvas.drawRect(
-                it.x.toFloat(),
-                it.y.toFloat(),
-                (it.x + it.width).toFloat(),
-                (it.y + it.height).toFloat(),
-                oblongPaint
-            )
+            if (it.isRound) {
+                canvas.drawCircle(
+                    it.x.toFloat() + it.width / 2,
+                    it.y.toFloat() + it.height / 2,
+                    (it.width.coerceAtMost(it.height) / 2).toFloat(),
+                    oblongPaint
+                )
+            } else {
+                canvas.drawRect(
+                    it.x.toFloat(),
+                    it.y.toFloat(),
+                    (it.x + it.width).toFloat(),
+                    (it.y + it.height).toFloat(),
+                    oblongPaint
+                )
+            }
+
         }
-
-
     }
+
+
 
 
 }

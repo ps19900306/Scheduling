@@ -94,5 +94,14 @@
         android:alpha="0.5"
         android:visibility="visible"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/optGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:constraint_referenced_ids="btnOk,edit,addBtn"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

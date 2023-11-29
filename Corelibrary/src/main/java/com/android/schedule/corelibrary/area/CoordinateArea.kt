@@ -49,7 +49,8 @@ open class CoordinateArea(
         y: Float,
         endX: Float,
         endY: Float,
-    ) : this(x.toInt(), y.toInt(), (endX - x).toInt(), (endY - y).toInt())
+        b:Boolean=false
+    ) : this(x.toInt(), y.toInt(), (endX - x).toInt(), (endY - y).toInt(),b)
 //
 //    fun setOffset(ofstX: Int, ofstY: Int) {
 //        offsetX = ofstX
