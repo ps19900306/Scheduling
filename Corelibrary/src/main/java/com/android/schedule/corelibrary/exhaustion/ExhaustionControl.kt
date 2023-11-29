@@ -311,6 +311,15 @@ object ExhaustionControl : BasicExhaustion() {
     private fun getOptSlide(random: Double): Int {
         return when (NOW_STATE) {
             FULL_STATE -> {
+                if (random > 0.95) {
+                    OptSlide.SLIDE_ONE
+                } else if (random > 0.995) {
+                    OptSlide.SLIDE_TWO
+                } else {
+                    OptSlide.NOT_SLIDE
+                }
+            }
+            SLIGHT_EXHAUSTION -> {
                 if (random > 0.9) {
                     OptSlide.SLIDE_ONE
                 } else if (random > 0.99) {
@@ -319,17 +328,8 @@ object ExhaustionControl : BasicExhaustion() {
                     OptSlide.NOT_SLIDE
                 }
             }
-            SLIGHT_EXHAUSTION -> {
-                if (random > 0.85) {
-                    OptSlide.SLIDE_ONE
-                } else if (random > 0.985) {
-                    OptSlide.SLIDE_TWO
-                } else {
-                    OptSlide.NOT_SLIDE
-                }
-            }
             SOME_EXHAUSTION -> {
-                if (random > 0.8) {
+                if (random > 0.85) {
                     OptSlide.SLIDE_ONE
                 } else if (random > 0.98) {
                     OptSlide.SLIDE_TWO
@@ -338,9 +338,9 @@ object ExhaustionControl : BasicExhaustion() {
                 }
             }
             VERY_EXHAUSTING -> {
-                if (random > 0.7) {
+                if (random > 0.8) {
                     OptSlide.SLIDE_ONE
-                } else if (random > 0.95) {
+                } else if (random > 0.97) {
                     OptSlide.SLIDE_TWO
                 } else {
                     OptSlide.NOT_SLIDE
