@@ -166,6 +166,7 @@ class MainViewModel : ViewModel() {
 
     //生成普通图片特征值
     fun autoCodeNormalImg(previewView: PreviewImageView) {
+        previewView.clearPoint()
         viewModelScope.launch(Dispatchers.IO) {
             val result = mutableListOf<FeatureCoordinatePoint>()
             //这里每个模块单独找颜色
@@ -177,8 +178,6 @@ class MainViewModel : ViewModel() {
                     Log.i(TAG, "自动处理图片完成")
                 }
             }
-
-
             val str = if (findArea != null) {
                 GenerateCodeUtils.autoImgCodeArea(
                     coordinateArea?.x ?: 0,

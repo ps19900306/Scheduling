@@ -62,7 +62,7 @@ object GenerateCodeUtils {
         if (findArea.height < 6) {
             val rangX = findArea.width / 2
             val startX = findArea.x + rangX
-                return autoImgCode(startX, sy, data, rangX, 3,true)
+            return autoImgCode(startX, sy, data, rangX, 3,true)
         } else if (findArea.width < 6) {
             val rangY = findArea.height / 2
             val startY = findArea.y + rangY

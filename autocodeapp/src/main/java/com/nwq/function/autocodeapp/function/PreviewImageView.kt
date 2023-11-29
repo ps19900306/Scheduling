@@ -46,7 +46,7 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         )
         val oblongSize = typedArray.getDimension(R.styleable.PreviewImageView_oblongSize, 1F)
         val oblongColor = typedArray.getColor(
-            R.styleable.PreviewImageView_oblongColor, ContextCompat.getColor(context, R.color.black)
+            R.styleable.PreviewImageView_oblongColor, ContextCompat.getColor(context, R.color.green)
         )
         mDotPaint = Paint()
         mDotPaint.color = dotColor
@@ -88,7 +88,7 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
 
     fun clearLine() {
         oblongLine = null
-        areaList.clear()
+        lineList.clear()
     }
 
     fun removeArea(coordinate: CoordinateArea) {

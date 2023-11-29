@@ -165,20 +165,23 @@ abstract class BaseFunctionControl(
         return !flag
     }
 
-    protected fun checkShip(shipType: Int): Boolean {
+    protected suspend fun checkShip(shipType: Int): Boolean {
         if (userDb.shipType == shipType) {
             return true
         }
+
+        ensureOpenBigMenuArea(MenuType.WAREHOUSE)
+
         //TODO这里需要进行换船
+
+
         userDb.shipType = shipType
         dataBase.getUserDao().update(userDb)
         return false
     }
 
 
-    fun openFunctionMenu(type: Int) { //MenuType
 
-    }
 
     protected suspend fun ensureOpenBigMenuArea(@MenuType index: Int): Boolean {
         var flag = true
@@ -213,55 +216,59 @@ abstract class BaseFunctionControl(
                             en.closeBigMenuArea.c()
                         }
                     }
+
                     MenuType.AGREEMENT -> {
-                        if(en.isOpenAgreementTask.check()){
+                        if (en.isOpenAgreementTask.check()) {
                             flag = false
                         } else {
                             en.closeBigMenuArea.c()
                         }
                     }
+
                     MenuType.GAME_ACTIVITY -> {
-                         if(en.isOpenGameActivityTask.check()){
-                             flag = false
-                         } else {
-                             en.closeBigMenuArea.c()
-                         }
+                        if (en.isOpenGameActivityTask.check()) {
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.c()
+                        }
                     }
 
                 }
-            } else {
-                if(userDb.shortcutMenu1 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+            } else if (en.isOpenMenuMenu.check()) {//这里点开了打菜单
+                when (index) {
+                    MenuType.WAREHOUSE -> {
+                        en.openWarehouseMenuArea.c()
+                    }
 
-                }else if(userDb.shortcutMenu2 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+                    MenuType.TASK -> {
+                        en.openTaskMenuArea.c()
+                    }
 
-                }else if(userDb.shortcutMenu3 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+                    MenuType.PLANETARY_MINE -> {
+                        en.openPlanetaryMenuArea.c()
+                    }
 
-                }else if(userDb.shortcutMenu4 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()){
+                    MenuType.AGREEMENT -> {
+                        en.openAgreementMenuArea.c()
+                    }
 
-                }else{
-
+                    MenuType.GAME_ACTIVITY -> {
+                        en.openActivityMenuArea.c()
+                    }
                 }
-
-                //这里判断有图行再进行点击防止被阻挡导致错点
-//                when (index) {
-//                    QuickBigMenu.WAREHOUSE_BIG_MUNU_P -> {
-//                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
-                            //en.openWarehouseItemArea.clickA()
-//                        }
-//                    }
-//
-//                    QuickBigMenu.TASK_BIG_MUNU_P -> {
-//                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
-//                            en.openJiYuItemArea.clickA()
-//                        }
-//                    }
-//
-//                    QuickBigMenu.PLANETARY_ORE_MUNU_P -> {
-//                        if (en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
-//                            en.openCaiItemArea.clickA()
-//                        }
-//                    }
-//                }
+            } else {
+                if (userDb.shortcutMenu1 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                    en.getQuickMenuArea(0).c()
+                } else if (userDb.shortcutMenu2 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                    en.getQuickMenuArea(1).c()
+                } else if (userDb.shortcutMenu3 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                    en.getQuickMenuArea(2).c()
+                } else if (userDb.shortcutMenu4 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                    en.getQuickMenuArea(3).c()
+                } else {
+                    //这里点击
+                    en.openMenuMenuArea.c()
+                }
             }
             count--
         }

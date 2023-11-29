@@ -48,6 +48,8 @@ class HarvestFunction(
         if (!result) return
 
         checkShip(vegetableDb.shipType)
+
+
     }
 
     suspend fun generalControlMethod() {
@@ -69,8 +71,7 @@ class HarvestFunction(
 
 
     private suspend fun launchAllVegetables() {
-          openFunctionMenu(vegetableDb.menuType)
-
+          ensureOpenBigMenuArea(vegetableDb.menuType)
 
 
 //        spReo.lastStatus = SpConstant.VEGETABLE
