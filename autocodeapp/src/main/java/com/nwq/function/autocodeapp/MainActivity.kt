@@ -23,6 +23,7 @@ import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
 import com.android.schedule.corelibrary.img.color_rule.CompareDifferenceRuleImpl
 import com.android.schedule.corelibrary.img.img_rule.CorrectPositionModel
+import com.android.schedule.corelibrary.img.img_rule.FindImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
 import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRule
@@ -57,6 +58,8 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.full_screen, BUTTON_TYPE),
             FunctionItemInfo(R.string.select_picture, BUTTON_TYPE),
             FunctionItemInfo(R.string.select_critical_area, BUTTON_TYPE),
+            FunctionItemInfo(R.string.find_image_area, BUTTON_TYPE),
+
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
 
             FunctionItemInfo(R.string.merge, BUTTON_TYPE),
@@ -71,6 +74,7 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.add_rectangle_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.add_circular_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.background, BUTTON_TYPE),
+
 
             )
     }
@@ -105,7 +109,12 @@ class MainActivity() : AppCompatActivity() {
                     nowMode = NORMAL_MODE
                     viewModel.preprocessData()
                 }
-
+                R.string.find_image_area->{
+                    bind.functionGroup.isVisible = true
+                    bind.optGroup.isVisible = false
+                    nowMode = NORMAL_MODE
+                    viewModel.findArea = bind.previewView.oblongArea
+                }
                 R.string.preview -> {
                     bind.functionGroup.isVisible = true
                     bind.optGroup.isVisible = false
@@ -203,6 +212,11 @@ class MainActivity() : AppCompatActivity() {
                     bind.btnOk.isVisible = true
                     nowMode = R.string.select_critical_area
                 }
+                R.string.find_image_area->{
+                    bind.functionGroup.isVisible = false
+                    bind.btnOk.isVisible = true
+                    nowMode = R.string.find_image_area
+                }
 
                 R.string.preview -> {
                     bind.functionGroup.isVisible = false
@@ -282,7 +296,7 @@ class MainActivity() : AppCompatActivity() {
             return super.onTouchEvent(ev)
         }
         when (nowMode) {
-            R.string.select_critical_area -> {
+            R.string.select_critical_area,R.string.find_image_area-> {
                 if (isFirst) {
                     if (ev.action == MotionEvent.ACTION_DOWN) {
                         starX = ev.x
@@ -296,8 +310,10 @@ class MainActivity() : AppCompatActivity() {
                     } else if (ev.action == MotionEvent.ACTION_UP) {
                         val coordinateArea = createCoordinateArea(starX, starY, ev.x, ev.y)
                         bind.previewView.setArea(coordinateArea)
-                        //bind.previewView.addArea(coordinateArea)
-                        viewModel.coordinateArea = coordinateArea
+
+                        if(R.string.select_critical_area == nowMode){
+                            viewModel.coordinateArea = coordinateArea
+                        }
                         isFirst = true
                     }
                 }
@@ -482,6 +498,45 @@ class MainActivity() : AppCompatActivity() {
 
 
 
+
+    val isOpen22Task by lazy {
+        val tag = "isOpen"
+        val pr  = PointRule(CoordinatePoint(483, 683), ColorRuleRatioImpl.getSimple(146,146,148))
+        // sequenceNumber:0 blockNumber: 0  positionType:0
+        val findArea = CoordinateArea(465,180,39,776)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(487, 688), ColorRuleRatioImpl.getSimple(170,171,173))
+            // sequenceNumber:8 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(476, 695), ColorRuleRatioImpl.getSimple(155,156,158))
+            // sequenceNumber:16 blockNumber: 0  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(484, 695), ColorRuleRatioImpl.getSimple(153,154,156))
+            // sequenceNumber:16 blockNumber: 0  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(491, 695), ColorRuleRatioImpl.getSimple(161,161,163))
+            // sequenceNumber:23 blockNumber: 0  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(476, 695),CoordinatePoint(477, 693), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:16sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(PointRule(CoordinatePoint(484, 697), ColorRuleRatioImpl.getSimple(125,126,128))
+            // sequenceNumber:0 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(479, 704), ColorRuleRatioImpl.getSimple(145,145,145))
+            // sequenceNumber:8 blockNumber: 4  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(479, 704),CoordinatePoint(479, 701), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:8sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(PointRule(CoordinatePoint(485, 702), ColorRuleRatioImpl.getSimple(125,126,128))
+            // sequenceNumber:0 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(491, 704), ColorRuleRatioImpl.getSimple(157,157,159))
+            // sequenceNumber:7 blockNumber: 7  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(491, 704),CoordinatePoint(491, 707), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:7sequenceNumber blockNumber: $7  positionType:$7
+        )
+        FindImgTask(pr, findArea,pointList, tag)
+    }
 
 
 

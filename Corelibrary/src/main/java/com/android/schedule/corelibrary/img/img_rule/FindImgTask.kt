@@ -21,7 +21,7 @@ open class FindImgTask(
 
     private var correctArea = false
 
-    private var findImgPoint: CoordinatePoint? = null //找到图片后的点
+    private var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
 
     //这里是为了修正寻找的区域防止下标越界
     fun correctArea(imgWidth: Int, imgHeight: Int) {
@@ -74,6 +74,10 @@ open class FindImgTask(
 
 
     private fun findImgByColor(bitmap: Bitmap, area: CoordinateArea): Boolean {
+        //这里修正图片是为了保证不月觉
+        if(!correctArea)
+            correctArea(bitmap.width,bitmap.height)
+
         val pixels = IntArray(area.width * area.height)
         bitmap.getPixels(
             pixels,
@@ -95,6 +99,14 @@ open class FindImgTask(
             }
         }
         return false
+    }
+
+    override fun getOffsetX():Int{
+       return findImgPoint?.xI?:pr.point.xI  - pr.point.xI
+    }
+
+    override fun getOffsetY():Int{
+        return findImgPoint?.yI?:pr.point.yI  - pr.point.yI
     }
 
     private fun findPoint(area: CoordinateArea, offset: Int): CoordinatePoint {

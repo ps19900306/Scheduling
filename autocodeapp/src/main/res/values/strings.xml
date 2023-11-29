@@ -30,6 +30,7 @@
     <string name="inverse_value">底色取反</string>
     <string name="find_the_image_area">找图区域</string>
     <string name="take_point_interval">总取点数</string>
+    <string name="find_image_area">找图区域</string>
 
     <string name="accessibility_service_label">Schedule</string>
     <string name="accessibility_service_description">Schedule</string>

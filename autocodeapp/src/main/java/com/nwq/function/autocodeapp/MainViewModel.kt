@@ -32,6 +32,9 @@ class MainViewModel : ViewModel() {
     //选择区域
     var coordinateArea: CoordinateArea? = null
 
+    //选择区域
+    var findArea: CoordinateArea? = null
+
 
     /**
      * 这里对数据进行最简单的基本处理
@@ -176,11 +179,21 @@ class MainViewModel : ViewModel() {
             }
 
 
-            GenerateCodeUtils.autoImgCode(
-                coordinateArea?.x ?: 0,
-                coordinateArea?.y ?: 0,
-                result
-            )?.let { resultStr ->
+            val str = if (findArea != null) {
+                GenerateCodeUtils.autoImgCodeArea(
+                    coordinateArea?.x ?: 0,
+                    coordinateArea?.y ?: 0,
+                    result,
+                    findArea!!,
+                )
+            } else {
+                GenerateCodeUtils.autoImgCode(
+                    coordinateArea?.x ?: 0,
+                    coordinateArea?.y ?: 0,
+                    result
+                )
+            }
+            str?.let { resultStr ->
                 val clipData = ClipData.newPlainText("autoCode", resultStr)
                 manager.setPrimaryClip(clipData)
                 runOnUI {
@@ -230,14 +243,23 @@ class MainViewModel : ViewModel() {
             }
 
 
-            GenerateCodeUtils.autoImgCode(
-                coordinateArea?.x ?: 0,
-                coordinateArea?.y ?: 0,
-                result
-            )?.let { resultStr ->
+            val str = if (findArea != null) {
+                GenerateCodeUtils.autoImgCodeArea(
+                    coordinateArea?.x ?: 0,
+                    coordinateArea?.y ?: 0,
+                    result,
+                    findArea!!,
+                )
+            } else {
+                GenerateCodeUtils.autoImgCode(
+                    coordinateArea?.x ?: 0,
+                    coordinateArea?.y ?: 0,
+                    result
+                )
+            }
+            str?.let { resultStr ->
                 val clipData = ClipData.newPlainText("autoCode", resultStr)
                 manager.setPrimaryClip(clipData)
-
                 runOnUI {
                     result.forEach {
                         previewView.addDot(
@@ -302,9 +324,9 @@ class MainViewModel : ViewModel() {
 
             coordinateArea.apply {
                 builder.append(" fun getClickArea(offset: Int): ClickArea {")
-                if(isLan){
+                if (isLan) {
                     builder.append("return  ClickArea($xI + offset* ${spaceDistance / distanceCount},$yI,$width,$height,$isRound)")
-                }else{
+                } else {
                     builder.append("return  ClickArea($xI,$yI+ offset* ${spaceDistance / distanceCount},$width,$height,$isRound)")
                 }
                 builder.append("}")
