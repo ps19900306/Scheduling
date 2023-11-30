@@ -42,7 +42,7 @@ abstract class BaseFunctionControl(
         var flag = true
         var count = 20
         while (flag && count > 0 && runSwitch) {
-            val bitmap = takeScreen(doubleClickInterval)
+            val bitmap = takeScreen(screenshotInterval)
             if (bitmap.isLandscape()) {
                 delay(tripleClickInterval)
                 if (en.isLoadingGameT.check()) {
@@ -99,7 +99,7 @@ abstract class BaseFunctionControl(
         val maxCount = 3
         var count = maxCount
         while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(doubleClickInterval)) {
+            if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
                 return false
             }
@@ -147,7 +147,7 @@ abstract class BaseFunctionControl(
         var flag = true
         var count = 20
         while (flag && count > 0 && runSwitch) {
-            if (taskScreenL(doubleClickInterval)) {
+            if (taskScreenL(screenshotInterval)) {
                 runSwitch = false
                 return false
             }
@@ -203,7 +203,7 @@ abstract class BaseFunctionControl(
 
         //这里可以进行校验
         delay(tripleClickInterval)
-        return if (en.isActivationLocationList.get(shipLocation).check()) {
+        return if (en.isActivationLocationList[shipLocation].check()) {
             userDb.shipType = shipType
             dataBase.getUserDao().update(userDb)
             true

@@ -30,6 +30,9 @@ class HarvestFunction(
 
 
     override suspend fun startFunction() {
+        var result = intoGame()
+        if (!result) return
+
         if (needHarvestVegetables()) {
             harvestVegetables()
         } else if (needAddTime()) {
@@ -43,33 +46,45 @@ class HarvestFunction(
 
 
     private suspend fun harvestVegetables() {
-        var result = intoGame()
+        var result = returnSpaceStation(vegetableDb.baseLocation)
         if (!result) return
 
-        result = returnSpaceStation(vegetableDb.baseLocation)
+        result = checkShip(vegetableDb.shipType)
+        if (!result) return
+        delay(doubleClickInterval)
+
+        result = theOutCheck()
         if (!result) return
 
-        checkShip(vegetableDb.shipType)
+        result = addVegetablesTime()
+        if (!result) return
+
 
     }
 
-    private suspend fun addVegetablesTime():Boolean{
+    private suspend fun addVegetablesTime(): Boolean {
         var flag = true
         var count = 20
         while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(doubleClickInterval)) {
+            if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
                 return false
             }
-            if (en.isInSpaceStationT.check()) {
-                return true
+            if (en.isConfirmDialogTask.check()) {
+                en.confirmDialogEnsureArea.c()
+                flag = false
+            } else if (en.isInSpaceStationT.check()) {
+                ensureOpenBigMenuArea(vegetableDb.menuType)
+            } else if (en.isOpenCaiBigMenuTask.check()) {
+                if (en.isShowAddCelestialTask.check()) {
+                    en.addCelestialArea.c()
+                } else {
+                    selectEntryItem(0, normalClickInterval)
+                }
             }
+            count--
         }
-        ensureOpenBigMenuArea(vegetableDb.menuType)
-        delay(normalClickInterval)
-        selectEntryItem(0,normalClickInterval)
-
-        return true
+        return !flag
     }
 
 
@@ -79,24 +94,23 @@ class HarvestFunction(
                 LAUNCH_RESOURCE_LAUNCH -> {
                     launchAllVegetables()
                 }
+
                 GO_TO_COLLECT_NAVIGATION_MONITORING -> {
-                   // goCollectNavigationMonitoring()
+                    // goCollectNavigationMonitoring()
                 }
+
                 MONITORING_RETURN_STATUS -> {
-                  //  monitoringReturnStatus()
+                    //  monitoringReturnStatus()
                 }
             }
         }
     }
 
 
-
     private suspend fun launchAllVegetables() {
-          ensureOpenBigMenuArea(vegetableDb.menuType)
+        ensureOpenBigMenuArea(vegetableDb.menuType)
 
     }
-
-
 
 
     fun needHarvestVegetables(): Boolean {
@@ -113,22 +127,21 @@ class HarvestFunction(
         if (position < 5) {
             en.getCelestialClickArea(position).c()
         } else {
-            optClickTask( en.celestialSwipeArea(delayTime).toClickTask())
+            optClickTask(en.celestialSwipeArea(delayTime).toClickTask())
             delay(delayTime)
             en.celestialClick6Area.c()
         }
     }
 
     fun getCelestialClickArea(offset: Int): ClickArea {
-        return if (offset<=3){
-            ClickArea(102,193+ offset* 198,456,183,false)
-        }else if(offset==4){
-            ClickArea(129,1001,387,77,false)
-        }else { //这里其实是等于5
-            ClickArea(129,1001,387,77,false)
+        return if (offset <= 3) {
+            ClickArea(102, 193 + offset * 198, 456, 183, false)
+        } else if (offset == 4) {
+            ClickArea(129, 1001, 387, 77, false)
+        } else { //这里其实是等于5
+            ClickArea(129, 1001, 387, 77, false)
         }
     }
-
 
 
 }
