@@ -591,7 +591,7 @@ class MainViewModel : ViewModel() {
         result.forEach { point ->
             if (!point.isAdd) {
                 val list = getPointSurround(
-                    point, 1, true, true
+                    point, 2, true, true
                 ).filter { it.mFeaturePointKey == point.mFeaturePointKey && it.blockNumber == point.blockNumber }
                     .sortedByDescending { it.positionType }
                 list.getOrNull(0)?.let {

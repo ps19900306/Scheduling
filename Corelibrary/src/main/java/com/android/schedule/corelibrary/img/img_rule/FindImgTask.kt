@@ -75,8 +75,8 @@ open class FindImgTask(
 
     private fun findImgByColor(bitmap: Bitmap, area: CoordinateArea): Boolean {
         //这里修正图片是为了保证不月觉
-        if(!correctArea)
-            correctArea(bitmap.width,bitmap.height)
+//        if(!correctArea)
+//            correctArea(bitmap.width,bitmap.height)
 
         val pixels = IntArray(area.width * area.height)
         bitmap.getPixels(
@@ -86,7 +86,7 @@ open class FindImgTask(
             area.x,
             area.y,
             area.width,
-            area.width
+            area.height
         )
         pixels.forEachIndexed { offset, colorInt ->
             if (pr.rule.optInt(colorInt)) {

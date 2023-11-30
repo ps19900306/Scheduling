@@ -1,10 +1,12 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.database.VegetableDb
+import kotlinx.coroutines.delay
 
 class HarvestFunction(
     val vegetableDb: VegetableDb,
@@ -31,7 +33,7 @@ class HarvestFunction(
         if (needHarvestVegetables()) {
             harvestVegetables()
         } else if (needAddTime()) {
-
+            addVegetablesTime()
         } else {
             end()
         }
@@ -49,8 +51,27 @@ class HarvestFunction(
 
         checkShip(vegetableDb.shipType)
 
-
     }
+
+    private suspend fun addVegetablesTime():Boolean{
+        var flag = true
+        var count = 20
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(doubleClickInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isInSpaceStationT.check()) {
+                return true
+            }
+        }
+        ensureOpenBigMenuArea(vegetableDb.menuType)
+        delay(normalClickInterval)
+        selectEntryItem(0,normalClickInterval)
+
+        return true
+    }
+
 
     suspend fun generalControlMethod() {
         while (runSwitch) {
@@ -73,50 +94,6 @@ class HarvestFunction(
     private suspend fun launchAllVegetables() {
           ensureOpenBigMenuArea(vegetableDb.menuType)
 
-
-//        spReo.lastStatus = SpConstant.VEGETABLE
-//        if (celestialList.isEmpty()) {
-//            onComplete.invoke()
-//            return
-//        }
-//        changeTrainShip()
-//        unloadingCargo()
-//
-//        ensureOpenMenuArea(CaiPosition)
-//        selectEntryItem(nowCelestialCount, doubleClickInterval)
-//        delay(normalClickInterval)
-//
-//
-//        click(constant.addTimeArea, normalClickInterval)
-//        takeScreen(normalClickInterval)
-//        ensureCloseDetermine()
-//        spReo.resourcesAddTime = System.currentTimeMillis()
-//        delay(normalClickInterval)
-//
-//
-//        launchResources(celestialList[nowCelestialCount], normalClickInterval)
-//        spReo.resourcesCollectTime = System.currentTimeMillis()
-//        takeScreen(normalClickInterval)
-//        ensureCloseDetermine()
-//
-//        click(constant.setTargetArea, doubleClickInterval)
-//        var flag = true
-//        var count = 20 * 20
-//        while (flag && count > 0 && runSwitch) {
-//            if (!takeScreen(doubleClickInterval)) {
-//                runSwitch = false
-//                return
-//            }
-//            if (visual.judeIsLaunchComplete(celestialList[nowCelestialCount])) {
-//                Timber.d("发射完成 startCollectVegetables HarvestVegetableController NWQ_ 2023/3/14");
-//                flag = false
-//            }
-//            count--
-//        }
-//        theOutCheck()
-//        click(constant.eraseWarningArea, normalClickInterval)
-//        hasLaunch = true
-//        nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     }
 
 
@@ -134,10 +111,21 @@ class HarvestFunction(
     private suspend fun selectEntryItem(position: Int, delayTime: Long = 0) {
         L.i("$position selectEntryItem HarvestVegetableController NWQ_ 2023/3/14");
         if (position < 5) {
-           // click(constant.celestialBodyItem(position), delayTime)
+            en.getCelestialClickArea(position).c()
         } else {
-          //  swipe(constant.celestialSwipeArea(delayTime))
-          //  click(constant.celestialBodyItem(position), doubleClickInterval)
+            optClickTask( en.celestialSwipeArea(delayTime).toClickTask())
+            delay(delayTime)
+            en.celestialClick6Area.c()
+        }
+    }
+
+    fun getCelestialClickArea(offset: Int): ClickArea {
+        return if (offset<=3){
+            ClickArea(102,193+ offset* 198,456,183,false)
+        }else if(offset==4){
+            ClickArea(129,1001,387,77,false)
+        }else { //这里其实是等于5
+            ClickArea(129,1001,387,77,false)
         }
     }
 

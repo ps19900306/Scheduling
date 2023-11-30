@@ -45,5 +45,9 @@ open class CoordinatePoint(private var x: Float, private var y: Float) {
         (SetConstant.uiAdaptation?.getHeightRadio() ?: 1.0) * y
     }
 
+    override fun toString(): String {
+        return "CoordinatePoint(x=$x, y=$y)"
+    }
+
 
 }

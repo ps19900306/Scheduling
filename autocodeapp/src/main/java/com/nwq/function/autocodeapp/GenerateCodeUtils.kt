@@ -67,10 +67,10 @@ object GenerateCodeUtils {
         val datum = datums.get(0)
         // 当找寻的上下浮动很小的时候对范围进行修正 以减少不必要的找寻
         if (findArea.height < 6) {
-            findArea.y = datum.y + sy - 3
+            findArea.y = datum.y+sy - 3
             findArea.height = 7
         } else if (findArea.width < 6) {
-            findArea.x = datum.x + sx - 3
+            findArea.x = datum.x+sx - 3
             findArea.width = 7
         }
         //这里进行代码生成

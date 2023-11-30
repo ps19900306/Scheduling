@@ -25,8 +25,8 @@ open class ImgTaskImpl1(
         val result = if (correctModel == null) {
             checkImgTask(
                 bitmap = bitmap,
-                nErrorTolerance = nErrorTolerance,
-                bErrorTolerance = bErrorTolerance
+                nE = nErrorTolerance,
+                bE= bErrorTolerance
             )
         } else {
             optClickTasks(bitmap, correctModel)

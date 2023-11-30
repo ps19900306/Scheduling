@@ -181,9 +181,9 @@ abstract class BaseFunctionControl(
 
         //找到需要换船的位置
         val shipLocation = queryShipLocation(shipType)
-        if (shipLocation < 0) {
+        if (shipLocation < 0) {//这里表示没有找到船
             return false
-        } else if (shipLocation == 0) {
+        } else if (shipLocation == 0) {//表示一开始位置就正确的
             userDb.shipType = shipType
             dataBase.getUserDao().update(userDb)
             return true
@@ -192,7 +192,7 @@ abstract class BaseFunctionControl(
         //这里点击飞船的位置
         en.getShipArea(shipLocation).c()
 
-        //
+        //这里点击激活
         if (en.isActivationShipTask.check()) {
             click(
                 en.activationShipArea,
@@ -201,11 +201,15 @@ abstract class BaseFunctionControl(
             )
         }
 
-        //
-
-        userDb.shipType = shipType
-        dataBase.getUserDao().update(userDb)
-        return false
+        //这里可以进行校验
+        delay(tripleClickInterval)
+        return if (en.isActivationLocationList.get(shipLocation).check()) {
+            userDb.shipType = shipType
+            dataBase.getUserDao().update(userDb)
+            true
+        }else{
+            false
+        }
     }
 
     private suspend fun queryShipLocation(shipType: Int): Int {
