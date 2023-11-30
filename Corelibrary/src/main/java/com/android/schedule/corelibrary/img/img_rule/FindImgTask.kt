@@ -102,11 +102,11 @@ open class FindImgTask(
     }
 
     override fun getOffsetX():Int{
-       return findImgPoint?.xI?:pr.point.xI  - pr.point.xI
+       return (findImgPoint?.xI?:pr.point.xI)  - pr.point.xI
     }
 
     override fun getOffsetY():Int{
-        return findImgPoint?.yI?:pr.point.yI  - pr.point.yI
+        return (findImgPoint?.yI?:pr.point.yI)  - pr.point.yI
     }
 
     private fun findPoint(area: CoordinateArea, offset: Int): CoordinatePoint {

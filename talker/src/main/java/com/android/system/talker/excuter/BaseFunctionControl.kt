@@ -9,6 +9,7 @@ import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.enums.MenuType
+import com.android.system.talker.enums.ShipType
 import kotlinx.coroutines.delay
 
 abstract class BaseFunctionControl(
@@ -173,11 +174,63 @@ abstract class BaseFunctionControl(
 
 
         //先打开船仓库
-        ensureOpenShipWarehouse()
+        var result = ensureOpenShipWarehouse()
+        if (!result) {
+            return false
+        }
+
+        //找到需要换船的位置
+        val shipLocation = queryShipLocation(shipType)
+        if (shipLocation < 0) {
+            return false
+        } else if (shipLocation == 0) {
+            userDb.shipType = shipType
+            dataBase.getUserDao().update(userDb)
+            return true
+        }
+
+        //这里点击飞船的位置
+        en.getShipArea(shipLocation).c()
+
+        //
+        if (en.isActivationShipTask.check()) {
+            click(
+                en.activationShipArea,
+                en.isActivationShipTask.getOffsetX(),
+                en.isActivationShipTask.getOffsetY()
+            )
+        }
+
+        //
 
         userDb.shipType = shipType
         dataBase.getUserDao().update(userDb)
         return false
+    }
+
+    private suspend fun queryShipLocation(shipType: Int): Int {
+        when (shipType) {
+            ShipType.TASK_SHIP, ShipType.ABNORMAL_SHIP -> {
+                en.isJiYuShipList.forEachIndexed { index, imgTaskImpl1 ->
+                    if (imgTaskImpl1.check()) {
+                        return index
+                    }
+                }
+            }
+
+            ShipType.VEGETABLE_SHIP -> {
+                en.isVegetableShipList.forEachIndexed { index, imgTaskImpl1 ->
+                    if (imgTaskImpl1.check()) {
+                        return index
+                    }
+                }
+            }
+
+            ShipType.MINING_SHIP -> {
+
+            }
+        }
+        return -1
     }
 
 
@@ -294,8 +347,13 @@ abstract class BaseFunctionControl(
                 if (en.isCloseSpaceStationWarehouseTask.check()) {
                     en.switchSpaceStationWarehouseArea.c()
                 }
+            } else if (en.isInSpaceStationT.check()) {
+                result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
+                if (!result) {
+                    return false
+                }
             } else {//这里需要往下滑动
-
+                en.swipeWarehouseDown.c()
             }
             count--
         }

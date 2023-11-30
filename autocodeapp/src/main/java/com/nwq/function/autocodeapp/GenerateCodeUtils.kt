@@ -82,7 +82,7 @@ object GenerateCodeUtils {
         stringBuilder.append(" val pr  = ${datums.get(0).toColorRuleStr(sx, sy)}")
 
         findArea.apply {
-            stringBuilder.append(" val findArea = CoordinateArea($xI,$yI,$width,$height)")
+            stringBuilder.append(" val findArea = CoordinateArea($xI,$yI,$width,$height) \n")
         }
 
 

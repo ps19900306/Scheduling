@@ -279,6 +279,9 @@ class MainActivity() : AppCompatActivity() {
     }
 
 
+    //desX:420 desY:0  distance1 desX:846 desY:3  distance2desX:1266 desY:7  distance3
+    val standardDistance = 422
+
     companion object {
         val NORMAL_MODE = Int.MAX_VALUE   //普通模式
     }

@@ -54,6 +54,7 @@ class MainViewModel : ViewModel() {
     fun preprocessData() {
         featureKeyList.clear()
         colorMaps.clear()
+        findArea=null
 
         val are = coordinateArea ?: return
         val bitmap = srcBitmap ?: return
