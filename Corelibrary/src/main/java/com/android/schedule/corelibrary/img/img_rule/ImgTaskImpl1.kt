@@ -19,8 +19,6 @@ open class ImgTaskImpl1(
 ) : ImgTask(iprList, tag, correctModel) {
 
 
-
-
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         if (bitmap == null)
             return false

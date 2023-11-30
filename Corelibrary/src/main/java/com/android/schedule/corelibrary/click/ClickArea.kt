@@ -195,7 +195,7 @@ class ClickArea(
             }
         }
 
-        return ClickTask(list, delayTime, ExhaustionControl.getClickDuration(parameter.optSlide))
+        return ClickTask(list, delayTime, ExhaustionControl.getClickDuration(parameter.optDuration))
     }
 
 

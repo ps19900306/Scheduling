@@ -42,6 +42,7 @@ open class BasicExhaustion {
     open fun onRestComplete() {}
 
 
-
-
+    open fun getSwipDuration(type: Int): Long {
+        return ((Math.random() * 2 + 1) * 80).toLong()
+    }
 }

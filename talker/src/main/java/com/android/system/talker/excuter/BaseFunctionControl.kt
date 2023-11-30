@@ -3,6 +3,7 @@ package com.android.system.talker.excuter
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Bitmap
 import com.android.schedule.corelibrary.click.ClickArea
+import com.android.schedule.corelibrary.click.SlidingArea
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.system.talker.database.AppDataBase
@@ -170,17 +171,14 @@ abstract class BaseFunctionControl(
             return true
         }
 
-        ensureOpenBigMenuArea(MenuType.WAREHOUSE)
 
-        //TODO这里需要进行换船
-
+        //先打开船仓库
+        ensureOpenShipWarehouse()
 
         userDb.shipType = shipType
         dataBase.getUserDao().update(userDb)
         return false
     }
-
-
 
 
     protected suspend fun ensureOpenBigMenuArea(@MenuType index: Int): Boolean {
@@ -275,8 +273,42 @@ abstract class BaseFunctionControl(
         return !flag
     }
 
+    suspend fun ensureOpenShipWarehouse(): Boolean {
+        //先打开仓库
+        var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
+        if (!result) {
+            return false
+        }
+
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isShipWarehouseTask.check()) {
+                en.shipWarehouseArea.c()
+                flag = false
+            } else if (en.isSpaceStationWarehouseTask.check()) {
+                if (en.isCloseSpaceStationWarehouseTask.check()) {
+                    en.switchSpaceStationWarehouseArea.c()
+                }
+            } else {//这里需要往下滑动
+
+            }
+            count--
+        }
+
+        return !flag
+    }
+
 
     suspend fun ClickArea.c() {
         click(this)
+    }
+
+    suspend fun SlidingArea.c() {
+        optClickTask(this.toClickTask())
     }
 }

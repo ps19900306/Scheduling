@@ -110,6 +110,26 @@ object ExhaustionControl : BasicExhaustion() {
         }
     }
 
+    override fun getSwipDuration(type: Int): Long {
+        return when (type) {
+            OptDuration.QUICK -> {
+                (Math.random() * 60 + 100).toLong()
+            }
+            OptDuration.SLOW -> {
+                (Math.random() * 200 + 200).toLong()
+            }
+            OptDuration.QUICK_LARGE_RANDOM -> {
+                (Math.random() * 100 + 300).toLong()
+            }
+            OptDuration.SLOW_LARGE_RANDOM -> {
+                (Math.random() * 400 + 100).toLong()
+            }
+            else -> {
+                (Math.random() * 60 + 100).toLong()
+            }
+        }
+    }
+
 
     override fun getClickInterval(): Long {
         return when (getOptInterval()) {

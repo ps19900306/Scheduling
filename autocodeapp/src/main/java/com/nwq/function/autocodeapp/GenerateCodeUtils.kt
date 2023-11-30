@@ -1,10 +1,13 @@
 package com.nwq.function.autocodeapp
 
+import android.content.ClipData
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.img.img_rule.FindImgTask
 import com.android.schedule.corelibrary.img.point_rule.PointRule
 import com.nwq.function.autocodeapp.data.FeatureCoordinatePoint
 import java.lang.StringBuilder
+import kotlin.math.abs
 
 object GenerateCodeUtils {
 
@@ -15,7 +18,7 @@ object GenerateCodeUtils {
         data: List<FeatureCoordinatePoint>,
         rangX: Int = 3,
         rangY: Int = 3,
-        everyRevalidation:Boolean =false,
+        everyRevalidation: Boolean = false,
     ): String? {
         if (data.isNullOrEmpty() || data.size == 1) {
             return null
@@ -58,21 +61,18 @@ object GenerateCodeUtils {
             return null
         }
 
-        // 当找寻的上下浮动很小的时候对范围进行修正 以减少不必要的找寻
-        if (findArea.height < 6) {
-            val rangX = findArea.width / 2
-            val startX = findArea.x + rangX
-            return autoImgCode(startX, sy, data, rangX, 3,true)
-        } else if (findArea.width < 6) {
-            val rangY = findArea.height / 2
-            val startY = findArea.y + rangY
-            return autoImgCode(sx, startY, data, 3, rangY,true)
-        }
-
-
         val datums = data.subList(0, 1)
         val points = data.subList(1, data.size)
 
+        val datum = datums.get(0)
+        // 当找寻的上下浮动很小的时候对范围进行修正 以减少不必要的找寻
+        if (findArea.height < 6) {
+            findArea.y = datum.y + sy - 3
+            findArea.height = 7
+        } else if (findArea.width < 6) {
+            findArea.x = datum.x + sx - 3
+            findArea.width = 7
+        }
         //这里进行代码生成
         val stringBuilder = StringBuilder()
         stringBuilder.append("val isOpenTask by lazy {  \n")
@@ -134,5 +134,66 @@ object GenerateCodeUtils {
         } else {
             "PointRule(CoordinatePoint(${sx + x}, ${sy + y}), ColorRuleRatioImpl.getSimple(${red},${green},${blue}))\n // sequenceNumber:$sequenceNumber blockNumber: $blockNumber  positionType:$positionType \n"
         }
+    }
+
+
+    fun builderClickArea(coordinateArea: CoordinateArea?, list: List<CoordinateLine>):String? {
+        val builder = StringBuilder()
+        if (list.isEmpty() && coordinateArea == null) {
+            return null
+        } else if (list.isEmpty()) {
+            coordinateArea!!.apply {
+                builder.append("val clickArea = ClickArea($xI,$yI,$width,$height,$isRound)")
+            }
+        } else if (coordinateArea == null) {
+            var spaceDistance = 0
+            var distanceCount = 0
+            builder.append("//")
+            list.forEach {
+                val desX = abs(it.startP.xI - it.endP.xI)
+                val desY = abs(it.startP.yI - it.endP.yI)
+                distanceCount += it.distance
+                spaceDistance += Math.max(desX, desY)
+                builder.append("desX:$desX desY:$desY  distance${it.distance}")
+
+            }
+            builder.append("\n")
+            builder.append("val standardDistance = ${spaceDistance / distanceCount}")
+
+        } else {
+            var spaceDistance = 0
+            var distanceCount = 0
+            builder.append("//")
+            list.forEach {
+                val desX = abs(it.startP.xI - it.endP.xI)
+                val desY = abs(it.startP.yI - it.endP.yI)
+                distanceCount += it.distance
+                spaceDistance += Math.max(desX, desY)
+                builder.append("desX:$desX desY:$desY  distance${it.distance}")
+
+            }
+            builder.append("\n")
+            //builder.append("val standardDistance = ${spaceDistance / distanceCount}")
+
+            var isLan = false
+            list.getOrNull(0)?.let {
+                val desX = abs(it.startP.xI - it.endP.xI)
+                val desY = abs(it.startP.yI - it.endP.yI)
+                if (desX > desY) {
+                    isLan = true
+                }
+            }
+
+            coordinateArea.apply {
+                builder.append(" fun getClickArea(offset: Int): ClickArea { \n")
+                if (isLan) {
+                    builder.append("return  ClickArea($xI + offset* ${spaceDistance / distanceCount},$yI,$width,$height,$isRound) \n")
+                } else {
+                    builder.append("return  ClickArea($xI,$yI+ offset* ${spaceDistance / distanceCount},$width,$height,$isRound) \n")
+                }
+                builder.append("}")
+            }
+        }
+        return builder.toString()
     }
 }

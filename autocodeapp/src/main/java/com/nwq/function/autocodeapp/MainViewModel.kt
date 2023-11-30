@@ -275,64 +275,11 @@ class MainViewModel : ViewModel() {
     }
 
     fun builderClickArea(coordinateArea: CoordinateArea?, list: List<CoordinateLine>) {
-        val builder = StringBuilder()
-        if (list.isEmpty() && coordinateArea == null) {
-            return
-        } else if (list.isEmpty()) {
-            coordinateArea!!.apply {
-                builder.append("val clickArea = ClickArea($xI,$yI,$width,$height,$isRound)")
-            }
-        } else if (coordinateArea == null) {
-            var spaceDistance = 0
-            var distanceCount = 0
-            builder.append("//")
-            list.forEach {
-                val desX = abs(it.startP.xI - it.endP.xI)
-                val desY = abs(it.startP.yI - it.endP.yI)
-                distanceCount += it.distance
-                spaceDistance += Math.max(desX, desY)
-                builder.append("desX:$desX desY:$desY  distance${it.distance}")
-
-            }
-            builder.append("\n")
-            builder.append("val standardDistance = ${spaceDistance / distanceCount}")
-
-        } else {
-            var spaceDistance = 0
-            var distanceCount = 0
-            builder.append("//")
-            list.forEach {
-                val desX = abs(it.startP.xI - it.endP.xI)
-                val desY = abs(it.startP.yI - it.endP.yI)
-                distanceCount += it.distance
-                spaceDistance += Math.max(desX, desY)
-                builder.append("desX:$desX desY:$desY  distance${it.distance}")
-
-            }
-            builder.append("\n")
-            //builder.append("val standardDistance = ${spaceDistance / distanceCount}")
-
-            var isLan = false
-            list.getOrNull(0)?.let {
-                val desX = abs(it.startP.xI - it.endP.xI)
-                val desY = abs(it.startP.yI - it.endP.yI)
-                if (desX > desY) {
-                    isLan = true
-                }
-            }
-
-            coordinateArea.apply {
-                builder.append(" fun getClickArea(offset: Int): ClickArea {")
-                if (isLan) {
-                    builder.append("return  ClickArea($xI + offset* ${spaceDistance / distanceCount},$yI,$width,$height,$isRound)")
-                } else {
-                    builder.append("return  ClickArea($xI,$yI+ offset* ${spaceDistance / distanceCount},$width,$height,$isRound)")
-                }
-                builder.append("}")
-            }
+        GenerateCodeUtils.builderClickArea(coordinateArea,list)?.let {
+            val clipData = ClipData.newPlainText("autoCode", it)
+            manager.setPrimaryClip(clipData)
+            Log.i(TAG, "自动代码生成完成")
         }
-        val clipData = ClipData.newPlainText("autoCode", builder.toString())
-        manager.setPrimaryClip(clipData)
     }
 
 
