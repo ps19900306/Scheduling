@@ -6,6 +6,7 @@ import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.SlidingArea
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
+import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.enums.MenuType
@@ -109,6 +110,9 @@ abstract class BaseFunctionControl(
             if (en.isConfirmDialogTask.check()) {
                 click(en.confirmDialogEnsureArea)
             } else if (en.isClosePositionMenuT.check()) {
+                if(en.isOneClickClaimTask.check()){
+                    en.closeOneClickArea.c(en.isOneClickClaimTask)
+                }
                 if (!clickPositionMenu(position)) {
                     reportingError("${getTag()} returnSpaceStation clickPositionMenu")
                     return false
@@ -365,12 +369,26 @@ abstract class BaseFunctionControl(
         return !flag
     }
 
+    suspend fun ensureCloseDetermine(): Boolean {
+        if (en.isConfirmDialogTask.check()) {
+            en.confirmDialogEnsureArea.c()
+            return true
+        }
+        return false
+    }
+
 
     suspend fun ClickArea.c() {
         click(this)
     }
 
+    suspend fun ClickArea.c(task:ImgTask) {
+        click(task,this)
+    }
+
     suspend fun SlidingArea.c() {
         optClickTask(this.toClickTask())
     }
+
+
 }

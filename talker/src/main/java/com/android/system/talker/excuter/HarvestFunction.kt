@@ -1,6 +1,7 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.database.AppDataBase
@@ -19,11 +20,11 @@ class HarvestFunction(
 
     val TAG = "收菜"
 
-    private val START_GAME = 0//开始游戏
-    private val LAUNCH_RESOURCE_LAUNCH = 1//等待资源发射
-    private val GO_TO_COLLECT_NAVIGATION_MONITORING = 2//收菜导航
+
+    private val GO_TO_COLLECT_NAVIGATION_MONITORING = 1//收菜导航
+    private val ONE_CLICK_CLAIM = 2// 进行收取
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
-    private var nowStep = START_GAME
+    private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
     override suspend fun getTag(): String {
         return TAG
     }
@@ -59,6 +60,20 @@ class HarvestFunction(
         result = addVegetablesTime()
         if (!result) return
 
+        delay(doubleClickInterval)
+        launchResources()
+
+        delay(doubleClickInterval)
+        en.setTargetArea.c()
+
+        waitLaunchEnd()
+
+        theOutCheck()
+        delay(normalClickInterval)
+        en.eraseWarningArea.c()
+
+        nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
+        generalControlMethod()
 
     }
 
@@ -91,19 +106,51 @@ class HarvestFunction(
     suspend fun generalControlMethod() {
         while (runSwitch) {
             when (nowStep) {
-                LAUNCH_RESOURCE_LAUNCH -> {
-                    launchAllVegetables()
+                GO_TO_COLLECT_NAVIGATION_MONITORING -> {
+                    goCollectNavigationMonitoring()
                 }
 
-                GO_TO_COLLECT_NAVIGATION_MONITORING -> {
-                    // goCollectNavigationMonitoring()
+                ONE_CLICK_CLAIM -> {
+                    oneClickClaim()
                 }
 
                 MONITORING_RETURN_STATUS -> {
-                    //  monitoringReturnStatus()
+                    var result = returnSpaceStation(vegetableDb.baseLocation)
+                    if (!result) return
                 }
             }
         }
+    }
+
+    private suspend fun oneClickClaim(): Boolean {
+        var flag = true
+        var count = 5
+        var hasLin = false
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (!hasLin && en.isOneClickClaimTask.check()) {
+                en.oneClickClaimArea.c(en.isOneClickClaimTask)
+                hasLin = true
+                delay(screenshotInterval)
+            } else if (en.isShowMaxTask.check()) {
+                en.clickMaxArea.c(en.isShowMaxTask)
+                delay(clickInterval)
+                en.clickMaxConfArea.c(en.isShowMaxTask)
+                delay(clickInterval)
+                en.closeMaxArea.c(en.isShowMaxTask)
+                delay(jumpClickInterval)
+                en.closeOneClickArea.c(en.isOneClickClaimTask)
+                nowStep = MONITORING_RETURN_STATUS
+                return  true
+            } else if (hasLin) {
+                ensureOpenBigMenuArea(vegetableDb.menuType)
+            }
+            count--
+        }
+        return !flag
     }
 
 
@@ -122,6 +169,7 @@ class HarvestFunction(
         return false
     }
 
+    // 这个是
     private suspend fun selectEntryItem(position: Int, delayTime: Long = 0) {
         L.i("$position selectEntryItem HarvestVegetableController NWQ_ 2023/3/14");
         if (position < 5) {
@@ -133,15 +181,81 @@ class HarvestFunction(
         }
     }
 
-    fun getCelestialClickArea(offset: Int): ClickArea {
-        return if (offset <= 3) {
-            ClickArea(102, 193 + offset * 198, 456, 183, false)
-        } else if (offset == 4) {
-            ClickArea(129, 1001, 387, 77, false)
-        } else { //这里其实是等于5
-            ClickArea(129, 1001, 387, 77, false)
+    //发射行星菜不再需要知道
+    private suspend fun launchResources(): Boolean {
+        var flag = true
+        var count = 5
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+            }
+            if (en.isConfirmDialogTask.check()) {
+                en.confirmDialogEnsureArea.c()
+                flag = false
+            } else if (en.findLunchAreaTask.check()) {
+                ClickArea(
+                    en.lunchAreaArea.x + en.findLunchAreaTask.getOffsetX(),
+                    en.lunchAreaArea.y + en.findLunchAreaTask.getOffsetY(),
+                    en.lunchAreaArea.width,
+                    en.lunchAreaArea.height
+                ).c()
+            } else if (en.isShowAddCelestialTask.check()) {
+                en.swipeResourceArea.c()
+            }
+            count--
         }
+        return !flag
     }
 
+    private suspend fun waitLaunchEnd(): Boolean {
+        var flag = true
+        var count = 20 * 3
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(20 * 1000)) {
+                runSwitch = false
+                return false
+            }
+            if (en.findLunchAreaTask.check()) {
+                flag = false
+            }
+            count--
+        }
+        return true
+    }
+
+
+    private suspend fun goCollectNavigationMonitoring(): Boolean {
+        var flag = true
+        var count = 20
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isInSpaceStationT.check()) {
+                if (en.isSailingT.check()) {
+                    if (count == 15) {
+                        en.outSpaceArea.c()
+                    }
+                } else {
+                    if (count == 15) {
+                        en.openPositionArea.c()
+                    }
+                }
+            } else if (en.isConfirmDialogTask.check()) {
+                en.confirmDialogEnsureArea.c()
+            } else if (en.isOpenBigMenuT.check()) {
+                en.closeBigMenuArea.c()
+            } else if (en.isClosePositionMenuT.check()) {
+                nowStep = ONE_CLICK_CLAIM
+                return true
+            } else if (en.isSailingT.check()) {
+                count = 20
+            }
+            count--
+        }
+        return !flag
+
+    }
 
 }

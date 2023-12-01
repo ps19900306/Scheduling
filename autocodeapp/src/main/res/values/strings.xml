@@ -25,6 +25,8 @@
     <string name="background">设为底色</string>
     <string name="useBackground">补充底色</string>
     <string name="test_pick_up_points">测试代码</string>
+    <string name="test_pick_up_points1">测试代码多图</string>
+
     <string name="add_rectangle_click_are">点击方形状区域</string>
     <string name="add_circular_click_are">点击圆形区域</string>
     <string name="inverse_value">底色取反</string>

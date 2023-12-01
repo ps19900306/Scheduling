@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,14 +23,6 @@ import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.expand.runOnUI
 import com.android.schedule.corelibrary.expand.singleClick
-import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
-import com.android.schedule.corelibrary.img.color_rule.CompareDifferenceRuleImpl
-import com.android.schedule.corelibrary.img.img_rule.CorrectPositionModel
-import com.android.schedule.corelibrary.img.img_rule.FindImgTask
-import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
-import com.android.schedule.corelibrary.img.point_rule.IPR
-import com.android.schedule.corelibrary.img.point_rule.PointRule
-import com.android.schedule.corelibrary.img.point_rule.TwoPointRule
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.android.schedule.corelibrary.utils.L
 import com.luck.picture.lib.basic.PictureSelector
@@ -79,6 +72,7 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.add_circular_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.background, BUTTON_TYPE),
             FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
+            FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
 
 
             )
@@ -170,10 +164,12 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.add_rectangle_click_are -> {
+                    bind.edit.isVisible =true
                     nowMode = R.string.calculate_space
                 }
 
                 R.string.add_circular_click_are -> {
+                    bind.edit.isVisible =true
                     nowMode = R.string.calculate_space
                 }
             }
@@ -281,6 +277,7 @@ class MainActivity() : AppCompatActivity() {
                     bind.previewView.clearLine()
                     bind.functionGroup.isVisible = false
                     bind.optGroup.isVisible = true
+                    bind.edit.isGone= true
                     bind.previewView.invalidate()
                     nowMode = R.string.add_rectangle_click_are
                 }
@@ -290,6 +287,7 @@ class MainActivity() : AppCompatActivity() {
                     bind.previewView.clearLine()
                     bind.functionGroup.isVisible = false
                     bind.optGroup.isVisible = true
+                    bind.edit.isGone= true
                     bind.previewView.invalidate()
                     nowMode = R.string.add_circular_click_are
                 }
@@ -301,6 +299,29 @@ class MainActivity() : AppCompatActivity() {
                 R.string.test_pick_up_points -> {
                     checkCode()
                 }
+
+                R.string.test_pick_up_points1 -> {
+                    PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
+                        .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+                            override fun onResult(result: ArrayList<LocalMedia?>?) {
+                                val list = mutableListOf<Bitmap>()
+                                result?.forEach {
+                                    it?.let {
+                                        val opts = BitmapFactory.Options()
+                                        opts.outConfig = Bitmap.Config.ARGB_8888
+                                        opts.inMutable = true
+                                        BitmapFactory.decodeFile(it.realPath, opts)?.let {
+                                            list.add(it)
+                                        }
+                                    }
+                                }
+                                checkCodeMulImg(list)
+                            }
+
+                            override fun onCancel() {}
+                        })
+                }
+
             }
         }
     }
@@ -438,36 +459,63 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
-                if (en.isActivationShipTask.verificationRule(it)) {
+                val task = en.isOneClickClaimTask
+                val clickArea = en.oneClickClaimArea
+                if (task.verificationRule(it)) {
                     runOnUI {
                         bind.previewView.clearPoint()
                         bind.previewView.clearArea()
-                        val offsetX = en.isActivationShipTask.getOffsetX()
-                        val offsetY = en.isActivationShipTask.getOffsetY()
-                        en.isActivationShipTask.iprList.forEach {
+                        val offsetX = task.getOffsetX()
+                        val offsetY = task.getOffsetY()
+                        task.iprList.forEach {
                             it.getCoordinatePoint().apply {
                                 bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
                             }
                         }
-                        L.i("找到图片 offsetX$offsetX  offsetY$offsetY" )
+                        L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
                         bind.previewView.addArea(
                             CoordinateArea(
-                                en.activationShipArea.x + offsetX,
-                                en.activationShipArea.y + offsetY,
-                                en.activationShipArea.width,
-                                en.activationShipArea.height
+                                clickArea.x + offsetX,
+                                clickArea.y + offsetY,
+                                clickArea.width,
+                                clickArea.height
                             )
                         )
                     }
 
-                }else{
+                } else {
                     L.i("验证失败")
                 }
             }
         }
     }
 
+    private fun checkCodeMulImg(list: MutableList<Bitmap>) {
+        val en = StarWarEnvironment()
+        lifecycleScope.launch(Dispatchers.IO) {
+            var faildIndex = -1;
+            list.forEachIndexed { index, bitmap ->
+                val task = en.isClosePositionMenuT
+                if (!task.verificationRule(bitmap)) {
+                    L.i("index  验证失败")
+                    faildIndex = faildIndex
+                }else{
+                    L.i("index  验证通过")
+                }
+            }
+            if(faildIndex >= 0){
+                runOnUI {
+                     list.getOrNull(faildIndex)?.let {
+                         viewModel.srcBitmap = it
+                         bind.allImg.setImageBitmap(it)
+                    }
+                }
+            }else{
+                L.i("index  验证通过")
+            }
+        }
 
+    }
 }
 
 
