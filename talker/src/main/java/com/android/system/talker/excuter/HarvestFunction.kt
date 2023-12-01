@@ -20,7 +20,7 @@ class HarvestFunction(
 
     val TAG = "收菜"
 
-
+    private var nowCelestialCount = 0
     private val GO_TO_COLLECT_NAVIGATION_MONITORING = 1//收菜导航
     private val ONE_CLICK_CLAIM = 2// 进行收取
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
@@ -115,10 +115,31 @@ class HarvestFunction(
                 }
 
                 MONITORING_RETURN_STATUS -> {
-                    var result = returnSpaceStation(vegetableDb.baseLocation)
-                    if (!result) return
+                    monitoringReturnStatus()
+
                 }
             }
+        }
+    }
+
+    private suspend fun monitoringReturnStatus() {
+        var result = returnSpaceStation(vegetableDb.baseLocation)
+        if (!result) return
+
+        //卸载货物
+
+
+        if(nowCelestialCount<vegetableDb.numberCount){
+            ensureOpenBigMenuArea(vegetableDb.menuType)
+            selectEntryItem(nowCelestialCount,jumpClickInterval)
+            delay(jumpClickInterval)
+            en.setTargetArea.c()
+            theOutCheck()
+            delay(jumpClickInterval)
+            en.eraseWarningArea.c()
+            nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
+        }else{
+            end()
         }
     }
 
@@ -146,7 +167,20 @@ class HarvestFunction(
                 nowStep = MONITORING_RETURN_STATUS
                 return  true
             } else if (hasLin) {
-                ensureOpenBigMenuArea(vegetableDb.menuType)
+                nowCelestialCount++
+                if(nowCelestialCount<vegetableDb.numberCount)
+                {
+                    ensureOpenBigMenuArea(vegetableDb.menuType)
+                    selectEntryItem(nowCelestialCount,jumpClickInterval)
+                    delay(jumpClickInterval)
+                    en.setTargetArea.c()
+                    theOutCheck()
+                    delay(jumpClickInterval)
+                    en.eraseWarningArea.c()
+                    nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
+                }else{
+                    nowStep = MONITORING_RETURN_STATUS
+                }
             }
             count--
         }
