@@ -488,7 +488,7 @@ class MainActivity() : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             var faildIndex = -1;
             list.forEachIndexed { index, bitmap ->
-                val task = en.isClosePositionMenuT
+                val task = en.isOpenTask
                 if (!task.verificationRule(bitmap)) {
                     L.i("index  验证失败")
                     faildIndex = faildIndex

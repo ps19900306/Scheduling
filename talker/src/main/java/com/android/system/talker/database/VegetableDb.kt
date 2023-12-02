@@ -17,8 +17,8 @@ data class VegetableDb(
 
     val nameResInt: Int = R.string.harvest_setting,//这个是用于显示的
 
-    //收菜第一个行星的位置
-    var firstPosition: Int = 0,
+    //基地位置
+    var baseLocation: Int = 0,
 
     //菜种植数量
     var numberCount: Int = 0,
@@ -26,15 +26,15 @@ data class VegetableDb(
     //上次收菜完成时间
     var lastCompletionTime: Long = 0L,
 
+    //收菜的间隔时间
+    var completeInterval: Int = 24 * 4,
+
     //上次增加时间  这里默认八小时
     var lastAddTime: Long = 0L,
 
-    //基地位置
-    var baseLocation: Int = 0,
-
-
     //收菜的间隔时间
-    var interval: Int = 0,
+    var addInterval: Int = 6,
+
 
     //功能的序列号
     var sort: Int = -1,

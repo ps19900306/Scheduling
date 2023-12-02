@@ -14,6 +14,7 @@ import com.android.system.talker.enums.MenuType
 import com.android.system.talker.enums.ShipType
 import com.android.system.talker.enums.WarehouseType
 import kotlinx.coroutines.delay
+import kotlin.math.abs
 
 abstract class BaseFunctionControl(
     val userDb: UserDb,
@@ -140,8 +141,7 @@ abstract class BaseFunctionControl(
 
     //确保打开左边的位置菜单
     protected suspend fun openPositionMenu(): Boolean {
-        if (en.isOpenPositionMenuT.check())
-            return true
+        if (en.isOpenPositionMenuT.check()) return true
         return theOutCheck() && optTaskOperation(
             pTask = en.isClosePositionMenuT,
             clickArea = en.openPositionArea,
@@ -180,7 +180,7 @@ abstract class BaseFunctionControl(
 
 
         //先打开船仓库
-        var result = ensureOpenShipWarehouse()
+        var result = ensureOpenWarehouseType(WarehouseType.STATION_SHIPS)
         if (!result) {
             return false
         }
@@ -337,41 +337,41 @@ abstract class BaseFunctionControl(
     }
 
 
-    //这个事打开仓库的一个子类型
-    suspend fun ensureOpenShipWarehouse(): Boolean {
-        //先打开仓库
-        var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
-        if (!result) {
-            return false
-        }
-
-        var flag = true
-        var count = 10
-        while (flag && count > 0 && runSwitch) {
-            if (taskScreenL(screenshotInterval)) {
-                runSwitch = false
-                return false
-            }
-            if (en.isShipWarehouseTask.check()) {
-                en.shipWarehouseArea.c()
-                flag = false
-            } else if (en.isSpaceStationWarehouseTask.check()) {
-                if (en.isCloseSpaceStationWarehouseTask.check()) {
-                    en.switchSpaceStationWarehouseArea.c()
-                }
-            } else if (en.isInSpaceStationT.check()) {
-                result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
-                if (!result) {
-                    return false
-                }
-            } else {//这里需要往下滑动
-                en.swipeWarehouseDown.c()
-            }
-            count--
-        }
-
-        return !flag
-    }
+//    //这个事打开仓库的一个子类型
+//    suspend fun ensureOpenShipWarehouse(): Boolean {
+//        //先打开仓库
+//        var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
+//        if (!result) {
+//            return false
+//        }
+//
+//        var flag = true
+//        var count = 10
+//        while (flag && count > 0 && runSwitch) {
+//            if (taskScreenL(screenshotInterval)) {
+//                runSwitch = false
+//                return false
+//            }
+//            if (en.isShipWarehouseTask.check()) {
+//                en.shipWarehouseArea.c()
+//                flag = false
+//            } else if (en.isSpaceStationWarehouseTask.check()) {
+//                if (en.isCloseSpaceStationWarehouseTask.check()) {
+//                    en.switchSpaceStationWarehouseArea.c()
+//                }
+//            } else if (en.isInSpaceStationT.check()) {
+//                result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
+//                if (!result) {
+//                    return false
+//                }
+//            } else {//这里需要往下滑动
+//                en.swipeWarehouseDown.c()
+//            }
+//            count--
+//        }
+//
+//        return !flag
+//    }
 
 
     suspend fun ensureOpenWarehouseType(@WarehouseType type: Int): Boolean {
@@ -382,7 +382,8 @@ abstract class BaseFunctionControl(
         }
 
         var flag = true
-        var count = 10
+        var findTraget = false
+        var count = 7
         while (flag && count > 0 && runSwitch) {
             if (taskScreenL(screenshotInterval)) {
                 runSwitch = false
@@ -390,44 +391,72 @@ abstract class BaseFunctionControl(
             }
             when (type) {
                 WarehouseType.STATION_GOODS -> {
-                    if(en.isStationGoodsCheckTask.check()){
-                        flag = false
-                    }else if (en.isStationGoodsTask.check()){
+                    if (en.isStationGoodsCheckTask.check()) {
+                        return true
+                    } else if (en.isStationGoodsTask.check()) {
                         en.stationGoodsArea.c(en.isStationGoodsTask)
-                        flag = false
+                        return true
                     }
                 }
 
                 WarehouseType.STATION_SHIPS -> {
-                    if(en.isStationShipCheckTask.check()){
-                        flag = false
-                    }else if (en.isStationShipTask.check()){
-                        en.stationShipArea.c(en.isStationGoodsTask)
-                        flag = false
+                    if (en.isStationShipCheckTask.check()) {
+                        return true
+                    } else if (en.isStationShipTask.check()) {
+                        en.stationShipArea.c(en.isStationShipTask)
+                        return true
                     }
                 }
 
-                WarehouseType.SHIP_CABIN,WarehouseType.SHIP_SPECIAL -> {
-                    if(en.isStationShipCheckTask.check()){
+                WarehouseType.SHIP_CABIN -> {
+                    if (en.isShipWarehouseTask.check()) {
+                        en.shipWarehouseArea.c(en.isShipWarehouseTask)
+                        return true
+                    }
+                }
 
+                WarehouseType.SHIP_SPECIAL -> {
+                    if (en.isShipWarehouseTask.check()) {
+                        if (abs(en.isShipWarehouseTask.getOffsetX()) < 3 && abs(en.isShipWarehouseTask.getOffsetY()) < 3) {
+                            if (en.isShipWarehouseOpenTask.check()) {
+                                en.specialArea.c(en.isShipWarehouseTask)
+                                return true
+                            } else {
+                                findTraget = true
+                                en.switchSpecialArea.c(en.isShipWarehouseTask)
+                            }
+                        } else {
+                            if (en.isShipWarehouseOpenTask.copyOffset(
+                                    "shipWarehouseOpenTaskCopy",
+                                    en.isShipWarehouseTask.getOffsetX(),
+                                    en.isShipWarehouseTask.getOffsetY()
+                                ).check()
+                            ) {
+                                en.specialArea.c(en.isShipWarehouseTask)
+                                return true
+                            } else {
+                                findTraget = true
+                                en.switchSpecialArea.c(en.isShipWarehouseTask)
+                            }
+                        }
                     }
                 }
             }
 
-            if (en.isShipWarehouseTask.check()) {
-                en.shipWarehouseArea.c()
-                flag = false
-            } else if (en.isSpaceStationWarehouseTask.check()) {
-                if (en.isCloseSpaceStationWarehouseTask.check()) {
-                    en.switchSpaceStationWarehouseArea.c()
+            if (!findTraget) {
+                if (count >= 3) {
+                    if (type <= WarehouseType.STATION_SHIPS) {
+                        en.swipeWarehouseDown.c()
+                    } else {
+                        en.swipeWarehouseTop.c()
+                    }
+                } else {
+                    if (type <= WarehouseType.STATION_SHIPS) {
+                        en.swipeWarehouseTop.c()
+                    } else {
+                        en.swipeWarehouseDown.c()
+                    }
                 }
-            } else if (en.isInSpaceStationT.check()) {
-                result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
-                if (!result) {
-                    return false
-                }
-            } else {//这里需要往下滑动
-                en.swipeWarehouseDown.c()
             }
             count--
         }
@@ -458,25 +487,45 @@ abstract class BaseFunctionControl(
     }
 
 
-    suspend fun unloadingCargo(normal: Boolean = true) {
+    suspend fun unloadingCargo(@WarehouseType flag: Int) {
+        if (flag and WarehouseType.SHIP_CABIN == WarehouseType.SHIP_CABIN) {
+            ensureOpenWarehouseType(WarehouseType.SHIP_CABIN)
+            delay(clickInterval)
+            unloadingGoods()
+        }
 
-        // CoordinateArea
-//        delay(normalClickInterval)
-//        if (normal) click(constant.generalWarehouseArea)
-//        else click(constant.mineralWarehouseArea)
-//
-//        delay(doubleClickInterval)
-//        takeScreen()
-//        if (visual.isEmptyWarehouse()) {
-//            theOutCheck()
-//        } else {
-//            click(constant.warehouseSelectAllArea)
-//            delay(normalClickInterval)
-//            click(constant.warehouseMoveArea)
-//            delay(normalClickInterval)
-//            click(constant.warehouseAllArea)
-//            delay(doubleClickInterval)
-//            theOutCheck()
-//        }
+        if (flag and WarehouseType.SHIP_CABIN == WarehouseType.SHIP_CABIN) {
+            ensureOpenWarehouseType(WarehouseType.SHIP_CABIN)
+            delay(clickInterval)
+            unloadingGoods()
+        }
+    }
+
+    private suspend fun unloadingGoods(): Boolean {
+        var flag = true
+        var count = 5
+        var complete = false
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isEmptyWarehouseTask.check()) {
+                flag = false
+            } else if (en.isOpenWarehouseBigMenuTask.check()) {
+                if (complete) {
+                    flag = false
+                } else {
+                    en.warehouseSelectAllArea.c()
+                }
+            } else if (en.isShowMoveToTask.check()) {
+                en.moveToArea.c(en.isShowMoveToTask)
+            } else if (en.moveToStationGoodsTask.check()) {
+                en.moveToStationGoodsArea.c(en.moveToStationGoodsTask)
+                complete = true
+            }
+            count--
+        }
+        return !flag
     }
 }

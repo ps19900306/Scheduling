@@ -35,7 +35,7 @@ object GenerateCodeUtils {
 
         stringBuilder.append("val list = mutableListOf<PointRule>()   \n")
         datums.forEach {
-            stringBuilder.append("list.add(${it.toColorRuleStr(sx, sy)})" )
+            stringBuilder.append("list.add(${it.toColorRuleStr(sx, sy)}) \n" )
         }
         stringBuilder.append("val correctPositionModel =CorrectPositionModel(list, tag, $rangX, $rangY, $everyRevalidation)\n")
 

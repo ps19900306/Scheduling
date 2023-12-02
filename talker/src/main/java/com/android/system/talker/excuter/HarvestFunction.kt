@@ -1,12 +1,14 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.database.VegetableDb
+import com.android.system.talker.enums.WarehouseType
 import kotlinx.coroutines.delay
 
 class HarvestFunction(
@@ -87,6 +89,8 @@ class HarvestFunction(
             }
             if (en.isConfirmDialogTask.check()) {
                 en.confirmDialogEnsureArea.c()
+                vegetableDb.lastAddTime = System.currentTimeMillis()
+                dataBase.getVegetableDao().update(vegetableDb)
                 flag = false
             } else if (en.isInSpaceStationT.check()) {
                 ensureOpenBigMenuArea(vegetableDb.menuType)
@@ -127,18 +131,21 @@ class HarvestFunction(
         if (!result) return
 
         //卸载货物
+        unloadingCargo(WarehouseType.SHIP_CABIN)
 
-
-        if(nowCelestialCount<vegetableDb.numberCount){
+        if (nowCelestialCount < vegetableDb.numberCount) {
             ensureOpenBigMenuArea(vegetableDb.menuType)
-            selectEntryItem(nowCelestialCount,jumpClickInterval)
+            selectEntryItem(nowCelestialCount, jumpClickInterval)
             delay(jumpClickInterval)
             en.setTargetArea.c()
             theOutCheck()
             delay(jumpClickInterval)
             en.eraseWarningArea.c()
             nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
-        }else{
+        } else {
+            vegetableDb.lastAddTime = System.currentTimeMillis()
+            vegetableDb.lastCompletionTime = System.currentTimeMillis()
+            dataBase.getVegetableDao().update(vegetableDb)
             end()
         }
     }
@@ -165,20 +172,19 @@ class HarvestFunction(
                 delay(jumpClickInterval)
                 en.closeOneClickArea.c(en.isOneClickClaimTask)
                 nowStep = MONITORING_RETURN_STATUS
-                return  true
+                return true
             } else if (hasLin) {
                 nowCelestialCount++
-                if(nowCelestialCount<vegetableDb.numberCount)
-                {
+                if (nowCelestialCount < vegetableDb.numberCount) {
                     ensureOpenBigMenuArea(vegetableDb.menuType)
-                    selectEntryItem(nowCelestialCount,jumpClickInterval)
+                    selectEntryItem(nowCelestialCount, jumpClickInterval)
                     delay(jumpClickInterval)
                     en.setTargetArea.c()
                     theOutCheck()
                     delay(jumpClickInterval)
                     en.eraseWarningArea.c()
                     nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
-                }else{
+                } else {
                     nowStep = MONITORING_RETURN_STATUS
                 }
             }
@@ -188,19 +194,13 @@ class HarvestFunction(
     }
 
 
-    private suspend fun launchAllVegetables() {
-        ensureOpenBigMenuArea(vegetableDb.menuType)
-
+    private fun needHarvestVegetables(): Boolean {
+        return System.currentTimeMillis() - vegetableDb.lastCompletionTime > vegetableDb.completeInterval * SetConstant.Hour
     }
 
 
-    fun needHarvestVegetables(): Boolean {
-        return false
-    }
-
-
-    fun needAddTime(): Boolean {
-        return false
+    private fun needAddTime(): Boolean {
+        return System.currentTimeMillis() - vegetableDb.lastAddTime > vegetableDb.addInterval * SetConstant.Hour
     }
 
     // 这个是
