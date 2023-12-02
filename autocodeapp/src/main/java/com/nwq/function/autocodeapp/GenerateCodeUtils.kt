@@ -35,7 +35,7 @@ object GenerateCodeUtils {
 
         stringBuilder.append("val list = mutableListOf<PointRule>()   \n")
         datums.forEach {
-            stringBuilder.append(it.toColorRuleStr(sx, sy))
+            stringBuilder.append("list.add(${it.toColorRuleStr(sx, sy)})" )
         }
         stringBuilder.append("val correctPositionModel =CorrectPositionModel(list, tag, $rangX, $rangY, $everyRevalidation)\n")
 
@@ -143,7 +143,7 @@ object GenerateCodeUtils {
             return null
         } else if (list.isEmpty()) {
             coordinateArea!!.apply {
-                builder.append("val clickArea = ClickArea($xI,$yI,$width,$height,$isRound)")
+                builder.append("val clickArea by lazy {\n ClickArea($xI,$yI,$width,$height,$isRound)}")
             }
         } else if (coordinateArea == null) {
             var spaceDistance = 0

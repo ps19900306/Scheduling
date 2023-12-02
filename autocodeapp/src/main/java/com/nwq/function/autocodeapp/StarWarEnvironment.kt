@@ -3981,32 +3981,8 @@ class StarWarEnvironment {
 
     val closeMaxArea = ClickArea(789,100,72,57,true)   //关闭掉最大的按钮
     val clickMaxConfArea = ClickArea(648,863,219,122,false)//点击最大确定按钮
-    val clickMaxArea =  ClickArea(802,418,54,35,false)
-    val isOpenTask by lazy {
-        val tag = "isOpen"
-        val pr  = PointRule(CoordinatePoint(238, 136), ColorRuleRatioImpl.getSimple(211,223,221))
-        // sequenceNumber:0 blockNumber: 0  positionType:2
-        val findArea = CoordinateArea(201,118,67,48)
-        val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(242, 136), ColorRuleRatioImpl.getSimple(211,223,219))
-            // sequenceNumber:8 blockNumber: 0  positionType:2
-        )
-        pointList.add(PointRule(CoordinatePoint(238, 140), ColorRuleRatioImpl.getSimple(212,224,222))
-            // sequenceNumber:8 blockNumber: 0  positionType:2
-        )
-        pointList.add(PointRule(CoordinatePoint(240, 138), ColorRuleRatioImpl.getSimple(210,222,220))
-            // sequenceNumber:16 blockNumber: 0  positionType:4
-        )
-        pointList.add(TwoPointRule(CoordinatePoint(238, 136),CoordinatePoint(238, 131), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:0sequenceNumber blockNumber: $0  positionType:$0
-        )
-        pointList.add(TwoPointRule(CoordinatePoint(242, 136),CoordinatePoint(242, 131), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
-        )
-        pointList.add(TwoPointRule(CoordinatePoint(238, 140),CoordinatePoint(234, 140), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
-        )
-        pointList.add(TwoPointRule(CoordinatePoint(240, 138),CoordinatePoint(245, 141), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:16sequenceNumber blockNumber: $0  positionType:$0
-        )
-        FindImgTask(pr, findArea,pointList, tag)
-    }
+
+
 
 
     val oneClickClaimArea = ClickArea(344,880,680,109,false)
@@ -4057,6 +4033,47 @@ class StarWarEnvironment {
         )
         FindImgTask(pr, findArea,pointList, tag)
     }
+
+    //仓库点击的约束区域
+    val warehouseTypeConstraint = CoordinateArea(118,207,437,860,false)
+
+    val clickArea by lazy {
+        ClickArea(115,694,437,171, false).apply {
+            constrainedArea = warehouseTypeConstraint
+        }
+    }
+
+    val spArea by lazy { ClickArea(114,874,438,144,false)}
+
+    val isOpenTask by lazy {
+        val tag = "isOpen"
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(509, 830), ColorRuleRatioImpl.getSimple(178,189,191)))
+        // sequenceNumber:0 blockNumber: 0  positionType:1
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(514, 835), ColorRuleRatioImpl.getSimple(182,192,193))
+            // sequenceNumber:8 blockNumber: 0  positionType:2
+        )
+        pointList.add(PointRule(CoordinatePoint(520, 842), ColorRuleRatioImpl.getSimple(180,190,191))
+            // sequenceNumber:16 blockNumber: 0  positionType:1
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(514, 835),CoordinatePoint(515, 830), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(PointRule(CoordinatePoint(533, 830), ColorRuleRatioImpl.getSimple(180,190,191))
+            // sequenceNumber:0 blockNumber: 1  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(529, 835), ColorRuleRatioImpl.getSimple(182,192,193))
+            // sequenceNumber:8 blockNumber: 1  positionType:2
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(529, 835),CoordinatePoint(524, 835), CompareDifferenceRuleImpl.getSimple(30,30,30)) // sequenceNumber:8sequenceNumber blockNumber: $1  positionType:$1
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
+
+
+
 
 
 

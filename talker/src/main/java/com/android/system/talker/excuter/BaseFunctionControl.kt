@@ -2,6 +2,7 @@ package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Bitmap
+import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.SlidingArea
 import com.android.schedule.corelibrary.controller.TurnBaseController
@@ -11,6 +12,7 @@ import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.enums.MenuType
 import com.android.system.talker.enums.ShipType
+import com.android.system.talker.enums.WarehouseType
 import kotlinx.coroutines.delay
 
 abstract class BaseFunctionControl(
@@ -110,7 +112,7 @@ abstract class BaseFunctionControl(
             if (en.isConfirmDialogTask.check()) {
                 click(en.confirmDialogEnsureArea)
             } else if (en.isClosePositionMenuT.check()) {
-                if(en.isOneClickClaimTask.check()){
+                if (en.isOneClickClaimTask.check()) {
                     en.closeOneClickArea.c(en.isOneClickClaimTask)
                 }
                 if (!clickPositionMenu(position)) {
@@ -211,7 +213,7 @@ abstract class BaseFunctionControl(
             userDb.shipType = shipType
             dataBase.getUserDao().update(userDb)
             true
-        }else{
+        } else {
             false
         }
     }
@@ -334,6 +336,8 @@ abstract class BaseFunctionControl(
         return !flag
     }
 
+
+    //这个事打开仓库的一个子类型
     suspend fun ensureOpenShipWarehouse(): Boolean {
         //先打开仓库
         var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
@@ -369,6 +373,69 @@ abstract class BaseFunctionControl(
         return !flag
     }
 
+
+    suspend fun ensureOpenWarehouseType(@WarehouseType type: Int): Boolean {
+        //先打开仓库
+        var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
+        if (!result) {
+            return false
+        }
+
+        var flag = true
+        var count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            when (type) {
+                WarehouseType.STATION_GOODS -> {
+                    if(en.isStationGoodsCheckTask.check()){
+                        flag = false
+                    }else if (en.isStationGoodsTask.check()){
+                        en.stationGoodsArea.c(en.isStationGoodsTask)
+                        flag = false
+                    }
+                }
+
+                WarehouseType.STATION_SHIPS -> {
+                    if(en.isStationShipCheckTask.check()){
+                        flag = false
+                    }else if (en.isStationShipTask.check()){
+                        en.stationShipArea.c(en.isStationGoodsTask)
+                        flag = false
+                    }
+                }
+
+                WarehouseType.SHIP_CABIN,WarehouseType.SHIP_SPECIAL -> {
+                    if(en.isStationShipCheckTask.check()){
+
+                    }
+                }
+            }
+
+            if (en.isShipWarehouseTask.check()) {
+                en.shipWarehouseArea.c()
+                flag = false
+            } else if (en.isSpaceStationWarehouseTask.check()) {
+                if (en.isCloseSpaceStationWarehouseTask.check()) {
+                    en.switchSpaceStationWarehouseArea.c()
+                }
+            } else if (en.isInSpaceStationT.check()) {
+                result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
+                if (!result) {
+                    return false
+                }
+            } else {//这里需要往下滑动
+                en.swipeWarehouseDown.c()
+            }
+            count--
+        }
+
+        return !flag
+    }
+
+
     suspend fun ensureCloseDetermine(): Boolean {
         if (en.isConfirmDialogTask.check()) {
             en.confirmDialogEnsureArea.c()
@@ -382,8 +449,8 @@ abstract class BaseFunctionControl(
         click(this)
     }
 
-    suspend fun ClickArea.c(task:ImgTask) {
-        click(task,this)
+    suspend fun ClickArea.c(task: ImgTask) {
+        click(task, this)
     }
 
     suspend fun SlidingArea.c() {
@@ -391,4 +458,25 @@ abstract class BaseFunctionControl(
     }
 
 
+    suspend fun unloadingCargo(normal: Boolean = true) {
+
+        // CoordinateArea
+//        delay(normalClickInterval)
+//        if (normal) click(constant.generalWarehouseArea)
+//        else click(constant.mineralWarehouseArea)
+//
+//        delay(doubleClickInterval)
+//        takeScreen()
+//        if (visual.isEmptyWarehouse()) {
+//            theOutCheck()
+//        } else {
+//            click(constant.warehouseSelectAllArea)
+//            delay(normalClickInterval)
+//            click(constant.warehouseMoveArea)
+//            delay(normalClickInterval)
+//            click(constant.warehouseAllArea)
+//            delay(doubleClickInterval)
+//            theOutCheck()
+//        }
+    }
 }

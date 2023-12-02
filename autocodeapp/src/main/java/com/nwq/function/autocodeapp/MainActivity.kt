@@ -459,8 +459,8 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
-                val task = en.isOneClickClaimTask
-                val clickArea = en.oneClickClaimArea
+                val task = en.isOpenTask
+                val clickArea = en.clickArea
                 if (task.verificationRule(it)) {
                     runOnUI {
                         bind.previewView.clearPoint()
@@ -473,14 +473,7 @@ class MainActivity() : AppCompatActivity() {
                             }
                         }
                         L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
-                        bind.previewView.addArea(
-                            CoordinateArea(
-                                clickArea.x + offsetX,
-                                clickArea.y + offsetY,
-                                clickArea.width,
-                                clickArea.height
-                            )
-                        )
+                        bind.previewView.addArea(clickArea.copyOffset(offsetX,offsetY))
                     }
 
                 } else {
