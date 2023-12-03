@@ -54,7 +54,7 @@ class HarvestFunction(
 
         result = checkShip(vegetableDb.shipType)
         if (!result) return
-        delay(doubleClickInterval)
+        delay(jumpClickInterval)
 
         result = theOutCheck()
         if (!result) return
@@ -62,16 +62,16 @@ class HarvestFunction(
         result = addVegetablesTime()
         if (!result) return
 
-        delay(doubleClickInterval)
+        delay(jumpClickInterval)
         launchResources()
 
-        delay(doubleClickInterval)
+        delay(jumpClickInterval)
         en.setTargetArea.c()
 
         waitLaunchEnd()
 
         theOutCheck()
-        delay(normalClickInterval)
+        delay(clickInterval)
         en.eraseWarningArea.c()
 
         nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
@@ -98,7 +98,7 @@ class HarvestFunction(
                 if (en.isShowAddCelestialTask.check()) {
                     en.addCelestialArea.c()
                 } else {
-                    selectEntryItem(0, normalClickInterval)
+                    selectEntryItem(0, clickInterval)
                 }
             }
             count--

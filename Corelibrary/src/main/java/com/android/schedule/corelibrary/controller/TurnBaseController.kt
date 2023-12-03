@@ -22,32 +22,26 @@ abstract class TurnBaseController(
 
     val STANDARD_CLICK_INTERVAL = 2000
 
-    val fastClickInterval
-        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.4)).toLong()
-
-    val normalClickInterval
-        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.7)).toLong()
-
-    val doubleClickInterval
-        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 1.6)).toLong()
-
-    val tripleClickInterval
-        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.8 + 2.4)).toLong()
 
 
-
-    //这个是不需要跳转的点击间隔
+    //这个是不需要跳转的点击间隔 但是非连续点击
     val clickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.4)).toLong()
+
 
     //这个是需要跳转的点击间隔
     val jumpClickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 1.6)).toLong()
 
 
+    //这个是截屏的间隔
     val screenshotInterval
-        get() = doubleClickInterval
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 1.6)).toLong()
 
+
+    //这个是需要等待时间多一些
+    val tripleClickInterval
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.8 + 2.4)).toLong()
 
     override fun start() {
 

@@ -20,6 +20,9 @@ data class VegetableDb(
     //基地位置
     var baseLocation: Int = 0,
 
+    //克隆的位置
+    var baseCloneLocation: Int = -1,
+
     //菜种植数量
     var numberCount: Int = 0,
 

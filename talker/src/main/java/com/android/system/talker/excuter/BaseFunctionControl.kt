@@ -209,13 +209,27 @@ abstract class BaseFunctionControl(
 
         //这里可以进行校验
         delay(tripleClickInterval)
-        return if (en.isActivationLocationList[shipLocation].check()) {
-            userDb.shipType = shipType
-            dataBase.getUserDao().update(userDb)
-            true
-        } else {
-            false
+        if(en.isOpenWarehouseBigMenuTask.check()){
+            return if (  en.isActivationLocationList[shipLocation].check()) {
+                userDb.shipType = shipType
+                dataBase.getUserDao().update(userDb)
+                true
+            } else {
+                false
+            }
         }
+
+        delay(tripleClickInterval)
+        if(en.isOpenWarehouseBigMenuTask.check()){
+            return if (  en.isActivationLocationList[shipLocation].check()) {
+                userDb.shipType = shipType
+                dataBase.getUserDao().update(userDb)
+                true
+            } else {
+                false
+            }
+        }
+        return  false
     }
 
     private suspend fun queryShipLocation(shipType: Int): Int {

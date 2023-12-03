@@ -21,6 +21,9 @@ data class TaskDb(
     //基地位置
     var baseLocation: Int = 0,
 
+    //克隆的位置
+    var baseCloneLocation: Int = -1,
+
     //功能的序列号
     var sort: Int = -1,
 

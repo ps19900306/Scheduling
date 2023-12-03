@@ -5112,4 +5112,29 @@ class StarWarEnvironment {
         ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
+
+    val isJiYuCompleteTask by lazy {
+        val tag = "isJiYuComplete"
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(1002, 213), ColorRuleRatioImpl.getSimple(144,53,70))
+            // sequenceNumber:0 blockNumber: 0  positionType:1
+        )
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(1001, 218), ColorRuleRatioImpl.getSimple(138,58,71))
+            // sequenceNumber:8 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1008, 221), ColorRuleRatioImpl.getSimple(136,55,70))
+            // sequenceNumber:16 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1012, 227), ColorRuleRatioImpl.getSimple(136,49,65))
+            // sequenceNumber:24 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1001, 231), ColorRuleRatioImpl.getSimple(138,60,73))
+            // sequenceNumber:36 blockNumber: 0  positionType:1
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
+
 }
