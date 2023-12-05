@@ -3021,7 +3021,7 @@ class StarWarEnvironment {
      * TODO
      *  NO实现的
      **/
-    val exitGameTask1 by lazy {
+   private  val exitGameTask1 by lazy {
         val tag = "exitGameTask"
         val ruleRatio1 = ColorRuleRatioImpl.getSimple(
             218, 111, 238, 135, 236, 132,
@@ -4045,28 +4045,7 @@ class StarWarEnvironment {
 
     val spArea by lazy { ClickArea(114,874,438,144,false)}
 
-    val isOpenTask by lazy {
-        val tag = "isOpen"
-        val list = mutableListOf<PointRule>()
-        list.add(PointRule(CoordinatePoint(1002, 213), ColorRuleRatioImpl.getSimple(144,53,70))
-            // sequenceNumber:0 blockNumber: 0  positionType:1
-        )
-        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
-        val pointList = mutableListOf<IPR>()
-        pointList.add(PointRule(CoordinatePoint(1001, 218), ColorRuleRatioImpl.getSimple(138,58,71))
-            // sequenceNumber:8 blockNumber: 0  positionType:1
-        )
-        pointList.add(PointRule(CoordinatePoint(1008, 221), ColorRuleRatioImpl.getSimple(136,55,70))
-            // sequenceNumber:16 blockNumber: 0  positionType:1
-        )
-        pointList.add(PointRule(CoordinatePoint(1012, 227), ColorRuleRatioImpl.getSimple(136,49,65))
-            // sequenceNumber:24 blockNumber: 0  positionType:1
-        )
-        pointList.add(PointRule(CoordinatePoint(1001, 231), ColorRuleRatioImpl.getSimple(138,60,73))
-            // sequenceNumber:36 blockNumber: 0  positionType:1
-        )
-        ImgTaskImpl1(pointList, tag, correctPositionModel)
-    }
+
 
 
 

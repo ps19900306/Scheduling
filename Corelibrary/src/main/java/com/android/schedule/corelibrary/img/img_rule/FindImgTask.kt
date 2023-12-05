@@ -3,6 +3,7 @@ package com.android.schedule.corelibrary.img.img_rule
 import android.graphics.Bitmap
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinatePoint
+import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRule
 
@@ -22,6 +23,8 @@ open class FindImgTask(
     private var correctArea = false
 
     private var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
+
+
 
     //这里是为了修正寻找的区域防止下标越界
     fun correctArea(imgWidth: Int, imgHeight: Int) {

@@ -209,8 +209,8 @@ abstract class BaseFunctionControl(
 
         //这里可以进行校验
         delay(tripleClickInterval)
-        if(en.isOpenWarehouseBigMenuTask.check()){
-            return if (  en.isActivationLocationList[shipLocation].check()) {
+        if (en.isOpenWarehouseBigMenuTask.check()) {
+            return if (en.isActivationLocationList[shipLocation].check()) {
                 userDb.shipType = shipType
                 dataBase.getUserDao().update(userDb)
                 true
@@ -220,8 +220,8 @@ abstract class BaseFunctionControl(
         }
 
         delay(tripleClickInterval)
-        if(en.isOpenWarehouseBigMenuTask.check()){
-            return if (  en.isActivationLocationList[shipLocation].check()) {
+        if (en.isOpenWarehouseBigMenuTask.check()) {
+            return if (en.isActivationLocationList[shipLocation].check()) {
                 userDb.shipType = shipType
                 dataBase.getUserDao().update(userDb)
                 true
@@ -229,7 +229,7 @@ abstract class BaseFunctionControl(
                 false
             }
         }
-        return  false
+        return false
     }
 
     private suspend fun queryShipLocation(shipType: Int): Int {
@@ -541,5 +541,40 @@ abstract class BaseFunctionControl(
             count--
         }
         return !flag
+    }
+
+
+    suspend fun exitGame(): Boolean {
+        //先进行游戏退出
+        var flag = true
+        var count = 5
+        while (flag && count > 0 && runSwitch) {
+            val bitmap = takeScreen(screenshotInterval)
+            if (bitmap.isLandscape()) {
+                en.exitGameTask.list.forEach {
+                    if (it.check()) {
+                        it.clickArea?.c(it)
+                    } else {
+                        pressBackBtn()
+                    }
+                }
+            } else {
+                return true
+            }
+        }
+
+        //这里进行游戏的切换
+        flag = true
+        count = 5
+        while (flag && count > 0 && runSwitch) {
+            val bitmap = takeScreen(screenshotInterval)
+            if (bitmap.isLandscape()) {
+                pressHomeBtn()
+            } else {
+                return false
+            }
+        }
+
+        return false
     }
 }
