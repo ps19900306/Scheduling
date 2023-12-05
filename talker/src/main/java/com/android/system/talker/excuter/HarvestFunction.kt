@@ -11,6 +11,8 @@ import com.android.system.talker.database.VegetableDb
 import com.android.system.talker.enums.WarehouseType
 import kotlinx.coroutines.delay
 
+
+//这人个是收菜的逻辑
 class HarvestFunction(
     val vegetableDb: VegetableDb,
     userDb: UserDb,

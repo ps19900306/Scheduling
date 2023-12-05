@@ -11,5 +11,13 @@ class MasterControl(
 ) : TurnBaseController(acService) {
 
 
+    override fun start() {
+
+    }
+
+    override fun end() {
+
+    }
+
 
 }

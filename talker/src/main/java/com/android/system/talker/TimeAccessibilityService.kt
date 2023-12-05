@@ -14,10 +14,7 @@ class TimeAccessibilityService : AccessibilityService() {
         val excuter = MasterControl(
             AppDataBase.getInstance(this@TimeAccessibilityService),
             this@TimeAccessibilityService
-        ) {
-
-        }
-
+        )
 
     }
 
