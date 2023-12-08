@@ -15,6 +15,6 @@ public interface DailyGiftDao {
     fun delete(data: DailyGiftDb)
 
     @Query("SELECT * FROM daily_gift where userid =:userId")
-    fun queryByUserId(userId: Long): DailyGiftDb
+    fun queryByUserId(userId: Long): DailyGiftDb?
 
 }

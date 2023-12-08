@@ -2,13 +2,14 @@ package com.android.system.talker.database
 
 import android.content.Context
 import androidx.room.Database
-import androidx.room.DatabaseConfiguration
-import androidx.room.InvalidationTracker
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteOpenHelper
 
-@Database(entities = [UserDb::class, VegetableDb::class], version = 1)
+
+@Database(entities = [UserDb::class,
+    DailyGiftDb::class,
+    TaskDb::class,
+    VegetableDb::class], version = 1, exportSchema = false)
 abstract class AppDataBase : RoomDatabase() {
 
     companion object {

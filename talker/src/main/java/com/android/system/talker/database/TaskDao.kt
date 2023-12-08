@@ -15,5 +15,5 @@ interface TaskDao {
     fun delete(data: TaskDb)
 
     @Query("SELECT * FROM task where userid =:userId")
-    fun queryByUserId(userId: Long): DailyGiftDb
+    fun queryByUserId(userId: Long): TaskDb?
 }

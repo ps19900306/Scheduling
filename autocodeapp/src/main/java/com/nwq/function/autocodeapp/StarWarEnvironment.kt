@@ -3986,7 +3986,7 @@ class StarWarEnvironment {
 
 
     val oneClickClaimArea = ClickArea(344,880,680,109,false)
-    val isOneClickClaimTask by lazy {
+    val isOpenTask by lazy {
         val tag = "isOneClickClaim"
         val pr  = PointRule(CoordinatePoint(692, 922), ColorRuleRatioImpl.getSimple(187,216,212))
         // sequenceNumber:0 blockNumber: 0  positionType:0

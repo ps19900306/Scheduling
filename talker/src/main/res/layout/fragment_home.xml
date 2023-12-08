@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.HomeFragment">
+
+
+    <CheckBox
+        android:id="@+id/everyDayCk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="每天循环"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="91dp"
+        tools:layout_editor_absoluteY="29dp" />
+
+    <Button
+        android:id="@+id/startBtn"
+        android:layout_marginStart="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始"
+        app:layout_constraintStart_toEndOf="@+id/everyDayCk"
+        app:layout_constraintTop_toTopOf="@+id/everyDayCk" />
+
+    <Button
+        android:id="@+id/endBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="停止"
+        app:layout_constraintStart_toEndOf="@+id/startBtn"
+        app:layout_constraintTop_toTopOf="@+id/startBtn"
+        tools:layout_editor_absoluteX="178dp" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userList"
+        app:layout_constraintTop_toBottomOf="@+id/everyDayCk"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/optList"
+        app:layout_constraintTop_toBottomOf="@+id/userList"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

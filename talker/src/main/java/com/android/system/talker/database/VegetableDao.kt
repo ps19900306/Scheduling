@@ -19,5 +19,5 @@ interface VegetableDao {
     fun update(userDb: VegetableDb)
 
     @Query("SELECT * FROM vegetables where userid =:userId")
-    fun queryByUserId(userId: Long): VegetableDb
+    fun queryByUserId(userId: Long): VegetableDb?
 }

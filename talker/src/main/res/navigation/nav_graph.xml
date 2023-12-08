@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.android.system.talker.im.ui.ConversationListFragment"
-        android:label="@string/first_fragment_label"
+        android:label="ConversationListFragment"
         tools:layout="@layout/fragment_conversation_list">
 
         <action
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.android.system.talker.im.ui.FriendListFragment"
-        android:label="@string/second_fragment_label"
+        android:label="FriendListFragment"
         tools:layout="@layout/fragment_friend_list">
 
         <action
@@ -36,7 +36,7 @@
     <fragment
         android:id="@+id/GroupListFragment"
         android:name="com.android.system.talker.im.ui.GroupListFragment"
-        android:label="@string/second_fragment_label"
+        android:label="GroupListFragment"
         tools:layout="@layout/fragment_group_list">
 
         <action
@@ -54,13 +54,12 @@
     <fragment
         android:id="@+id/GroupMemberListFragment"
         android:name="com.android.system.talker.im.ui.GroupMemberListFragment"
-        android:label="@string/second_fragment_label"
+        android:label="GroupMemberListFragment"
         tools:layout="@layout/fragment_group_member_list">
 
         <argument
-            android:name="group_id"
+            android:name="groupId"
             app:argType="string" />
-
 
     </fragment>
 </navigation>
