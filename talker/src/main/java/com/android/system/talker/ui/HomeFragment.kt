@@ -82,7 +82,12 @@ class HomeFragment : Fragment() {
             runOnIO {
                 val list = dataBase.getUserDao().list()
                 runOnUI {
-                    adapter = UserListAdapter(list, {
+                    if (!hasSetUserId) {
+                        list.getOrNull(0)?.id?.let {
+                            nowUserId = it
+                        }
+                    }
+                    adapter = UserListAdapter(nowUserId,list, {
                         runOnIO {
                             dataBase.getUserDao().update(it)
                         }
@@ -102,11 +107,7 @@ class HomeFragment : Fragment() {
                     })
                     _binding.userList.adapter = adapter
 
-                    if (!hasSetUserId) {
-                        list.getOrNull(0)?.id?.let {
-                            nowUserId = it
-                        }
-                    }
+
                     refreshOptList(nowUserId)
                 }
             }
