@@ -15,8 +15,9 @@ import com.android.system.talker.databinding.ItemUserListBinding
 class UserListAdapter(
     val list: List<UserDb>,
     val updata: (userDb: UserDb) -> Unit,
-    val onClick: (userId: Long) -> Unit,
-    val onAddClick: () -> Unit
+    val onModifyClick: (userId: Long) -> Unit,
+    val onSelectClick: (userId: Long) -> Unit,
+    val onAddClick: () -> Unit,
 ) : RecyclerView.Adapter<UserListAdapter.UserViewHolder>() {
 
 
@@ -40,8 +41,11 @@ class UserListAdapter(
             list.getOrNull(position - 1)?.let { data ->
                 holder.bind.tv.text = data.sccoutStr
 
+                holder.bind.modifyBtn.singleClick {
+                    data.id?.let { onModifyClick.invoke(it) }
+                }
                 holder.bind.root.singleClick {
-                    data.id?.let { onClick.invoke(it) }
+                    data.id?.let { onSelectClick.invoke(it) }
                 }
                 holder.bind.cb.setOnCheckedChangeListener { buttonView, isChecked ->
                     data.isChecked = isChecked

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ComboControlsView">
+        <attr name="is_select" format="boolean"/>
+        <attr name="show_select" format="boolean"/>
+        <attr name="title_str" format="reference"/>
+    </declare-styleable>
+
+</resources>

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.android.schedule.corelibrary.expand.runOnIO
 import com.android.schedule.corelibrary.expand.runOnUI
@@ -23,7 +24,8 @@ class UserFragment : Fragment() {
 
     private lateinit var _binding: FragmentUserBinding
 
-    private val args by navArgs<UserFragmentArgs>()
+    private val args by lazy { UserIdArgs(arguments ?: Bundle()) }
+
     private val userDao by lazy {
         AppDataBase.getInstance(requireContext()).getUserDao()
     }
@@ -54,6 +56,8 @@ class UserFragment : Fragment() {
                     _binding.dailyGiftCb.isChecked = mData.dailyGiftSwitch
                     _binding.agreementGiftCb.isChecked = mData.agreementGiftSwitch
                     _binding.activeGiftCb.isChecked = mData.activeGiftSwitch
+                    _binding.appLocationXEdt.setText(mData.appLocationX.toString())
+                    _binding.appLocationYEdt.setText(mData.appLocationY.toString())
                 }
             }
         }
@@ -66,11 +70,22 @@ class UserFragment : Fragment() {
             mData.dailyGiftSwitch = _binding.dailyGiftCb.isChecked
             mData.agreementGiftSwitch = _binding.agreementGiftCb.isChecked
             mData.activeGiftSwitch = _binding.activeGiftCb.isChecked
-            userDao.insert(mData)
+            _binding.appLocationXEdt.text.toString().toIntOrNull()?.let {
+                mData.appLocationX = it
+            }
+            _binding.appLocationYEdt.text.toString().toIntOrNull()?.let {
+                mData.appLocationY = it
+            }
+            lifecycleScope.runOnIO {
+                userDao.insert(mData)
+                runOnUI {
+                    findNavController().popBackStack()
+                }
+            }
         }
-
-
     }
+
+
 
 
 }

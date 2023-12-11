@@ -13,12 +13,29 @@
         <action
             android:id="@+id/action_homeFragment_to_userFragment"
             app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_vegetableFragment"
+            app:destination="@id/vegetableFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/userFragment"
         android:name="com.android.system.talker.ui.UserFragment"
         android:label="home_fragment_label"
+        tools:layout="@layout/fragment_conversation_list">
+        <argument
+            android:name="userId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <action
+            android:id="@+id/action_userFragment_to_vegetableFragment"
+            app:destination="@id/vegetableFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/vegetableFragment"
+        android:name="com.android.system.talker.ui.VegetableFragment"
+        android:label="vegetable_fragment_label"
         tools:layout="@layout/fragment_conversation_list">
         <argument
             android:name="userId"

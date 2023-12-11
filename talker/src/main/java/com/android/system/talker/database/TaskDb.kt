@@ -7,7 +7,7 @@ import com.android.system.talker.R
 
 
 @Entity(tableName = "task")
-class TaskDb() : BasicFunctionItem {
+class TaskDb()  {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -21,7 +21,7 @@ class TaskDb() : BasicFunctionItem {
     var lastCompletionTime: Long = 0L
 
     //基地位置
-    var baseLocation: Int = 0
+    var baseMenuLocation: Int = 0
 
     //克隆的位置
     var baseCloneLocation: Int = -1
@@ -31,30 +31,6 @@ class TaskDb() : BasicFunctionItem {
 
     var switch: Boolean = false
 
-
-    override fun setSwitchStatus(b: Boolean) {
-        switch = b
-    }
-
-    override fun getSwitchStatus(b: Boolean): Boolean {
-        return switch
-    }
-
-    override fun getSortNumber(): Int {
-        return sort
-    }
-
-    override fun setSortNumber(i: Int) {
-        sort = i
-    }
-
-    override fun getIdName(): Int {
-        return nameResInt
-    }
-
-    override fun getLocalType(): Int {
-        return baseLocation
-    }
 }
 
 

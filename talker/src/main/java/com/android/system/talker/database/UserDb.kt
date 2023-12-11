@@ -18,13 +18,13 @@ class UserDb() {
 
 
     var isChecked: Boolean = false
+    //克隆的位置
+    var baseCloneLocation: Int = -1
 
     var appLocationX: Int = 1
     var appLocationY: Int = 1
 
 
-    //克隆的位置
-    var baseCloneLocation: Int = -1
 
     var shortcutMenu1: Int = MenuType.WAREHOUSE
     var shortcutMenu2: Int = MenuType.TASK

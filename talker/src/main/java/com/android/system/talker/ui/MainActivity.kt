@@ -6,12 +6,9 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.android.schedule.corelibrary.expand.singleClick
 import com.android.system.talker.R
-import com.android.system.talker.databinding.ActivityImmanagerBinding
 import com.android.system.talker.databinding.ActivityMainBinding
-import com.android.system.talker.im.ui.IMmanagerActivity
-import com.system.android.myimdemoapplication.LoginUtil
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,9 +24,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val navController = findNavController(R.id.nav_host_fragment)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        appBarConfiguration = AppBarConfiguration(navController.graph)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
 
 
 //        LoginUtil.init(this)

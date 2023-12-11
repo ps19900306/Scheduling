@@ -7,7 +7,7 @@ android {
     compileSdk 32
     defaultConfig {
         applicationId "com.nwq.function.scheduling"
-        minSdk 30
+        minSdk 29
         targetSdk 32
         versionCode 10
         versionName "1.9"
@@ -30,6 +30,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.nwq.function.scheduling'
 
 }
 

@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="每天循环"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="91dp"
@@ -19,9 +20,9 @@
 
     <Button
         android:id="@+id/startBtn"
-        android:layout_marginStart="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="开始"
         app:layout_constraintStart_toEndOf="@+id/everyDayCk"
         app:layout_constraintTop_toTopOf="@+id/everyDayCk" />
@@ -39,22 +40,31 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userList"
-        app:layout_constraintTop_toBottomOf="@+id/everyDayCk"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/optList"
-        app:layout_constraintTop_toBottomOf="@+id/userList"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/everyDayCk" />
+
+
+    <com.android.system.talker.view.ComboControlsView
+        android:id="@+id/taskCb"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userList"
+        app:title_str="@string/task_yi" />
+
+    <com.android.system.talker.view.ComboControlsView
+        android:id="@+id/vegetableCb"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taskCb"
+        app:title_str="@string/task_vi" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

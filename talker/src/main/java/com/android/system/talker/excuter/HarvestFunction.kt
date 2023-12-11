@@ -51,7 +51,7 @@ class HarvestFunction(
 
 
     private suspend fun harvestVegetables() {
-        var result = returnSpaceStation(vegetableDb.baseLocation)
+        var result = returnSpaceStation(vegetableDb.baseMenuLocation)
         if (!result) return
 
         result = checkShip(vegetableDb.shipType)
@@ -129,7 +129,7 @@ class HarvestFunction(
     }
 
     private suspend fun monitoringReturnStatus() {
-        var result = returnSpaceStation(vegetableDb.baseLocation)
+        var result = returnSpaceStation(vegetableDb.baseMenuLocation)
         if (!result) return
 
         //卸载货物

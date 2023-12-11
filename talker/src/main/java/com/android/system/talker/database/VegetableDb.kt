@@ -3,13 +3,14 @@ package com.android.system.talker.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Query
 import com.android.system.talker.R
 import com.android.system.talker.enums.MenuType
 import com.android.system.talker.enums.ShipType
 
 
 @Entity(tableName = "vegetables")
-class VegetableDb() : BasicFunctionItem {
+class VegetableDb(){
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -20,7 +21,7 @@ class VegetableDb() : BasicFunctionItem {
     var nameResInt: Int = R.string.harvest_setting//这个是用于显示的
 
     //基地位置
-    var baseLocation: Int = 0
+    var baseMenuLocation: Int = 0
 
     //克隆的位置
     var baseCloneLocation: Int = -1
@@ -51,30 +52,6 @@ class VegetableDb() : BasicFunctionItem {
 
     var menuType: Int = MenuType.PLANETARY_MINE
 
-
-    override fun setSwitchStatus(b: Boolean) {
-        switch = b
-    }
-
-    override fun getSwitchStatus(b: Boolean): Boolean {
-        return switch
-    }
-
-    override fun getSortNumber(): Int {
-        return sort
-    }
-
-    override fun setSortNumber(i: Int) {
-        sort = i
-    }
-
-    override fun getIdName(): Int {
-        return nameResInt
-    }
-
-    override fun getLocalType(): Int {
-        return baseLocation
-    }
 
 
 }

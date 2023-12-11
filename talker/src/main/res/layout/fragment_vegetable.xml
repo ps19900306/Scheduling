@@ -4,49 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.UserFragment">
+    tools:context=".ui.VegetableFragment">
+
 
     <EditText
-        android:id="@+id/userNameEdt"
-        android:hint="userName"
+        android:id="@+id/baseMenuLocationEdt"
+        android:hint="@string/base_menu_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/baseCloneLocationEdt"
-        android:hint="baseCloneLocation"
+        android:hint="@string/base_clone_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@+id/appLocationXEdt"
-        android:hint="appLocationX"
+        android:id="@+id/plantCountEdt"
+        android:hint="中菜数量"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@+id/appLocationYEdt"
-        android:hint="appLocationY"
+        android:id="@+id/addIntervalEdt"
+        android:hint="添加时间的间隔"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <CheckBox
-        android:id="@+id/dailyGiftCb"
-        android:text="每日优惠"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:id="@+id/activeGiftCb"
-        android:text="每日登录礼物"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-
-    <CheckBox
-        android:id="@+id/agreementGiftCb"
-        android:text="协议礼物"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/completeIntervalEdt"
+        android:hint="收菜的间隔"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
