@@ -15,9 +15,7 @@ class TaskDb()  {
 
     var userid: Long = -1L//这个是UserDb的数据
 
-    var nameResInt: Int = R.string.harvest_setting//这个是用于显示的
-
-    //上次收菜完成时间
+    //上次完成时间
     var lastCompletionTime: Long = 0L
 
     //基地位置
@@ -31,6 +29,7 @@ class TaskDb()  {
 
     var switch: Boolean = false
 
+    var needDelay: Boolean = false //是否有些步骤需要延迟处理
 }
 
 

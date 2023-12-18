@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 
 @Database(entities = [UserDb::class,
-    DailyGiftDb::class,
+    MinerDb::class,
     TaskDb::class,
     VegetableDb::class], version = 1, exportSchema = false)
 abstract class AppDataBase : RoomDatabase() {
@@ -32,10 +32,9 @@ abstract class AppDataBase : RoomDatabase() {
 
     abstract fun getUserDao():UserDao
 
-    abstract fun getDailyGiftDao():DailyGiftDao
-
     abstract fun getTaskDao():TaskDao
 
+    abstract fun getMinerDao():MinerDao
 
     abstract fun getVegetableDao():VegetableDao
 

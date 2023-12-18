@@ -2,12 +2,16 @@ package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Bitmap
+import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
+import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.click.SlidingArea
+import com.android.schedule.corelibrary.click.TwoFingerArea
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.utils.NwqCallBack
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.enums.MenuType
@@ -20,22 +24,42 @@ abstract class BaseFunctionControl(
     val userDb: UserDb,
     val dataBase: AppDataBase,
     acService: AccessibilityService,
-    private val onEnd: (succes: Boolean) -> Unit,
 ) : TurnBaseController(acService) {
 
+    private var onEnd: NwqCallBack<Boolean>? = null
+    protected val ABNORMAL_SCREENO_ORIENTATION = "屏幕方向异常"
+    fun setOnEnd(end: NwqCallBack<Boolean>) {
+        onEnd = end
+    }
+
+
+    abstract fun endGame(eroMsg: String? = "")
 
     abstract suspend fun getTag(): String
 
     abstract suspend fun startFunction()
 
+    abstract suspend fun getBaseCloneLocation(): Int
+
+
+    private var hasResult = true
     fun reportingError(string: String) {
-        runSwitch = false
-        onEnd.invoke(false)
+        if (hasResult) {
+            endGame(string)
+            hasResult = false
+            runSwitch = false
+            onEnd?.onCallBack(false)
+        }
     }
 
     override fun end() {
         super.end()
-        onEnd.invoke(true)
+        if (hasResult) {
+            endGame("")
+            hasResult = false
+            runSwitch = false
+            onEnd?.onCallBack(true)
+        }
     }
 
 
@@ -104,7 +128,7 @@ abstract class BaseFunctionControl(
         var count = maxCount
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isInSpaceStationT.check()) {
@@ -153,8 +177,8 @@ abstract class BaseFunctionControl(
         var flag = true
         var count = 20
         while (flag && count > 0 && runSwitch) {
-            if (taskScreenL(screenshotInterval)) {
-                runSwitch = false
+            if (!taskScreenL(screenshotInterval)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (hasIntoGame()) {
@@ -162,7 +186,7 @@ abstract class BaseFunctionControl(
             } else if (en.isOpenBigMenuT.check()) {
                 click(en.closeBigMenuArea)
             } else if (en.isConfirmDialogTask.check()) {
-                click(en.confirmDialogCancelArea)
+                en.confirmDialogCancelArea.c(en.isConfirmDialogTask)
             } else if (en.isCanCollectGiftT.check()) {
                 click(en.closeCollectGiftArea)
             } else if (count == 5) {
@@ -262,8 +286,8 @@ abstract class BaseFunctionControl(
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
-            if (taskScreenL(screenshotInterval)) {
-                runSwitch = false
+            if (!taskScreenL(screenshotInterval)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isOpenBigMenuT.check()) {
@@ -351,43 +375,6 @@ abstract class BaseFunctionControl(
     }
 
 
-//    //这个事打开仓库的一个子类型
-//    suspend fun ensureOpenShipWarehouse(): Boolean {
-//        //先打开仓库
-//        var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
-//        if (!result) {
-//            return false
-//        }
-//
-//        var flag = true
-//        var count = 10
-//        while (flag && count > 0 && runSwitch) {
-//            if (taskScreenL(screenshotInterval)) {
-//                runSwitch = false
-//                return false
-//            }
-//            if (en.isShipWarehouseTask.check()) {
-//                en.shipWarehouseArea.c()
-//                flag = false
-//            } else if (en.isSpaceStationWarehouseTask.check()) {
-//                if (en.isCloseSpaceStationWarehouseTask.check()) {
-//                    en.switchSpaceStationWarehouseArea.c()
-//                }
-//            } else if (en.isInSpaceStationT.check()) {
-//                result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
-//                if (!result) {
-//                    return false
-//                }
-//            } else {//这里需要往下滑动
-//                en.swipeWarehouseDown.c()
-//            }
-//            count--
-//        }
-//
-//        return !flag
-//    }
-
-
     suspend fun ensureOpenWarehouseType(@WarehouseType type: Int): Boolean {
         //先打开仓库
         var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
@@ -399,8 +386,8 @@ abstract class BaseFunctionControl(
         var findTraget = false
         var count = 7
         while (flag && count > 0 && runSwitch) {
-            if (taskScreenL(screenshotInterval)) {
-                runSwitch = false
+            if (!taskScreenL(screenshotInterval)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             when (type) {
@@ -481,7 +468,7 @@ abstract class BaseFunctionControl(
 
     suspend fun ensureCloseDetermine(): Boolean {
         if (en.isConfirmDialogTask.check()) {
-            en.confirmDialogEnsureArea.c()
+            en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
             return true
         }
         return false
@@ -490,6 +477,10 @@ abstract class BaseFunctionControl(
 
     suspend fun ClickArea.c() {
         click(this)
+    }
+
+    suspend fun TwoFingerArea.c() {
+        SimpleClickUtils.optClickTasks(acService, 0, 0, *this.toClickTask().toTypedArray())
     }
 
     suspend fun ClickArea.c(task: ImgTask) {
@@ -521,7 +512,7 @@ abstract class BaseFunctionControl(
         var complete = false
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isEmptyWarehouseTask.check()) {
@@ -576,5 +567,162 @@ abstract class BaseFunctionControl(
         }
 
         return false
+    }
+
+
+    //改变克隆点位置
+    protected suspend fun checkCloneLocation(menuPosition: Int, clonePosition: Int): Boolean {
+        if (userDb.baseCloneLocation == clonePosition) {
+            return true
+        }
+        //先回空间站
+        if (!returnSpaceStation(userDb.baseMenuLocation)) return false
+
+
+        //这里是离开船
+        if (!leaveShip()) return false
+
+        //如果是基地就出去自毁，不然就进行远克隆
+        if (clonePosition == SetConstant.BASE_CLONE_LOCATION) {
+            outSelfExplosion()
+        } else {
+            remoteClone(clonePosition)
+        }
+
+
+        //这里保存结果
+        userDb.baseCloneLocation = clonePosition
+        userDb.baseMenuLocation = menuPosition
+        userDb.shipType= ShipType.UNKNOWN
+        dataBase.getUserDao().update(userDb)
+        return false
+    }
+
+
+    protected suspend fun leaveShip(): Boolean {
+        var hasClickLive = false
+        var flag = true
+        var count = 5
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            //已经打开船菜单
+            if (en.isOpenShipMenuTask.check()) {
+                val isShowLeaveTask = en.isShowLeaveTask.copyOffset(
+                    en.isShowLeaveTask.tag,
+                    en.isOpenShipMenuTask.getOffsetX(),
+                    en.isOpenShipMenuTask.getOffsetY()
+                )
+                if (isShowLeaveTask.check()) {
+                    optClickTask(
+                        en.clickLeveShipArea.toClickTask(
+                            0,
+                            en.isOpenShipMenuTask.getOffsetX(),
+                            en.isOpenShipMenuTask.getOffsetY()
+                        )
+                    )
+                    hasClickLive = true
+                    delay(jumpClickInterval)
+                } else {
+                    flag = false
+                }
+            } else if (en.isInSpaceStationT.check()) {
+                if (hasClickLive) {
+                    flag = false
+                } else if (count % 2 == 0) {
+                    en.clickShipArea.c()
+                } else {
+                    en.openShipVolume.c()
+                }
+            }
+            count--
+        }
+        return !flag
+    }
+
+
+    //这个表示是蛋的情况下出船自毁
+    private suspend fun outSelfExplosion(): Boolean {
+        var flag = true
+        var count = 10
+        var hasClickExplosion = false
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isInSpaceStationT.check()) {
+                if (hasClickExplosion) {
+                    flag = false
+                } else {
+                    en.outSpaceArea.c()
+                    delay(tripleClickInterval)
+                }
+            } else if (isInSpace()) {//这里判断是在太空中
+                if (en.isOpenShipMenu2Task.check()) { //这里判断是否打开飞船菜单
+                    val task = en.isShowExplosionTask.copyOffset(
+                        en.isShowExplosionTask.tag,
+                        en.isOpenShipMenu2Task.getOffsetX(),
+                        en.isOpenShipMenu2Task.getOffsetY()
+                    )
+                    if (task.check()) {
+                        en.clickSelfExplosionArea.c(en.isOpenShipMenu2Task)
+                        hasClickExplosion = true
+                        delay(((2.5 + Math.random()) * SetConstant.MINUTE).toLong())
+                    }
+                } else if (count % 2 == 0) {
+                    en.clickShip2Area.c()
+                } else {
+                    en.openShipVolume.c()
+                }
+            }
+            count--
+        }
+        return !flag
+    }
+
+    protected suspend fun remoteClone(position: Int): Boolean {
+        var flag = true
+        var count = 5
+        var hasClickClone = false
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isInSpaceStationT.check()) {
+                if (hasClickClone) {
+                    flag = false
+                } else if (en.isCloneCenterTask.check()) {
+                    en.cloneCenterArea.c(en.isCloneCenterTask)
+                    delay(clickInterval)
+                }
+            } else if (en.isOpenCloneMenuTask.check()) {
+                if (position <= 2) {
+                    en.getCloneClickArea(position).c()
+                    delay(clickInterval)
+                } else if (en.isCloneListTask.check()) {
+                    if (en.isCloneListTask.getOffsetY() < 10) {
+                        en.getCloneClickArea(position).c(en.isCloneListTask)
+                    }else{
+                        en.swipeCloneListTArea.c()
+                    }
+                    delay(clickInterval)
+                }
+            } else if (en.isConfirmDialogTask.check()) {
+                en.confirmDialogCancelArea.c(en.isConfirmDialogTask)
+                hasClickClone = true
+                delay(tripleClickInterval)
+            }
+            count--
+        }
+        return !flag
+    }
+
+
+    protected suspend fun isInSpace(): Boolean {
+        return ((en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()) && (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()))
     }
 }

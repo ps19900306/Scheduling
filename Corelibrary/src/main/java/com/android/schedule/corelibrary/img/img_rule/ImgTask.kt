@@ -17,7 +17,7 @@ import com.android.schedule.corelibrary.utils.L
  */
 abstract class ImgTask(
     val iprList: List<IPR>,
-    protected val tag: String,
+     val tag: String,
     val correctModel: CorrectPositionModel? = null
 ) : BasicImgTask() {
 

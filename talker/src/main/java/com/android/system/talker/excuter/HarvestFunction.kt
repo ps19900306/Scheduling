@@ -17,36 +17,51 @@ class HarvestFunction(
     val vegetableDb: VegetableDb,
     userDb: UserDb,
     dataBase: AppDataBase,
-    acService: AccessibilityService,
-    onEnd: (b: Boolean) -> Unit,
-) : BaseFunctionControl(userDb, dataBase, acService, onEnd) {
+    acService: AccessibilityService
+) : BaseFunctionControl(userDb, dataBase, acService) {
 
 
     val TAG = "收菜"
+    override fun endGame(eroMsg: String?) {
+
+    }
+
+    override suspend fun getBaseCloneLocation(): Int {
+        return vegetableDb.baseCloneLocation
+    }
+
+
+    override suspend fun getTag(): String {
+        return TAG
+    }
 
     private var nowCelestialCount = 0
     private val GO_TO_COLLECT_NAVIGATION_MONITORING = 1//收菜导航
     private val ONE_CLICK_CLAIM = 2// 进行收取
     private val MONITORING_RETURN_STATUS = 4//返回空间站监听
     private var nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
-    override suspend fun getTag(): String {
-        return TAG
-    }
 
 
     override suspend fun startFunction() {
         var result = intoGame()
         if (!result) return
-
         if (needHarvestVegetables()) {
-            harvestVegetables()
+            if (!checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
+                harvestVegetables()
+            }else{
+                addVegetablesTime()
+            }
         } else if (needAddTime()) {
             addVegetablesTime()
         } else {
             end()
         }
+    }
 
-
+    suspend fun checkAndTime() {
+        if (needAddTime()) {
+            addVegetablesTime()
+        }
     }
 
 
@@ -86,11 +101,11 @@ class HarvestFunction(
         var count = 20
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isConfirmDialogTask.check()) {
-                en.confirmDialogEnsureArea.c()
+                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
                 vegetableDb.lastAddTime = System.currentTimeMillis()
                 dataBase.getVegetableDao().update(vegetableDb)
                 flag = false
@@ -158,7 +173,7 @@ class HarvestFunction(
         var hasLin = false
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (!hasLin && en.isOneClickClaimTask.check()) {
@@ -223,10 +238,11 @@ class HarvestFunction(
         var count = 5
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return false
             }
             if (en.isConfirmDialogTask.check()) {
-                en.confirmDialogEnsureArea.c()
+                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
                 flag = false
             } else if (en.findLunchAreaTask.check()) {
                 ClickArea(
@@ -248,7 +264,7 @@ class HarvestFunction(
         var count = 20 * 3
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(20 * 1000)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.findLunchAreaTask.check()) {
@@ -265,7 +281,7 @@ class HarvestFunction(
         var count = 20
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isInSpaceStationT.check()) {
@@ -279,7 +295,7 @@ class HarvestFunction(
                     }
                 }
             } else if (en.isConfirmDialogTask.check()) {
-                en.confirmDialogEnsureArea.c()
+                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
             } else if (en.isOpenBigMenuT.check()) {
                 en.closeBigMenuArea.c()
             } else if (en.isClosePositionMenuT.check()) {

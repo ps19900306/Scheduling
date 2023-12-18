@@ -50,12 +50,10 @@ class HomeFragment : Fragment() {
                 updateTask(it)
         }
 
-
-
         _binding.taskCb.singleClick {
             if (hasSetUserId) {
                 findNavController().navigate(
-                    R.id.action_homeFragment_to_vegetableFragment,
+                    R.id.action_homeFragment_to_taskFragment,
                     UserIdArgs(nowUserId).toBundle()
                 )
             }

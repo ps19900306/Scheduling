@@ -33,6 +33,8 @@ annotation class DirectionType() {
         const val BOTTOM = 7
         const val BOTTOM_LEFT = 8
         const val NONE = -1
+
+
     }
 }
 

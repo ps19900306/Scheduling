@@ -54,7 +54,7 @@ class MainViewModel : ViewModel() {
     fun preprocessData() {
         featureKeyList.clear()
         colorMaps.clear()
-        findArea=null
+        findArea = null
 
         val are = coordinateArea ?: return
         val bitmap = srcBitmap ?: return
@@ -276,7 +276,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun builderClickArea(coordinateArea: CoordinateArea?, list: List<CoordinateLine>) {
-        GenerateCodeUtils.builderClickArea(coordinateArea,list)?.let {
+        GenerateCodeUtils.builderClickArea(coordinateArea, list)?.let {
             val clipData = ClipData.newPlainText("autoCode", it)
             manager.setPrimaryClip(clipData)
             Log.i(TAG, "自动代码生成完成")
@@ -538,8 +538,10 @@ class MainViewModel : ViewModel() {
 
         val addBackgroundCount = if (!addBack) {
             0
-        } else if (list.size > 1) {
+        } else if (list.size > 3) {
             1
+        } else if (list.size > 1) {
+            2
         } else {
             3
         }

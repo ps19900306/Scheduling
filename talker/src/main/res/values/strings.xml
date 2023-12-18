@@ -60,4 +60,7 @@
     <string name="save">保存</string>
     <string name="task_yi">际遇任务</string>
     <string name="task_vi">收菜任务</string>
+    <string name="plant_count">中菜数量</string>
+    <string name="add_interval">添加时间的间隔</string>
+    <string name="complete_interval">收菜的间隔</string>
 </resources>

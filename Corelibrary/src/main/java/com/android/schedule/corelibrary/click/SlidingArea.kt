@@ -51,15 +51,15 @@ class SlidingArea(@DirectionType val direction: Int, val area: CoordinateArea) {
         var endPoint: CoordinatePoint   //滑动结束的点
         val slidingDistance = when (parameter.optSlide) {
             OptSlide.NOT_SLIDE -> {
-                (Math.random() * 0.2 + 0.2)
+                (Math.random() * 0.1 + 0.1)
             }
 
             OptSlide.SLIDE_ONE -> {
-                (Math.random() * 0.4 + 0.4)
+                (Math.random() * 0.2 + 0.2)
             }
 
             OptSlide.SLIDE_TWO -> {
-                (Math.random() * 0.6 + 0.5)
+                (Math.random() * 0.3 + 0.3)
             }
 
             else -> {

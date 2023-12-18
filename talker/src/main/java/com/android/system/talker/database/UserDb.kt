@@ -17,13 +17,27 @@ class UserDb() {
     var shipType: Int = ShipType.UNKNOWN
 
 
+    //上次收菜完成时间
+    var lastCompletionTime: Long = 0L
+
     var isChecked: Boolean = false
+
+    //基地位置
+    var baseMenuLocation: Int = 0
+
     //克隆的位置
     var baseCloneLocation: Int = -1
 
+    // 上次修改克隆时间的时间
+    var lastChangeLocationTime: Long = 0L
+
+    // 修改克隆地址的间隔时间
+    var ChangeLocationInterval: Long = 25
+
+    var needDelay: Boolean = false //是否有些步骤需要延迟处理
+
     var appLocationX: Int = 1
     var appLocationY: Int = 1
-
 
 
     var shortcutMenu1: Int = MenuType.WAREHOUSE
@@ -45,7 +59,7 @@ class UserDb() {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Long? = null
+    var id: Long = 0
 }
 
 

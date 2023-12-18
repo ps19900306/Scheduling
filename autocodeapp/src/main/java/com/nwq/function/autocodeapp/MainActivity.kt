@@ -164,12 +164,12 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.add_rectangle_click_are -> {
-                    bind.edit.isVisible =true
+                    bind.edit.isVisible = true
                     nowMode = R.string.calculate_space
                 }
 
                 R.string.add_circular_click_are -> {
-                    bind.edit.isVisible =true
+                    bind.edit.isVisible = true
                     nowMode = R.string.calculate_space
                 }
             }
@@ -277,7 +277,7 @@ class MainActivity() : AppCompatActivity() {
                     bind.previewView.clearLine()
                     bind.functionGroup.isVisible = false
                     bind.optGroup.isVisible = true
-                    bind.edit.isGone= true
+                    bind.edit.isGone = true
                     bind.previewView.invalidate()
                     nowMode = R.string.add_rectangle_click_are
                 }
@@ -287,7 +287,7 @@ class MainActivity() : AppCompatActivity() {
                     bind.previewView.clearLine()
                     bind.functionGroup.isVisible = false
                     bind.optGroup.isVisible = true
-                    bind.edit.isGone= true
+                    bind.edit.isGone = true
                     bind.previewView.invalidate()
                     nowMode = R.string.add_circular_click_are
                 }
@@ -459,8 +459,13 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
-                val task = en.isOpenTask
                 val clickArea = en.clickArea
+//                val task = if (en.isOpenShipMenu2Task.verificationRule(it)) {
+//                    en.isOpenTask.copyOffset("修正的",en.isOpenShipMenu2Task.getOffsetX(),en.isOpenShipMenu2Task.getOffsetY())
+//                } else {
+//                    en.isOpenTask
+//                }
+                val task = en.isOpenTask
                 if (task.verificationRule(it)) {
                     runOnUI {
                         bind.previewView.clearPoint()
@@ -473,7 +478,7 @@ class MainActivity() : AppCompatActivity() {
                             }
                         }
                         L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
-                        bind.previewView.addArea(clickArea.copyOffset(offsetX,offsetY))
+                        bind.previewView.addArea(clickArea.copyOffset(offsetX, offsetY))
                     }
 
                 } else {
@@ -492,18 +497,18 @@ class MainActivity() : AppCompatActivity() {
                 if (!task.verificationRule(bitmap)) {
                     L.i("index  验证失败")
                     faildIndex = faildIndex
-                }else{
+                } else {
                     L.i("index  验证通过")
                 }
             }
-            if(faildIndex >= 0){
+            if (faildIndex >= 0) {
                 runOnUI {
-                     list.getOrNull(faildIndex)?.let {
-                         viewModel.srcBitmap = it
-                         bind.allImg.setImageBitmap(it)
+                    list.getOrNull(faildIndex)?.let {
+                        viewModel.srcBitmap = it
+                        bind.allImg.setImageBitmap(it)
                     }
                 }
-            }else{
+            } else {
                 L.i("index  验证通过")
             }
         }

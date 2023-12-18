@@ -5,23 +5,17 @@ import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.TaskDb
 import com.android.system.talker.database.UserDb
 
-
-class TaskFunction(
-    val taskDb: TaskDb,
-    userDb: UserDb,
-    dataBase: AppDataBase,
-    acService: AccessibilityService
-) : BaseFunctionControl(userDb, dataBase, acService){
-
-    val TAG = "际遇任务"
+class UserFunction(userDb: UserDb,
+                   dataBase: AppDataBase,
+                   acService: AccessibilityService
+) : BaseFunctionControl(userDb, dataBase, acService) {
     override fun endGame(eroMsg: String?) {
         TODO("Not yet implemented")
     }
 
     override suspend fun getTag(): String {
-        return TAG
+        TODO("Not yet implemented")
     }
-
 
     override suspend fun startFunction() {
         TODO("Not yet implemented")
@@ -30,5 +24,4 @@ class TaskFunction(
     override suspend fun getBaseCloneLocation(): Int {
         TODO("Not yet implemented")
     }
-
 }

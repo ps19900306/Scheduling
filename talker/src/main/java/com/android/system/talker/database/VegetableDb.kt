@@ -18,7 +18,6 @@ class VegetableDb(){
 
     var userid: Long = -1L//这个是UserDb的数据
 
-    var nameResInt: Int = R.string.harvest_setting//这个是用于显示的
 
     //基地位置
     var baseMenuLocation: Int = 0
@@ -40,7 +39,7 @@ class VegetableDb(){
 
     //收菜的间隔时间
     var addInterval: Int = 6
-
+    var needDelay: Boolean = false //是否有些步骤需要延迟处理
 
     //功能的序列号
     var sort: Int = -1

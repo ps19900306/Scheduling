@@ -1,7 +1,6 @@
 package com.android.system.talker.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,32 +10,32 @@ import androidx.navigation.fragment.findNavController
 import com.android.schedule.corelibrary.expand.runOnIO
 import com.android.schedule.corelibrary.expand.runOnUI
 import com.android.schedule.corelibrary.expand.singleClick
-import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.R
 import com.android.system.talker.database.AppDataBase
-import com.android.system.talker.database.UserDb
+import com.android.system.talker.database.TaskDb
 import com.android.system.talker.database.VegetableDb
+import com.android.system.talker.databinding.FragmentHomeBinding
+import com.android.system.talker.databinding.FragmentTaskBinding
 import com.android.system.talker.databinding.FragmentUserBinding
-import com.android.system.talker.databinding.FragmentVegetableBinding
 
 
-class VegetableFragment : Fragment() {
 
-    private lateinit var _binding: FragmentVegetableBinding
+class TaskFragment : Fragment() {
 
+    private lateinit var _binding: FragmentTaskBinding
     private val args by lazy { UserIdArgs(arguments ?: Bundle()) }
 
-    private val vegetableDao by lazy {
-        AppDataBase.getInstance(requireContext()).getVegetableDao()
+    private val mDao by lazy {
+        AppDataBase.getInstance(requireContext()).getTaskDao()
     }
 
-    private lateinit var mData: VegetableDb
-
+    private lateinit var mData: TaskDb
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentVegetableBinding.inflate(inflater, container, false)
+        // Inflate the layout for this fragment
+        _binding = FragmentTaskBinding.inflate(inflater, container, false)
         return _binding.root
     }
 
@@ -44,13 +43,10 @@ class VegetableFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenResumed {
             runOnIO {
-                mData = vegetableDao.queryByUserId(args.userId) ?: VegetableDb()
+                mData = mDao.queryByUserId(args.userId) ?: TaskDb()
                 runOnUI {
                     _binding.baseCloneLocationEdt.setText(mData.baseCloneLocation.toString())
                     _binding.baseMenuLocationEdt.setText(mData.baseMenuLocation.toString())
-                    _binding.plantCountEdt.setText(mData.numberCount.toString())
-                    _binding.addIntervalEdt.setText(mData.addInterval.toString())
-                    _binding.completeIntervalEdt.setText(mData.completeInterval.toString())
                 }
             }
         }
@@ -62,18 +58,9 @@ class VegetableFragment : Fragment() {
             _binding.baseMenuLocationEdt.text.toIntOrNull()?.let {
                 mData.baseMenuLocation = it
             }
-            _binding.plantCountEdt.text.toIntOrNull()?.let {
-                mData.numberCount = it
-            }
-            _binding.addIntervalEdt.text.toIntOrNull()?.let {
-                mData.addInterval = it
-            }
-            _binding.completeIntervalEdt.text.toIntOrNull()?.let {
-                mData.completeInterval = it
-            }
             lifecycleScope.runOnIO {
                 mData.switch = true
-                vegetableDao.insert(mData)
+                mDao.insert(mData)
                 runOnUI {
                     findNavController().popBackStack()
                 }

@@ -35,7 +35,7 @@ object GenerateCodeUtils {
 
         stringBuilder.append("val list = mutableListOf<PointRule>()   \n")
         datums.forEach {
-            stringBuilder.append("list.add(${it.toColorRuleStr(sx, sy)}) \n" )
+            stringBuilder.append("list.add(${it.toColorRuleStr(sx, sy)}) \n")
         }
         stringBuilder.append("val correctPositionModel =CorrectPositionModel(list, tag, $rangX, $rangY, $everyRevalidation)\n")
 
@@ -67,10 +67,10 @@ object GenerateCodeUtils {
         val datum = datums.get(0)
         // 当找寻的上下浮动很小的时候对范围进行修正 以减少不必要的找寻
         if (findArea.height < 6) {
-            findArea.y = datum.y+sy - 3
+            findArea.y = datum.y + sy - 3
             findArea.height = 7
         } else if (findArea.width < 6) {
-            findArea.x = datum.x+sx - 3
+            findArea.x = datum.x + sx - 3
             findArea.width = 7
         }
         //这里进行代码生成
@@ -103,7 +103,11 @@ object GenerateCodeUtils {
 
     private fun getOffset(a: Int, b: Int): Int {
         val d = a - b
-        return if (d < -90) {
+        return if (d < -200) {
+            -50
+        } else if (d < -150) {
+            -40
+        } else if (d < -90) {
             -30
         } else if (d < -60) {
             -20
@@ -113,6 +117,10 @@ object GenerateCodeUtils {
             -10
         } else if (d > 90) {
             30
+        } else if (d > 200) {
+            50
+        } else if (d > 150) {
+            40
         } else if (d > 60) {
             20
         } else if (d > 30) {
@@ -137,7 +145,7 @@ object GenerateCodeUtils {
     }
 
 
-    fun builderClickArea(coordinateArea: CoordinateArea?, list: List<CoordinateLine>):String? {
+    fun builderClickArea(coordinateArea: CoordinateArea?, list: List<CoordinateLine>): String? {
         val builder = StringBuilder()
         if (list.isEmpty() && coordinateArea == null) {
             return null
