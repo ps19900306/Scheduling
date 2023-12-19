@@ -17,6 +17,8 @@ class MinerDb (){
     //基地位置
     var baseMenuLocation: Int = 0
 
+    var errorStr:String=""
+
     //克隆的位置
     var baseCloneLocation: Int = -1
 

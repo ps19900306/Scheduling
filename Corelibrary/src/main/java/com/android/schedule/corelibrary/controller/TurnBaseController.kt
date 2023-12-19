@@ -23,7 +23,6 @@ abstract class TurnBaseController(
     val STANDARD_CLICK_INTERVAL = 2000
 
 
-
     //这个是不需要跳转的点击间隔 但是非连续点击
     val clickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.4 + 0.4)).toLong()
@@ -173,10 +172,16 @@ abstract class TurnBaseController(
             }
             if (pTask != null) {
                 if (pTask.check()) {
-                    clickArea?.let { click(pTask, it) }
+                    clickArea?.let {
+                        click(pTask, it)
+                        delay(clickInterval)
+                    }
                 }
             } else {
-                clickArea?.let { click(it) }
+                clickArea?.let {
+                    click(it)
+                    delay(clickInterval)
+                }
             }
             count--
         }
@@ -215,8 +220,6 @@ abstract class TurnBaseController(
         }
         return false
     }
-
-
 
 
 }

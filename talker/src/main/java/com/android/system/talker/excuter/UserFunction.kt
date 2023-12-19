@@ -1,27 +1,184 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
-import com.android.system.talker.database.TaskDb
 import com.android.system.talker.database.UserDb
+import com.android.system.talker.enums.ActivityType
+import com.android.system.talker.enums.MenuType
+import kotlinx.coroutines.delay
 
-class UserFunction(userDb: UserDb,
-                   dataBase: AppDataBase,
-                   acService: AccessibilityService
+class UserFunction(
+    userDb: UserDb,
+    dataBase: AppDataBase,
+    acService: AccessibilityService
 ) : BaseFunctionControl(userDb, dataBase, acService) {
     override fun endGame(eroMsg: String?) {
-        TODO("Not yet implemented")
+        dataBase.getUserDao().update(userDb)
     }
 
     override suspend fun getTag(): String {
-        TODO("Not yet implemented")
+        return UserFunction::class.java.simpleName
     }
 
     override suspend fun startFunction() {
-        TODO("Not yet implemented")
+        var result = intoGame()
+        if (!result) return
+
+        var isInSpaceStation = false
+        //这个是每日活动的
+        if (userDb.activeGiftSwitch && TimeUtils.isNewMouth(userDb.activeGiftTime)) {
+            isInSpaceStation = true
+            if (!returnSpaceStation(userDb.baseMenuLocation)) {
+                return
+            }
+            if (ensureOpenActivityType(ActivityType.LOGIN_GIFT)) {
+                en.quickClaimArea.c()
+                userDb.activeGiftTime = System.currentTimeMillis()
+                theOutCheck()
+            }
+        }
+
+        //这个是协议任务的
+        if (userDb.agreementGiftSwitch && TimeUtils.isNewWeek(userDb.agreementGiftTime)) {
+            if (!isInSpaceStation && !returnSpaceStation(userDb.baseMenuLocation)) {//这里保证返回空间站的
+                return
+            }
+            isInSpaceStation = true
+            if (ensureOpenBigMenuArea(MenuType.AGREEMENT)) {
+                optAgreementGift()
+                userDb.agreementGiftTime = System.currentTimeMillis()
+                theOutCheck()
+            }
+        }
+
+        if (userDb.dailyGiftSwitch && TimeUtils.isNewDay(userDb.dailyGiftTime)) {
+            receiveDailyGift(isInSpaceStation)
+            userDb.dailyGiftTime = System.currentTimeMillis()
+            theOutCheck()
+        }
+
+        end()
     }
 
+
+    private suspend fun receiveDailyGift(isInSpaceStation: Boolean) {
+        en.openGiftArea.c()
+
+        val hasOpt =
+            optTaskOperation(eTask = en.isFreeDailyGiftTask, endClickArea = en.freeDailyGiftArea)
+        if (isInSpaceStation && hasOpt) {
+            //在次打开以及菜单
+            optTaskOperation(clickArea = en.openGiftV2Area, eTask = en.isOpenGiftV2Task)
+            if (en.isCanGiftV2Task.check()) {
+                en.canGiftV2Area.c()
+            }
+            var flag = true
+            var count = 5
+            while (flag && count > 0 && runSwitch) {
+                if (!taskScreenL(screenshotInterval)) {
+                    runSwitch = false
+                }
+                if (en.isClosePositionMenuT.check()) {
+                    flag = false
+                } else if (en.isOpenGiftV2Task.check()) {
+                    en.closeGiftV2Area.c()
+                } else if (en.isCanGiftV3Task.check()) {
+                    en.canGiftV3Area.c()
+                }
+                count--
+            }
+        } else {
+            optTaskOperation(clickArea = en.closeGiftArea, eTask = en.isClosePositionMenuT)
+        }
+
+    }
+
+
     override suspend fun getBaseCloneLocation(): Int {
-        TODO("Not yet implemented")
+        return userDb.baseCloneLocation
+    }
+
+
+    //注意这里已经进入了
+    private suspend fun optAgreementGift(): Boolean {
+        // 这里先切换到任务
+        var flag = true
+        var count = 5
+        var hasOpt = false
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isAgreementMenuTask.check()) {
+                flag = false
+            } else {
+                en.agreementMenuArea.c()
+                delay(clickInterval)
+            }
+            count--
+        }
+
+        //这里领取每周任务
+        count = 5
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (en.isAgreementWeekTask.check()) {
+                en.agreementWeekArea.c(en.isAgreementWeekTask)
+                hasOpt = true
+                delay(clickInterval)
+                count = 2
+            }
+            count--
+        }
+
+        //这里领取协议挑战任务
+        if (en.isProtocolChallengesTasks.check()) {
+            en.protocolChallengesArea.c()
+            delay(jumpClickInterval)
+            //这里点击可以领取的区域
+            count = 5
+            while (flag && count > 0 && runSwitch) {
+                if (!taskScreenL(screenshotInterval)) {
+                    runSwitch = false
+                    return false
+                }
+                if (en.isAgreementChallengesClickTask.check()) {
+                    en.agreementChallengesClickArea.c(en.isAgreementChallengesClickTask)
+                    hasOpt = true
+                    delay(clickInterval)
+                    count = 2
+                }
+                count--
+            }
+            return !flag
+        }
+
+        //如果还有红点再次领取每周任务
+        if (en.isProtocolTasks.check()) {
+            en.isProtocolArea.c()
+            delay(jumpClickInterval)
+            //这里领取每周任务
+            count = 5
+            while (flag && count > 0 && runSwitch) {
+                if (!taskScreenL(screenshotInterval)) {
+                    runSwitch = false
+                    return false
+                }
+                if (en.isAgreementWeekTask.check()) {
+                    en.agreementWeekArea.c(en.isAgreementWeekTask)
+                    hasOpt = true
+                    delay(clickInterval)
+                    count = 2
+                }
+                count--
+            }
+        }
+
+        return !flag || hasOpt
     }
 }

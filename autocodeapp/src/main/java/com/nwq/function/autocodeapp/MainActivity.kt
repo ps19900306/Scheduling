@@ -459,7 +459,7 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
-                val clickArea = en.clickArea
+//                val clickArea = en.isOpenTask
 //                val task = if (en.isOpenShipMenu2Task.verificationRule(it)) {
 //                    en.isOpenTask.copyOffset("修正的",en.isOpenShipMenu2Task.getOffsetX(),en.isOpenShipMenu2Task.getOffsetY())
 //                } else {
@@ -478,7 +478,7 @@ class MainActivity() : AppCompatActivity() {
                             }
                         }
                         L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
-                        bind.previewView.addArea(clickArea.copyOffset(offsetX, offsetY))
+                        //bind.previewView.addArea(clickArea.copyOffset(offsetX, offsetY))
                     }
 
                 } else {

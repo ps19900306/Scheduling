@@ -31,6 +31,8 @@ class VegetableDb(){
     //上次收菜完成时间
     var lastCompletionTime: Long = 0L
 
+    var errorStr:String=""
+
     //收菜的间隔时间
     var completeInterval: Int = 24 * 4
 

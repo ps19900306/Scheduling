@@ -14,6 +14,7 @@ import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.utils.NwqCallBack
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
+import com.android.system.talker.enums.ActivityType
 import com.android.system.talker.enums.MenuType
 import com.android.system.talker.enums.ShipType
 import com.android.system.talker.enums.WarehouseType
@@ -124,7 +125,7 @@ abstract class BaseFunctionControl(
 
     suspend fun returnSpaceStation(position: Int): Boolean {
         var flag = true
-        val maxCount = 3
+        val maxCount = 5
         var count = maxCount
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
@@ -134,8 +135,11 @@ abstract class BaseFunctionControl(
             if (en.isInSpaceStationT.check()) {
                 return true
             }
+
             if (en.isConfirmDialogTask.check()) {
                 click(en.confirmDialogEnsureArea)
+            } else if (en.isOpenBigMenuT.check()) {
+                en.closeBigMenuArea.c()
             } else if (en.isClosePositionMenuT.check()) {
                 if (en.isOneClickClaimTask.check()) {
                     en.closeOneClickArea.c(en.isOneClickClaimTask)
@@ -445,7 +449,9 @@ abstract class BaseFunctionControl(
             }
 
             if (!findTraget) {
-                if (count >= 3) {
+                if (count >= 5) {
+                    //这里前二次先不滑动
+                } else if (count >= 3) {
                     if (type <= WarehouseType.STATION_SHIPS) {
                         en.swipeWarehouseDown.c()
                     } else {
@@ -461,10 +467,52 @@ abstract class BaseFunctionControl(
             }
             count--
         }
-
         return !flag
     }
 
+    suspend fun ensureOpenActivityType(@ActivityType type: Int): Boolean {
+        //先打开仓库
+        var result = ensureOpenBigMenuArea(MenuType.GAME_ACTIVITY)
+        if (!result) {
+            return false
+        }
+        var flag = true
+        var count = 7
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return false
+            }
+
+            //这里是结束循环的判断
+            when (type) {
+                ActivityType.LOGIN_GIFT -> {
+                    if (en.isQuickClaimTask.check()) {
+                        return true
+                    }
+                }
+            }
+
+            //找到菜单的点击位置
+            when (type) {
+                ActivityType.LOGIN_GIFT -> {
+                    if (en.isQuickClaimTask.check()) {
+                        return true
+                    }
+                }
+            }
+
+            if (count >= 5) {
+                //这里前二次先不滑动
+            } else if (count >= 3) {
+                en.activityMenuSlideTop.c()
+            } else {
+                en.activityMenuSlideBottom.c()
+            }
+            count--
+        }
+        return !flag
+    }
 
     suspend fun ensureCloseDetermine(): Boolean {
         if (en.isConfirmDialogTask.check()) {
@@ -593,7 +641,7 @@ abstract class BaseFunctionControl(
         //这里保存结果
         userDb.baseCloneLocation = clonePosition
         userDb.baseMenuLocation = menuPosition
-        userDb.shipType= ShipType.UNKNOWN
+        userDb.shipType = ShipType.UNKNOWN
         dataBase.getUserDao().update(userDb)
         return false
     }
@@ -706,7 +754,7 @@ abstract class BaseFunctionControl(
                 } else if (en.isCloneListTask.check()) {
                     if (en.isCloneListTask.getOffsetY() < 10) {
                         en.getCloneClickArea(position).c(en.isCloneListTask)
-                    }else{
+                    } else {
                         en.swipeCloneListTArea.c()
                     }
                     delay(clickInterval)

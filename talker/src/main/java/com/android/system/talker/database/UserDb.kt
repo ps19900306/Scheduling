@@ -46,13 +46,15 @@ class UserDb() {
     var shortcutMenu4: Int = MenuType.UNSET
 
 
+    //这个是每日礼物
     var dailyGiftSwitch: Boolean = true
     var dailyGiftTime: Long = 0L
 
+    //这个是三十天的礼物
     var activeGiftSwitch: Boolean = true
     var activeGiftTime: Long = 0L
 
-
+    //这个是协议礼物
     var agreementGiftSwitch: Boolean = true
     var agreementGiftTime: Long = 0L
 

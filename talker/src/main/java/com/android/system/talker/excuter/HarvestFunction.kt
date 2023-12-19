@@ -1,10 +1,12 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import android.text.TextUtils
 import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.utils.L
+import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.database.VegetableDb
@@ -23,7 +25,12 @@ class HarvestFunction(
 
     val TAG = "收菜"
     override fun endGame(eroMsg: String?) {
-
+        if(TextUtils.isEmpty(eroMsg)){
+            vegetableDb.lastCompletionTime = System.currentTimeMillis()
+        }else{
+            vegetableDb.errorStr= TimeUtils.getNowTime()+eroMsg
+        }
+        dataBase.getVegetableDao().update(vegetableDb)
     }
 
     override suspend fun getBaseCloneLocation(): Int {
@@ -53,8 +60,6 @@ class HarvestFunction(
             }
         } else if (needAddTime()) {
             addVegetablesTime()
-        } else {
-            end()
         }
     }
 

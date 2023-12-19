@@ -24,6 +24,8 @@ class TaskDb()  {
     //克隆的位置
     var baseCloneLocation: Int = -1
 
+    var errorStr:String=""
+
     //功能的序列号
     var sort: Int = -1
 
