@@ -1,6 +1,7 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
@@ -17,21 +18,26 @@ class UserFunction(
         dataBase.getUserDao().update(userDb)
     }
 
+    val  TAG = UserFunction::class.java.simpleName
     override suspend fun getTag(): String {
-        return UserFunction::class.java.simpleName
+        return TAG
     }
 
     override suspend fun startFunction() {
+        L.i("$TAG startFunction")
         var result = intoGame()
         if (!result) return
-
+        L.d("$TAG 进入游戏成功")
         var isInSpaceStation = false
         //这个是每日活动的
         if (userDb.activeGiftSwitch && TimeUtils.isNewMouth(userDb.activeGiftTime)) {
+            L.d("$TAG 进入活动礼物领取")
             isInSpaceStation = true
             if (!returnSpaceStation(userDb.baseMenuLocation)) {
+                L.d("$TAG 返回空间站失败")
                 return
             }
+            L.d("$TAG 返回空间站成功")
             if (ensureOpenActivityType(ActivityType.LOGIN_GIFT)) {
                 en.quickClaimArea.c()
                 userDb.activeGiftTime = System.currentTimeMillis()
@@ -44,6 +50,7 @@ class UserFunction(
             if (!isInSpaceStation && !returnSpaceStation(userDb.baseMenuLocation)) {//这里保证返回空间站的
                 return
             }
+            L.d("$TAG 进入协议任务领取")
             isInSpaceStation = true
             if (ensureOpenBigMenuArea(MenuType.AGREEMENT)) {
                 optAgreementGift()
@@ -53,6 +60,7 @@ class UserFunction(
         }
 
         if (userDb.dailyGiftSwitch && TimeUtils.isNewDay(userDb.dailyGiftTime)) {
+            L.d("$TAG 进入每日特惠礼物领取")
             receiveDailyGift(isInSpaceStation)
             userDb.dailyGiftTime = System.currentTimeMillis()
             theOutCheck()

@@ -19,7 +19,7 @@ interface TaskDao {
     @Update
     fun update(data: TaskDb)
 
-    @Query("SELECT * FROM task where userid =:userId")
+    @Query("SELECT * FROM tasks where userid =:userId")
     fun queryByUserId(userId: Long): TaskDb?
 
 

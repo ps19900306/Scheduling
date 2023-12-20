@@ -52,7 +52,7 @@ class UserListAdapter(
                     holder.bind.root.setBackgroundColor(ContextCompat.getColor(holder.bind.root.context, R.color.white))
                 }
 
-
+                holder.bind.cb.isChecked = data.isChecked
                 holder.bind.modifyBtn.singleClick {
                     data.id?.let { onModifyClick.invoke(it) }
                 }
@@ -65,7 +65,7 @@ class UserListAdapter(
                 }
                 holder.bind.cb.setOnCheckedChangeListener { buttonView, isChecked ->
                     data.isChecked = isChecked
-                    updata(data)
+                    updata.invoke(data)
                 }
             }
         }

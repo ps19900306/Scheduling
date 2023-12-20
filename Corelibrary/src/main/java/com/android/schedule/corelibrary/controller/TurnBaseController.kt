@@ -9,6 +9,7 @@ import com.android.schedule.corelibrary.exhaustion.*
 import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
+import com.android.schedule.corelibrary.utils.L
 import kotlinx.coroutines.delay
 
 /**
@@ -162,13 +163,13 @@ abstract class TurnBaseController(
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
-            if (taskScreenL(screenshotInterval)) {
+            if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
                 return false
             }
             if (eTask.check()) {
                 endClickArea?.let { click(eTask, it) }
-                return true
+                flag = false
             }
             if (pTask != null) {
                 if (pTask.check()) {
@@ -183,9 +184,8 @@ abstract class TurnBaseController(
                     delay(clickInterval)
                 }
             }
-            count--
         }
-        return false
+        return !flag
     }
 
     protected suspend fun optTaskOperationList(
@@ -196,7 +196,7 @@ abstract class TurnBaseController(
         var flag = true
         var count = times
         while (flag && count > 0 && runSwitch) {
-            if (taskScreenL(screenshotInterval)) {
+            if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
                 return false
             }

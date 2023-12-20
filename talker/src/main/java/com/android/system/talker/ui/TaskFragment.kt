@@ -10,14 +10,11 @@ import androidx.navigation.fragment.findNavController
 import com.android.schedule.corelibrary.expand.runOnIO
 import com.android.schedule.corelibrary.expand.runOnUI
 import com.android.schedule.corelibrary.expand.singleClick
-import com.android.system.talker.R
+import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.TaskDb
-import com.android.system.talker.database.VegetableDb
-import com.android.system.talker.databinding.FragmentHomeBinding
 import com.android.system.talker.databinding.FragmentTaskBinding
-import com.android.system.talker.databinding.FragmentUserBinding
-
+import kotlinx.coroutines.delay
 
 
 class TaskFragment : Fragment() {
@@ -59,8 +56,16 @@ class TaskFragment : Fragment() {
                 mData.baseMenuLocation = it
             }
             lifecycleScope.runOnIO {
-                mData.switch = true
-                mDao.insert(mData)
+                mData.isSwitch = 1
+                if (mData.id == 0L) {
+                    mData.userid = args.userId
+                    mDao.insert(mData)
+                } else {
+                    mData.userid = args.userId
+                    L.i("保存更新TaskDb id:${mData.id} ${mData.isSwitch})")
+                    mDao.update(mData)
+                    delay(1000)
+                }
                 runOnUI {
                     findNavController().popBackStack()
                 }

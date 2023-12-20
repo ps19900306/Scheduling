@@ -86,7 +86,6 @@ class NwqAccessibilityService : AccessibilityService() {
             }
             CmdType.CHECK_COLOR -> {
                 if (cList.find { it is GetColorController } == null) {
-                    Timber.d("启动脚本 GetColorController NWQ_ 2023/3/12");
                     val interstellarMiners = GetColorController(this, endLister)
                     interstellarMiners.startWork()
                     cList.add(interstellarMiners)

@@ -50,6 +50,7 @@ class HarvestFunction(
 
 
     override suspend fun startFunction() {
+        L.i("$TAG startFunction")
         var result = intoGame()
         if (!result) return
         if (needHarvestVegetables()) {

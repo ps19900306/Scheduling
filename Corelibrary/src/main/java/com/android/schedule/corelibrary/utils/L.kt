@@ -7,4 +7,8 @@ object L {
     fun i(msg: String){
         Log.i("nwq_",msg)
     }
+
+    fun d(msg: String){
+        Log.i("nwq_",msg)
+    }
 }

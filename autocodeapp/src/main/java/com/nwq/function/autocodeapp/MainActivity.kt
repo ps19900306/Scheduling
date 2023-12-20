@@ -459,13 +459,33 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
+//                en.isJiYuShipList.forEach { task->
+//                    if (task.verificationRule(it)) {
+//                        runOnUI {
+//                            bind.previewView.clearPoint()
+//                            bind.previewView.clearArea()
+//                            val offsetX = task.getOffsetX()
+//                            val offsetY = task.getOffsetY()
+////                            task.iprList.forEach {
+////                                it.getCoordinatePoint().apply {
+////                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
+////                                }
+////                            }
+//                            L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
+//                        }
+//                    }else{
+//                        L.i("验证失败")
+//                    }
+//                }
+
+
 //                val clickArea = en.isOpenTask
 //                val task = if (en.isOpenShipMenu2Task.verificationRule(it)) {
 //                    en.isOpenTask.copyOffset("修正的",en.isOpenShipMenu2Task.getOffsetX(),en.isOpenShipMenu2Task.getOffsetY())
 //                } else {
 //                    en.isOpenTask
 //                }
-                val task = en.isOpenTask
+                val task = en.isJiYuTask
                 if (task.verificationRule(it)) {
                     runOnUI {
                         bind.previewView.clearPoint()
@@ -493,7 +513,7 @@ class MainActivity() : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             var faildIndex = -1;
             list.forEachIndexed { index, bitmap ->
-                val task = en.isOpenTask
+                val task = en.isCloseAiTask
                 if (!task.verificationRule(bitmap)) {
                     L.i("index  验证失败")
                     faildIndex = faildIndex

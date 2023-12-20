@@ -77,15 +77,17 @@ class UserFragment : Fragment() {
                 mData.appLocationY = it
             }
             lifecycleScope.runOnIO {
-                userDao.insert(mData)
+                if (mData.id == 0L) {
+                    userDao.insert(mData)
+                } else {
+                    userDao.update(mData)
+                }
                 runOnUI {
                     findNavController().popBackStack()
                 }
             }
         }
     }
-
-
 
 
 }

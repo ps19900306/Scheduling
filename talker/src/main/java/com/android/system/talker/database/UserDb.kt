@@ -26,7 +26,7 @@ class UserDb() {
     var baseMenuLocation: Int = 0
 
     //克隆的位置
-    var baseCloneLocation: Int = -1
+    var baseCloneLocation: Int = 0
 
     // 上次修改克隆时间的时间
     var lastChangeLocationTime: Long = 0L

@@ -271,15 +271,13 @@ object ExhaustionControl : BasicExhaustion() {
     private fun getOptRange(random: Double): Int {
         return when (NOW_STATE) {
             FULL_STATE -> {
-                if (random > 0.5) {
+                if (random > 0.6) {
                     OptRange.WIDE_RANGE
-                } else if (random > 0.7) {
+                } else if (random > 0.8) {
                     OptRange.FULL_RANGE
-                } else if (random > 0.9) {
-                    OptRange.ALL_OPT_RANGE
                 } else if (random > 0.95) {
-                    OptRange.BEYOND_RANGE
-                } else {
+                    OptRange.ALL_OPT_RANGE
+                }else {
                     OptRange.SMALL_PRECISION
                 }
             }
@@ -333,8 +331,6 @@ object ExhaustionControl : BasicExhaustion() {
             FULL_STATE -> {
                 if (random > 0.95) {
                     OptSlide.SLIDE_ONE
-                } else if (random > 0.995) {
-                    OptSlide.SLIDE_TWO
                 } else {
                     OptSlide.NOT_SLIDE
                 }

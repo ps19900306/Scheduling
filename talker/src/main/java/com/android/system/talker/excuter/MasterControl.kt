@@ -1,21 +1,15 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
-import android.telecom.Call
 import com.android.schedule.corelibrary.controller.TurnBaseController
+import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
-import com.android.system.talker.database.MinerDao
-import com.android.system.talker.database.MinerDb
-import com.android.system.talker.database.TaskDb
 import com.android.system.talker.database.UserDb
-import com.android.system.talker.database.VegetableDb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 //这里是一个主要控制的
 class MasterControl(
@@ -27,9 +21,11 @@ class MasterControl(
 
     override fun start() {
         job = GlobalScope.launch(Dispatchers.IO) {
-            var userDb = selectExecutiveRole()
-            while (userDb != null) {
-                performTask(userDb)
+            //var userDb = selectExecutiveRole()
+            pressHomeBtn()
+            dataBase.getUserDao().list().forEach{
+                if(it.isChecked)
+                performTask(it)
             }
         }
     }
@@ -48,11 +44,11 @@ class MasterControl(
 
         list.add(UserFunction(userDb, dataBase, acService))
 
-        if (vegetableDb != null && vegetableDb.switch) {
+        if (vegetableDb != null && vegetableDb.isSwitch) {
             list.add(HarvestFunction(vegetableDb, userDb, dataBase, acService))
         }
 
-        if (taskDb != null && taskDb.switch) {
+        if (taskDb != null && taskDb.isSwitch==1) {
             list.add(TaskFunction(taskDb, userDb, dataBase, acService))
         }
 
@@ -79,10 +75,11 @@ class MasterControl(
         }
 
         //最后再增加一下收菜时间
-        if (vegetableDb != null && vegetableDb.switch) {
+        if (vegetableDb != null && vegetableDb.isSwitch) {
             HarvestFunction(vegetableDb, userDb, dataBase, acService).checkAndTime()
         }
-
+        L.i("${userDb.id} 执行结束退出")
+        // list.getOrNull(0)?.exitGame()
     }
 
 

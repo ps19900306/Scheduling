@@ -1,7 +1,6 @@
 package com.android.system.talker.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.android.schedule.corelibrary.expand.runOnIO
 import com.android.schedule.corelibrary.expand.runOnUI
 import com.android.schedule.corelibrary.expand.singleClick
-import com.android.schedule.corelibrary.utils.L
-import com.android.system.talker.R
 import com.android.system.talker.database.AppDataBase
-import com.android.system.talker.database.UserDb
 import com.android.system.talker.database.VegetableDb
-import com.android.system.talker.databinding.FragmentUserBinding
 import com.android.system.talker.databinding.FragmentVegetableBinding
 
 
@@ -72,8 +67,14 @@ class VegetableFragment : Fragment() {
                 mData.completeInterval = it
             }
             lifecycleScope.runOnIO {
-                mData.switch = true
-                vegetableDao.insert(mData)
+                mData.isSwitch = true
+                if (mData.id == 0L) {
+                    mData.userid = args.userId
+                    vegetableDao.insert(mData)
+                } else {
+                    mData.userid = args.userId
+                    vegetableDao.update(mData)
+                }
                 runOnUI {
                     findNavController().popBackStack()
                 }

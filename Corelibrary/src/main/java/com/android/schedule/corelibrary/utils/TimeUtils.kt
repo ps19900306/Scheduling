@@ -3,10 +3,18 @@ package com.android.schedule.corelibrary.utils
 import com.android.schedule.corelibrary.SetConstant
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Calendar.SUNDAY
 import java.util.Calendar.THURSDAY
 import java.util.Date
+import kotlin.math.abs
 
 object TimeUtils {
+
+
+    fun judgingTheInterval(time1: Long, time2: Long, intervalTime: Long): Boolean {
+        return abs(time2 - time1) > intervalTime
+    }
+
 
     //这里判断超过估计间隔
     fun isAboveInterval(lastCompletionTime: Long, intervalHour: Int = 8): Boolean {
@@ -16,6 +24,8 @@ object TimeUtils {
 
     //这里用来对比是否需是新的一天
     fun isNewDay(lastCompletionTime: Long, refreshHour: Int = 8): Boolean {
+        if (lastCompletionTime == 0L)
+            return true
         val lastCalendar = Calendar.getInstance();
         lastCalendar.timeInMillis = lastCompletionTime
         val lastHour = lastCalendar.get(Calendar.HOUR_OF_DAY)
@@ -40,7 +50,9 @@ object TimeUtils {
     }
 
     //这里是用来判断是新的一周
-    fun isNewWeek(lastCompletionTime: Long, refreshDay: Int = THURSDAY): Boolean {
+    fun isNewWeek(lastCompletionTime: Long, refreshDay: Int = SUNDAY): Boolean {
+       if (lastCompletionTime == 0L)
+            return true
         val lastCalendar = Calendar.getInstance();
         lastCalendar.timeInMillis = lastCompletionTime
         val lastWeek = lastCalendar.get(Calendar.WEEK_OF_YEAR)
@@ -66,6 +78,8 @@ object TimeUtils {
 
     //这里是用来判断是新的一周
     fun isNewMouth(lastCompletionTime: Long, pickDay: Int = 30): Boolean {
+        if (lastCompletionTime == 0L)
+            return true
         val lastCalendar = Calendar.getInstance();
         lastCalendar.timeInMillis = lastCompletionTime
         val lastMouth = lastCalendar.get(Calendar.MONTH)
@@ -104,7 +118,7 @@ object TimeUtils {
 
 
     fun getNowTime(): String {
-        val dateFormat = SimpleDateFormat("mm月dd日hh时")
+        val dateFormat = SimpleDateFormat("dd日hh时")
         return dateFormat.format(Date())
     }
 

@@ -11,7 +11,9 @@ import com.android.schedule.corelibrary.click.TwoFingerArea
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack
+import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.enums.ActivityType
@@ -29,6 +31,7 @@ abstract class BaseFunctionControl(
 
     private var onEnd: NwqCallBack<Boolean>? = null
     protected val ABNORMAL_SCREENO_ORIENTATION = "屏幕方向异常"
+    protected val ABNORMAL_CAN_CLONE = "不能进行克隆"
     fun setOnEnd(end: NwqCallBack<Boolean>) {
         onEnd = end
     }
@@ -46,6 +49,7 @@ abstract class BaseFunctionControl(
     private var hasResult = true
     fun reportingError(string: String) {
         if (hasResult) {
+            L.d(string)
             endGame(string)
             hasResult = false
             runSwitch = false
@@ -73,20 +77,26 @@ abstract class BaseFunctionControl(
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreen(screenshotInterval)
             if (bitmap.isLandscape()) {
+                delay(TimeUtils.getDelayStart())
                 delay(tripleClickInterval)
                 if (en.isLoadingGameT.check()) {
                 } else if (en.isAnnouncementT.check()) {
+                    L.d("isAnnouncementT")
                     click(en.isAnnouncementT, en.closeAnnouncementArea)
                 } else if (en.isUpdateGameT.check()) {
+                    L.d("isUpdateGameT")
                     click(en.isUpdateGameT, en.updateGameArea)
                     delay(tripleClickInterval)
                 } else if (en.isStartGameT.check()) {
+                    L.d("isStartGameT")
                     click(en.isStartGameT, en.isStartGameArea)
                 } else if (en.isSelectRoleT.check()) {
-                    click(en.isSelectRoleT, en.selectRoleArea)
+                    L.d("isSelectRoleT")
+                    en.selectRoleArea.c()
                 } else if (en.isOpenBigMenuT.check()) {
+                    L.d("isOpenBigMenuT")
                     click(en.isOpenBigMenuT, en.closeBigMenuArea)
-                } else if (hasIntoGame(bitmap)) {
+                } else if (hasIntoGame()) {
                     flag = false
                 }
             } else {//这里没有横屏所以
@@ -102,9 +112,9 @@ abstract class BaseFunctionControl(
     }
 
 
-    private suspend fun hasIntoGame(bitmap: Bitmap? = screenBitmap): Boolean {
-        if (bitmap == null) return false
-        return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check() && (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()))
+    private suspend fun hasIntoGame(): Boolean {
+        return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()) &&
+                (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check())
     }
 
     protected suspend fun hasTaskDialogBox(): Boolean {
@@ -125,8 +135,9 @@ abstract class BaseFunctionControl(
 
     suspend fun returnSpaceStation(position: Int): Boolean {
         var flag = true
-        val maxCount = 5
+        val maxCount = 10
         var count = maxCount
+        var hasStart = false
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -137,18 +148,27 @@ abstract class BaseFunctionControl(
             }
 
             if (en.isConfirmDialogTask.check()) {
-                click(en.confirmDialogEnsureArea)
+                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
+                count = maxCount
+            } else if(en.isSailingT.check()){
+                count = maxCount
             } else if (en.isOpenBigMenuT.check()) {
                 en.closeBigMenuArea.c()
-            } else if (en.isClosePositionMenuT.check()) {
+                count = maxCount
+            } else if (en.isClosePositionMenuT.check() && (en.isCloseEyeMenuT.check() || en.isOpenEyeMenuT.check())) {
+                //这个是防止一键收菜卡住
                 if (en.isOneClickClaimTask.check()) {
                     en.closeOneClickArea.c(en.isOneClickClaimTask)
                 }
-                if (!clickPositionMenu(position)) {
-                    reportingError("${getTag()} returnSpaceStation clickPositionMenu")
-                    return false
+                if (!hasStart || count == 2) {
+                    if (!clickPositionMenu(position)) {
+                        reportingError("${getTag()} returnSpaceStation clickPositionMenu")
+                        return false
+                    } else {
+                        count = maxCount
+                        hasStart = true
+                    }
                 }
-                count--
             }
         }
         if (flag) {
@@ -170,11 +190,13 @@ abstract class BaseFunctionControl(
     //确保打开左边的位置菜单
     protected suspend fun openPositionMenu(): Boolean {
         if (en.isOpenPositionMenuT.check()) return true
-        return theOutCheck() && optTaskOperation(
+        theOutCheck()
+        return optTaskOperation(
             pTask = en.isClosePositionMenuT,
             clickArea = en.openPositionArea,
             eTask = en.isOpenPositionMenuT
         )
+
     }
 
     protected suspend fun theOutCheck(): Boolean {
@@ -206,18 +228,21 @@ abstract class BaseFunctionControl(
             return true
         }
 
-
+        L.d("changeShip")
         //先打开船仓库
         var result = ensureOpenWarehouseType(WarehouseType.STATION_SHIPS)
         if (!result) {
+            L.d("打开船库失败")
             return false
         }
 
         //找到需要换船的位置
         val shipLocation = queryShipLocation(shipType)
         if (shipLocation < 0) {//这里表示没有找到船
+            L.d("沒有找到船")
             return false
         } else if (shipLocation == 0) {//表示一开始位置就正确的
+            L.d("正在在一號位置")
             userDb.shipType = shipType
             dataBase.getUserDao().update(userDb)
             return true
@@ -225,9 +250,11 @@ abstract class BaseFunctionControl(
 
         //这里点击飞船的位置
         en.getShipArea(shipLocation).c()
+        L.d("这里点击飞船的位置")
 
         //这里点击激活
         if (en.isActivationShipTask.check()) {
+            L.d("这里点击激活")
             click(
                 en.activationShipArea,
                 en.isActivationShipTask.getOffsetX(),
@@ -295,6 +322,7 @@ abstract class BaseFunctionControl(
                 return false
             }
             if (en.isOpenBigMenuT.check()) {
+                L.d("isOpenBigMenuT.c()")
                 when (index) {
                     MenuType.WAREHOUSE -> {
                         if (en.isOpenWarehouseBigMenuTask.check()) {
@@ -338,6 +366,7 @@ abstract class BaseFunctionControl(
 
                 }
             } else if (en.isOpenMenuMenu.check()) {//这里点开了打菜单
+                L.d("isOpenMenuMenu.check()")
                 when (index) {
                     MenuType.WAREHOUSE -> {
                         en.openWarehouseMenuArea.c()
@@ -361,6 +390,7 @@ abstract class BaseFunctionControl(
                 }
             } else {
                 if (userDb.shortcutMenu1 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                    L.d("shortcutMenu1.c()")
                     en.getQuickMenuArea(0).c()
                 } else if (userDb.shortcutMenu2 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
                     en.getQuickMenuArea(1).c()
@@ -370,6 +400,7 @@ abstract class BaseFunctionControl(
                     en.getQuickMenuArea(3).c()
                 } else {
                     //这里点击
+                    L.d("openMenuMenuArea.c()")
                     en.openMenuMenuArea.c()
                 }
             }
@@ -383,6 +414,7 @@ abstract class BaseFunctionControl(
         //先打开仓库
         var result = ensureOpenBigMenuArea(MenuType.WAREHOUSE)
         if (!result) {
+            L.d("打开仓库失败")
             return false
         }
 
@@ -475,6 +507,7 @@ abstract class BaseFunctionControl(
         var result = ensureOpenBigMenuArea(MenuType.GAME_ACTIVITY)
         if (!result) {
             return false
+            L.d("打开活动界面失败")
         }
         var flag = true
         var count = 7
@@ -587,14 +620,16 @@ abstract class BaseFunctionControl(
         //先进行游戏退出
         var flag = true
         var count = 5
-        while (flag && count > 0 && runSwitch) {
+        while (flag && count > 0) {
             val bitmap = takeScreen(screenshotInterval)
             if (bitmap.isLandscape()) {
                 en.exitGameTask.list.forEach {
                     if (it.check()) {
                         it.clickArea?.c(it)
+                        delay(jumpClickInterval)
                     } else {
                         pressBackBtn()
+                        delay(clickInterval)
                     }
                 }
             } else {
@@ -605,7 +640,7 @@ abstract class BaseFunctionControl(
         //这里进行游戏的切换
         flag = true
         count = 5
-        while (flag && count > 0 && runSwitch) {
+        while (flag && count > 0) {
             val bitmap = takeScreen(screenshotInterval)
             if (bitmap.isLandscape()) {
                 pressHomeBtn()
@@ -770,7 +805,37 @@ abstract class BaseFunctionControl(
     }
 
 
+    protected suspend fun outSpaceStation(): Boolean {
+        var flag = true
+        var count = 5
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return false
+            }
+            if (isInSpace()) {
+                flag = false
+            } else if (en.isInSpaceStationT.check()) {
+                en.outSpaceArea.c()
+                delay(tripleClickInterval)
+            }
+            count--
+        }
+        return !flag
+    }
+
     protected suspend fun isInSpace(): Boolean {
         return ((en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()) && (en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check()))
     }
+
+
+    protected suspend fun hasTopLockTart(): Boolean {
+        return null != en.topLockTargetList1.find { it.check() }
+    }
+
+    protected suspend fun hasBottomDeviceOpen(): Boolean {
+        return null != en.bottomDeviceList.find { it.check() }
+    }
+
+
 }
