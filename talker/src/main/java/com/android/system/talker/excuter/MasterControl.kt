@@ -35,6 +35,7 @@ class MasterControl(
     }
 
     private suspend fun performTask(userDb: UserDb) {
+
         val vegetableDb = dataBase.getVegetableDao().queryByUserId(userDb.id)
         val taskDb = dataBase.getTaskDao().queryByUserId(userDb.id)
         val minerDb = dataBase.getMinerDao().queryByUserId(userDb.id)
@@ -79,7 +80,7 @@ class MasterControl(
             HarvestFunction(vegetableDb, userDb, dataBase, acService).checkAndTime()
         }
         L.i("${userDb.id} 执行结束退出")
-        // list.getOrNull(0)?.exitGame()
+        //list.getOrNull(0)?.exitGame()
     }
 
 

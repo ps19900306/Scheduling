@@ -485,7 +485,7 @@ class MainActivity() : AppCompatActivity() {
 //                } else {
 //                    en.isOpenTask
 //                }
-                val task = en.isJiYuTask
+                val task = en.isOpenTask
                 if (task.verificationRule(it)) {
                     runOnUI {
                         bind.previewView.clearPoint()
@@ -498,9 +498,11 @@ class MainActivity() : AppCompatActivity() {
                             }
                         }
                         L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
-                        //bind.previewView.addArea(clickArea.copyOffset(offsetX, offsetY))
-                    }
+                        task.clickArea?.let {
+                            bind.previewView.addArea(it.copyOffset(offsetX, offsetY))
+                        }
 
+                    }
                 } else {
                     L.i("验证失败")
                 }

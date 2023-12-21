@@ -10,6 +10,7 @@ import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.database.VegetableDb
+import com.android.system.talker.enums.MenuType
 import com.android.system.talker.enums.WarehouseType
 import kotlinx.coroutines.delay
 
@@ -25,10 +26,10 @@ class HarvestFunction(
 
     val TAG = "收菜"
     override fun endGame(eroMsg: String?) {
-        if(TextUtils.isEmpty(eroMsg)){
+        if (TextUtils.isEmpty(eroMsg)) {
             vegetableDb.lastCompletionTime = System.currentTimeMillis()
-        }else{
-            vegetableDb.errorStr= TimeUtils.getNowTime()+eroMsg
+        } else {
+            vegetableDb.errorStr = TimeUtils.getNowTime() + eroMsg
         }
         dataBase.getVegetableDao().update(vegetableDb)
     }
@@ -56,7 +57,7 @@ class HarvestFunction(
         if (needHarvestVegetables()) {
             if (!checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
                 harvestVegetables()
-            }else{
+            } else {
                 addVegetablesTime()
             }
         } else if (needAddTime()) {
@@ -72,9 +73,11 @@ class HarvestFunction(
 
 
     private suspend fun harvestVegetables() {
+        L.d("harvestVegetables")
         var result = returnSpaceStation(vegetableDb.baseMenuLocation)
         if (!result) return
 
+        L.d("harvestVegetables")
         result = checkShip(vegetableDb.shipType)
         if (!result) return
         delay(jumpClickInterval)
@@ -103,8 +106,12 @@ class HarvestFunction(
     }
 
     private suspend fun addVegetablesTime(): Boolean {
+        L.d("addVegetablesTime")
+
+        ensureOpenBigMenuArea(MenuType.PLANETARY_MINE)
+
         var flag = true
-        var count = 20
+        var count = 5
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -115,14 +122,10 @@ class HarvestFunction(
                 vegetableDb.lastAddTime = System.currentTimeMillis()
                 dataBase.getVegetableDao().update(vegetableDb)
                 flag = false
-            } else if (en.isInSpaceStationT.check()) {
-                ensureOpenBigMenuArea(vegetableDb.menuType)
+            } else if (en.isShowAddCelestialTask.check()) {
+                en.addCelestialArea.c()
             } else if (en.isOpenCaiBigMenuTask.check()) {
-                if (en.isShowAddCelestialTask.check()) {
-                    en.addCelestialArea.c()
-                } else {
-                    selectEntryItem(0, clickInterval)
-                }
+                selectEntryItem(0, clickInterval)
             }
             count--
         }

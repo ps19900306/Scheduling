@@ -10,7 +10,7 @@ Function description:
 
 class MultiFindImgTask(val list: Array<FindImgTask>) : BasicImgTask() {
 
-    private var lastResult: FindImgTask? = null
+     var lastResult: FindImgTask? = null
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         lastResult = list.find { it.verificationRule(bitmap) }

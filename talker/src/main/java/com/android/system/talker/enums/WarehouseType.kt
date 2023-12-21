@@ -17,6 +17,5 @@ annotation class WarehouseType {
         const val STATION_SHIPS = 2
         const val SHIP_CABIN = 4
         const val SHIP_SPECIAL = 8
-
     }
 }

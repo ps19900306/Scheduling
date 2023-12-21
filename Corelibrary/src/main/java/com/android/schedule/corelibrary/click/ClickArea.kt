@@ -6,6 +6,7 @@ import com.android.schedule.corelibrary.exhaustion.ClickParameter
 import com.android.schedule.corelibrary.exhaustion.ExhaustionControl
 import com.android.schedule.corelibrary.exhaustion.OptRange
 import com.android.schedule.corelibrary.exhaustion.OptSlide
+import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.utils.L
 
 /**
@@ -32,7 +33,11 @@ class ClickArea(
     }
 
     private val centerPoint = CoordinatePoint(x + width / 2, y + height / 2) //中心点
-    private val minimumDiameter = (if (width > height) height else width) / 2  //最小半径
+    private val minimumDiameter =  Math.min(height,width) /2 //最小半径
+
+    fun toClickTask(imgTask: ImgTask, delayTime: Long = 0L): ClickTask {
+        return toClickTask(delayTime, imgTask.getOffX(), imgTask.getOffY())
+    }
 
     fun toClickTask(delayTime: Long = 0L, ofstX: Int = 0, ofstY: Int = 0): ClickTask {
         if (constrainedArea != null) {//如果对点击区域有约束则生成新的约束
@@ -54,36 +59,36 @@ class ClickArea(
         val point1 = when (parameter.optRange) {
             OptRange.SMALL_PRECISION -> {
                 CoordinatePoint(
+                    (x + (Math.random() * 0.4 + 0.3) * width).toFloat() + ofstX,
+                    (y + (Math.random() * 0.4 + 0.3) * height).toFloat() + ofstY
+                )
+            }
+
+            OptRange.WIDE_RANGE -> {
+                CoordinatePoint(
                     (x + (Math.random() * 0.6 + 0.2) * width).toFloat() + ofstX,
                     (y + (Math.random() * 0.6 + 0.2) * height).toFloat() + ofstY
                 )
             }
 
-            OptRange.WIDE_RANGE -> {
+            OptRange.FULL_RANGE -> {
                 CoordinatePoint(
                     (x + (Math.random() * 0.8 + 0.1) * width).toFloat() + ofstX,
                     (y + (Math.random() * 0.8 + 0.1) * height).toFloat() + ofstY
                 )
             }
 
-            OptRange.FULL_RANGE -> {
+            OptRange.ALL_OPT_RANGE -> {
                 CoordinatePoint(
                     (x + Math.random() * width).toFloat() + ofstX,
                     (y + Math.random() * height).toFloat() + ofstY
                 )
             }
 
-            OptRange.ALL_OPT_RANGE -> {
-                CoordinatePoint(
-                    (x + Math.random() * 1.2 * width).toFloat() + ofstX,
-                    (y + Math.random() * 1.2 * height).toFloat() + ofstY
-                )
-            }
-
             OptRange.BEYOND_RANGE -> {
                 CoordinatePoint(
-                    (x + (Math.random() * 0.2 + 1) * width).toFloat() + ofstX,
-                    (y + (Math.random() * 0.2 + 1) * height).toFloat() + ofstY
+                    (x + (Math.random() * 0.6 + 0.6) * width).toFloat() + ofstX,
+                    (y + (Math.random() * 0.6 + 0.6) * height).toFloat() + ofstY
                 )
             }
 
@@ -139,44 +144,44 @@ class ClickArea(
         val list = mutableListOf<CoordinatePoint>()
         val point1 = when (parameter.optRange) {
             OptRange.SMALL_PRECISION -> {
-                val length = Math.random() * 0.6 * minimumDiameter
+                val length = Math.random() * 0.4 * minimumDiameter
                 CoordinatePoint(
-                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                    centerPoint.xI + Math.cos(du) * length + ofstX, centerPoint.yI + +Math.sin(du) * length + ofstY
                 )
             }
 
             OptRange.WIDE_RANGE -> {
-                val length = Math.random() * 0.8 * minimumDiameter
+                val length = Math.random() * 0.6 * minimumDiameter
                 CoordinatePoint(
-                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                    centerPoint.xI + Math.cos(du) * length + ofstX, centerPoint.yI + +Math.sin(du) * length + ofstY
                 )
             }
 
             OptRange.FULL_RANGE -> {
-                val length = Math.random() * minimumDiameter
+                val length = Math.random() * 0.8 * minimumDiameter
                 CoordinatePoint(
-                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                    centerPoint.xI + Math.cos(du) * length + ofstX, centerPoint.yI + +Math.sin(du) * length + ofstY
                 )
             }
 
             OptRange.ALL_OPT_RANGE -> {
-                val length = Math.random() * 1.2 * minimumDiameter
+                val length = Math.random() * minimumDiameter
                 CoordinatePoint(
-                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                    centerPoint.xI + Math.cos(du) * length + ofstX, centerPoint.yI + +Math.sin(du) * length + ofstY
                 )
             }
 
             OptRange.BEYOND_RANGE -> {
-                val length = (Math.random() * 0.2 + 1) * minimumDiameter
+                val length = (Math.random() * 0.6 + 0.6) * minimumDiameter
                 CoordinatePoint(
-                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                    centerPoint.xI + Math.cos(du) * length + ofstX, centerPoint.yI + +Math.sin(du) * length + ofstY
                 )
             }
 
             else -> {
-                val length = Math.random() * 0.8 * minimumDiameter
+                val length = Math.random() * 0.6 * minimumDiameter
                 CoordinatePoint(
-                    x + Math.cos(du) * length + ofstX, y + +Math.sin(du) * length + ofstY
+                    centerPoint.xI + Math.cos(du) * length + ofstX, centerPoint.yI + +Math.sin(du) * length + ofstY
                 )
             }
         }

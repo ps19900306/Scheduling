@@ -35,6 +35,10 @@ abstract class TurnBaseController(
 
 
     //这个是截屏的间隔
+    val screenshotIntervalF
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.5 + 0.5)).toLong()
+
+    //这个是截屏的间隔
     val screenshotInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 1 + 1.6)).toLong()
 

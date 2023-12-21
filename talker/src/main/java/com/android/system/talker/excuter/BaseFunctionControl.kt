@@ -8,6 +8,7 @@ import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.click.SlidingArea
 import com.android.schedule.corelibrary.click.TwoFingerArea
+import com.android.schedule.corelibrary.controller.ClickSpeedControl
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
@@ -73,31 +74,27 @@ abstract class BaseFunctionControl(
 
     protected suspend fun intoGame(): Boolean {
         var flag = true
-        var count = 20
+        var count = 40
+
+
+        val clickSpeedControl = ClickSpeedControl()
+        clickSpeedControl.addUnit(en.hasXiaoTipsTask, en.hasXiaoTipsTask.clickArea!!)
+        clickSpeedControl.addUnit(en.isAnnouncementT, en.closeAnnouncementArea)
+        clickSpeedControl.addUnit(en.isUpdateGameT, en.updateGameArea)
+        clickSpeedControl.addUnit(en.isStartGameT, en.isStartGameArea)
+        clickSpeedControl.addUnit(en.isSelectRoleT, en.selectRoleArea)
+        clickSpeedControl.addUnit(en.isOpenBigMenuT, en.closeBigMenuArea)
+
         while (flag && count > 0 && runSwitch) {
-            val bitmap = takeScreen(screenshotInterval)
+            val bitmap = takeScreen(screenshotIntervalF)
             if (bitmap.isLandscape()) {
                 delay(TimeUtils.getDelayStart())
-                delay(tripleClickInterval)
-                if (en.isLoadingGameT.check()) {
-                } else if (en.isAnnouncementT.check()) {
-                    L.d("isAnnouncementT")
-                    click(en.isAnnouncementT, en.closeAnnouncementArea)
-                } else if (en.isUpdateGameT.check()) {
-                    L.d("isUpdateGameT")
-                    click(en.isUpdateGameT, en.updateGameArea)
-                    delay(tripleClickInterval)
-                } else if (en.isStartGameT.check()) {
-                    L.d("isStartGameT")
-                    click(en.isStartGameT, en.isStartGameArea)
-                } else if (en.isSelectRoleT.check()) {
-                    L.d("isSelectRoleT")
-                    en.selectRoleArea.c()
-                } else if (en.isOpenBigMenuT.check()) {
-                    L.d("isOpenBigMenuT")
-                    click(en.isOpenBigMenuT, en.closeBigMenuArea)
-                } else if (hasIntoGame()) {
+                if (hasIntoGame()) {
                     flag = false
+                } else if (en.isLoadingGameT.check()) {
+
+                } else {
+                    clickSpeedControl.cc()
                 }
             } else {//这里没有横屏所以
                 click(getAppArea())
@@ -134,6 +131,7 @@ abstract class BaseFunctionControl(
     }
 
     suspend fun returnSpaceStation(position: Int): Boolean {
+        L.d("returnSpaceStation")
         var flag = true
         val maxCount = 10
         var count = maxCount
@@ -150,7 +148,7 @@ abstract class BaseFunctionControl(
             if (en.isConfirmDialogTask.check()) {
                 en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
                 count = maxCount
-            } else if(en.isSailingT.check()){
+            } else if (en.isSailingT.check()) {
                 count = maxCount
             } else if (en.isOpenBigMenuT.check()) {
                 en.closeBigMenuArea.c()
@@ -168,8 +166,11 @@ abstract class BaseFunctionControl(
                         count = maxCount
                         hasStart = true
                     }
+                } else {
+                    count--
                 }
             }
+
         }
         if (flag) {
             reportingError("${getTag()} returnSpaceStation")
@@ -202,21 +203,21 @@ abstract class BaseFunctionControl(
     protected suspend fun theOutCheck(): Boolean {
         var flag = true
         var count = 20
+
+        val clickSpeedControl = ClickSpeedControl()
+        clickSpeedControl.addUnit(en.isOpenBigMenuT, en.closeBigMenuArea)
+        clickSpeedControl.addUnit(en.isConfirmDialogTask, en.confirmDialogCancelArea)
+        clickSpeedControl.addUnit(en.isCanCollectGiftT, en.closeCollectGiftArea)
+
         while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(screenshotInterval)) {
+            if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (hasIntoGame()) {
                 flag = false
-            } else if (en.isOpenBigMenuT.check()) {
-                click(en.closeBigMenuArea)
-            } else if (en.isConfirmDialogTask.check()) {
-                en.confirmDialogCancelArea.c(en.isConfirmDialogTask)
-            } else if (en.isCanCollectGiftT.check()) {
-                click(en.closeCollectGiftArea)
-            } else if (count == 5) {
-                pressBackBtn()
+            } else {
+                clickSpeedControl.cc()
             }
             count--
         }
@@ -288,32 +289,42 @@ abstract class BaseFunctionControl(
     }
 
     private suspend fun queryShipLocation(shipType: Int): Int {
-        when (shipType) {
-            ShipType.TASK_SHIP, ShipType.ABNORMAL_SHIP -> {
-                en.isJiYuShipList.forEachIndexed { index, imgTaskImpl1 ->
-                    if (imgTaskImpl1.check()) {
-                        return index
+        var flag = true
+        var count = 3
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                runSwitch = false
+                return -1
+            }
+            when (shipType) {
+                ShipType.TASK_SHIP, ShipType.ABNORMAL_SHIP -> {
+                    en.isJiYuShipList.forEachIndexed { index, imgTaskImpl1 ->
+                        if (imgTaskImpl1.check()) {
+                            return index
+                        }
                     }
                 }
-            }
 
-            ShipType.VEGETABLE_SHIP -> {
-                en.isVegetableShipList.forEachIndexed { index, imgTaskImpl1 ->
-                    if (imgTaskImpl1.check()) {
-                        return index
+                ShipType.VEGETABLE_SHIP -> {
+                    en.isVegetableShipList.forEachIndexed { index, imgTaskImpl1 ->
+                        if (imgTaskImpl1.check()) {
+                            return index
+                        }
                     }
                 }
-            }
 
-            ShipType.MINING_SHIP -> {
+                ShipType.MINING_SHIP -> {
 
+                }
             }
+            count--
         }
         return -1
     }
 
 
     protected suspend fun ensureOpenBigMenuArea(@MenuType index: Int): Boolean {
+        L.d("ensureOpenBigMenuArea $index")
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
@@ -366,47 +377,44 @@ abstract class BaseFunctionControl(
 
                 }
             } else if (en.isOpenMenuMenu.check()) {//这里点开了打菜单
-                L.d("isOpenMenuMenu.check()")
                 when (index) {
                     MenuType.WAREHOUSE -> {
                         en.openWarehouseMenuArea.c()
                     }
-
                     MenuType.TASK -> {
                         en.openTaskMenuArea.c()
                     }
-
                     MenuType.PLANETARY_MINE -> {
                         en.openPlanetaryMenuArea.c()
                     }
-
                     MenuType.AGREEMENT -> {
                         en.openAgreementMenuArea.c()
                     }
-
                     MenuType.GAME_ACTIVITY -> {
                         en.openActivityMenuArea.c()
                     }
                 }
             } else {
-                if (userDb.shortcutMenu1 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
-                    L.d("shortcutMenu1.c()")
+                if (userDb.shortcutMenu1 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(0).c()
-                } else if (userDb.shortcutMenu2 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                } else if (userDb.shortcutMenu2 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(1).c()
-                } else if (userDb.shortcutMenu3 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                } else if (userDb.shortcutMenu3 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(2).c()
-                } else if (userDb.shortcutMenu4 == index && en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()) {
+                } else if (userDb.shortcutMenu4 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(3).c()
                 } else {
-                    //这里点击
-                    L.d("openMenuMenuArea.c()")
+
                     en.openMenuMenuArea.c()
                 }
             }
             count--
         }
         return !flag
+    }
+
+    protected suspend fun hasPositionMenu(): Boolean {
+        return en.isOpenPositionMenuT.check() || en.isClosePositionMenuT.check()
     }
 
 
@@ -560,6 +568,14 @@ abstract class BaseFunctionControl(
         click(this)
     }
 
+    suspend fun ClickSpeedControl.cc() {
+        screenBitmap?.let {
+            this.checkImg(it)?.let {
+                optClickTask(it)
+            }
+        }
+    }
+
     suspend fun TwoFingerArea.c() {
         SimpleClickUtils.optClickTasks(acService, 0, 0, *this.toClickTask().toTypedArray())
     }
@@ -629,7 +645,7 @@ abstract class BaseFunctionControl(
                         delay(jumpClickInterval)
                     } else {
                         pressBackBtn()
-                        delay(clickInterval)
+                        delay(jumpClickInterval)
                     }
                 }
             } else {
@@ -818,10 +834,14 @@ abstract class BaseFunctionControl(
             } else if (en.isInSpaceStationT.check()) {
                 en.outSpaceArea.c()
                 delay(tripleClickInterval)
+            } else if (en.isConfirmDialogTask.check()) {
+                en.confirmDialogEnsureArea.c()
             }
             count--
         }
         return !flag
+
+
     }
 
     protected suspend fun isInSpace(): Boolean {

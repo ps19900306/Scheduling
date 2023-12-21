@@ -48,12 +48,13 @@ class TaskFunction(
                     if (!result) return
 
                     delay(jumpClickInterval)
-
-                    conditionMonitoring()
                 }
+                conditionMonitoring()
             } else {
                 reportingError(ABNORMAL_CAN_CLONE)
             }
+        }else{
+            L.d("当天你任务已经完成")
         }
     }
 
