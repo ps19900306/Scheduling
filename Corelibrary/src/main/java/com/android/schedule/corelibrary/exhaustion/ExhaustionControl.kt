@@ -113,19 +113,19 @@ object ExhaustionControl : BasicExhaustion() {
     override fun getSwipDuration(type: Int): Long {
         return when (type) {
             OptDuration.QUICK -> {
-                (Math.random() * 60 + 100).toLong()
+                (Math.random() * 600 + 600).toLong()
             }
             OptDuration.SLOW -> {
-                (Math.random() * 200 + 200).toLong()
+                (Math.random() * 1000 + 1000).toLong()
             }
             OptDuration.QUICK_LARGE_RANDOM -> {
-                (Math.random() * 100 + 300).toLong()
+                (Math.random() * 1500 + 600).toLong()
             }
             OptDuration.SLOW_LARGE_RANDOM -> {
-                (Math.random() * 400 + 100).toLong()
+                (Math.random() * 2000 + 1000).toLong()
             }
             else -> {
-                (Math.random() * 60 + 100).toLong()
+                (Math.random() * 600 + 600).toLong()
             }
         }
     }
