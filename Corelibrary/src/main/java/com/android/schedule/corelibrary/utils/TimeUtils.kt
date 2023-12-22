@@ -117,9 +117,9 @@ object TimeUtils {
     }
 
 
-    fun getNowTime(): String {
+    fun getNowTime(time:Long= System.currentTimeMillis()): String {
         val dateFormat = SimpleDateFormat("dd日hh时")
-        return dateFormat.format(Date())
+        return dateFormat.format(Date(time))
     }
 
     //返回当月天数

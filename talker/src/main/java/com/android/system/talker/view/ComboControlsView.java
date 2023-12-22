@@ -23,6 +23,20 @@ public class ComboControlsView extends LinearLayoutCompat {
     private ViewComboControlBinding viewComboControlBinding;
 
     private NwqCallBack<Boolean> selectCallBack;
+    private NwqCallBack<Boolean> buttonClickBack;
+
+    public void setButtonClickBack(NwqCallBack<Boolean> buttonClickBack) {
+        this.buttonClickBack = buttonClickBack;
+        viewComboControlBinding.button.setOnClickListener(v->{
+            buttonClickBack.onCallBack(true);
+        });
+
+    }
+
+
+    public void setTipsText(String str){
+        viewComboControlBinding.tipsStr.setText(str);
+    }
 
     public void setSelectCallBack(NwqCallBack<Boolean> selectCallBack) {
         this.selectCallBack = selectCallBack;
@@ -77,7 +91,6 @@ public class ComboControlsView extends LinearLayoutCompat {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
 
     }
 }

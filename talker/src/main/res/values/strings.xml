@@ -63,4 +63,5 @@
     <string name="plant_count">中菜数量</string>
     <string name="add_interval">添加时间的间隔</string>
     <string name="complete_interval">收菜的间隔</string>
+    <string name="resetting">重置</string>
 </resources>

@@ -1,6 +1,10 @@
 package com.android.schedule.corelibrary.img.img_rule
 
 import android.graphics.Bitmap
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleImpl
@@ -26,6 +30,15 @@ abstract class ImgTask(
     var clickArea: ClickArea? = null //如果
 
 
+
+   open  fun logColor(bitmap: Bitmap){
+        iprList.forEach {
+            val  pX = it.getCoordinatePoint().xI
+            val  pY = it.getCoordinatePoint().yI
+            val intColor = bitmap.getPixel(pX,pY)
+            L.d("x:$pX y:$pY alpha:${intColor.alpha}  red:${intColor.red} green:${intColor.green} blue:${intColor.blue}")
+        }
+    }
 
 
     var  openArea: ClickArea? = null

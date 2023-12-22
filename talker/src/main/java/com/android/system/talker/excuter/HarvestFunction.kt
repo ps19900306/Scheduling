@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
+import com.android.schedule.corelibrary.controller.ClickSpeedControl
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
@@ -55,7 +56,7 @@ class HarvestFunction(
         var result = intoGame()
         if (!result) return
         if (needHarvestVegetables()) {
-            if (!checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
+            if (checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
                 harvestVegetables()
             } else {
                 addVegetablesTime()
@@ -178,7 +179,7 @@ class HarvestFunction(
 
     private suspend fun oneClickClaim(): Boolean {
         var flag = true
-        var count = 5
+        var count = 30
         var hasLin = false
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
@@ -188,15 +189,9 @@ class HarvestFunction(
             if (!hasLin && en.isOneClickClaimTask.check()) {
                 en.oneClickClaimArea.c(en.isOneClickClaimTask)
                 hasLin = true
-                delay(screenshotInterval)
-            } else if (en.isShowMaxTask.check()) {
-                en.clickMaxArea.c(en.isShowMaxTask)
-                delay(clickInterval)
-                en.clickMaxConfArea.c(en.isShowMaxTask)
-                delay(clickInterval)
-                en.closeMaxArea.c(en.isShowMaxTask)
                 delay(jumpClickInterval)
-                en.closeOneClickArea.c(en.isOneClickClaimTask)
+            } else if (en.isShowMaxTask.check()) {
+                oneClickClaimExtra()
                 nowStep = MONITORING_RETURN_STATUS
                 return true
             } else if (hasLin) {
@@ -213,6 +208,30 @@ class HarvestFunction(
                 } else {
                     nowStep = MONITORING_RETURN_STATUS
                 }
+            }
+            count--
+        }
+        return !flag
+    }
+
+    private suspend fun oneClickClaimExtra():Boolean {
+        var flag = true
+        var count = 3
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return false
+            }
+            if (en.isClosePositionMenuT.check() && !en.isOneClickClaimTask.check()) {
+                flag = false
+            } else {
+                en.clickMaxArea.c(en.isShowMaxTask)
+                delay(jumpClickInterval)
+                en.clickMaxConfArea.c(en.isShowMaxTask)
+                delay(jumpClickInterval)
+                en.closeMaxArea.c(en.isShowMaxTask)
+                delay(jumpClickInterval)
+                en.closeOneClickArea.c(en.isOneClickClaimTask)
             }
             count--
         }
@@ -287,7 +306,7 @@ class HarvestFunction(
 
     private suspend fun goCollectNavigationMonitoring(): Boolean {
         var flag = true
-        var count = 20
+        var count = 40
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -311,7 +330,7 @@ class HarvestFunction(
                 nowStep = ONE_CLICK_CLAIM
                 return true
             } else if (en.isSailingT.check()) {
-                count = 20
+                count = 40
             }
             count--
         }

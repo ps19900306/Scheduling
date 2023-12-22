@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.ClickTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.utils.L
 
 class ClickSpeedControl {
 
@@ -24,12 +25,14 @@ class ClickSpeedControl {
         list.find { it.task.verificationRule(bitmap) }?.let {
             if (lastTAG == it.task.tag) {
                 if (count <= 0) {
+                    L.d( it.task.tag)
                     count = maxCount
                     clickTask = it.area.toClickTask(it.task)
                 } else {
                     count--
                 }
             } else {
+                L.d( it.task.tag)
                 lastTAG = it.task.tag
                 count = maxCount
                 clickTask = it.area.toClickTask(it.task)

@@ -1,16 +1,23 @@
 package com.nwq.function.autocodeapp
 
+import android.content.BroadcastReceiver
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -25,6 +32,7 @@ import com.android.schedule.corelibrary.expand.runOnUI
 import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.android.schedule.corelibrary.utils.L
+import com.android.schedule.corelibrary.utils.NwqCallBack
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
@@ -36,6 +44,7 @@ import com.nwq.function.autocodeapp.adapter.FunctionItemAdapter.Companion.BUTTON
 import com.nwq.function.autocodeapp.data.FunctionItemInfo
 import com.nwq.function.autocodeapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -72,14 +81,19 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.add_circular_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.background, BUTTON_TYPE),
             FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
+
+
             FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
 
+            FunctionItemInfo(R.string.take_img, BUTTON_TYPE),
+            FunctionItemInfo(R.string.replace_img, BUTTON_TYPE),
 
             )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
         controller.hide(WindowInsetsCompat.Type.navigationBars())
@@ -151,6 +165,7 @@ class MainActivity() : AppCompatActivity() {
                         bind.previewView.lineList
                     )
                 }
+
             }
         }
 
@@ -300,6 +315,14 @@ class MainActivity() : AppCompatActivity() {
                     checkCode()
                 }
 
+                R.string.take_img -> {
+                    issueInstructionsImg()
+                }
+                R.string.replace_img->{
+                    viewModel.srcBitmap?.let {
+                        bind.allImg.setImageBitmap(it)
+                    }
+                }
                 R.string.test_pick_up_points1 -> {
                     PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
                         .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
@@ -332,6 +355,8 @@ class MainActivity() : AppCompatActivity() {
 
     companion object {
         val NORMAL_MODE = Int.MAX_VALUE   //普通模式
+        const val Intent_Filter_TAG = "schedule.autocode.img"
+        const val TAKE_IMG = "take_img"
     }
 
     /**
@@ -459,18 +484,18 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
-//                en.isJiYuShipList.forEach { task->
+//                en.isVegetableShipList.forEach { task->
 //                    if (task.verificationRule(it)) {
 //                        runOnUI {
 //                            bind.previewView.clearPoint()
 //                            bind.previewView.clearArea()
 //                            val offsetX = task.getOffsetX()
 //                            val offsetY = task.getOffsetY()
-////                            task.iprList.forEach {
-////                                it.getCoordinatePoint().apply {
-////                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
-////                                }
-////                            }
+//                            task.iprList.forEach {
+//                                it.getCoordinatePoint().apply {
+//                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
+//                                }
+//                            }
 //                            L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
 //                        }
 //                    }else{
@@ -485,7 +510,11 @@ class MainActivity() : AppCompatActivity() {
 //                } else {
 //                    en.isOpenTask
 //                }
-                val task = en.isOpenTask
+
+
+                val task = en.isActivationShipTask
+                task.logColor(it)
+                task.clickArea = en.activationShipArea
                 if (task.verificationRule(it)) {
                     runOnUI {
                         bind.previewView.clearPoint()
@@ -501,11 +530,12 @@ class MainActivity() : AppCompatActivity() {
                         task.clickArea?.let {
                             bind.previewView.addArea(it.copyOffset(offsetX, offsetY))
                         }
-
                     }
                 } else {
                     L.i("验证失败")
                 }
+
+
             }
         }
     }
@@ -533,6 +563,37 @@ class MainActivity() : AppCompatActivity() {
             } else {
                 L.i("index  验证通过")
             }
+        }
+    }
+
+
+    private val onTakeIng =
+        NwqCallBack<Bitmap?> {
+                t ->
+                L.d("截图成功")
+            viewModel.srcBitmap = t
+        }
+
+
+    private var getMyImg: GetMyImg? = null
+    private fun issueInstructionsImg() {
+        ImgOpt.getbitmap = onTakeIng
+        if(ImgOpt.takeBitmap!=null){
+            L.d("发布截图指令")
+            ImgOpt.takeBitmap?.onCallBack(true)
+        }else{
+            L.d("发布截图指令 ImgOpt.takeBitmap==null")
+        }
+
+    }
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            getMyImg = GetMyImg.Stub.asInterface(service)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+
         }
 
     }

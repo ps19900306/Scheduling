@@ -53,7 +53,7 @@ class TaskFunction(
             } else {
                 reportingError(ABNORMAL_CAN_CLONE)
             }
-        }else{
+        } else {
             L.d("当天你任务已经完成")
         }
     }
@@ -102,13 +102,13 @@ class TaskFunction(
     val ai_close = 3
     val ai_open = 4
 
-    var aiStatus = ai_nomarl
+    var aiStatus = ai_unkown
 
     private suspend fun conditionAiStatus() {
         var startTime = System.currentTimeMillis()
         //这个是判断异常冗余时间
         var redundantWaitTime = ((Math.random() * 3 + 2) * SetConstant.MINUTE).toLong()
-
+        aiStatus = ai_unkown
         var flag = true
         while (flag && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
@@ -141,19 +141,23 @@ class TaskFunction(
                         nowStep = startAi
                     }
                 }
-            } else if (isInSpace()) {
-                if (aiStatus != ai_close) {
-                    if (aiStatus != ai_open) {
-                        startTime = nowTime
-                        aiStatus = ai_open
-                    }
-                } else if (TimeUtils.judgingTheInterval(nowTime, startTime, SetConstant.tenMINUTE)) {
+            } else if (isInSpace()) {//进入这里坑定是ai不是关闭的状态
+                if (aiStatus != ai_open) {
+                    startTime = nowTime
+                    aiStatus = ai_open
+                } else if (TimeUtils.judgingTheInterval(
+                        nowTime,
+                        startTime,
+                        SetConstant.tenMINUTE
+                    )
+                ) {
                     en.topDeviceList[2].clickArea?.c()
                     flag = false
                     nowStep = restartGame
                 }
             } else if (en.isOpenJiyuBigMenuTask.check()) {
                 if (aiStatus != isOpenTaskManu) {
+                    aiStatus = aiStatus
                     startTime = nowTime
                 } else if (TimeUtils.judgingTheInterval(nowTime, startTime, redundantWaitTime)) {
                     if (en.isCompleteAllTask.check()) {

@@ -1,11 +1,16 @@
 package com.android.schedule.corelibrary.img.img_rule
 
 import android.graphics.Bitmap
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRule
+import com.android.schedule.corelibrary.utils.L
 
 
 /**
@@ -24,7 +29,13 @@ open class FindImgTask(
 
     private var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
 
-
+    override fun logColor(bitmap: Bitmap){
+        val  pX = pr.point.xI
+        val  pY = pr.point.yI
+        val  intColor = bitmap.getPixel(pX,pY)
+        L.d("frist x:$pX y:$pY alpha:${intColor.alpha}  red:${intColor.red} green:${intColor.green} blue:${intColor.blue}")
+        super.logColor(bitmap)
+    }
 
     //这里是为了修正寻找的区域防止下标越界
     fun correctArea(imgWidth: Int, imgHeight: Int) {
@@ -70,8 +81,11 @@ open class FindImgTask(
     }
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
-        if(bitmap==null)
+        if(bitmap == null)
+        {
             return false
+        }
+
         return findImgByColor(bitmap, findArea)
     }
 
@@ -80,7 +94,6 @@ open class FindImgTask(
         //这里修正图片是为了保证不月觉
 //        if(!correctArea)
 //            correctArea(bitmap.width,bitmap.height)
-
         val pixels = IntArray(area.width * area.height)
         bitmap.getPixels(
             pixels,

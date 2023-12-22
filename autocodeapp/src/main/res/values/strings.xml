@@ -27,6 +27,7 @@
     <string name="test_pick_up_points">测试代码</string>
     <string name="test_pick_up_points1">测试代码多图</string>
 
+
     <string name="add_rectangle_click_are">点击方形状区域</string>
     <string name="add_circular_click_are">点击圆形区域</string>
     <string name="inverse_value">底色取反</string>
@@ -34,8 +35,8 @@
     <string name="take_point_interval">总取点数</string>
     <string name="find_image_area">找图区域</string>
 
-    <string name="accessibility_service_label">Schedule</string>
-    <string name="accessibility_service_description">Schedule</string>
+    <string name="accessibility_service_label">autoTake</string>
+    <string name="accessibility_service_description">autoTakeImg</string>
     <string name="ok">确定</string>
     <string name="clear">清除</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
@@ -47,4 +48,6 @@
     <string name="mini_steps">最小步数</string>
     <string name="sort_by_x">x轴倒序</string>
     <string name="offset_value">底色取差</string>
+    <string name="take_img">截图</string>
+    <string name="replace_img">替换图片</string>
 </resources>

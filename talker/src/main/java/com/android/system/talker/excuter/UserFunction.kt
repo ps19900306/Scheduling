@@ -18,7 +18,7 @@ class UserFunction(
         dataBase.getUserDao().update(userDb)
     }
 
-    val  TAG = UserFunction::class.java.simpleName
+    val TAG = UserFunction::class.java.simpleName
     override suspend fun getTag(): String {
         return TAG
     }
@@ -40,6 +40,7 @@ class UserFunction(
             L.d("$TAG 返回空间站成功")
             if (ensureOpenActivityType(ActivityType.LOGIN_GIFT)) {
                 en.quickClaimArea.c()
+                L.d("每日登录物资领取成功")
                 userDb.activeGiftTime = System.currentTimeMillis()
                 theOutCheck()
             }
@@ -53,7 +54,7 @@ class UserFunction(
             L.d("$TAG 进入协议任务领取")
             isInSpaceStation = true
             if (ensureOpenBigMenuArea(MenuType.AGREEMENT)) {
-                optAgreementGift()
+                L.d("每日登录物资领取成功")
                 userDb.agreementGiftTime = System.currentTimeMillis()
                 theOutCheck()
             }
@@ -114,6 +115,7 @@ class UserFunction(
         var flag = true
         var count = 5
         var hasOpt = false
+        // 这里切换到领取
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
@@ -123,13 +125,15 @@ class UserFunction(
                 flag = false
             } else {
                 en.agreementMenuArea.c()
-                delay(clickInterval)
+                delay(jumpClickInterval)
             }
             count--
         }
 
+
         //这里领取每周任务
         count = 5
+        flag = true
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
@@ -149,44 +153,20 @@ class UserFunction(
             en.protocolChallengesArea.c()
             delay(jumpClickInterval)
             //这里点击可以领取的区域
-            count = 5
+            count = 10
             while (flag && count > 0 && runSwitch) {
-                if (!taskScreenL(screenshotInterval)) {
+                if (!taskScreenL(screenshotIntervalF)) {
                     runSwitch = false
                     return false
                 }
                 if (en.isAgreementChallengesClickTask.check()) {
                     en.agreementChallengesClickArea.c(en.isAgreementChallengesClickTask)
-                    hasOpt = true
-                    delay(clickInterval)
-                    count = 2
-                }
-                count--
-            }
-            return !flag
-        }
-
-        //如果还有红点再次领取每周任务
-        if (en.isProtocolTasks.check()) {
-            en.isProtocolArea.c()
-            delay(jumpClickInterval)
-            //这里领取每周任务
-            count = 5
-            while (flag && count > 0 && runSwitch) {
-                if (!taskScreenL(screenshotInterval)) {
-                    runSwitch = false
-                    return false
-                }
-                if (en.isAgreementWeekTask.check()) {
-                    en.agreementWeekArea.c(en.isAgreementWeekTask)
-                    hasOpt = true
-                    delay(clickInterval)
-                    count = 2
+                    delay(jumpClickInterval)
                 }
                 count--
             }
         }
 
-        return !flag || hasOpt
+        return hasOpt
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.android.schedule.corelibrary.utils.L
 import com.android.system.talker.R
 import com.android.system.talker.databinding.ActivityMainBinding
 
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        L.i("MainActivity NWQ_ ${applicationInfo.processName}");
 
 
 

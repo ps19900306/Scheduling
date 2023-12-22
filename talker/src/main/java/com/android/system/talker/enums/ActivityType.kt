@@ -8,6 +8,6 @@ import androidx.annotation.IntDef
 annotation class ActivityType {
 
     companion object {
-        const val LOGIN_GIFT =1
+        const val LOGIN_GIFT =1 //这个是每日登录的礼物
     }
 }

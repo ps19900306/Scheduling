@@ -25,6 +25,8 @@ abstract class BaseController(
     var screenBitmap: Bitmap? = null
     var runSwitch = true
     private val waitTaskTime = 5
+    private val takeScreenIn = 4000L
+
 
     abstract fun start()
 
@@ -53,7 +55,7 @@ abstract class BaseController(
         do {
             bitmap = takeScreenShot()
             if (bitmap == null) {
-                delay(2000)
+                delay(takeScreenIn)
             }
         } while (bitmap == null)
         return bitmap
@@ -68,7 +70,7 @@ abstract class BaseController(
         do {
             bitmap = takeScreenShot()
             if (bitmap == null) {
-                delay(2000)
+                delay(takeScreenIn)
             }
         } while (bitmap == null)
         return bitmap.isLandscape()
@@ -83,7 +85,7 @@ abstract class BaseController(
         do {
             bitmap = takeScreenShot()
             if (bitmap == null) {
-                delay(2000)
+                delay(4000)
             }
         } while (bitmap == null)
         return bitmap.isVertical()
@@ -111,6 +113,7 @@ abstract class BaseController(
 
                 override fun onFailure(i: Int) {
                     it.resume(null)
+
                 }
             })
     }

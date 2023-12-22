@@ -14,6 +14,7 @@ import com.android.schedule.corelibrary.expand.runOnIO
 import com.android.schedule.corelibrary.expand.runOnUI
 import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.utils.L
+import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.CmdType
 import com.android.system.talker.R
 import com.android.system.talker.TimeAccessibilityService
@@ -56,6 +57,11 @@ class HomeFragment : Fragment() {
             if (hasSetUserId)
                 updateTask(it)
         }
+        _binding.taskCb.setButtonClickBack {
+            if (hasSetUserId)
+                resetTask()
+        }
+
 
         _binding.taskCb.singleClick {
             if (hasSetUserId) {
@@ -69,6 +75,11 @@ class HomeFragment : Fragment() {
         _binding.vegetableCb.setSelectCallBack {
             if (hasSetUserId)
                 updateVegetable(it)
+        }
+
+        _binding.vegetableCb.setButtonClickBack {
+            if (hasSetUserId)
+                resetVegetable()
         }
 
         _binding.vegetableCb.singleClick {
@@ -122,7 +133,7 @@ class HomeFragment : Fragment() {
                             UserIdArgs(nowUserId).toBundle()
                         )
                     }, {
-                        if(nowUserId!=it){
+                        if (nowUserId != it) {
                             nowUserId = it
                             refreshOptList(it)
                         }
@@ -150,10 +161,18 @@ class HomeFragment : Fragment() {
                     val taskDb = dataBase.getTaskDao().queryByUserId(userid)
                     val vegetableDb = dataBase.getVegetableDao().queryByUserId(userid)
                     runOnUI {
-                        L.i("taskDb id:${taskDb?.id}  ${taskDb?.isSwitch}")
-                        _binding.taskCb.setChecked((taskDb?.isSwitch ?: 0) == 1)
-                      //  L.i("vegetableDb id:${vegetableDb?.id}  ${vegetableDb?.switch}")
-                        _binding.vegetableCb.setChecked(vegetableDb?.isSwitch ?: false)
+                        taskDb?.let { data ->
+                            _binding.taskCb.setChecked(data.isSwitch == 1)
+                            if(data.lastCompletionTime!=0L){
+                                _binding.taskCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
+                            }
+                        }
+
+                        vegetableDb?.let { data ->
+                            _binding.vegetableCb.setChecked(data.isSwitch)
+                            if(data.lastCompletionTime!=0L)
+                            _binding.vegetableCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
+                        }
                     }
                 }
             }
@@ -179,6 +198,23 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun resetTask() {
+        lifecycleScope.launchWhenResumed {
+            runOnIO {
+                (dataBase.getTaskDao().queryByUserId(nowUserId) ?: TaskDb()).let {
+                    it.lastCompletionTime = 0L
+                    if (it.id == 0L) {
+                        it.userid = nowUserId
+                        dataBase.getTaskDao().insert(it)
+                    } else {
+                        it.userid = nowUserId
+                        dataBase.getTaskDao().update(it)
+                    }
+                }
+            }
+        }
+    }
+
     private fun updateVegetable(isCheck: Boolean) {
         lifecycleScope.launchWhenResumed {
             runOnIO {
@@ -189,7 +225,6 @@ class HomeFragment : Fragment() {
                         dataBase.getVegetableDao().insert(it)
                     } else {
                         it.userid = nowUserId
-                      //  L.i("更新Vegetable id:${it.id}  $isCheck")
                         dataBase.getVegetableDao().update(it)
                     }
                 }
@@ -197,5 +232,20 @@ class HomeFragment : Fragment() {
         }
     }
 
-
+    private fun resetVegetable() {
+        lifecycleScope.launchWhenResumed {
+            runOnIO {
+                (dataBase.getVegetableDao().queryByUserId(nowUserId) ?: VegetableDb()).let {
+                    it.lastCompletionTime = 0L
+                    if (it.id == 0L) {
+                        it.userid = nowUserId
+                        dataBase.getVegetableDao().insert(it)
+                    } else {
+                        it.userid = nowUserId
+                        dataBase.getVegetableDao().update(it)
+                    }
+                }
+            }
+        }
+    }
 }

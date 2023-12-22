@@ -12,6 +12,8 @@ import com.android.schedule.corelibrary.controller.ClickSpeedControl
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.utils.ContextUtil
+import com.android.schedule.corelibrary.utils.FileUtils
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack
 import com.android.schedule.corelibrary.utils.TimeUtils
@@ -249,43 +251,38 @@ abstract class BaseFunctionControl(
             return true
         }
 
-        //这里点击飞船的位置
-        en.getShipArea(shipLocation).c()
-        L.d("这里点击飞船的位置")
 
-        //这里点击激活
-        if (en.isActivationShipTask.check()) {
-            L.d("这里点击激活")
-            click(
-                en.activationShipArea,
-                en.isActivationShipTask.getOffsetX(),
-                en.isActivationShipTask.getOffsetY()
-            )
-        }
-
-        //这里可以进行校验
-        delay(tripleClickInterval)
-        if (en.isOpenWarehouseBigMenuTask.check()) {
-            return if (en.isActivationLocationList[shipLocation].check()) {
+        L.d("准备更换飞船")
+        var flag = true
+        var count = 5
+        val clickSpeedControl = ClickSpeedControl()
+        clickSpeedControl.addUnit(en.isActivationShipTask, en.activationShipArea)
+        clickSpeedControl.addUnit(en.isOpenWarehouseBigMenuTask, en.getShipArea(shipLocation))
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return false
+            }
+            if (en.isOpenWarehouseBigMenuTask.check() && en.isActivationLocationList[shipLocation].check()) {
                 userDb.shipType = shipType
                 dataBase.getUserDao().update(userDb)
-                true
+                L.d("飞船成功")
+                flag = false
+            } else if (en.isActivationShipTask.check()) {
+                //点击船的位置
+                L.d("点击船的位置")
+                en.activationShipArea.c(en.isActivationShipTask)
             } else {
-                false
+                clickSpeedControl.cc()
             }
-        }
-
-        delay(tripleClickInterval)
-        if (en.isOpenWarehouseBigMenuTask.check()) {
-            return if (en.isActivationLocationList[shipLocation].check()) {
-                userDb.shipType = shipType
-                dataBase.getUserDao().update(userDb)
-                true
-            } else {
-                false
+            if (count < 2) {
+                FileUtils.saveBitmapAndroid(context = ContextUtil.context, "新图", screenBitmap!!)
+                screenBitmap?.let { en.isActivationShipTask.logColor(it) }
             }
+            L.d("换船 $count")
+            count--
         }
-        return false
+        return !flag
     }
 
     private suspend fun queryShipLocation(shipType: Int): Int {
@@ -381,15 +378,19 @@ abstract class BaseFunctionControl(
                     MenuType.WAREHOUSE -> {
                         en.openWarehouseMenuArea.c()
                     }
+
                     MenuType.TASK -> {
                         en.openTaskMenuArea.c()
                     }
+
                     MenuType.PLANETARY_MINE -> {
                         en.openPlanetaryMenuArea.c()
                     }
+
                     MenuType.AGREEMENT -> {
                         en.openAgreementMenuArea.c()
                     }
+
                     MenuType.GAME_ACTIVITY -> {
                         en.openActivityMenuArea.c()
                     }
@@ -514,8 +515,8 @@ abstract class BaseFunctionControl(
         //先打开仓库
         var result = ensureOpenBigMenuArea(MenuType.GAME_ACTIVITY)
         if (!result) {
-            return false
             L.d("打开活动界面失败")
+            return false
         }
         var flag = true
         var count = 7
@@ -537,8 +538,9 @@ abstract class BaseFunctionControl(
             //找到菜单的点击位置
             when (type) {
                 ActivityType.LOGIN_GIFT -> {
-                    if (en.isQuickClaimTask.check()) {
-                        return true
+                    if (en.isSupplyMaterialsTask.check()) {
+                        en.supplyMaterialsArea.c(en.isSupplyMaterialsTask)
+                        delay(jumpClickInterval)
                     }
                 }
             }
@@ -622,8 +624,10 @@ abstract class BaseFunctionControl(
                 }
             } else if (en.isShowMoveToTask.check()) {
                 en.moveToArea.c(en.isShowMoveToTask)
+                delay(clickInterval)
             } else if (en.moveToStationGoodsTask.check()) {
                 en.moveToStationGoodsArea.c(en.moveToStationGoodsTask)
+                delay(jumpClickInterval)
                 complete = true
             }
             count--
@@ -671,7 +675,9 @@ abstract class BaseFunctionControl(
 
     //改变克隆点位置
     protected suspend fun checkCloneLocation(menuPosition: Int, clonePosition: Int): Boolean {
+        L.d("检查克隆位置")
         if (userDb.baseCloneLocation == clonePosition) {
+            L.d("克隆位置一致")
             return true
         }
         //先回空间站
