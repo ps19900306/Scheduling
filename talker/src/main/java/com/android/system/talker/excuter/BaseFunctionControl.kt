@@ -530,6 +530,7 @@ abstract class BaseFunctionControl(
             when (type) {
                 ActivityType.LOGIN_GIFT -> {
                     if (en.isQuickClaimTask.check()) {
+                        L.d("找到每日礼物")
                         return true
                     }
                 }
@@ -548,8 +549,10 @@ abstract class BaseFunctionControl(
             if (count >= 5) {
                 //这里前二次先不滑动
             } else if (count >= 3) {
+                L.d("向上滑动")
                 en.activityMenuSlideTop.c()
             } else {
+                L.d("向下滑动")
                 en.activityMenuSlideBottom.c()
             }
             count--

@@ -1,6 +1,7 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
@@ -41,6 +42,7 @@ class UserFunction(
             if (ensureOpenActivityType(ActivityType.LOGIN_GIFT)) {
                 en.quickClaimArea.c()
                 L.d("每日登录物资领取成功")
+                delay(SetConstant.MINUTE)// 这个领取比较慢
                 userDb.activeGiftTime = System.currentTimeMillis()
                 theOutCheck()
             }
@@ -54,6 +56,7 @@ class UserFunction(
             L.d("$TAG 进入协议任务领取")
             isInSpaceStation = true
             if (ensureOpenBigMenuArea(MenuType.AGREEMENT)) {
+                optAgreementGift()
                 L.d("每日登录物资领取成功")
                 userDb.agreementGiftTime = System.currentTimeMillis()
                 theOutCheck()

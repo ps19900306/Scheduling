@@ -3958,7 +3958,7 @@ class StarWarEnvironment {
     }
 
 
-    val activationShipArea =by lazy { ClickArea(1586,319,345,116,false)}
+    val activationShipArea by lazy { ClickArea(1586,319,345,116,false)}
     val isActivationShipTask by lazy {
         val tag = "isActivationShip"
         val pr  = PointRule(CoordinatePoint(1774, 389), ColorRuleRatioImpl.getSimple(64,136,124))
