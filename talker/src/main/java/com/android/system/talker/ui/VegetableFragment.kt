@@ -22,7 +22,7 @@ class VegetableFragment : Fragment() {
     private val args by lazy { UserIdArgs(arguments ?: Bundle()) }
 
     private val vegetableDao by lazy {
-        AppDataBase.getInstance(requireContext()).getVegetableDao()
+        AppDataBase.getInstance(requireContext().applicationContext).getVegetableDao()
     }
 
     private lateinit var mData: VegetableDb

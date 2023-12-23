@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
 
     //private val viewModel by viewModels<SetViewModel>()
     private val dataBase by lazy {
-        AppDataBase.getInstance(requireContext())
+        AppDataBase.getInstance(requireContext().applicationContext)
     }
 
 
@@ -130,7 +130,7 @@ class HomeFragment : Fragment() {
                     }, {
                         findNavController().navigate(
                             R.id.action_homeFragment_to_userFragment,
-                            UserIdArgs(nowUserId).toBundle()
+                            UserIdArgs(it).toBundle()
                         )
                     }, {
                         if (nowUserId != it) {

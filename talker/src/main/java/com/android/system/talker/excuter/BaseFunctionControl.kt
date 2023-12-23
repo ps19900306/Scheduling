@@ -328,7 +328,7 @@ abstract class BaseFunctionControl(
 
     protected suspend fun ensureOpenBigMenuArea(@MenuType index: Int): Boolean {
         var flag = true
-        var count = 10
+        var count = 6
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -381,35 +381,43 @@ abstract class BaseFunctionControl(
                 when (index) {
                     MenuType.WAREHOUSE -> {
                         en.openWarehouseMenuArea.c()
+                        delay(jumpClickInterval)
                     }
 
                     MenuType.TASK -> {
                         en.openTaskMenuArea.c()
+                        delay(jumpClickInterval)
                     }
 
                     MenuType.PLANETARY_MINE -> {
                         en.openPlanetaryMenuArea.c()
+                        delay(jumpClickInterval)
                     }
 
                     MenuType.AGREEMENT -> {
                         en.openAgreementMenuArea.c()
+                        delay(jumpClickInterval)
                     }
 
                     MenuType.GAME_ACTIVITY -> {
                         en.openActivityMenuArea.c()
+                        delay(jumpClickInterval)
                     }
                 }
             } else {
                 if (userDb.shortcutMenu1 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(0).c()
+                    delay(jumpClickInterval)
                 } else if (userDb.shortcutMenu2 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(1).c()
+                    delay(jumpClickInterval)
                 } else if (userDb.shortcutMenu3 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(2).c()
+                    delay(jumpClickInterval)
                 } else if (userDb.shortcutMenu4 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(3).c()
+                    delay(jumpClickInterval)
                 } else {
-
                     en.openMenuMenuArea.c()
                 }
             }
@@ -514,7 +522,7 @@ abstract class BaseFunctionControl(
         }
         var hasFind = false
         var flag = true
-        var count = 10
+        var count = 6
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -543,13 +551,13 @@ abstract class BaseFunctionControl(
                 }
             }
 
-            if (!hasFind) {
+            if (hasFind) {
 
-            } else if (count <= 3) {
+            } else if (count <= 2) {
                 L.d("向下滑动")
                 en.activityMenuSlideBottom.c()
                 delay(clickInterval)
-            } else if (count <= 8) {
+            } else if (count <= 4) {
                 L.d("向上滑动")
                 en.activityMenuSlideTop.c()
                 delay(clickInterval)

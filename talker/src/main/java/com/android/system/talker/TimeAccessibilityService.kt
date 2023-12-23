@@ -53,7 +53,7 @@ class TimeAccessibilityService : AccessibilityService() {
         when (cmd) {
             CmdType.START -> {
                 masterControl?.end()
-                masterControl = MasterControl(AppDataBase.getInstance(this), this)
+                masterControl = MasterControl(AppDataBase.getInstance(this.applicationContext), this)
                 masterControl?.start()
             }
 

@@ -23,7 +23,7 @@ class TaskFragment : Fragment() {
     private val args by lazy { UserIdArgs(arguments ?: Bundle()) }
 
     private val mDao by lazy {
-        AppDataBase.getInstance(requireContext()).getTaskDao()
+        AppDataBase.getInstance(requireContext().applicationContext).getTaskDao()
     }
 
     private lateinit var mData: TaskDb

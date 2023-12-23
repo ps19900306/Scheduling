@@ -28,7 +28,7 @@ class UserFragment : Fragment() {
     private val args by lazy { UserIdArgs(arguments ?: Bundle()) }
 
     private val userDao by lazy {
-        AppDataBase.getInstance(requireContext()).getUserDao()
+        AppDataBase.getInstance(requireContext().applicationContext).getUserDao()
     }
     private lateinit var mData: UserDb
 

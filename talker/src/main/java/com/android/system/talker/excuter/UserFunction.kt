@@ -44,8 +44,8 @@ class UserFunction(
                 L.d("每日登录物资领取成功")
                 delay(SetConstant.MINUTE)// 这个领取比较慢
                 userDb.activeGiftTime = System.currentTimeMillis()
-                theOutCheck()
             }
+            theOutCheck()
         }
 
         //这个是协议任务的
@@ -57,10 +57,10 @@ class UserFunction(
             isInSpaceStation = true
             if (ensureOpenBigMenuArea(MenuType.AGREEMENT)) {
                 optAgreementGift()
-                L.d("每日登录物资领取成功")
+                L.d("协议任务领取领取成功")
                 userDb.agreementGiftTime = System.currentTimeMillis()
-                theOutCheck()
             }
+            theOutCheck()
         }
 
         if (userDb.dailyGiftSwitch && TimeUtils.isNewDay(userDb.dailyGiftTime)) {
@@ -161,10 +161,12 @@ class UserFunction(
             while (flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
                     reportingError(ABNORMAL_SCREENO_ORIENTATION)
-                    return false
                 }
                 if (en.isAgreementChallengesClickTask.check()) {
                     en.agreementChallengesClickArea.c(en.isAgreementChallengesClickTask)
+                    delay(jumpClickInterval)
+                } else if(!en.isOpenAgreementTask.check()){
+                    en.canGiftV3Area.c()
                     delay(jumpClickInterval)
                 }
                 count--

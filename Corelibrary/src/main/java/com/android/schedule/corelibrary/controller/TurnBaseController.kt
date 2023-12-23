@@ -188,6 +188,7 @@ abstract class TurnBaseController(
                     delay(clickInterval)
                 }
             }
+            count--
         }
         return !flag
     }

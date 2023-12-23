@@ -20,7 +20,8 @@ Function description:
  */
 
 abstract class BaseController(
-    val acService: AccessibilityService, ) {
+    val acService: AccessibilityService,
+) {
 
     var screenBitmap: Bitmap? = null
     var runSwitch = true
@@ -38,10 +39,6 @@ abstract class BaseController(
 
 
     abstract fun onResume()
-
-
-
-    
 
 
     /***
@@ -118,7 +115,7 @@ abstract class BaseController(
             })
     }
 
-    suspend fun BasicImgTask.check():Boolean{
+    suspend fun BasicImgTask.check(): Boolean {
         return this.verificationRule(screenBitmap)
     }
 
@@ -129,7 +126,6 @@ abstract class BaseController(
     fun pressHomeBtn() {
         acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
     }
-
 
 
 }
