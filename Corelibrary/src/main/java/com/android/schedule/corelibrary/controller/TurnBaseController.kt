@@ -51,7 +51,7 @@ abstract class TurnBaseController(
 
     }
 
-    override fun end() {
+    override suspend fun end() {
 
     }
 

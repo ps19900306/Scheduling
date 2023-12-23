@@ -95,6 +95,7 @@ class TaskFunction(
         if (!hasTopLockTart() && en.isCloseAiTask.check()) {
             en.topDeviceList[2].clickArea?.c()
         }
+        nowStep = conditionStatus
     }
 
     val ai_unkown = -1
@@ -104,6 +105,8 @@ class TaskFunction(
     val ai_open = 4
 
     var aiStatus = ai_unkown
+
+    var lastNoTask = 0L
 
     private suspend fun conditionAiStatus() {
         L.d("conditionAiStatus")
@@ -159,13 +162,25 @@ class TaskFunction(
                 }
             } else if (en.isOpenJiyuBigMenuTask.check()) {
                 if (aiStatus != isOpenTaskManu) {
-                    aiStatus = aiStatus
+                    L.d("aiStatus == isOpenTaskManu")
+                    aiStatus = isOpenTaskManu
                     startTime = nowTime
                 } else if (TimeUtils.judgingTheInterval(nowTime, startTime, redundantWaitTime)) {
                     if (en.isCompleteAllTask.check()) {
                         end()
                         flag = false
+                    } else if (!TimeUtils.judgingTheInterval(
+                            nowTime,
+                            lastNoTask,
+                            SetConstant.halfHour
+                        )
+                    ) {
+                        L.d("过快原因没有任务 进入删除")
+                        end()
+                        flag = false
                     } else if (en.isCanRefreshTask.check()) {//这里需要等到能刷新再去启动游戏
+                        lastNoTask = nowTime
+                        L.d("isCanRefreshTask")
                         flag = false
                         nowStep = startAi
                     }

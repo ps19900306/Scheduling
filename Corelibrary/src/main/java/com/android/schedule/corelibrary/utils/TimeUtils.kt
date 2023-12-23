@@ -53,6 +53,7 @@ object TimeUtils {
     fun isNewWeek(lastCompletionTime: Long, refreshDay: Int = SUNDAY): Boolean {
        if (lastCompletionTime == 0L)
             return true
+
         val lastCalendar = Calendar.getInstance();
         lastCalendar.timeInMillis = lastCompletionTime
         val lastWeek = lastCalendar.get(Calendar.WEEK_OF_YEAR)
@@ -66,7 +67,7 @@ object TimeUtils {
 
         val nowCalendar = Calendar.getInstance();
         val nowWeek = nowCalendar.get(Calendar.WEEK_OF_YEAR)
-        val nowDay = nowCalendar.get(Calendar.DAY_OF_YEAR)
+        val nowDay = nowCalendar.get(Calendar.DAY_OF_WEEK)
 
         val nowFlag = if (nowDay > refreshDay) {
             nowWeek

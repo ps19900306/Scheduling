@@ -16,7 +16,7 @@ class ImmediateBaseController(acService: AccessibilityService):BaseController(ac
 
     }
 
-    override fun end() {
+    override suspend fun end() {
 
     }
 

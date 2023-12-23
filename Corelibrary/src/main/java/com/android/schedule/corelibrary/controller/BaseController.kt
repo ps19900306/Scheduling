@@ -32,7 +32,7 @@ abstract class BaseController(
     abstract fun start()
 
 
-    abstract fun end()
+    abstract suspend fun end()
 
 
     abstract fun onPause()

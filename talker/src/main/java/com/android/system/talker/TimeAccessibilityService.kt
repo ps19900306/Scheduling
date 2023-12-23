@@ -11,6 +11,8 @@ import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.excuter.MasterControl
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class TimeAccessibilityService : AccessibilityService() {
 
@@ -52,13 +54,21 @@ class TimeAccessibilityService : AccessibilityService() {
         val cmd = intent.getIntExtra(CMD, CmdType.START)
         when (cmd) {
             CmdType.START -> {
-                masterControl?.end()
-                masterControl = MasterControl(AppDataBase.getInstance(this.applicationContext), this)
-                masterControl?.start()
+                GlobalScope.launch {
+                    masterControl?.end()
+                    masterControl = MasterControl(
+                        AppDataBase.getInstance(this@TimeAccessibilityService.applicationContext),
+                        this@TimeAccessibilityService
+                    )
+                    masterControl?.start()
+                }
             }
 
             CmdType.CLOSE -> {
-                masterControl?.end()
+                GlobalScope.launch {
+                    masterControl?.end()
+                    masterControl = null
+                }
             }
         }
     }

@@ -61,7 +61,8 @@ abstract class BaseFunctionControl(
         }
     }
 
-    override fun end() {
+    override suspend fun end() {
+        theOutCheck()
         super.end()
         if (hasResult) {
             endGame("")

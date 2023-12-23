@@ -30,7 +30,7 @@ class MasterControl(
         }
     }
 
-    override fun end() {
+    override suspend fun end() {
         job?.cancel()
     }
 
