@@ -94,4 +94,8 @@ open class ImgTaskImpl1(
             this.bErrorTolerance = bErrorTolerance
         }
     }
+
+    fun copyOffset(task: FindImgTask?): ImgTaskImpl1 {
+        return copyOffset(tag,task?.getOffsetX()?:0,task?.getOffsetY()?:0)
+    }
 }

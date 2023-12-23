@@ -141,7 +141,7 @@ class HomeFragment : Fragment() {
                         //这个是添加操作
                         findNavController().navigate(
                             R.id.action_homeFragment_to_userFragment,
-                            UserIdArgs().toBundle()
+                            UserIdArgs(-1L).toBundle()
                         )
                     })
                     _binding.userList.adapter = adapter

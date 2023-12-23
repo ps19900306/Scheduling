@@ -12,6 +12,7 @@ import com.android.schedule.corelibrary.controller.ClickSpeedControl
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.android.schedule.corelibrary.utils.FileUtils
 import com.android.schedule.corelibrary.utils.L
@@ -308,6 +309,11 @@ abstract class BaseFunctionControl(
                             return index
                         }
                     }
+                    en.isVegetableShipList2.forEachIndexed { index, imgTaskImpl1 ->
+                        if (imgTaskImpl1.check()) {
+                            return index
+                        }
+                    }
                 }
 
                 ShipType.MINING_SHIP -> {
@@ -458,33 +464,21 @@ abstract class BaseFunctionControl(
                     if (en.isShipWarehouseTask.check()) {
                         en.shipWarehouseArea.c(en.isShipWarehouseTask)
                         return true
+                    }else if(en.isShipWarehouseSelectTask.check()){
+                        return true
                     }
                 }
 
                 WarehouseType.SHIP_SPECIAL -> {
-                    if (en.isShipWarehouseTask.check()) {
-                        if (abs(en.isShipWarehouseTask.getOffsetX()) < 3 && abs(en.isShipWarehouseTask.getOffsetY()) < 3) {
-                            if (en.isShipWarehouseOpenTask.check()) {
-                                en.specialArea.c(en.isShipWarehouseTask)
-                                return true
-                            } else {
-                                findTraget = true
-                                en.switchSpecialArea.c(en.isShipWarehouseTask)
-                            }
+                    if (en.isShipWarehouseTaskList.check()) {
+                        if (!en.isShipWarehouseCloseTask.copyOffset(en.isShipWarehouseTaskList.lastResult).check()) {
+                            en.switchSpecialArea.c(en.isShipWarehouseTask)
+                            return true
                         } else {
-                            if (en.isShipWarehouseOpenTask.copyOffset(
-                                    "shipWarehouseOpenTaskCopy",
-                                    en.isShipWarehouseTask.getOffsetX(),
-                                    en.isShipWarehouseTask.getOffsetY()
-                                ).check()
-                            ) {
-                                en.specialArea.c(en.isShipWarehouseTask)
-                                return true
-                            } else {
-                                findTraget = true
-                                en.switchSpecialArea.c(en.isShipWarehouseTask)
-                            }
+                            findTraget = true
+                            en.specialArea.c(en.isShipWarehouseTask)
                         }
+
                     }
                 }
             }
@@ -518,8 +512,9 @@ abstract class BaseFunctionControl(
             L.d("打开活动界面失败")
             return false
         }
+        var hasFind = false
         var flag = true
-        var count = 7
+        var count = 10
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -540,20 +535,24 @@ abstract class BaseFunctionControl(
             when (type) {
                 ActivityType.LOGIN_GIFT -> {
                     if (en.isSupplyMaterialsTask.check()) {
+                        hasFind = true
+                        count = 4
                         en.supplyMaterialsArea.c(en.isSupplyMaterialsTask)
                         delay(jumpClickInterval)
                     }
                 }
             }
 
-            if (count >= 5) {
-                //这里前二次先不滑动
-            } else if (count >= 3) {
-                L.d("向上滑动")
-                en.activityMenuSlideTop.c()
-            } else {
+            if (!hasFind) {
+
+            } else if (count <= 3) {
                 L.d("向下滑动")
                 en.activityMenuSlideBottom.c()
+                delay(clickInterval)
+            } else if (count <= 8) {
+                L.d("向上滑动")
+                en.activityMenuSlideTop.c()
+                delay(clickInterval)
             }
             count--
         }
@@ -589,6 +588,12 @@ abstract class BaseFunctionControl(
         click(task, this)
     }
 
+    suspend fun ClickArea.c(task: MultiFindImgTask) {
+        task.lastResult?.let {
+            click(it, this)
+        }
+    }
+
     suspend fun SlidingArea.c() {
         optClickTask(this.toClickTask())
     }
@@ -601,8 +606,8 @@ abstract class BaseFunctionControl(
             unloadingGoods()
         }
 
-        if (flag and WarehouseType.SHIP_CABIN == WarehouseType.SHIP_CABIN) {
-            ensureOpenWarehouseType(WarehouseType.SHIP_CABIN)
+        if (flag and WarehouseType.SHIP_SPECIAL == WarehouseType.SHIP_SPECIAL) {
+            ensureOpenWarehouseType(WarehouseType.SHIP_SPECIAL)
             delay(clickInterval)
             unloadingGoods()
         }
@@ -703,14 +708,14 @@ abstract class BaseFunctionControl(
         userDb.baseMenuLocation = menuPosition
         userDb.shipType = ShipType.UNKNOWN
         dataBase.getUserDao().update(userDb)
-        return false
+        return true
     }
 
 
     protected suspend fun leaveShip(): Boolean {
         var hasClickLive = false
         var flag = true
-        var count = 5
+        var count = 10
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
@@ -731,6 +736,7 @@ abstract class BaseFunctionControl(
                             en.isOpenShipMenuTask.getOffsetY()
                         )
                     )
+                    count = 5
                     hasClickLive = true
                     delay(jumpClickInterval)
                 } else {
@@ -740,7 +746,7 @@ abstract class BaseFunctionControl(
                 if (hasClickLive) {
                     flag = false
                 } else if (count % 2 == 0) {
-                    en.clickShipArea.c()
+                    en.clickShip2Area.c()
                 } else {
                     en.openShipVolume.c()
                 }
@@ -752,10 +758,11 @@ abstract class BaseFunctionControl(
 
 
     //这个表示是蛋的情况下出船自毁
-    private suspend fun outSelfExplosion(): Boolean {
+    protected suspend fun outSelfExplosion(): Boolean {
         var flag = true
         var count = 10
         var hasClickExplosion = false
+        var hasOpenShipVolume = false
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 runSwitch = false
@@ -769,6 +776,16 @@ abstract class BaseFunctionControl(
                     delay(tripleClickInterval)
                 }
             } else if (isInSpace()) {//这里判断是在太空中
+                if (!hasOpenShipVolume) {
+                    hasOpenShipVolume = true
+                    val max = (Math.random() * 2 + 2).toInt()
+                    for (i in 0..max) {
+                        en.openShipVolume.c()
+                        delay(clickInterval)
+                    }
+                }
+
+
                 if (en.isOpenShipMenu2Task.check()) { //这里判断是否打开飞船菜单
                     val task = en.isShowExplosionTask.copyOffset(
                         en.isShowExplosionTask.tag,
@@ -777,6 +794,17 @@ abstract class BaseFunctionControl(
                     )
                     if (task.check()) {
                         en.clickSelfExplosionArea.c(en.isOpenShipMenu2Task)
+
+                        taskScreenL(jumpClickInterval)
+                        if (en.isConfirmDialogTask.check()) {
+                            en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
+                        }
+
+                        taskScreenL(jumpClickInterval)
+                        if (en.isConfirmDialogTask.check()) {
+                            en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
+                        }
+
                         hasClickExplosion = true
                         delay(((2.5 + Math.random()) * SetConstant.MINUTE).toLong())
                     }
@@ -793,7 +821,7 @@ abstract class BaseFunctionControl(
 
     protected suspend fun remoteClone(position: Int): Boolean {
         var flag = true
-        var count = 5
+        var count = 20
         var hasClickClone = false
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
@@ -820,7 +848,7 @@ abstract class BaseFunctionControl(
                     delay(clickInterval)
                 }
             } else if (en.isConfirmDialogTask.check()) {
-                en.confirmDialogCancelArea.c(en.isConfirmDialogTask)
+                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
                 hasClickClone = true
                 delay(tripleClickInterval)
             }

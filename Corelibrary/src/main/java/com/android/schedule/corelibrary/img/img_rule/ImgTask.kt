@@ -28,7 +28,7 @@ abstract class ImgTask(
     var nErrorTolerance: Int = 0 //普通点容错
     var bErrorTolerance: Int = (iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size)/2 //背景点容错
     var clickArea: ClickArea? = null //如果
-
+    var closeArea: ClickArea? = null
 
 
    open  fun logColor(bitmap: Bitmap){
@@ -43,7 +43,7 @@ abstract class ImgTask(
 
     var  openArea: ClickArea? = null
     var  endArea: ClickArea? = null
-    var  closeArea: ClickArea? = null
+
 
 
     protected fun checkImgTask(

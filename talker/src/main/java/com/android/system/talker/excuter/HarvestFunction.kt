@@ -55,15 +55,18 @@ class HarvestFunction(
         L.i("$TAG startFunction")
         var result = intoGame()
         if (!result) return
-        if (needHarvestVegetables()) {
-            if (checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
-                harvestVegetables()
-            } else {
-                addVegetablesTime()
-            }
-        } else if (needAddTime()) {
-            addVegetablesTime()
-        }
+
+        harvestVegetables()
+
+//        if (needHarvestVegetables()) {
+//            if (checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
+//                harvestVegetables()
+//            } else {
+//                addVegetablesTime()
+//            }
+//        } else if (needAddTime()) {
+//            addVegetablesTime()
+//        }
     }
 
     suspend fun checkAndTime() {
@@ -178,6 +181,7 @@ class HarvestFunction(
     }
 
     private suspend fun oneClickClaim(): Boolean {
+        L.d("oneClickClaim")
         var flag = true
         var count = 30
         var hasLin = false
@@ -195,6 +199,7 @@ class HarvestFunction(
                 nowStep = MONITORING_RETURN_STATUS
                 return true
             } else if (hasLin) {
+                L.d("进行一次收菜操作")
                 nowCelestialCount++
                 if (nowCelestialCount < vegetableDb.numberCount) {
                     ensureOpenBigMenuArea(vegetableDb.menuType)
@@ -208,6 +213,7 @@ class HarvestFunction(
                 } else {
                     nowStep = MONITORING_RETURN_STATUS
                 }
+                return true
             }
             count--
         }
@@ -305,6 +311,7 @@ class HarvestFunction(
 
 
     private suspend fun goCollectNavigationMonitoring(): Boolean {
+        L.d("进入收菜导航")
         var flag = true
         var count = 40
         while (flag && count > 0 && runSwitch) {

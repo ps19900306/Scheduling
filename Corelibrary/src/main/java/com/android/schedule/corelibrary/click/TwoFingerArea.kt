@@ -61,29 +61,29 @@ class TwoFingerArea(@TwoFingerType val direction: Int, val area: CoordinateArea)
         val duration = ExhaustionControl.getSwipDuration(parameter.optSlide)
         when (direction) {
             TwoFingerType.PULL_OPEN -> {
-                ClickTask(
-                    listOf(point2, point1),
-                    delayTime + (Math.random() * 10).toLong(),
+                clickList.add(  ClickTask(
+                    listOf(point2,point2, point1),
+                    delayTime + (Math.random() * 5).toLong(),
                     duration
-                )
-                ClickTask(
-                    listOf(point3, point4),
-                    delayTime + (Math.random() * 10).toLong(),
+                ))
+                clickList.add( ClickTask(
+                    listOf(point3,point3, point4),
+                    delayTime + (Math.random() * 5).toLong(),
                     duration
-                )
+                ))
             }
 
             TwoFingerType.REDUCE_CLOSE -> {
-                ClickTask(
-                    listOf(point1, point2),
-                    delayTime + (Math.random() * 10).toLong(),
+                clickList.add(  ClickTask(
+                    listOf(point1,point1, point2),
+                    delayTime + (Math.random() * 5).toLong(),
                     duration
-                )
-                ClickTask(
-                    listOf(point4, point3),
-                    delayTime + (Math.random() * 10).toLong(),
+                ))
+                clickList.add(ClickTask(
+                    listOf(point4,point4, point3),
+                    delayTime + (Math.random() * 5).toLong(),
                     duration
-                )
+                ))
             }
         }
 

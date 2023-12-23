@@ -55,8 +55,11 @@
     <string name="local_exception_setting">本地异常设置</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_name">用户名</string>
     <string name="base_menu_location">左边菜单的位置</string>
     <string name="base_clone_location">克隆基地位置</string>
+    <string name="app_location_y">app行</string>
+    <string name="app_location_x">app列</string>
     <string name="save">保存</string>
     <string name="task_yi">际遇任务</string>
     <string name="task_vi">收菜任务</string>

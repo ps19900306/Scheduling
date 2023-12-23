@@ -4885,5 +4885,32 @@ class StarWarEnvironment {
         )
     }
 
+    //这个判断际遇任务全部完成了
+    val isCompleteAllTask by lazy {
+        val tag = "isCompleteAll"
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(1002, 213), ColorRuleRatioImpl.getSimple(160,45,66))
+            // sequenceNumber:0 blockNumber: 0  positionType:1
+        )
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(1002, 220), ColorRuleRatioImpl.getSimple(144,42,61))
+            // sequenceNumber:8 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1012, 224), ColorRuleRatioImpl.getSimple(149,43,62))
+            // sequenceNumber:16 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1012, 229), ColorRuleRatioImpl.getSimple(149,43,62))
+            // sequenceNumber:24 blockNumber: 0  positionType:1
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1002, 213),CoordinatePoint(1000, 211), CompareDifferenceRuleImpl.getSimple(30,10,15)) // sequenceNumber:0sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1002, 220),CoordinatePoint(1000, 223), CompareDifferenceRuleImpl.getSimple(30,10,15)) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1012, 229),CoordinatePoint(1010, 229), CompareDifferenceRuleImpl.getSimple(30,10,15)) // sequenceNumber:24sequenceNumber blockNumber: $0  positionType:$0
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
+    }
+
 
 }

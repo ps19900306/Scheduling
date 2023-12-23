@@ -82,20 +82,21 @@ class UserFunction(
         if (isInSpaceStation && hasOpt) {
             //在次打开以及菜单
             optTaskOperation(clickArea = en.openGiftV2Area, eTask = en.isOpenGiftV2Task)
-            if (en.isCanGiftV2Task.check()) {
-                en.canGiftV2Area.c()
-            }
             var flag = true
-            var count = 5
+            var count = 10
             while (flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotInterval)) {
                     runSwitch = false
                 }
+
                 if (en.isClosePositionMenuT.check()) {
                     flag = false
-                } else if (en.isOpenGiftV2Task.check()) {
+                } else if (en.isCanGiftV2Task.check()) {
+                    en.canGiftV2Area.c()
+                    count = 6
+                } else if (count <= 6 && en.isOpenGiftV2Task.check()) {
                     en.closeGiftV2Area.c()
-                } else if (en.isCanGiftV3Task.check()) {
+                } else if (count <= 6 && en.isCanGiftV3Task.check()) {
                     en.canGiftV3Area.c()
                 }
                 count--

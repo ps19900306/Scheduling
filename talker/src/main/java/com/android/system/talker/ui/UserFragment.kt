@@ -52,6 +52,7 @@ class UserFragment : Fragment() {
                 }
                 runOnUI {
                     _binding.userNameEdt.setText(mData.sccoutStr)
+                    _binding.baseMenuLocationEdt.setText(mData.baseMenuLocation.toString())
                     _binding.baseCloneLocationEdt.setText(mData.baseCloneLocation.toString())
                     _binding.dailyGiftCb.isChecked = mData.dailyGiftSwitch
                     _binding.agreementGiftCb.isChecked = mData.agreementGiftSwitch
@@ -66,6 +67,9 @@ class UserFragment : Fragment() {
             mData.sccoutStr = _binding.userNameEdt.text.toString()
             _binding.baseCloneLocationEdt.text.toString().toIntOrNull()?.let {
                 mData.baseCloneLocation = it
+            }
+            _binding.baseMenuLocationEdt.text.toString().toIntOrNull()?.let {
+                mData.baseMenuLocation = it
             }
             mData.dailyGiftSwitch = _binding.dailyGiftCb.isChecked
             mData.agreementGiftSwitch = _binding.agreementGiftCb.isChecked

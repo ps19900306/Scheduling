@@ -7,29 +7,39 @@
     android:orientation="vertical"
     tools:context=".ui.UserFragment">
 
-    <EditText
+
+    <com.android.system.talker.view.InputItemView
         android:id="@+id/userNameEdt"
-        android:hint="userName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:title_str="@string/user_name" />
 
-    <EditText
+
+    <com.android.system.talker.view.InputItemView
+        android:id="@+id/baseMenuLocationEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title_str="@string/base_menu_location" />
+
+    <com.android.system.talker.view.InputItemView
         android:id="@+id/baseCloneLocationEdt"
-        android:hint="baseCloneLocation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:title_str="@string/base_clone_location" />
 
-    <EditText
+
+    <com.android.system.talker.view.InputItemView
         android:id="@+id/appLocationXEdt"
-        android:hint="appLocationX"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:title_str="@string/app_location_x" />
 
-    <EditText
+
+    <com.android.system.talker.view.InputItemView
         android:id="@+id/appLocationYEdt"
-        android:hint="appLocationY"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:title_str="@string/app_location_y" />
 
     <CheckBox
         android:id="@+id/dailyGiftCb"

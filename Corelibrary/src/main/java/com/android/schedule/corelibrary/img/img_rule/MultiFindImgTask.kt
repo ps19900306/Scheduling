@@ -17,5 +17,11 @@ class MultiFindImgTask(val list: Array<FindImgTask>) : BasicImgTask() {
         return lastResult != null
     }
 
+    override fun getOffsetX(): Int {
+        return lastResult?.getOffX()?:0
+    }
 
+    override fun getOffsetY(): Int {
+        return lastResult?.getOffY()?:0
+    }
 }

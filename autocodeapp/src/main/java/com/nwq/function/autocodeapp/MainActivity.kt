@@ -512,7 +512,7 @@ class MainActivity() : AppCompatActivity() {
 //                }
 
 
-                val task = en.isActivationShipTask
+                val task = en.isCompleteAllTask
                 task.logColor(it)
                 task.clickArea = en.activationShipArea
                 if (task.verificationRule(it)) {

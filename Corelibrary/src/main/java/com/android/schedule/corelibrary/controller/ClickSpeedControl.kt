@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.ClickTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
 import com.android.schedule.corelibrary.utils.L
 
 class ClickSpeedControl {
@@ -13,6 +14,12 @@ class ClickSpeedControl {
 
     fun addUnit(task: ImgTask, area: ClickArea) {
         list.add(ClickControlUnit(task, area))
+    }
+
+    fun addUnit(task: MultiFindImgTask, area: ClickArea) {
+        task.list.forEach {
+            list.add(ClickControlUnit(it, it.clickArea?:area))
+        }
     }
 
     var maxCount = 3
