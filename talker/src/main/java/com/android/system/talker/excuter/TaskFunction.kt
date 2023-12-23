@@ -112,7 +112,7 @@ class TaskFunction(
         var flag = true
         while (flag && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
             val nowTime = System.currentTimeMillis()
 
@@ -218,7 +218,7 @@ class TaskFunction(
         var count = 3
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isNojiYuTask.check()) {

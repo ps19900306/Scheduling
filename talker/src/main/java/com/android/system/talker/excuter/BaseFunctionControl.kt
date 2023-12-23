@@ -327,7 +327,6 @@ abstract class BaseFunctionControl(
 
 
     protected suspend fun ensureOpenBigMenuArea(@MenuType index: Int): Boolean {
-        L.d("ensureOpenBigMenuArea $index")
         var flag = true
         var count = 10
         while (flag && count > 0 && runSwitch) {
@@ -336,7 +335,6 @@ abstract class BaseFunctionControl(
                 return false
             }
             if (en.isOpenBigMenuT.check()) {
-                L.d("isOpenBigMenuT.c()")
                 when (index) {
                     MenuType.WAREHOUSE -> {
                         if (en.isOpenWarehouseBigMenuTask.check()) {

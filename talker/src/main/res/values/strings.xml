@@ -67,4 +67,7 @@
     <string name="add_interval">添加时间的间隔</string>
     <string name="complete_interval">收菜的间隔</string>
     <string name="resetting">重置</string>
+    <string name="free_daily">每日免费</string>
+    <string name="daily_login_gifts">每日登录礼物</string>
+    <string name="agreement_gift">合作协议</string>
 </resources>

@@ -87,6 +87,9 @@ public class ComboControlsView extends LinearLayoutCompat {
         viewComboControlBinding.sw.setChecked(checked);
     }
 
+    public boolean isChecked() {
+       return viewComboControlBinding.sw.isChecked();
+    }
 
     @Override
     protected void onAttachedToWindow() {

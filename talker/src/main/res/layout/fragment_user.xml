@@ -41,24 +41,35 @@
         android:layout_height="wrap_content"
         app:title_str="@string/app_location_y" />
 
-    <CheckBox
+
+    <com.android.system.talker.view.ComboControlsView
         android:id="@+id/dailyGiftCb"
-        android:text="每日优惠"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userList"
+        app:title_str="@string/free_daily" />
 
-    <CheckBox
+
+    <com.android.system.talker.view.ComboControlsView
         android:id="@+id/activeGiftCb"
-        android:text="每日登录礼物"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userList"
+        app:title_str="@string/daily_login_gifts" />
 
 
-    <CheckBox
+    <com.android.system.talker.view.ComboControlsView
         android:id="@+id/agreementGiftCb"
-        android:text="协议礼物"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userList"
+        app:title_str="@string/agreement_gift" />
 
     <Button
         android:id="@+id/saveBtn"

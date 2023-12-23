@@ -86,7 +86,7 @@ class UserFunction(
             var count = 10
             while (flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotInterval)) {
-                    runSwitch = false
+                    reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 }
 
                 if (en.isClosePositionMenuT.check()) {
@@ -122,7 +122,7 @@ class UserFunction(
         // 这里切换到领取
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isAgreementMenuTask.check()) {
@@ -140,7 +140,7 @@ class UserFunction(
         flag = true
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
-                runSwitch = false
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
             if (en.isAgreementWeekTask.check()) {
@@ -160,7 +160,7 @@ class UserFunction(
             count = 10
             while (flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
-                    runSwitch = false
+                    reportingError(ABNORMAL_SCREENO_ORIENTATION)
                     return false
                 }
                 if (en.isAgreementChallengesClickTask.check()) {
