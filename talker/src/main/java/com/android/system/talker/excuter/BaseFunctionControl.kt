@@ -264,7 +264,7 @@ abstract class BaseFunctionControl(
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
-            if (en.isOpenWarehouseBigMenuTask.check() && en.isActivationLocationList[shipLocation].check()) {
+            if (en.isOpenWarehouseBigMenuTask.check() && (queryShipLocation(shipType) == 0 || en.isActivationLocationList[shipLocation].check()|| en.isActivationLocationList[shipLocation-1].check())) {
                 userDb.shipType = shipType
                 dataBase.getUserDao().update(userDb)
                 L.d("飞船成功")
@@ -276,11 +276,6 @@ abstract class BaseFunctionControl(
             } else {
                 clickSpeedControl.cc()
             }
-            if (count < 2) {
-                FileUtils.saveBitmapAndroid(context = ContextUtil.context, "新图", screenBitmap!!)
-                screenBitmap?.let { en.isActivationShipTask.logColor(it) }
-            }
-            L.d("换船 $count")
             count--
         }
         return !flag
@@ -297,6 +292,11 @@ abstract class BaseFunctionControl(
             when (shipType) {
                 ShipType.TASK_SHIP, ShipType.ABNORMAL_SHIP -> {
                     en.isJiYuShipList.forEachIndexed { index, imgTaskImpl1 ->
+                        if (imgTaskImpl1.check()) {
+                            return index
+                        }
+                    }
+                    en.isJiYuShip2List.forEachIndexed { index, imgTaskImpl1 ->
                         if (imgTaskImpl1.check()) {
                             return index
                         }
@@ -464,14 +464,16 @@ abstract class BaseFunctionControl(
                     if (en.isShipWarehouseTask.check()) {
                         en.shipWarehouseArea.c(en.isShipWarehouseTask)
                         return true
-                    }else if(en.isShipWarehouseSelectTask.check()){
+                    } else if (en.isShipWarehouseSelectTask.check()) {
                         return true
                     }
                 }
 
                 WarehouseType.SHIP_SPECIAL -> {
                     if (en.isShipWarehouseTaskList.check()) {
-                        if (!en.isShipWarehouseCloseTask.copyOffset(en.isShipWarehouseTaskList.lastResult).check()) {
+                        if (!en.isShipWarehouseCloseTask.copyOffset(en.isShipWarehouseTaskList.lastResult)
+                                .check()
+                        ) {
                             en.switchSpecialArea.c(en.isShipWarehouseTask)
                             return true
                         } else {
