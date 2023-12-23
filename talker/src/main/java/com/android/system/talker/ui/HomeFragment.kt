@@ -170,8 +170,9 @@ class HomeFragment : Fragment() {
 
                         vegetableDb?.let { data ->
                             _binding.vegetableCb.setChecked(data.isSwitch)
-                            if(data.lastCompletionTime!=0L)
-                            _binding.vegetableCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
+                            if(data.lastCompletionTime!=0L){
+                                _binding.vegetableCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
+                            }
                         }
                     }
                 }

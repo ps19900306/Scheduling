@@ -56,17 +56,15 @@ class HarvestFunction(
         var result = intoGame()
         if (!result) return
 
-        harvestVegetables()
-
-//        if (needHarvestVegetables()) {
-//            if (checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
-//                harvestVegetables()
-//            } else {
-//                addVegetablesTime()
-//            }
-//        } else if (needAddTime()) {
-//            addVegetablesTime()
-//        }
+        if (needHarvestVegetables()) {
+            if (checkCloneLocation(vegetableDb.baseMenuLocation, vegetableDb.baseCloneLocation)) {
+                harvestVegetables()
+            } else {
+                addVegetablesTime()
+            }
+        } else if (needAddTime()) {
+            addVegetablesTime()
+        }
     }
 
     suspend fun checkAndTime() {

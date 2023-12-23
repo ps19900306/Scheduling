@@ -264,7 +264,7 @@ abstract class BaseFunctionControl(
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
-            if (en.isOpenWarehouseBigMenuTask.check() && (queryShipLocation(shipType) == 0 || en.isActivationLocationList[shipLocation].check()|| en.isActivationLocationList[shipLocation-1].check())) {
+            if (en.isOpenWarehouseBigMenuTask.check() && (queryShipLocation(shipType) == 0 || en.isActivationLocationList[shipLocation].check() || en.isActivationLocationList[shipLocation - 1].check())) {
                 userDb.shipType = shipType
                 dataBase.getUserDao().update(userDb)
                 L.d("飞船成功")
@@ -645,24 +645,35 @@ abstract class BaseFunctionControl(
 
 
     suspend fun exitGame(): Boolean {
+        theOutCheck()
         //先进行游戏退出
         var flag = true
         var count = 5
         while (flag && count > 0) {
             val bitmap = takeScreen(screenshotInterval)
             if (bitmap.isLandscape()) {
-                en.exitGameTask.list.forEach {
-                    if (it.check()) {
+                if (en.exitGameTask.check()) {
+                    L.d("退出操作")
+                    en.exitGameTask.lastResult?.let {
                         it.clickArea?.c(it)
                         delay(jumpClickInterval)
+                    }
+                } else if (hasIntoGame()) {
+                    L.d("退出点击回退")
+                    pressBackBtn()
+                    delay(jumpClickInterval)
+                } else {
+                    L.d("点击不同退出位置")
+                    if (count % 2 == 1) {
+                        en.exitGame1Task.clickArea?.c()
                     } else {
-                        pressBackBtn()
-                        delay(jumpClickInterval)
+                        en.exitGame2Task.clickArea?.c()
                     }
                 }
             } else {
                 return true
             }
+            count--
         }
 
         //这里进行游戏的切换

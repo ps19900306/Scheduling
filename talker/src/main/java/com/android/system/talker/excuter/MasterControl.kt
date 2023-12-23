@@ -80,7 +80,7 @@ class MasterControl(
             HarvestFunction(vegetableDb, userDb, dataBase, acService).checkAndTime()
         }
         L.i("${userDb.id} 执行结束退出")
-        //list.getOrNull(0)?.exitGame()
+        list.getOrNull(0)?.exitGame()
     }
 
 

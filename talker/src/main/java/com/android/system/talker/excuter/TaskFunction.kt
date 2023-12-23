@@ -88,6 +88,7 @@ class TaskFunction(
 
 
     private suspend fun startAi() {
+        L.d("开启AI")
         theOutCheck()
         outSpaceStation()
         taskScreenL(screenshotInterval)
@@ -105,6 +106,7 @@ class TaskFunction(
     var aiStatus = ai_unkown
 
     private suspend fun conditionAiStatus() {
+        L.d("conditionAiStatus")
         var startTime = System.currentTimeMillis()
         //这个是判断异常冗余时间
         var redundantWaitTime = ((Math.random() * 3 + 2) * SetConstant.MINUTE).toLong()
@@ -174,6 +176,7 @@ class TaskFunction(
 
 
     private suspend fun restartGame() {
+        L.d("restartGame")
         if (exitGame()) {
             delay(jumpClickInterval)
             if (intoGame()) {
