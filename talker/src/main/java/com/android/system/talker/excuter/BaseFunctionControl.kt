@@ -495,14 +495,18 @@ abstract class BaseFunctionControl(
                 } else if (count >= 2) {
                     if (type <= WarehouseType.STATION_SHIPS) {
                         en.swipeWarehouseDown.c()
+                        delay(jumpClickInterval)
                     } else {
                         en.swipeWarehouseTop.c()
+                        delay(jumpClickInterval)
                     }
                 } else {
                     if (type <= WarehouseType.STATION_SHIPS) {
                         en.swipeWarehouseTop.c()
+                        delay(jumpClickInterval)
                     } else {
                         en.swipeWarehouseDown.c()
+                        delay(jumpClickInterval)
                     }
                 }
             }
@@ -541,6 +545,7 @@ abstract class BaseFunctionControl(
             when (type) {
                 ActivityType.LOGIN_GIFT -> {
                     if (en.isSupplyMaterialsTask.check()) {
+                        L.d("找到活动物资位置")
                         hasFind = true
                         count = 4
                         en.supplyMaterialsArea.c(en.isSupplyMaterialsTask)
@@ -638,11 +643,13 @@ abstract class BaseFunctionControl(
                 }
             } else if (en.isShowMoveToTask.check()) {
                 en.moveToArea.c(en.isShowMoveToTask)
-                delay(clickInterval)
-            } else if (en.moveToStationGoodsTask.check()) {
-                en.moveToStationGoodsArea.c(en.moveToStationGoodsTask)
                 delay(jumpClickInterval)
+                en.moveToStationGoodsArea.c()
+                delay(jumpClickInterval*2)
                 complete = true
+            } else if(complete && !en.isShowMoveToTask.check()){
+                en.moveToStationGoodsArea.c()
+                delay(jumpClickInterval)
             }
             count--
         }

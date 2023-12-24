@@ -77,10 +77,13 @@ class MasterControl(
 
         //最后再增加一下收菜时间
         if (vegetableDb != null && vegetableDb.isSwitch) {
-            HarvestFunction(vegetableDb, userDb, dataBase, acService).checkAndTime()
+            HarvestFunction(vegetableDb, userDb, dataBase, acService).let {
+                it.checkAndTime()
+                it.exitGame()
+            }
+        }else{
+            list.getOrNull(0)?.exitGame()
         }
-        L.i("${userDb.id} 执行结束退出")
-        list.getOrNull(0)?.exitGame()
     }
 
 

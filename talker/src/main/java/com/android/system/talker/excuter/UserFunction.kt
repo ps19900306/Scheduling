@@ -77,7 +77,6 @@ class UserFunction(
 
     private suspend fun receiveDailyGift(isInSpaceStation: Boolean) {
         en.openGiftArea.c()
-
         val hasOpt =
             optTaskOperation(eTask = en.isFreeDailyGiftTask, endClickArea = en.freeDailyGiftArea)
         if (isInSpaceStation && hasOpt) {
@@ -158,7 +157,7 @@ class UserFunction(
             en.protocolChallengesArea.c()
             delay(jumpClickInterval)
             //这里点击可以领取的区域
-            count = 10
+            count = 5
             while (flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
                     reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -166,7 +165,7 @@ class UserFunction(
                 if (en.isAgreementChallengesClickTask.check()) {
                     en.agreementChallengesClickArea.c(en.isAgreementChallengesClickTask)
                     delay(jumpClickInterval)
-                    count = 10
+                    count = 5
                 } else if (!en.isOpenAgreementTask.check()) {
                     en.canGiftV3Area.c()
                     delay(jumpClickInterval)

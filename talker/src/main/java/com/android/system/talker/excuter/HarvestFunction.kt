@@ -244,12 +244,12 @@ class HarvestFunction(
 
 
     private fun needHarvestVegetables(): Boolean {
-        return System.currentTimeMillis() - vegetableDb.lastCompletionTime > vegetableDb.completeInterval * SetConstant.Hour
+        return  TimeUtils.isAboveInterval(vegetableDb.lastCompletionTime,vegetableDb.completeInterval)
     }
 
 
     private fun needAddTime(): Boolean {
-        return System.currentTimeMillis() - vegetableDb.lastAddTime > vegetableDb.addInterval * SetConstant.Hour
+        return  TimeUtils.isAboveInterval(vegetableDb.lastAddTime,vegetableDb.addInterval)
     }
 
     // 这个是
