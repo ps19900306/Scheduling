@@ -3,8 +3,7 @@ package com.nwq.function.autocodeapp
 import android.content.ClipData
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinateLine
-import com.android.schedule.corelibrary.img.img_rule.FindImgTask
-import com.android.schedule.corelibrary.img.point_rule.PointRule
+import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
 import com.nwq.function.autocodeapp.data.FeatureCoordinatePoint
 import java.lang.StringBuilder
 import kotlin.math.abs
@@ -19,6 +18,7 @@ object GenerateCodeUtils {
         rangX: Int = 3,
         rangY: Int = 3,
         everyRevalidation: Boolean = false,
+        isText: Boolean = false,
     ): String? {
         if (data.isNullOrEmpty() || data.size == 1) {
             return null
@@ -32,17 +32,19 @@ object GenerateCodeUtils {
         val stringBuilder = StringBuilder()
         stringBuilder.append("val isOpenTask by lazy {  \n")
         stringBuilder.append("val tag = \"isOpen\" \n")
-
+        if(isText){
+            stringBuilder.append(allMaxRange(data.filter { it.mDirectorPoint == null }))
+        }
         stringBuilder.append("val list = mutableListOf<PointRule>()   \n")
         datums.forEach {
-            stringBuilder.append("list.add(${it.toColorRuleStr(sx, sy)}) \n")
+            stringBuilder.append("list.add(${it.toColorRuleStr(sx, sy, isText)}) \n")
         }
         stringBuilder.append("val correctPositionModel =CorrectPositionModel(list, tag, $rangX, $rangY, $everyRevalidation)\n")
 
         stringBuilder.append(" val pointList = mutableListOf<IPR>()\n")
         points.forEach {
             stringBuilder.append(
-                "pointList.add(${it.toColorRuleStr(sx, sy)})\n"
+                "pointList.add(${it.toColorRuleStr(sx, sy, isText)})\n"
             )
         }
         stringBuilder.append(" ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
@@ -55,7 +57,8 @@ object GenerateCodeUtils {
         sx: Int,
         sy: Int,
         data: List<FeatureCoordinatePoint>,
-        findArea: CoordinateArea
+        findArea: CoordinateArea,
+        isText: Boolean = false
     ): String? {
         if (data.isNullOrEmpty() || data.size == 1) {
             return null
@@ -78,22 +81,21 @@ object GenerateCodeUtils {
         stringBuilder.append("val isOpenTask by lazy {  \n")
         stringBuilder.append("val tag = \"isOpen\" \n")
 
-
-        stringBuilder.append(" val pr  = ${datums.get(0).toColorRuleStr(sx, sy)}")
+        if (isText) {
+            stringBuilder.append(allMaxRange(data.filter { it.mDirectorPoint == null }))
+        }
+        stringBuilder.append(" val pr  = ${datums.get(0).toColorRuleStr(sx, sy, isText)}")
 
         findArea.apply {
             stringBuilder.append(" val findArea = CoordinateArea($xI,$yI,$width,$height) \n")
         }
 
-
-
         stringBuilder.append(" val pointList = mutableListOf<IPR>()\n")
         points.forEach {
             stringBuilder.append(
-                "pointList.add(${it.toColorRuleStr(sx, sy)})\n"
+                "pointList.add(${it.toColorRuleStr(sx, sy, isText)})\n"
             )
         }
-
 
         stringBuilder.append("FindImgTask(pr, findArea,pointList, tag)   \n")
         stringBuilder.append("}  \n")
@@ -132,7 +134,7 @@ object GenerateCodeUtils {
 
     //这里将点变成字符串
     fun FeatureCoordinatePoint.toColorRuleStr(
-        sx: Int, sy: Int,
+        sx: Int, sy: Int, usUnit: Boolean = false
     ): String {
         return if (mDirectorPoint != null) {
             val redD = getOffset(mDirectorPoint!!.red, red)
@@ -140,7 +142,11 @@ object GenerateCodeUtils {
             val blueD = getOffset(mDirectorPoint!!.blue, blue)
             "TwoPointRule(CoordinatePoint(${sx + mDirectorPoint!!.x}, ${sy + mDirectorPoint!!.y}),CoordinatePoint(${sx + x}, ${sy + y}), CompareDifferenceRuleImpl.getSimple($redD,$greenD,$blueD)) // sequenceNumber:${mDirectorPoint!!.sequenceNumber}sequenceNumber blockNumber: $${mDirectorPoint!!.blockNumber}  positionType:$${mDirectorPoint!!.blockNumber} \n"
         } else {
-            "PointRule(CoordinatePoint(${sx + x}, ${sy + y}), ColorRuleRatioImpl.getSimple(${red},${green},${blue}))\n // sequenceNumber:$sequenceNumber blockNumber: $blockNumber  positionType:$positionType \n"
+            if (usUnit) {
+                "PointRule(CoordinatePoint(${sx + x}, ${sy + y}), colorRule1)\n //red$red,green$green,blue$blue sequenceNumber:$sequenceNumber blockNumber: $blockNumber  positionType:$positionType \n"
+            } else {
+                "PointRule(CoordinatePoint(${sx + x}, ${sy + y}), ColorRuleRatioImpl.getSimple(${red},${green},${blue}))\n // sequenceNumber:$sequenceNumber blockNumber: $blockNumber  positionType:$positionType \n"
+            }
         }
     }
 
@@ -203,5 +209,58 @@ object GenerateCodeUtils {
             }
         }
         return builder.toString()
+    }
+
+
+    private fun allMaxRange(list: List<FeatureCoordinatePoint>): String {
+        var maxRed = 0
+        var minRed = 255
+        var maxGreen = 0
+        var minGreen = 255
+        var maxBlue = 0
+        var minBlue = 255
+
+        var maxRToG = 0F
+        var minRToG = 255F
+        var maxRToB = 0F
+        var minRToB = 255F
+        var maxGToB = 0F
+        var minGToB = 255F
+
+        list.forEach {
+            maxRed = Math.max(it.red, maxRed)
+            minRed = Math.min(it.red, minRed)
+            maxGreen = Math.max(it.green, maxGreen)
+            minGreen = Math.min(it.green, minGreen)
+            maxBlue = Math.max(it.blue, maxBlue)
+            minBlue = Math.min(it.blue, minBlue)
+
+            maxRToG = Math.max(it.red.toFloat() / it.green.toFloat(), maxRToG)
+            minRToG = Math.min(it.red.toFloat() / it.green.toFloat(), minRToG)
+            maxRToB = Math.max(it.red.toFloat() / it.blue.toFloat(), maxRToB)
+            minRToB = Math.min(it.red.toFloat() / it.blue.toFloat(), minRToB)
+            maxGToB = Math.max(it.green.toFloat() / it.blue.toFloat(), maxGToB)
+            minGToB = Math.min(it.green.toFloat() / it.blue.toFloat(), minGToB)
+        }
+
+        val maxD = 1.05
+        val minD = 0.9
+        val data = ColorRuleRatioImpl(
+            (maxRed * maxD).toInt(),
+            (minRed * minD).toInt(),
+            (maxGreen * maxD).toInt(),
+            (minGreen * minD).toInt(),
+            (maxBlue * maxD).toInt(),
+            (minBlue * minD).toInt(),
+            (maxRToG * maxD).toFloat(),
+            (minRToG * minD).toFloat(),
+            (maxRToB * maxD).toFloat(),
+            (minRToB * minD).toFloat(),
+            (maxGToB * maxD).toFloat(),
+            (minGToB * minD).toFloat(),
+        )
+
+        return "val colorRule1=ColorRuleRatioImpl.getSimple($maxRed,$minRed,$maxGreen,$minGreen,$maxBlue,$minBlue,${maxRToG}F,${minRToG}F,${maxRToB}F,${minRToB}F,${maxGToB}F, ${minGToB}F)\n"
+
     }
 }

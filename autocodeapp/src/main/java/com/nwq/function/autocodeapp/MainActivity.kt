@@ -267,7 +267,7 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.characters_feature_extraction -> {
-                    viewModel.autoCodeNormalImg(bind.previewView)
+                    viewModel.autoCodeNormalImg(bind.previewView, true)
                 }
 
                 R.string.shadow_feature_extraction -> {
@@ -318,11 +318,13 @@ class MainActivity() : AppCompatActivity() {
                 R.string.take_img -> {
                     issueInstructionsImg()
                 }
-                R.string.replace_img->{
+
+                R.string.replace_img -> {
                     viewModel.srcBitmap?.let {
                         bind.allImg.setImageBitmap(it)
                     }
                 }
+
                 R.string.test_pick_up_points1 -> {
                     PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
                         .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
@@ -484,24 +486,24 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
-//                en.isVegetableShipList.forEach { task->
-//                    if (task.verificationRule(it)) {
-//                        runOnUI {
-//                            bind.previewView.clearPoint()
-//                            bind.previewView.clearArea()
-//                            val offsetX = task.getOffsetX()
-//                            val offsetY = task.getOffsetY()
-//                            task.iprList.forEach {
-//                                it.getCoordinatePoint().apply {
-//                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
-//                                }
-//                            }
-//                            L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
-//                        }
-//                    }else{
-//                        L.i("验证失败")
-//                    }
-//                }
+                en.isVegetableShipList.forEach { task->
+                    if (task.verificationRule(it)) {
+                        runOnUI {
+                            bind.previewView.clearPoint()
+                            bind.previewView.clearArea()
+                            val offsetX = task.getOffsetX()
+                            val offsetY = task.getOffsetY()
+                            task.iprList.forEach {
+                                it.getCoordinatePoint().apply {
+                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
+                                }
+                            }
+                            L.i("找到图片 ${task.tag} offsetX$offsetX  offsetY$offsetY")
+                        }
+                    }else{
+                        L.i("验证失败 ${task.tag}")
+                    }
+                }
 
 
 //                val clickArea = en.isOpenTask
@@ -512,28 +514,28 @@ class MainActivity() : AppCompatActivity() {
 //                }
 
 
-                val task = en.isCompleteAllTask
-                task.logColor(it)
-                task.clickArea = en.activationShipArea
-                if (task.verificationRule(it)) {
-                    runOnUI {
-                        bind.previewView.clearPoint()
-                        bind.previewView.clearArea()
-                        val offsetX = task.getOffsetX()
-                        val offsetY = task.getOffsetY()
-                        task.iprList.forEach {
-                            it.getCoordinatePoint().apply {
-                                bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
-                            }
-                        }
-                        L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
-                        task.clickArea?.let {
-                            bind.previewView.addArea(it.copyOffset(offsetX, offsetY))
-                        }
-                    }
-                } else {
-                    L.i("验证失败")
-                }
+//                val task = en.isSupplyMaterialsTask
+//                task.logColor(it)
+//                task.clickArea = en.activationShipArea
+//                if (task.verificationRule(it)) {
+//                    runOnUI {
+//                        bind.previewView.clearPoint()
+//                        bind.previewView.clearArea()
+//                        val offsetX = task.getOffsetX()
+//                        val offsetY = task.getOffsetY()
+//                        task.iprList.forEach {
+//                            it.getCoordinatePoint().apply {
+//                                bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
+//                            }
+//                        }
+//                        L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
+//                        task.clickArea?.let {
+//                            bind.previewView.addArea(it.copyOffset(offsetX, offsetY))
+//                        }
+//                    }
+//                } else {
+//                    L.i("验证失败")
+//                }
 
 
             }
@@ -568,9 +570,8 @@ class MainActivity() : AppCompatActivity() {
 
 
     private val onTakeIng =
-        NwqCallBack<Bitmap?> {
-                t ->
-                L.d("截图成功")
+        NwqCallBack<Bitmap?> { t ->
+            L.d("截图成功")
             viewModel.srcBitmap = t
         }
 
@@ -578,10 +579,10 @@ class MainActivity() : AppCompatActivity() {
     private var getMyImg: GetMyImg? = null
     private fun issueInstructionsImg() {
         ImgOpt.getbitmap = onTakeIng
-        if(ImgOpt.takeBitmap!=null){
+        if (ImgOpt.takeBitmap != null) {
             L.d("发布截图指令")
             ImgOpt.takeBitmap?.onCallBack(true)
-        }else{
+        } else {
             L.d("发布截图指令 ImgOpt.takeBitmap==null")
         }
 

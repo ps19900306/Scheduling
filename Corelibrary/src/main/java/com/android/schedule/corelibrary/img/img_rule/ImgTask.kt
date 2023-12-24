@@ -5,7 +5,6 @@ import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleImpl
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
@@ -53,16 +52,17 @@ abstract class ImgTask(
         nE: Int = nErrorTolerance,
         bE: Int = bErrorTolerance
     ): Boolean {
+        if(iprList.isEmpty())//如果没有需要找的点则默认返回成功
+            return true
+
         var normalErrorCount = 0    //普通点错误容忍度
         var backgroundErrorCount = 0
-
-
         iprList.forEach {
             if (!it.checkIpr(bitmap, offsetX, offsetY)) {
                 if (it.getColorRule() is ColorRuleRatioImpl || it is PointRules) {
                     normalErrorCount++
                     //L.i("失败基础点"+ it.getCoordinatePoint().toString())
-                    if (normalErrorCount > nErrorTolerance) {
+                    if (normalErrorCount > nE) {
                         return false
                     }
                 } else if (it.getColorRule() is ColorRuleImpl || it.getColorRule() is ColorRuleUnImpl) {

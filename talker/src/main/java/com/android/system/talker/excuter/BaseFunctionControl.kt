@@ -257,6 +257,7 @@ abstract class BaseFunctionControl(
         L.d("准备更换飞船")
         var flag = true
         var count = 5
+        var hasClick = false
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.isActivationShipTask, en.activationShipArea)
         clickSpeedControl.addUnit(en.isOpenWarehouseBigMenuTask, en.getShipArea(shipLocation))
@@ -265,12 +266,13 @@ abstract class BaseFunctionControl(
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
-            if (en.isOpenWarehouseBigMenuTask.check() && (queryShipLocation(shipType) == 0 || en.isActivationLocationList[shipLocation].check() || en.isActivationLocationList[shipLocation - 1].check())) {
+            if (hasClick && en.isOpenWarehouseBigMenuTask.check() && (queryShipLocation(shipType) == 0 || en.isActivationLocationList[shipLocation].check() || en.isActivationLocationList[shipLocation - 1].check())) {
                 userDb.shipType = shipType
                 dataBase.getUserDao().update(userDb)
                 L.d("飞船成功")
                 flag = false
             } else if (en.isActivationShipTask.check()) {
+                hasClick = true
                 //点击船的位置
                 L.d("点击船的位置")
                 en.activationShipArea.c(en.isActivationShipTask)
@@ -293,11 +295,6 @@ abstract class BaseFunctionControl(
             when (shipType) {
                 ShipType.TASK_SHIP, ShipType.ABNORMAL_SHIP -> {
                     en.isJiYuShipList.forEachIndexed { index, imgTaskImpl1 ->
-                        if (imgTaskImpl1.check()) {
-                            return index
-                        }
-                    }
-                    en.isJiYuShip2List.forEachIndexed { index, imgTaskImpl1 ->
                         if (imgTaskImpl1.check()) {
                             return index
                         }
@@ -468,17 +465,17 @@ abstract class BaseFunctionControl(
                 }
 
                 WarehouseType.SHIP_CABIN -> {
-                    if (en.isShipWarehouseTask.check()) {
-                        en.shipWarehouseArea.c(en.isShipWarehouseTask)
+                    if (en.isShipWarehouseSelectTask.check()) {
                         return true
-                    } else if (en.isShipWarehouseSelectTask.check()) {
+                    } else if (en.isShipWarehouseTask.check()) {
+                        en.shipWarehouseArea.c(en.isShipWarehouseTask)
                         return true
                     }
                 }
 
                 WarehouseType.SHIP_SPECIAL -> {
-                    if (en.isShipWarehouseTaskList.check()) {
-                        if (!en.isShipWarehouseCloseTask.copyOffset(en.isShipWarehouseTaskList.lastResult)
+                    if (en.isShipWarehouseTask.check()) {
+                        if (!en.isShipWarehouseCloseTask.copyOffset(en.isShipWarehouseTask)
                                 .check()
                         ) {
                             en.switchSpecialArea.c(en.isShipWarehouseTask)
@@ -493,9 +490,9 @@ abstract class BaseFunctionControl(
             }
 
             if (!findTraget) {
-                if (count >= 5) {
+                if (count >= 4) {
                     //这里前二次先不滑动
-                } else if (count >= 3) {
+                } else if (count >= 2) {
                     if (type <= WarehouseType.STATION_SHIPS) {
                         en.swipeWarehouseDown.c()
                     } else {
@@ -557,11 +554,11 @@ abstract class BaseFunctionControl(
             } else if (count <= 2) {
                 L.d("向下滑动")
                 en.activityMenuSlideBottom.c()
-                delay(clickInterval)
+                delay(jumpClickInterval)
             } else if (count <= 4) {
                 L.d("向上滑动")
                 en.activityMenuSlideTop.c()
-                delay(clickInterval)
+                delay(jumpClickInterval)
             }
             count--
         }

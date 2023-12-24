@@ -166,7 +166,7 @@ class MainViewModel : ViewModel() {
     }
 
     //生成普通图片特征值
-    fun autoCodeNormalImg(previewView: PreviewImageView) {
+    fun autoCodeNormalImg(previewView: PreviewImageView, isText: Boolean = false) {
         previewView.clearPoint()
         viewModelScope.launch(Dispatchers.IO) {
             val result = mutableListOf<FeatureCoordinatePoint>()
@@ -185,12 +185,14 @@ class MainViewModel : ViewModel() {
                     coordinateArea?.y ?: 0,
                     result,
                     findArea!!,
+                    isText,
                 )
             } else {
                 GenerateCodeUtils.autoImgCode(
-                    coordinateArea?.x ?: 0,
-                    coordinateArea?.y ?: 0,
-                    result
+                    sx = coordinateArea?.x ?: 0,
+                    sy = coordinateArea?.y ?: 0,
+                    data = result,
+                    isText = isText
                 )
             }
             str?.let { resultStr ->

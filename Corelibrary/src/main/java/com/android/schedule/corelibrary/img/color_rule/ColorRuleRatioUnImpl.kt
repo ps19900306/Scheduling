@@ -7,7 +7,7 @@ Function description:
 这个根据色值范围进行规则校验：同时增加比例特征值以求保证颜色的特性
  */
 
-class ColorRuleRatioUnImpl(
+open class ColorRuleRatioUnImpl(
     maxRed: Int, minRed: Int, maxGreen: Int,
     minGreen: Int, maxBlue: Int, minBlue: Int,
     redToGreenMax: Float, redToGreenMin: Float,

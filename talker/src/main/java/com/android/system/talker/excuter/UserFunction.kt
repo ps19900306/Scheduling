@@ -66,7 +66,7 @@ class UserFunction(
 
         if (userDb.dailyGiftSwitch && TimeUtils.isNewDay(userDb.dailyGiftTime)) {
             L.d("$TAG 进入每日特惠礼物领取")
-            receiveDailyGift(isInSpaceStation)
+            receiveDailyGift(false)
             userDb.dailyGiftTime = System.currentTimeMillis()
             theOutCheck()
         }
@@ -166,7 +166,8 @@ class UserFunction(
                 if (en.isAgreementChallengesClickTask.check()) {
                     en.agreementChallengesClickArea.c(en.isAgreementChallengesClickTask)
                     delay(jumpClickInterval)
-                } else if(!en.isOpenAgreementTask.check()){
+                    count = 10
+                } else if (!en.isOpenAgreementTask.check()) {
                     en.canGiftV3Area.c()
                     delay(jumpClickInterval)
                 }
