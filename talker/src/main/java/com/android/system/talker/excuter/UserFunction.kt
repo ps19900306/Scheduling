@@ -64,7 +64,7 @@ class UserFunction(
             theOutCheck()
         }
 
-        if (userDb.dailyGiftSwitch && TimeUtils.isNewDay(userDb.dailyGiftTime)) {
+        if (en.isClosePositionMenuT.check() && userDb.dailyGiftSwitch && TimeUtils.isNewDay(userDb.dailyGiftTime)) {
             L.d("$TAG 进入每日特惠礼物领取")
             receiveDailyGift(false)
             userDb.dailyGiftTime = System.currentTimeMillis()

@@ -1,23 +1,15 @@
 package com.nwq.function.autocodeapp
 
-import android.content.BroadcastReceiver
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.ServiceConnection
-
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -44,7 +36,6 @@ import com.nwq.function.autocodeapp.adapter.FunctionItemAdapter.Companion.BUTTON
 import com.nwq.function.autocodeapp.data.FunctionItemInfo
 import com.nwq.function.autocodeapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -576,7 +567,7 @@ class MainActivity() : AppCompatActivity() {
         }
 
 
-    private var getMyImg: GetMyImg? = null
+
     private fun issueInstructionsImg() {
         ImgOpt.getbitmap = onTakeIng
         if (ImgOpt.takeBitmap != null) {
@@ -588,16 +579,7 @@ class MainActivity() : AppCompatActivity() {
 
     }
 
-    private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            getMyImg = GetMyImg.Stub.asInterface(service)
-        }
 
-        override fun onServiceDisconnected(name: ComponentName?) {
-
-        }
-
-    }
 }
 
 

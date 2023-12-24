@@ -23,9 +23,10 @@ class MasterControl(
         job = GlobalScope.launch(Dispatchers.IO) {
             //var userDb = selectExecutiveRole()
             pressHomeBtn()
-            dataBase.getUserDao().list().forEach{
-                if(it.isChecked)
-                performTask(it)
+            dataBase.getUserDao().list().forEach {
+                if (it.isChecked) {
+                    performTask(it)
+                }
             }
         }
     }
@@ -49,7 +50,7 @@ class MasterControl(
             list.add(HarvestFunction(vegetableDb, userDb, dataBase, acService))
         }
 
-        if (taskDb != null && taskDb.isSwitch==1) {
+        if (taskDb != null && taskDb.isSwitch == 1) {
             list.add(TaskFunction(taskDb, userDb, dataBase, acService))
         }
 
@@ -66,13 +67,23 @@ class MasterControl(
             }
         }
 
+
         val oldCloneLocation = userDb.baseCloneLocation
         mapList.forEach { (t, u) ->
             if (t != oldCloneLocation) {
-                u.forEach {
-                    it.startFunction()
+                //改变克隆时间需要有间隔 但是基地坐标不需要时间
+                if (t == 0 || TimeUtils.isAboveInterval(
+                        userDb.lastChangeLocationTime,
+                        userDb.ChangeLocationInterval.toInt()
+                    )
+                ) {
+                    u.forEach {
+                        it.startFunction()
+                    }
                 }
+
             }
+
         }
 
         //最后再增加一下收菜时间
@@ -81,7 +92,7 @@ class MasterControl(
                 it.checkAndTime()
                 it.exitGame()
             }
-        }else{
+        } else {
             list.getOrNull(0)?.exitGame()
         }
     }

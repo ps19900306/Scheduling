@@ -724,6 +724,7 @@ abstract class BaseFunctionControl(
             outSelfExplosion()
         } else {
             remoteClone(clonePosition)
+            userDb.lastChangeLocationTime = System.currentTimeMillis()
         }
 
 
