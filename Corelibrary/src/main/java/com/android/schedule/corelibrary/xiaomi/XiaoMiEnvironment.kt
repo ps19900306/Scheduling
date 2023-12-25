@@ -1091,7 +1091,7 @@ object XiaoMiEnvironment {
             PointRule(CoordinatePoint(334, 146), colorRule1)
             //red236,green236,blue236 sequenceNumber:0 blockNumber: 0  positionType:2
         )
-        val correctPositionModel = CorrectPositionModel(list, tag, 10, 10, false)
+        val correctPositionModel = CorrectPositionModel(list, tag, 10, 200, false)
         val pointList = mutableListOf<IPR>()
         pointList.add(
             PointRule(CoordinatePoint(341, 151), colorRule1)
