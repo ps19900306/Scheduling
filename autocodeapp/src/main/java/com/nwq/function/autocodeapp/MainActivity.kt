@@ -506,7 +506,7 @@ class MainActivity() : AppCompatActivity() {
 //                }
 
 
-                val task = XiaoMiEnvironment.isHomeGameCenterTask
+                val task = XiaoMiEnvironment.isFuLiSelectTask
                 task.logColor(it)
                 task.clickArea = XiaoMiEnvironment.homeGameCenterArea
                 if (task.verificationRule(it)) {

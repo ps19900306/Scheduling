@@ -262,7 +262,7 @@ object GenerateCodeUtils {
             (minGToB * minD).toFloat(),
         )
 
-        return "val colorRule1=ColorRuleRatioImpl.getSimple(${data.maxRed},${data.minRed},${data.maxGreen},${data.minGreen},${data.maxBlue},${data.minBlue},${data.redToGreenMax}F,${data.redToGreenMin}F,${data.redToBlueMax}F,${data.redToBlueMin}F,${data.redToGreenMax}F, ${data.redToGreenMin}F)\n"
+        return "val colorRule1=ColorRuleRatioImpl.getSimple(${data.maxRed},${data.minRed},${data.maxGreen},${data.minGreen},${data.maxBlue},${data.minBlue},${data.redToGreenMax}F,${data.redToGreenMin}F,${data.redToBlueMax}F,${data.redToBlueMin}F,${data.greenToBlueMax}F, ${data.greenToBlueMin}F)\n"
 
     }
 }

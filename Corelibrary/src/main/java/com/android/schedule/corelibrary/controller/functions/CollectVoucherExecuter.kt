@@ -6,6 +6,7 @@ import com.android.schedule.corelibrary.controller.ClickSpeedControl
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.xiaomi.XiaoMiEnvironment
+import kotlinx.coroutines.delay
 
 
 class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseController(acService) {
@@ -15,20 +16,23 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
     val en = XiaoMiEnvironment
     suspend fun optCollectVoucher() {
         var flag = true
-        var count = 20
+        var count = 12
 
         L.d("进入优惠卷领取")
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.isHomeGameCenterTask, en.homeGameCenterArea)
+        clickSpeedControl.addUnit(en.isHomeGameCenter2Task, en.homeGameCenter2Area)
         clickSpeedControl.addUnit(en.isShowCloseTask, en.showCloseArea)
         clickSpeedControl.addUnit(en.isFuLiUnSelectTask, en.fuLiUnSelectArea)
 
+
+
         while (flag && count > 0 && runSwitch) {
-            if (!taskScreenV(screenshotInterval)) {
-                L.d("屏幕尺寸不對")
+            if (!taskScreenV(screenshotIntervalF)) {
                 return
             }
             if (en.isFuLiSelectTask.check()) {
+                L.d("福利已经选中")
                 flag = false
             } else {
                 clickSpeedControl.cc()
@@ -37,13 +41,38 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
         }
 
         //执行到这里没有成功选中福利
-        if (!flag) {
+        if (flag) {
             L.d("执行到这里没有成功选中福利")
             return
         }
+        L.d("进入到福利中")
+
 
         flag = true
-        count = 20
+        count = 10
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                return
+            }
+            if (en.is3DiscountFastTask.check() && en.is3DiscountFastVTask.copyOffset(en.is3DiscountFastTask)
+                    .check()
+            ) {
+                L.d("快速领取成功")
+                en.is3DiscountFastArea.c(en.is3DiscountFastTask)
+                delay(jumpClickInterval)
+                result = true
+                return
+            } else {
+                clickSpeedControl.cc()
+            }
+            count--
+        }
+
+
+
+
+        flag = true
+        count = 15
         val clickSpeedControl1 = ClickSpeedControl()
         clickSpeedControl.addUnit(en.isChangWankaTask, en.changWankaArea)
         while (flag && count > 0 && runSwitch) {
@@ -59,10 +88,11 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
         }
 
         //执行到这里没有成功选中福利
-        if (!flag) {
+        if (flag) {
             L.d("没有进入会员中心")
             return
         }
+        L.d("进入会员中心")
 
         flag = true
         count = 20
@@ -74,8 +104,10 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
             if (en.isOnceDailyTask.check() && en.is3DiscountTask.copyOffset(en.isOnceDailyTask)
                     .check()
             ) {
+                L.d("领取成功")
                 en.is3DiscountArea.c(en.isOnceDailyTask)
                 result = true
+                delay(jumpClickInterval)
             } else {
                 clickSpeedControl1.cc()
             }

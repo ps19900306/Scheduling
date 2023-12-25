@@ -10,6 +10,7 @@ import android.os.Build
 import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
+import com.android.schedule.corelibrary.controller.functions.CollectVoucherExecuter
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack
@@ -81,8 +82,8 @@ class TakeImgAccessibilityService : AccessibilityService() {
         GlobalScope.launch {
             delay(10000)
 
-         //   CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
-
+//         CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
+//         return@launch
 
             takeScreenshot(
                 Display.DEFAULT_DISPLAY,

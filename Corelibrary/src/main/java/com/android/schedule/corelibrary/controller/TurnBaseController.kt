@@ -237,7 +237,6 @@ abstract class TurnBaseController(
     suspend fun ClickSpeedControl.cc() {
         screenBitmap?.let {
             this.checkImg(it)?.let {
-                L.d("发现位置进行点击")
                 optClickTask(it)
             }
         }

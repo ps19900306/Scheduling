@@ -68,14 +68,14 @@ abstract class ImgTask(
                 if (it.getColorRule() is ColorRuleRatioImpl || it is PointRules) {
                     normalErrorCount++
                     if (normalErrorCount > nE) {
-                        L.i("失败基础点" + it.getCoordinatePoint().toString())
+                       // L.i("失败基础点" + it.getCoordinatePoint().toString())
                         return false
                     }
                 } else if (it.getColorRule() is ColorRuleImpl || it.getColorRule() is ColorRuleUnImpl) {
                     backgroundErrorCount++
                     //L.i(it.getCoordinatePoint().toString())
                     if (backgroundErrorCount > bE) {
-                        L.i("失败对比点" + it.getCoordinatePoint().toString())
+                       // L.i("失败对比点" + it.getCoordinatePoint().toString())
                         return false
                     }
                 } else {
