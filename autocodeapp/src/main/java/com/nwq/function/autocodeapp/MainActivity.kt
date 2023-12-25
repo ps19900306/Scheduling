@@ -25,6 +25,7 @@ import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack
+import com.android.schedule.corelibrary.xiaomi.XiaoMiEnvironment
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
@@ -477,24 +478,24 @@ class MainActivity() : AppCompatActivity() {
         val en = StarWarEnvironment()
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
-                en.isVegetableShipList.forEach { task->
-                    if (task.verificationRule(it)) {
-                        runOnUI {
-                            bind.previewView.clearPoint()
-                            bind.previewView.clearArea()
-                            val offsetX = task.getOffsetX()
-                            val offsetY = task.getOffsetY()
-                            task.iprList.forEach {
-                                it.getCoordinatePoint().apply {
-                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
-                                }
-                            }
-                            L.i("找到图片 ${task.tag} offsetX$offsetX  offsetY$offsetY")
-                        }
-                    }else{
-                        L.i("验证失败 ${task.tag}")
-                    }
-                }
+//                en.isVegetableShipList.forEach { task->
+//                    if (task.verificationRule(it)) {
+//                        runOnUI {
+//                            bind.previewView.clearPoint()
+//                            bind.previewView.clearArea()
+//                            val offsetX = task.getOffsetX()
+//                            val offsetY = task.getOffsetY()
+//                            task.iprList.forEach {
+//                                it.getCoordinatePoint().apply {
+//                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
+//                                }
+//                            }
+//                            L.i("找到图片 ${task.tag} offsetX$offsetX  offsetY$offsetY")
+//                        }
+//                    }else{
+//                        L.i("验证失败 ${task.tag}")
+//                    }
+//                }
 
 
 //                val clickArea = en.isOpenTask
@@ -505,28 +506,28 @@ class MainActivity() : AppCompatActivity() {
 //                }
 
 
-//                val task = en.isSupplyMaterialsTask
-//                task.logColor(it)
-//                task.clickArea = en.activationShipArea
-//                if (task.verificationRule(it)) {
-//                    runOnUI {
-//                        bind.previewView.clearPoint()
-//                        bind.previewView.clearArea()
-//                        val offsetX = task.getOffsetX()
-//                        val offsetY = task.getOffsetY()
-//                        task.iprList.forEach {
-//                            it.getCoordinatePoint().apply {
-//                                bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
-//                            }
-//                        }
-//                        L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
-//                        task.clickArea?.let {
-//                            bind.previewView.addArea(it.copyOffset(offsetX, offsetY))
-//                        }
-//                    }
-//                } else {
-//                    L.i("验证失败")
-//                }
+                val task = XiaoMiEnvironment.isHomeGameCenterTask
+                task.logColor(it)
+                task.clickArea = XiaoMiEnvironment.homeGameCenterArea
+                if (task.verificationRule(it)) {
+                    runOnUI {
+                        bind.previewView.clearPoint()
+                        bind.previewView.clearArea()
+                        val offsetX = task.getOffsetX()
+                        val offsetY = task.getOffsetY()
+                        task.iprList.forEach {
+                            it.getCoordinatePoint().apply {
+                                bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
+                            }
+                        }
+                        L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
+                        task.clickArea?.let {
+                            bind.previewView.addArea(it.copyOffset(offsetX, offsetY))
+                        }
+                    }
+                } else {
+                    L.i("验证失败")
+                }
 
 
             }

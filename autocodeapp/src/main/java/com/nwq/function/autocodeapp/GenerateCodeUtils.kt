@@ -32,7 +32,7 @@ object GenerateCodeUtils {
         val stringBuilder = StringBuilder()
         stringBuilder.append("val isOpenTask by lazy {  \n")
         stringBuilder.append("val tag = \"isOpen\" \n")
-        if(isText){
+        if (isText) {
             stringBuilder.append(allMaxRange(data.filter { it.mDirectorPoint == null }))
         }
         stringBuilder.append("val list = mutableListOf<PointRule>()   \n")
@@ -115,20 +115,22 @@ object GenerateCodeUtils {
             -20
         } else if (d < -30) {
             -15
-        } else if (d < 0) {
+        } else if (d < -10) {
             -10
-        } else if (d > 90) {
-            30
-        } else if (d > 200) {
-            50
-        } else if (d > 150) {
-            40
-        } else if (d > 60) {
-            20
-        } else if (d > 30) {
-            15
-        } else {
+        } else if (d < 10) { //这里将差值在10以内的忽略掉
+            0
+        } else if (d < 30) {
             10
+        } else if (d < 60) {
+            15
+        } else if (d < 90) {
+            20
+        } else if (d < 150) {
+            30
+        } else if (d < 200) {
+            40
+        } else {
+            50
         }
     }
 
@@ -246,12 +248,12 @@ object GenerateCodeUtils {
         val maxD = 1.05
         val minD = 0.9
         val data = ColorRuleRatioImpl(
-            (maxRed * maxD).toInt(),
-            (minRed * minD).toInt(),
-            (maxGreen * maxD).toInt(),
-            (minGreen * minD).toInt(),
-            (maxBlue * maxD).toInt(),
-            (minBlue * minD).toInt(),
+            Math.min(255, (maxRed * maxD).toInt()),
+            Math.max(0, (minRed * minD).toInt()),
+            Math.min(255, (maxGreen * maxD).toInt()),
+            Math.max(0, (minGreen * minD).toInt()),
+            Math.min(255, (maxBlue * maxD).toInt()),
+            Math.max(0, (minBlue * minD).toInt()),
             (maxRToG * maxD).toFloat(),
             (minRToG * minD).toFloat(),
             (maxRToB * maxD).toFloat(),
@@ -260,7 +262,7 @@ object GenerateCodeUtils {
             (minGToB * minD).toFloat(),
         )
 
-        return "val colorRule1=ColorRuleRatioImpl.getSimple($maxRed,$minRed,$maxGreen,$minGreen,$maxBlue,$minBlue,${maxRToG}F,${minRToG}F,${maxRToB}F,${minRToB}F,${maxGToB}F, ${minGToB}F)\n"
+        return "val colorRule1=ColorRuleRatioImpl.getSimple(${data.maxRed},${data.minRed},${data.maxGreen},${data.minGreen},${data.maxBlue},${data.minBlue},${data.redToGreenMax}F,${data.redToGreenMin}F,${data.redToBlueMax}F,${data.redToBlueMin}F,${data.redToGreenMax}F, ${data.redToGreenMin}F)\n"
 
     }
 }

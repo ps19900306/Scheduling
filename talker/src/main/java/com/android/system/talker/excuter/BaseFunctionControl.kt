@@ -18,6 +18,7 @@ import com.android.schedule.corelibrary.utils.FileUtils
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack
 import com.android.schedule.corelibrary.utils.TimeUtils
+import com.android.schedule.corelibrary.xiaomi.XiaoMiEnvironment
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.UserDb
 import com.android.system.talker.enums.ActivityType
@@ -78,8 +79,7 @@ abstract class BaseFunctionControl(
 
     protected suspend fun intoGame(): Boolean {
         var flag = true
-        var count = 40
-
+        var count = 200
 
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.hasXiaoTipsTask, en.hasXiaoTipsTask.clickArea!!)
@@ -88,6 +88,7 @@ abstract class BaseFunctionControl(
         clickSpeedControl.addUnit(en.isStartGameT, en.isStartGameArea)
         clickSpeedControl.addUnit(en.isSelectRoleT, en.selectRoleArea)
         clickSpeedControl.addUnit(en.isOpenBigMenuT, en.closeBigMenuArea)
+        clickSpeedControl.maxCount = 10
 
         while (flag && count > 0 && runSwitch) {
             val bitmap = takeScreen(screenshotIntervalF)
@@ -101,10 +102,15 @@ abstract class BaseFunctionControl(
                     clickSpeedControl.cc()
                 }
             } else {//这里没有横屏所以
-                click(getAppArea())
-                delay(tripleClickInterval)
-                count--
+                if (XiaoMiEnvironment.isHomeGameCenterTask.check()) {
+                    click(getAppArea())
+                    delay(tripleClickInterval)
+                } else {
+                    pressHomeBtn()
+                    delay(tripleClickInterval)
+                }
             }
+            count--
         }
         if (flag) {
             reportingError("${getTag()} intoGame")
@@ -579,35 +585,7 @@ abstract class BaseFunctionControl(
     }
 
 
-    suspend fun ClickArea.c() {
-        click(this)
-    }
 
-    suspend fun ClickSpeedControl.cc() {
-        screenBitmap?.let {
-            this.checkImg(it)?.let {
-                optClickTask(it)
-            }
-        }
-    }
-
-    suspend fun TwoFingerArea.c() {
-        SimpleClickUtils.optClickTasks(acService, 0, 0, *this.toClickTask().toTypedArray())
-    }
-
-    suspend fun ClickArea.c(task: ImgTask) {
-        click(task, this)
-    }
-
-    suspend fun ClickArea.c(task: MultiFindImgTask) {
-        task.lastResult?.let {
-            click(it, this)
-        }
-    }
-
-    suspend fun SlidingArea.c() {
-        optClickTask(this.toClickTask())
-    }
 
 
     suspend fun unloadingCargo(@WarehouseType flag: Int) {
@@ -645,9 +623,9 @@ abstract class BaseFunctionControl(
                 en.moveToArea.c(en.isShowMoveToTask)
                 delay(jumpClickInterval)
                 en.moveToStationGoodsArea.c()
-                delay(jumpClickInterval*2)
+                delay(jumpClickInterval * 2)
                 complete = true
-            } else if(complete && !en.isShowMoveToTask.check()){
+            } else if (complete && !en.isShowMoveToTask.check()) {
                 en.moveToStationGoodsArea.c()
                 delay(jumpClickInterval)
             }
@@ -675,13 +653,6 @@ abstract class BaseFunctionControl(
                     L.d("退出点击回退")
                     pressBackBtn()
                     delay(jumpClickInterval)
-                } else {
-                    L.d("点击不同退出位置")
-                    if (count % 2 == 1) {
-                        en.exitGame1Task.clickArea?.c()
-                    } else {
-                        en.exitGame2Task.clickArea?.c()
-                    }
                 }
             } else {
                 return true

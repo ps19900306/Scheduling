@@ -2,18 +2,14 @@ package com.nwq.function.autocodeapp
 
 import android.accessibilityservice.AccessibilityService
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.os.Build
-import android.os.Bundle
 import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack
@@ -28,6 +24,8 @@ class TakeImgAccessibilityService : AccessibilityService() {
     private val TAG = "TakeImgAccessibilityService"
 
     var screenBitmap: Bitmap? = null
+
+
 
     private val _bind = object : GetMyImg.Stub() {
         override fun optIntentBitmap() {
@@ -78,12 +76,14 @@ class TakeImgAccessibilityService : AccessibilityService() {
 
     }
 
-
     @RequiresApi(Build.VERSION_CODES.R)
     fun takeImgSend() {
-        L.d("收到截图指令")
         GlobalScope.launch {
             delay(10000)
+
+         //   CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
+
+
             takeScreenshot(
                 Display.DEFAULT_DISPLAY,
                 mainExecutor,
@@ -118,5 +118,15 @@ class TakeImgAccessibilityService : AccessibilityService() {
 
     override fun onRebind(intent: Intent?) {
         super.onRebind(intent)
+    }
+
+    fun pressBackBtn() {
+        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+    }
+
+
+
+    fun pressHomeBtn() {
+        performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
     }
 }

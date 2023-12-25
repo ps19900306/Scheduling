@@ -20,6 +20,9 @@ class TimeAccessibilityService : AccessibilityService() {
 
     var masterControl: MasterControl? = null
 
+
+
+
     companion object {
         const val Intent_Filter_TAG = "schedule.cmd.v3"
         const val CMD = "cmd"

@@ -20,6 +20,8 @@ class UserDb() {
     //上次收菜完成时间
     var lastCompletionTime: Long = 0L
 
+    //var
+
     var isChecked: Boolean = false
 
     //基地位置
@@ -32,7 +34,7 @@ class UserDb() {
     var lastChangeLocationTime: Long = 0L
 
     // 修改克隆地址的间隔时间
-    var ChangeLocationInterval: Long = 25
+    var ChangeLocationInterval: Int = 25
 
     var needDelay: Boolean = false //是否有些步骤需要延迟处理
 

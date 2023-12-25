@@ -21,8 +21,6 @@ class MasterControl(
 
     override fun start() {
         job = GlobalScope.launch(Dispatchers.IO) {
-            //var userDb = selectExecutiveRole()
-            pressHomeBtn()
             dataBase.getUserDao().list().forEach {
                 if (it.isChecked) {
                     performTask(it)

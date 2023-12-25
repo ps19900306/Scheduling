@@ -5,10 +5,13 @@ import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.ClickTask
 import com.android.schedule.corelibrary.click.SimpleClickUtils
+import com.android.schedule.corelibrary.click.SlidingArea
+import com.android.schedule.corelibrary.click.TwoFingerArea
 import com.android.schedule.corelibrary.exhaustion.*
 import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
+import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
 import com.android.schedule.corelibrary.utils.L
 import kotlinx.coroutines.delay
 
@@ -227,4 +230,34 @@ abstract class TurnBaseController(
     }
 
 
+    suspend fun ClickArea.c() {
+        click(this)
+    }
+
+    suspend fun ClickSpeedControl.cc() {
+        screenBitmap?.let {
+            this.checkImg(it)?.let {
+                L.d("发现位置进行点击")
+                optClickTask(it)
+            }
+        }
+    }
+
+    suspend fun TwoFingerArea.c() {
+        SimpleClickUtils.optClickTasks(acService, 0, 0, *this.toClickTask().toTypedArray())
+    }
+
+    suspend fun ClickArea.c(task: ImgTask) {
+        click(task, this)
+    }
+
+    suspend fun ClickArea.c(task: MultiFindImgTask) {
+        task.lastResult?.let {
+            click(it, this)
+        }
+    }
+
+    suspend fun SlidingArea.c() {
+        optClickTask(this.toClickTask())
+    }
 }

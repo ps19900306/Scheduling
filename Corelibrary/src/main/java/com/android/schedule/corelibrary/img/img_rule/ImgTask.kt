@@ -20,29 +20,35 @@ import com.android.schedule.corelibrary.utils.L
  */
 abstract class ImgTask(
     val iprList: List<IPR>,
-     val tag: String,
+    val tag: String,
     val correctModel: CorrectPositionModel? = null
 ) : BasicImgTask() {
 
     var nErrorTolerance: Int = 0 //普通点容错
-    var bErrorTolerance: Int = (iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size)/2 //背景点容错
+    var bErrorTolerance: Int =
+        (iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size) / 2 //背景点容错
     var clickArea: ClickArea? = null //如果
     var closeArea: ClickArea? = null
 
 
-   open  fun logColor(bitmap: Bitmap){
+    open fun logColor(bitmap: Bitmap) {
+        correctModel?.pointList?.forEach {
+            val pX = it.getCoordinatePoint().xI
+            val pY = it.getCoordinatePoint().yI
+            val intColor = bitmap.getPixel(pX, pY)
+            L.d("修正點 x:$pX y:$pY alpha:${intColor.alpha}  red:${intColor.red} green:${intColor.green} blue:${intColor.blue}}")
+        }
         iprList.forEach {
-            val  pX = it.getCoordinatePoint().xI
-            val  pY = it.getCoordinatePoint().yI
-            val intColor = bitmap.getPixel(pX,pY)
+            val pX = it.getCoordinatePoint().xI
+            val pY = it.getCoordinatePoint().yI
+            val intColor = bitmap.getPixel(pX, pY)
             L.d("x:$pX y:$pY alpha:${intColor.alpha}  red:${intColor.red} green:${intColor.green} blue:${intColor.blue}")
         }
     }
 
 
-    var  openArea: ClickArea? = null
-    var  endArea: ClickArea? = null
-
+    var openArea: ClickArea? = null
+    var endArea: ClickArea? = null
 
 
     protected fun checkImgTask(
@@ -52,7 +58,7 @@ abstract class ImgTask(
         nE: Int = nErrorTolerance,
         bE: Int = bErrorTolerance
     ): Boolean {
-        if(iprList.isEmpty())//如果没有需要找的点则默认返回成功
+        if (iprList.isEmpty())//如果没有需要找的点则默认返回成功
             return true
 
         var normalErrorCount = 0    //普通点错误容忍度
@@ -61,22 +67,22 @@ abstract class ImgTask(
             if (!it.checkIpr(bitmap, offsetX, offsetY)) {
                 if (it.getColorRule() is ColorRuleRatioImpl || it is PointRules) {
                     normalErrorCount++
-                    //L.i("失败基础点"+ it.getCoordinatePoint().toString())
                     if (normalErrorCount > nE) {
+                        L.i("失败基础点" + it.getCoordinatePoint().toString())
                         return false
                     }
                 } else if (it.getColorRule() is ColorRuleImpl || it.getColorRule() is ColorRuleUnImpl) {
                     backgroundErrorCount++
-                    //L.i("失败对比点"+ it.getCoordinatePoint().toString())
                     //L.i(it.getCoordinatePoint().toString())
                     if (backgroundErrorCount > bE) {
+                        L.i("失败对比点" + it.getCoordinatePoint().toString())
                         return false
                     }
                 } else {
                     return false
                 }
-            }else{
-               // L.i("成功点"+ it.getCoordinatePoint().toString())
+            } else {
+                // L.i("成功点"+ it.getCoordinatePoint().toString())
             }
         }
         //智斗都符合的清空才记录修正点
@@ -109,9 +115,6 @@ abstract class ImgTask(
     fun getOffY(): Int {
         return correctModel?.offsetY ?: 0
     }
-
-
-
 
 
 }

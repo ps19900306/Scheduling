@@ -1,5 +1,7 @@
 package com.android.schedule.corelibrary.img.color_rule
 
+import kotlin.math.abs
+
 /**
 create by: 86136
 create time: 2023/5/29 9:44
@@ -8,35 +10,20 @@ Function description:
 
 class CompareDifferenceRuleImpl(
     val redDifference: Int,
-    val GreenDifference: Int,
-    val BlueDifference: Int,
-    ) : ColorCompareRule {
+    val greenDifference: Int,
+    val blueDifference: Int,
+) : ColorCompareRule {
 
     override fun verificationRule(
         red1: Int, green1: Int, blue1: Int, red2: Int, green2: Int, blue2: Int
     ): Boolean {
-        val red = red1 - red2
-        val green = green1 - green2
-        val blue = blue1 - blue2
 
+        val flag1 = abs(red1 - red2) >= redDifference
 
-        val flag1 = if (redDifference > 0) {
-            red > redDifference
-        } else {
-            red < redDifference
-        }
+        val flag2 = abs(green1 - green2) >= greenDifference
 
-        val flag2 = if (GreenDifference > 0) {
-            green > GreenDifference
-        } else {
-            green < GreenDifference
-        }
+        val flag3 = abs(blue1 - blue2) >= blueDifference
 
-        val flag3 = if (BlueDifference > 0) {
-            blue > BlueDifference
-        } else {
-            blue < BlueDifference
-        }
         return flag1 && flag2 && flag3
     }
 
@@ -49,11 +36,11 @@ class CompareDifferenceRuleImpl(
             blue: Int,
         ): CompareDifferenceRuleImpl {
             return list.find {
-                it.redDifference == red && it.GreenDifference == green && it.BlueDifference == blue
+                it.redDifference == red && it.greenDifference == green && it.blueDifference == blue
             } ?: CompareDifferenceRuleImpl(
-                red,
-                green,
-                blue,
+                Math.abs(red),
+                Math.abs(green),
+                Math.abs(blue),
             ).apply {
                 list.add(this)
             }
