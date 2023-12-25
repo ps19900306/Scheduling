@@ -218,6 +218,7 @@ abstract class BaseFunctionControl(
         clickSpeedControl.addUnit(en.isOpenBigMenuT, en.closeBigMenuArea)
         clickSpeedControl.addUnit(en.isConfirmDialogTask, en.confirmDialogCancelArea)
         clickSpeedControl.addUnit(en.isCanCollectGiftT, en.closeCollectGiftArea)
+        clickSpeedControl.addUnit(en.isOneClickClaimTask, en.closeOneClickArea)
 
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {

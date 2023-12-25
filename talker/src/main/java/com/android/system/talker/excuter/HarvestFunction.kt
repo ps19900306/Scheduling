@@ -215,10 +215,22 @@ class HarvestFunction(
             }
             count--
         }
+        //这里领取超时了 需要去下一个
+        if (flag) {
+            nowCelestialCount++
+            ensureOpenBigMenuArea(vegetableDb.menuType)
+            selectEntryItem(nowCelestialCount, jumpClickInterval)
+            delay(jumpClickInterval)
+            en.setTargetArea.c()
+            theOutCheck()
+            delay(jumpClickInterval)
+            en.eraseWarningArea.c()
+            nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
+        }
         return !flag
     }
 
-    private suspend fun oneClickClaimExtra():Boolean {
+    private suspend fun oneClickClaimExtra(): Boolean {
         var flag = true
         var count = 3
         while (flag && count > 0 && runSwitch) {
@@ -244,12 +256,15 @@ class HarvestFunction(
 
 
     private fun needHarvestVegetables(): Boolean {
-        return  TimeUtils.isAboveInterval(vegetableDb.lastCompletionTime,vegetableDb.completeInterval)
+        return TimeUtils.isAboveInterval(
+            vegetableDb.lastCompletionTime,
+            vegetableDb.completeInterval
+        )
     }
 
 
     private fun needAddTime(): Boolean {
-        return  TimeUtils.isAboveInterval(vegetableDb.lastAddTime,vegetableDb.addInterval)
+        return TimeUtils.isAboveInterval(vegetableDb.lastAddTime, vegetableDb.addInterval)
     }
 
     // 这个是
