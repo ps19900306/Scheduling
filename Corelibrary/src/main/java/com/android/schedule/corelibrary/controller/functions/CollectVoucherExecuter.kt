@@ -46,12 +46,10 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
             return
         }
         L.d("进入到福利中")
-
-
         flag = true
-        count = 10
+        count = 3
         while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(screenshotIntervalF)) {
+            if (!taskScreenV(screenshotIntervalF)) {
                 return
             }
             if (en.is3DiscountFastTask.check() && en.is3DiscountFastVTask.copyOffset(en.is3DiscountFastTask)
@@ -62,19 +60,17 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
                 delay(jumpClickInterval)
                 result = true
                 return
-            } else {
-                clickSpeedControl.cc()
             }
             count--
         }
 
 
 
-
+        L.d("寻找畅玩")
         flag = true
         count = 15
         val clickSpeedControl1 = ClickSpeedControl()
-        clickSpeedControl.addUnit(en.isChangWankaTask, en.changWankaArea)
+        clickSpeedControl1.addUnit(en.isChangWankaTask, en.changWankaArea)
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenV(screenshotIntervalF)) {
                 return
@@ -96,20 +92,19 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
 
         flag = true
         count = 20
-        clickSpeedControl.addUnit(en.isChangWankaTask, en.changWankaArea)
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenV(screenshotIntervalF)) {
                 return
             }
-            if (en.isOnceDailyTask.check() && en.is3DiscountTask.copyOffset(en.isOnceDailyTask)
-                    .check()
+            if (en.isOnceDailyTask.check()
+             //   && en.is3DiscountTask.copyOffset(en.isOnceDailyTask).check()
             ) {
                 L.d("领取成功")
                 en.is3DiscountArea.c(en.isOnceDailyTask)
                 result = true
                 delay(jumpClickInterval)
             } else {
-                clickSpeedControl1.cc()
+                SimpleClickUtils.optClickTasks(acService, 0, 0, en.bottomToTopCenter)
             }
             count--
         }

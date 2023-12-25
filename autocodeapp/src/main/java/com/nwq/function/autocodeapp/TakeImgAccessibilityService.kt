@@ -82,8 +82,8 @@ class TakeImgAccessibilityService : AccessibilityService() {
         GlobalScope.launch {
             delay(10000)
 
-//         CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
-//         return@launch
+         CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
+         return@launch
 
             takeScreenshot(
                 Display.DEFAULT_DISPLAY,
