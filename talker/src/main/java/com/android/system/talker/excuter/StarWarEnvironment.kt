@@ -6774,7 +6774,9 @@ class StarWarEnvironment {
                 CompareDifferenceRuleImpl.getSimple(20, 20, 20)
             ) // sequenceNumber:24sequenceNumber blockNumber: $0  positionType:$0
         )
-        FindImgTask(pr, findArea, pointList, tag)
+        FindImgTask(pr, findArea, pointList, tag).apply {
+            nErrorTolerance = 2
+        }
     }
 
 
