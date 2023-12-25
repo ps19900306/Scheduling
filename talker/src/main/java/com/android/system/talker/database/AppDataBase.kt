@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [UserDb::class,
     MinerDb::class,
     TaskDb::class,
-    VegetableDb::class], version = 1, exportSchema = false)
+    VegetableDb::class], version = 1)
 abstract class AppDataBase : RoomDatabase() {
 
     companion object {

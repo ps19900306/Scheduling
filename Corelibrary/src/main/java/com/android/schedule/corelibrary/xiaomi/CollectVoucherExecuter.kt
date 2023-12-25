@@ -16,15 +16,32 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
     val en = XiaoMiEnvironment
     suspend fun optCollectVoucher() {
         var flag = true
-        var count = 12
+        var count = 6
 
+        L.d("先进入主页")
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenV(screenshotIntervalF)) {
+                pressHomeBtn()
+                delay(jumpClickInterval)
+            }else{
+                if (en.isHomeGameCenterTask.check()||en.isHomeGameCenter2Task.check()) {
+                    flag = false
+                } else {
+                    pressHomeBtn()
+                    delay(jumpClickInterval)
+                }
+            }
+            count--
+        }
+
+        count = 12
+        flag = true
         L.d("进入优惠卷领取")
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.isHomeGameCenterTask, en.homeGameCenterArea)
         clickSpeedControl.addUnit(en.isHomeGameCenter2Task, en.homeGameCenter2Area)
         clickSpeedControl.addUnit(en.isShowCloseTask, en.showCloseArea)
         clickSpeedControl.addUnit(en.isFuLiUnSelectTask, en.fuLiUnSelectArea)
-
 
 
         while (flag && count > 0 && runSwitch) {
