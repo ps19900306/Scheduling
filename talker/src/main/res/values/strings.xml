@@ -70,4 +70,6 @@
     <string name="free_daily">每日免费</string>
     <string name="daily_login_gifts">每日登录礼物</string>
     <string name="agreement_gift">合作协议</string>
+    <string name="xiao_mi_discount">小米折扣卷</string>
+    <string name="start_opt_time">每天开始执行时间</string>
 </resources>

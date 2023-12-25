@@ -1,20 +1,19 @@
-package com.android.schedule.corelibrary.controller.functions
+package com.android.schedule.corelibrary.xiaomi
 
 import android.accessibilityservice.AccessibilityService
 import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.controller.TurnBaseController
-import com.android.schedule.corelibrary.xiaomi.XiaoMiEnvironment
 
-class awakenExecuter(acService: AccessibilityService) : TurnBaseController(acService) {
+class AwakenExecuter(acService: AccessibilityService) : TurnBaseController(acService) {
 
-    private var result = false
+    var result = false
 
     val en = XiaoMiEnvironment
     suspend fun optAwaken() {
         var flag = true
         var count = 12
         taskScreenV(screenshotInterval)
-        if (en.isHomeGameCenterTask.check()) {
+        if (en.isHomeGameCenterTask.check() || en.isHomeGameCenter2Task.check()) {
             result = true
             return
         }
@@ -24,7 +23,7 @@ class awakenExecuter(acService: AccessibilityService) : TurnBaseController(acSer
             if (!taskScreenV(screenshotInterval)) {
                 flag = false
             }
-            if (en.isHomeGameCenterTask.check()) {
+            if (en.isHomeGameCenterTask.check() || en.isHomeGameCenter2Task.check()) {
                 flag = false
                 result = true
             } else if (number <= 0) {

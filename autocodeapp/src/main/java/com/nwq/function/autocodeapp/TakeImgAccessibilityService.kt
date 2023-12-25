@@ -10,7 +10,7 @@ import android.os.Build
 import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
-import com.android.schedule.corelibrary.controller.functions.CollectVoucherExecuter
+import com.android.schedule.corelibrary.xiaomi.CollectVoucherExecuter
 import com.android.schedule.corelibrary.utils.ContextUtil
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack

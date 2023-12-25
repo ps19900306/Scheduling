@@ -66,13 +66,23 @@ class TimeAccessibilityService : AccessibilityService() {
                     masterControl?.start()
                 }
             }
-
+            CmdType.START_CIRCULATE->{
+                GlobalScope.launch {
+                    masterControl?.end()
+                    masterControl = MasterControl(
+                        AppDataBase.getInstance(this@TimeAccessibilityService.applicationContext),
+                        this@TimeAccessibilityService
+                    )
+                    masterControl?.startCirculate()
+                }
+            }
             CmdType.CLOSE -> {
                 GlobalScope.launch {
                     masterControl?.end()
                     masterControl = null
                 }
             }
+
         }
     }
 

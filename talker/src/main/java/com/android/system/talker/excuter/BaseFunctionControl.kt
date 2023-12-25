@@ -102,7 +102,7 @@ abstract class BaseFunctionControl(
                     clickSpeedControl.cc()
                 }
             } else {//这里没有横屏所以
-                if (XiaoMiEnvironment.isHomeGameCenterTask.check()) {
+                if (XiaoMiEnvironment.isHomeGameCenterTask.check() || XiaoMiEnvironment.isHomeGameCenter2Task.check()) {
                     click(getAppArea())
                     delay(tripleClickInterval)
                 } else {
@@ -583,9 +583,6 @@ abstract class BaseFunctionControl(
         }
         return false
     }
-
-
-
 
 
     suspend fun unloadingCargo(@WarehouseType flag: Int) {

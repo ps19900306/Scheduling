@@ -14,6 +14,11 @@
         android:layout_height="wrap_content"
         app:title_str="@string/user_name" />
 
+    <com.android.system.talker.view.InputItemView
+        android:id="@+id/starGameEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title_str="@string/start_opt_time" />
 
     <com.android.system.talker.view.InputItemView
         android:id="@+id/baseMenuLocationEdt"
@@ -70,6 +75,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userList"
         app:title_str="@string/agreement_gift" />
+
+    <com.android.system.talker.view.ComboControlsView
+        android:id="@+id/xiaomiDiscountCb"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userList"
+        app:title_str="@string/xiao_mi_discount" />
 
     <Button
         android:id="@+id/saveBtn"

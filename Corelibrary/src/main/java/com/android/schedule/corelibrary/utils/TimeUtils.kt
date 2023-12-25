@@ -49,6 +49,29 @@ object TimeUtils {
         return nowFlag != lastFlag
     }
 
+    fun getDelayTime(lastCompletionTime: Long, refreshHour: Int = 8): Long {
+        if (lastCompletionTime == 0L)
+            return 0L
+        val lastCalendar = Calendar.getInstance();
+        lastCalendar.timeInMillis = lastCompletionTime
+        val lastHour = lastCalendar.get(Calendar.HOUR_OF_DAY)
+        val lastDay = lastCalendar.get(Calendar.DAY_OF_YEAR)
+
+        val lastFlag = if (lastHour >= refreshHour) {
+            lastDay
+        } else {
+            lastDay - 1
+        }
+
+        val nowCalendar = Calendar.getInstance();
+        nowCalendar.set(lastCalendar.get(Calendar.YEAR),lastCalendar.get(Calendar.MONTH),lastFlag+1,8,0,10)
+
+        return nowCalendar.timeInMillis - System.currentTimeMillis()
+    }
+
+
+
+
     //这里是用来判断是新的一周
     fun isNewWeek(lastCompletionTime: Long, refreshDay: Int = SUNDAY): Boolean {
        if (lastCompletionTime == 0L)
@@ -59,7 +82,7 @@ object TimeUtils {
         val lastWeek = lastCalendar.get(Calendar.WEEK_OF_YEAR)
         val lastDay = lastCalendar.get(Calendar.DAY_OF_WEEK)
 
-        val lastFlag = if (lastDay > refreshDay) {
+        val lastFlag = if (lastDay >= refreshDay) {
             lastWeek
         } else {
             lastWeek - 1

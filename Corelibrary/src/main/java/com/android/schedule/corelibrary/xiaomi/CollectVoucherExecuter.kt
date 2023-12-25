@@ -1,4 +1,4 @@
-package com.android.schedule.corelibrary.controller.functions
+package com.android.schedule.corelibrary.xiaomi
 
 import android.accessibilityservice.AccessibilityService
 import com.android.schedule.corelibrary.click.SimpleClickUtils
@@ -11,7 +11,7 @@ import kotlinx.coroutines.delay
 
 class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseController(acService) {
 
-    private var result = false
+     var result = false
 
     val en = XiaoMiEnvironment
     suspend fun optCollectVoucher() {

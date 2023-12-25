@@ -94,7 +94,10 @@ class HomeFragment : Fragment() {
         _binding.startBtn.singleClick {
             val intent = Intent(Intent_Filter_TAG)
             intent.setDataAndType(Intent_Filter_TAG.toUri(), "cmd/int")
-            intent.putExtra(TimeAccessibilityService.CMD, CmdType.START)
+            intent.putExtra(
+                TimeAccessibilityService.CMD,
+                if (_binding.everyDayCk.isChecked) CmdType.START_CIRCULATE else CmdType.START
+            )
             requireActivity().sendBroadcast(intent);
         }
 
@@ -163,14 +166,14 @@ class HomeFragment : Fragment() {
                     runOnUI {
                         taskDb?.let { data ->
                             _binding.taskCb.setChecked(data.isSwitch == 1)
-                            if(data.lastCompletionTime!=0L){
+                            if (data.lastCompletionTime != 0L) {
                                 _binding.taskCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
                             }
                         }
 
                         vegetableDb?.let { data ->
                             _binding.vegetableCb.setChecked(data.isSwitch)
-                            if(data.lastCompletionTime!=0L){
+                            if (data.lastCompletionTime != 0L) {
                                 _binding.vegetableCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
                             }
                         }

@@ -58,6 +58,7 @@ class UserFragment : Fragment() {
                     _binding.dailyGiftCb.setChecked(mData.dailyGiftSwitch)
                     _binding.agreementGiftCb.setChecked(mData.agreementGiftSwitch)
                     _binding.activeGiftCb.setChecked(mData.activeGiftSwitch)
+                    _binding.xiaomiDiscountCb.setChecked(mData.xiaomiDiscountSwitch)
                     _binding.appLocationXEdt.setText(mData.appLocationX.toString())
                     _binding.appLocationYEdt.setText(mData.appLocationY.toString())
 
@@ -71,7 +72,9 @@ class UserFragment : Fragment() {
                     if (mData.agreementGiftTime != 0L) {
                         _binding.agreementGiftCb.setTipsText(TimeUtils.getNowTime(mData.agreementGiftTime))
                     }
-
+                    if (mData.xiaomiDiscountTime != 0L) {
+                        _binding.xiaomiDiscountCb.setTipsText(TimeUtils.getNowTime(mData.xiaomiDiscountTime))
+                    }
                 }
             }
         }
@@ -87,6 +90,7 @@ class UserFragment : Fragment() {
             mData.dailyGiftSwitch = _binding.dailyGiftCb.isChecked
             mData.agreementGiftSwitch = _binding.agreementGiftCb.isChecked
             mData.activeGiftSwitch = _binding.activeGiftCb.isChecked
+            mData.xiaomiDiscountSwitch = _binding.xiaomiDiscountCb.isChecked
             _binding.appLocationXEdt.text.toString().toIntOrNull()?.let {
                 mData.appLocationX = it
             }
@@ -114,6 +118,9 @@ class UserFragment : Fragment() {
         }
         _binding.activeGiftCb.setButtonClickBack {
             mData.activeGiftTime = 0L
+        }
+        _binding.xiaomiDiscountCb.setButtonClickBack {
+            mData.xiaomiDiscountTime = 0L
         }
     }
 

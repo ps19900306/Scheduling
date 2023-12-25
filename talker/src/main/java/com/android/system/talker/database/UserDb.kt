@@ -17,10 +17,11 @@ class UserDb() {
     var shipType: Int = ShipType.UNKNOWN
 
 
-    //上次收菜完成时间
+    //上次完成的时间
     var lastCompletionTime: Long = 0L
 
     //var
+    var startGameTime: Int = 8
 
     var isChecked: Boolean = false
 
@@ -60,6 +61,9 @@ class UserDb() {
     var agreementGiftSwitch: Boolean = true
     var agreementGiftTime: Long = 0L
 
+    //这个是协议礼物
+    var xiaomiDiscountSwitch: Boolean = true
+    var xiaomiDiscountTime: Long = 0L
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

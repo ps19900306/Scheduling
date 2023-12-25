@@ -20,10 +20,10 @@ data class VegetableDb(
     var baseMenuLocation: Int = 0,
 
     //克隆的位置
-    var baseCloneLocation: Int = -1,
+    var baseCloneLocation: Int = 1,
 
     //菜种植数量
-    var numberCount: Int = 0,
+    var numberCount: Int = 6,
 
     //上次收菜完成时间
     var lastCompletionTime: Long = 0L,
