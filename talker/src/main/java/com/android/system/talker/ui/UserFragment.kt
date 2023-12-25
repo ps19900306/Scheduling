@@ -58,6 +58,7 @@ class UserFragment : Fragment() {
                     _binding.dailyGiftCb.setChecked(mData.dailyGiftSwitch)
                     _binding.agreementGiftCb.setChecked(mData.agreementGiftSwitch)
                     _binding.activeGiftCb.setChecked(mData.activeGiftSwitch)
+                    _binding.starGameEdt.setText(mData.startGameTime.toString())
                     _binding.xiaomiDiscountCb.setChecked(mData.xiaomiDiscountSwitch)
                     _binding.appLocationXEdt.setText(mData.appLocationX.toString())
                     _binding.appLocationYEdt.setText(mData.appLocationY.toString())
@@ -87,16 +88,22 @@ class UserFragment : Fragment() {
             _binding.baseMenuLocationEdt.text.toString().toIntOrNull()?.let {
                 mData.baseMenuLocation = it
             }
+            _binding.starGameEdt.text.toString().toIntOrNull()?.let {
+                mData.startGameTime = it
+            }
+
             mData.dailyGiftSwitch = _binding.dailyGiftCb.isChecked
             mData.agreementGiftSwitch = _binding.agreementGiftCb.isChecked
             mData.activeGiftSwitch = _binding.activeGiftCb.isChecked
             mData.xiaomiDiscountSwitch = _binding.xiaomiDiscountCb.isChecked
+
             _binding.appLocationXEdt.text.toString().toIntOrNull()?.let {
                 mData.appLocationX = it
             }
             _binding.appLocationYEdt.text.toString().toIntOrNull()?.let {
                 mData.appLocationY = it
             }
+            mData.lastCompletionTime = 0L
             lifecycleScope.runOnIO {
                 if (mData.id == 0L) {
                     userDao.insert(mData)

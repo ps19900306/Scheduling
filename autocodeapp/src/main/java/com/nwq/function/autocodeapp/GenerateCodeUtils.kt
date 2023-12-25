@@ -47,7 +47,13 @@ object GenerateCodeUtils {
                 "pointList.add(${it.toColorRuleStr(sx, sy, isText)})\n"
             )
         }
-        stringBuilder.append(" ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
+        if(isText){
+            stringBuilder.append("ImgTaskImpl1(pointList, tag, correctPositionModel).apply {\n nErrorTolerance=${(data.size/10)+1} }\n")
+        }else{
+            stringBuilder.append("ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
+        }
+
+
         stringBuilder.append("}  \n")
         return stringBuilder.toString()
     }
@@ -97,7 +103,12 @@ object GenerateCodeUtils {
             )
         }
 
-        stringBuilder.append("FindImgTask(pr, findArea,pointList, tag)   \n")
+        if(isText){
+            stringBuilder.append("FindImgTask(pr, findArea,pointList, tag).apply {\n nErrorTolerance=${(data.size/10)+1} }\n")
+        }else{
+            stringBuilder.append("FindImgTask(pr, findArea,pointList, tag)  \n")
+        }
+
         stringBuilder.append("}  \n")
         return stringBuilder.toString()
     }

@@ -27,7 +27,6 @@ class TakeImgAccessibilityService : AccessibilityService() {
     var screenBitmap: Bitmap? = null
 
 
-
     private val _bind = object : GetMyImg.Stub() {
         override fun optIntentBitmap() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -54,10 +53,10 @@ class TakeImgAccessibilityService : AccessibilityService() {
 
     }
 
-   @RequiresApi(Build.VERSION_CODES.R)
-   val takeIMG = NwqCallBack<Boolean> { //收到截图操作
-       takeImgSend()
-   }
+    @RequiresApi(Build.VERSION_CODES.R)
+    val takeIMG = NwqCallBack<Boolean> { //收到截图操作
+        takeImgSend()
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -82,9 +81,8 @@ class TakeImgAccessibilityService : AccessibilityService() {
         GlobalScope.launch {
             delay(10000)
 
-         CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
-         return@launch
-
+//         CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
+//         return@launch
             takeScreenshot(
                 Display.DEFAULT_DISPLAY,
                 mainExecutor,
@@ -124,7 +122,6 @@ class TakeImgAccessibilityService : AccessibilityService() {
     fun pressBackBtn() {
         performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
     }
-
 
 
     fun pressHomeBtn() {
