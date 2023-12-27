@@ -93,7 +93,7 @@ class TaskFunction(
         theOutCheck()
         outSpaceStation()
         var flag = true
-        var count = 20
+        var count = 51
         var record = 100
         var recordErro = 0
         while (flag && count > 0 && runSwitch) {
@@ -101,31 +101,39 @@ class TaskFunction(
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return
             }
-            if (!en.isCloseAiTask.check()||en.isOpenJiyuBigMenuTask.check()) {//开启成功
+            if (en.isOpenJiyuBigMenuTask.check()) {
+                L.d("际遇任务领取")
                 flag = false
-            } else if (hasTopLockTart()) {//顶部有锁定的
-                if (recordErro < count) {
-                    recordErro = count
-                }
-                if (recordErro - count > 5) {
-                    clickPositionMenu(taskDb.baseMenuLocation)
-                    reportingError("hasTopLockTart")
-                    return
-                }
-            } else if(isInSpace()){
-                if (record - count > 5) {
-                    en.topDeviceList[2].clickArea?.c()
-                    record = count
+            }else if(isInSpace()){
+                if (!en.isCloseAiTask.check()) {//开启成功
+                    L.d("isCloseAiTask")
+                    flag = false
+                } else if (hasTopLockTart()) {//顶部有锁定的
+                    if (recordErro < count) {
+                        L.d("startAi hasTopLockTart")
+                        recordErro = count
+                    }
+                    if (recordErro - count > 5) {
+                        clickPositionMenu(taskDb.baseMenuLocation)
+                        reportingError("hasTopLockTart")
+                        return
+                    }
+                } else if (isInSpace()) {
+                    if (record - count > 10) {
+                        L.d("进行点击")
+                        en.topDeviceList[2].clickArea?.c()
+                        record = count
+                    }
                 }
             }
             count--
         }
-        if(!flag){
+        if (flag) {
             nowStep = -10000
             clickPositionMenu(taskDb.baseMenuLocation)
             reportingError("startAi")
             return
-        }else{
+        } else {
             nowStep = conditionStatus
         }
 
@@ -198,7 +206,12 @@ class TaskFunction(
                         theOutCheck()
                         end()
                         flag = false
-                    } else if (!TimeUtils.judgingTheInterval(nowTime, lastNoTask, SetConstant.halfHour)) {
+                    } else if (!TimeUtils.judgingTheInterval(
+                            nowTime,
+                            lastNoTask,
+                            SetConstant.halfHour
+                        )
+                    ) {
                         reportingError("过快原因没有任务 进入删除")
                         flag = false
                     } else if (en.isCanRefreshTask.check()) {//这里需要等到能刷新再去启动游戏
