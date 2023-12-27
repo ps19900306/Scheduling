@@ -50,8 +50,8 @@ abstract class BaseFunctionControl(
 
     abstract suspend fun getBaseCloneLocation(): Int
 
-
     private var hasResult = true
+
    suspend fun reportingError(string: String) {
         if (hasResult) {
             L.d(string)

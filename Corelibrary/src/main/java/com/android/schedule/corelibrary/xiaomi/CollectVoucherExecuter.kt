@@ -40,7 +40,9 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.isHomeGameCenterTask, en.homeGameCenterArea)
         clickSpeedControl.addUnit(en.isHomeGameCenter2Task, en.homeGameCenter2Area)
+
         clickSpeedControl.addUnit(en.isShowCloseTask, en.showCloseArea)
+        clickSpeedControl.addUnit(en.isShowClose2Task, en.isShowClose2Area)
         clickSpeedControl.addUnit(en.isFuLiUnSelectTask, en.fuLiUnSelectArea)
 
 

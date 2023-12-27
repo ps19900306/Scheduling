@@ -92,15 +92,43 @@ class TaskFunction(
         L.d("开启AI")
         theOutCheck()
         outSpaceStation()
-        if (!taskScreenL(screenshotInterval)) {
-            reportingError(ABNORMAL_SCREENO_ORIENTATION)
-        } else {
-            if (!hasTopLockTart() && en.isCloseAiTask.check()) {
-                en.topDeviceList[2].clickArea?.c()
+        var flag = true
+        var count = 20
+        var record = 100
+        var recordErro = 0
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return
             }
+            if (!en.isCloseAiTask.check()||en.isOpenJiyuBigMenuTask.check()) {//开启成功
+                flag = false
+            } else if (hasTopLockTart()) {//顶部有锁定的
+                if (recordErro < count) {
+                    recordErro = count
+                }
+                if (recordErro - count > 5) {
+                    clickPositionMenu(taskDb.baseMenuLocation)
+                    reportingError("hasTopLockTart")
+                    return
+                }
+            } else if(isInSpace()){
+                if (record - count > 5) {
+                    en.topDeviceList[2].clickArea?.c()
+                    record = count
+                }
+            }
+            count--
+        }
+        if(!flag){
+            nowStep = -10000
+            clickPositionMenu(taskDb.baseMenuLocation)
+            reportingError("startAi")
+            return
+        }else{
+            nowStep = conditionStatus
         }
 
-        nowStep = conditionStatus
     }
 
     val ai_unkown = -1
@@ -112,6 +140,7 @@ class TaskFunction(
     var aiStatus = ai_unkown
 
     var lastNoTask = 0L
+
 
     private suspend fun conditionAiStatus() {
         L.d("conditionAiStatus")
@@ -126,25 +155,18 @@ class TaskFunction(
             }
             val nowTime = System.currentTimeMillis()
 
-            if (TimeUtils.judgingTheInterval(nowTime, startTime, SetConstant.halfHour)) {
-                reportingError("执行游戏异常")
-                return
-            }
-
             if (hasTopLockTart()) {//如果有锁定的目标则认为是正常的
                 startTime = nowTime
                 aiStatus = ai_nomarl
             } else if (en.isCloseAiTask.check()) {//如果有锁定的目标则认为是正常的
-                if (en.isCanLockTask.check()) { //这里去开启Ai
+                if (en.isCanLockTask.check()) { //这里表示已经可以锁定 则直接进行锁定
                     en.topDeviceList[2].clickArea?.c()
                 } else {
                     if (aiStatus != ai_close) {
                         startTime = nowTime
                         aiStatus = ai_close
                     } else if (TimeUtils.judgingTheInterval(
-                            nowTime,
-                            startTime,
-                            redundantWaitTime
+                            nowTime, startTime, redundantWaitTime
                         )
                     ) {
                         flag = false
@@ -155,17 +177,18 @@ class TaskFunction(
                 if (aiStatus != ai_open) {
                     startTime = nowTime
                     aiStatus = ai_open
-                } else if (TimeUtils.judgingTheInterval(
-                        nowTime,
-                        startTime,
-                        SetConstant.tenMINUTE
-                    )
-                ) {
-                    en.topDeviceList[2].clickArea?.c()
-                    flag = false
-                    nowStep = restartGame
+                } else if (TimeUtils.judgingTheInterval(nowTime, startTime, SetConstant.halfHour)) {
+                    if (taskScreenL(screenshotInterval)) {
+                        if (!en.isCloseAiTask.check()) {
+                            en.topDeviceList[2].clickArea?.c()
+                        }
+                        nowStep = restartGame
+                    } else {
+                        reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                    }
+                    return
                 }
-            } else if (en.isOpenJiyuBigMenuTask.check()) {
+            } else if (en.isOpenJiyuBigMenuTask.check()) {//这里是打开际遇的开关
                 if (aiStatus != isOpenTaskManu) {
                     L.d("aiStatus == isOpenTaskManu")
                     aiStatus = isOpenTaskManu
@@ -175,13 +198,7 @@ class TaskFunction(
                         theOutCheck()
                         end()
                         flag = false
-                    } else if (!TimeUtils.judgingTheInterval(
-                            nowTime,
-                            lastNoTask,
-                            SetConstant.halfHour
-                        )
-                    ) {
-
+                    } else if (!TimeUtils.judgingTheInterval(nowTime, lastNoTask, SetConstant.halfHour)) {
                         reportingError("过快原因没有任务 进入删除")
                         flag = false
                     } else if (en.isCanRefreshTask.check()) {//这里需要等到能刷新再去启动游戏
@@ -203,7 +220,7 @@ class TaskFunction(
             if (intoGame()) {
                 delay(tripleClickInterval)
                 returnSpaceStation(taskDb.baseMenuLocation)
-                //这里取消掉第一个任务
+                //01
                 cancelFirstTask()
                 nowStep = startAi
             } else {
