@@ -22,7 +22,7 @@ class TaskFunction(
     override suspend fun endGame(eroMsg: String?) {
         if (TextUtils.isEmpty(eroMsg)) {
             taskDb.lastCompletionTime = System.currentTimeMillis()
-            taskDb.errorStr=""
+            taskDb.errorStr = ""
         } else {
             taskDb.errorStr = TimeUtils.getNowTime() + eroMsg
         }
@@ -92,10 +92,14 @@ class TaskFunction(
         L.d("开启AI")
         theOutCheck()
         outSpaceStation()
-        taskScreenL(screenshotInterval)
-        if (!hasTopLockTart() && en.isCloseAiTask.check()) {
-            en.topDeviceList[2].clickArea?.c()
+        if (!taskScreenL(screenshotInterval)) {
+            reportingError(ABNORMAL_SCREENO_ORIENTATION)
+        } else {
+            if (!hasTopLockTart() && en.isCloseAiTask.check()) {
+                en.topDeviceList[2].clickArea?.c()
+            }
         }
+
         nowStep = conditionStatus
     }
 

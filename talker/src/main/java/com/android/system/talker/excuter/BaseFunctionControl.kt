@@ -815,7 +815,7 @@ abstract class BaseFunctionControl(
 
     protected suspend fun remoteClone(position: Int): Boolean {
         var flag = true
-        var count = 20
+        var count = 19
         var hasClickClone = false
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
@@ -828,7 +828,9 @@ abstract class BaseFunctionControl(
                 } else if (en.isCloneCenterTask.check()) {
                     en.cloneCenterArea.c(en.isCloneCenterTask)
                     delay(clickInterval)
-                } else {//这里多次每找到需要进行滑动
+                } else if(count%5==0){//这里多次每找到需要进行滑动
+                    en.cloneCenterSlide.c()
+                    delay(jumpClickInterval)
                 }
             } else if (en.isOpenCloneMenuTask.check()) {
                 if (position <= 2) {

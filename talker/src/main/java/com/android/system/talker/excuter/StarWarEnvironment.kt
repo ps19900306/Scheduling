@@ -5940,6 +5940,10 @@ class StarWarEnvironment {
         ClickArea(2178, 811, 69, 67, false)
     }
 
+    val cloneCenterSlide by lazy {
+       SlidingArea(DirectionType.TOP, CoordinateArea(2178, 811, 69, 67, false))
+    }
+
     val isCloneCenterTask by lazy {
         val tag = "isCloneCenter"
         val pr = PointRule(CoordinatePoint(2201, 817), ColorRuleRatioImpl.getSimple(150, 169, 167))
