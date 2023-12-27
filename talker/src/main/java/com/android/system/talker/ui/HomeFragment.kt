@@ -3,6 +3,7 @@ package com.android.system.talker.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -166,15 +167,23 @@ class HomeFragment : Fragment() {
                     runOnUI {
                         taskDb?.let { data ->
                             _binding.taskCb.setChecked(data.isSwitch == 1)
-                            if (data.lastCompletionTime != 0L) {
+                            if(!TextUtils.isEmpty(data.errorStr)){
+                                _binding.taskCb.setTipsText(data.errorStr)
+                            }else if (data.lastCompletionTime != 0L) {
                                 _binding.taskCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
+                            }else{
+                                _binding.taskCb.setTipsText("")
                             }
                         }
 
                         vegetableDb?.let { data ->
                             _binding.vegetableCb.setChecked(data.isSwitch)
-                            if (data.lastCompletionTime != 0L) {
+                            if(!TextUtils.isEmpty(data.errorStr)){
+                                _binding.vegetableCb.setTipsText(data.errorStr)
+                            }else if (data.lastCompletionTime != 0L) {
                                 _binding.vegetableCb.setTipsText(TimeUtils.getNowTime(data.lastCompletionTime))
+                            }else{
+                                _binding.taskCb.setTipsText("")
                             }
                         }
                     }

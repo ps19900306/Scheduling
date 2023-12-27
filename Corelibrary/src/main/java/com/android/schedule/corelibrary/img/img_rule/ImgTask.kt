@@ -6,6 +6,7 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import com.android.schedule.corelibrary.click.ClickArea
+import com.android.schedule.corelibrary.img.color_rule.ColorCompareRule
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleImpl
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioUnImpl
@@ -26,7 +27,7 @@ abstract class ImgTask(
 
     var nErrorTolerance: Int = 0 //普通点容错
     var bErrorTolerance: Int =
-        (iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size) / 2 //背景点容错
+        (iprList.filter { it.getColorRule() is ColorRuleRatioUnImpl || it.getColorRule() is ColorRuleUnImpl || it is TwoPointRule }.size  ) / 3 //背景点容错
     var clickArea: ClickArea? = null //如果
     var closeArea: ClickArea? = null
 
@@ -68,14 +69,11 @@ abstract class ImgTask(
                 if (it.getColorRule() is ColorRuleRatioImpl || it is PointRules) {
                     normalErrorCount++
                     if (normalErrorCount > nE) {
-                       // L.i("失败基础点" + it.getCoordinatePoint().toString())
                         return false
                     }
-                } else if (it.getColorRule() is ColorRuleImpl || it.getColorRule() is ColorRuleUnImpl) {
+                } else if (it.getColorRule() is ColorRuleImpl || it.getColorRule() is ColorRuleUnImpl || it.getColorRule() is ColorCompareRule) {
                     backgroundErrorCount++
-                    //L.i(it.getCoordinatePoint().toString())
                     if (backgroundErrorCount > bE) {
-                       // L.i("失败对比点" + it.getCoordinatePoint().toString())
                         return false
                     }
                 } else {

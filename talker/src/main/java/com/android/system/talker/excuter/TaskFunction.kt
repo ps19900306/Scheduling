@@ -22,6 +22,7 @@ class TaskFunction(
     override suspend fun endGame(eroMsg: String?) {
         if (TextUtils.isEmpty(eroMsg)) {
             taskDb.lastCompletionTime = System.currentTimeMillis()
+            taskDb.errorStr=""
         } else {
             taskDb.errorStr = TimeUtils.getNowTime() + eroMsg
         }

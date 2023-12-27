@@ -7,7 +7,7 @@ import com.android.schedule.corelibrary.img.RGBInfo
 
 
 //这里定义颜色的校验规则
-interface ColorCompareRule {
+interface ColorCompareRule:ColorRule {
 
     fun optInt(colorInt1: Int,colorInt2: Int): Boolean {
         return verificationRule(colorInt1.red, colorInt1.green, colorInt1.blue,colorInt2.red, colorInt2.green, colorInt2.blue)

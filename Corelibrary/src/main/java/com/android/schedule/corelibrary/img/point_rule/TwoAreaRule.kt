@@ -9,6 +9,7 @@ import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.img.RGBInfo
 import com.android.schedule.corelibrary.img.color_rule.ColorCompareRule
+import com.android.schedule.corelibrary.img.color_rule.ColorRule
 
 //单点对应单色
 class TwoAreaRule(
@@ -20,6 +21,10 @@ class TwoAreaRule(
 
     override fun getCoordinatePoint(): CoordinatePoint {
         return CoordinatePoint(area1.x, area1.y)
+    }
+
+    override fun getColorRule(): ColorRule? {
+        return rule
     }
 
     override fun checkIpr(bitmap: Bitmap, offsetX: Int, offsetY: Int): Boolean {

@@ -29,6 +29,7 @@ class HarvestFunction(
     override suspend fun endGame(eroMsg: String?) {
         if (TextUtils.isEmpty(eroMsg)) {
             vegetableDb.lastCompletionTime = System.currentTimeMillis()
+            vegetableDb.errorStr =""
         } else {
             vegetableDb.errorStr = TimeUtils.getNowTime() + eroMsg
         }

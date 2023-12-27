@@ -27,18 +27,6 @@ class TakeImgAccessibilityService : AccessibilityService() {
     var screenBitmap: Bitmap? = null
 
 
-    private val _bind = object : GetMyImg.Stub() {
-        override fun optIntentBitmap() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                takeImgSend()
-            }
-        }
-
-        override fun getIntentBitmap(): Bitmap {
-            return screenBitmap!!
-        }
-    }
-
 
     private val communicationBroadcast by lazy {
         object : BroadcastReceiver() {
@@ -58,12 +46,18 @@ class TakeImgAccessibilityService : AccessibilityService() {
         takeImgSend()
     }
 
+
+    val optFunctions = NwqCallBack<Boolean> { //收到截图操作
+        testFunction()
+    }
+
     override fun onServiceConnected() {
         super.onServiceConnected()
         ContextUtil.context = this
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             L.d("设置截图")
             ImgOpt.takeBitmap = takeIMG
+            ImgOpt.optFunction = optFunctions
         }
     }
 
@@ -76,13 +70,17 @@ class TakeImgAccessibilityService : AccessibilityService() {
 
     }
 
+    fun testFunction(){
+        GlobalScope.launch {
+            delay(6000)
+            CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.R)
     fun takeImgSend() {
         GlobalScope.launch {
             delay(10000)
-
-         CollectVoucherExecuter(this@TakeImgAccessibilityService).optCollectVoucher()
-         return@launch
             takeScreenshot(
                 Display.DEFAULT_DISPLAY,
                 mainExecutor,
@@ -102,8 +100,6 @@ class TakeImgAccessibilityService : AccessibilityService() {
                     }
                 })
         }
-
-
     }
 
     override fun bindService(service: Intent?, conn: ServiceConnection, flags: Int): Boolean {

@@ -5,7 +5,7 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 
 //这里定义颜色的校验规则
-interface ColorIdentificationRule {
+interface ColorIdentificationRule:ColorRule {
 
     fun  optInt(colorInt: Int): Boolean {
         return verificationRule(colorInt.red, colorInt.green, colorInt.blue)

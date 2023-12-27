@@ -3,13 +3,14 @@ package com.android.schedule.corelibrary.img.point_rule
 import android.graphics.Bitmap
 import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.img.color_rule.ColorIdentificationRule
+import com.android.schedule.corelibrary.img.color_rule.ColorRule
 
 
 interface IPR {
 
     fun getCoordinatePoint(): CoordinatePoint
 
-    fun getColorRule(): ColorIdentificationRule?{
+    fun getColorRule(): ColorRule?{
         return  null
     }
 

@@ -57,14 +57,14 @@ object TimeUtils {
         val lastHour = lastCalendar.get(Calendar.HOUR_OF_DAY)
         val lastDay = lastCalendar.get(Calendar.DAY_OF_YEAR)
 
-        val lastFlag = if (lastHour >= refreshHour) {
+        val dayFlag = if (lastHour >= refreshHour) {
             lastDay
         } else {
             lastDay - 1
         }
 
         val nowCalendar = Calendar.getInstance();
-        nowCalendar.set(lastCalendar.get(Calendar.YEAR),lastCalendar.get(Calendar.MONTH),lastFlag+1,8,0,10)
+        nowCalendar.set(lastCalendar.get(Calendar.YEAR),lastCalendar.get(Calendar.MONTH),dayFlag+1,8,0,10)
 
         return nowCalendar.timeInMillis - System.currentTimeMillis()
     }
@@ -100,7 +100,7 @@ object TimeUtils {
         return nowFlag != lastFlag
     }
 
-    //这里是用来判断是新的一周
+    //这里是用来判断是新的一月
     fun isNewMouth(lastCompletionTime: Long, pickDay: Int = 30): Boolean {
         if (lastCompletionTime == 0L)
             return true
@@ -142,8 +142,9 @@ object TimeUtils {
 
 
     fun getNowTime(time:Long= System.currentTimeMillis()): String {
-        val dateFormat = SimpleDateFormat("dd日hh时")
-        return dateFormat.format(Date(time))
+        val calendar = Calendar.getInstance();
+        calendar.timeInMillis = time
+        return  "${calendar.get(Calendar.DAY_OF_MONTH)}日${calendar.get(Calendar.HOUR_OF_DAY)}时"
     }
 
     //返回当月天数
