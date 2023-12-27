@@ -42,7 +42,7 @@ abstract class BaseFunctionControl(
     }
 
 
-    abstract fun endGame(eroMsg: String? = "")
+    abstract suspend fun endGame(eroMsg: String? = "")
 
     abstract suspend fun getTag(): String
 
@@ -52,7 +52,7 @@ abstract class BaseFunctionControl(
 
 
     private var hasResult = true
-    fun reportingError(string: String) {
+   suspend fun reportingError(string: String) {
         if (hasResult) {
             L.d(string)
             endGame(string)
@@ -828,6 +828,7 @@ abstract class BaseFunctionControl(
                 } else if (en.isCloneCenterTask.check()) {
                     en.cloneCenterArea.c(en.isCloneCenterTask)
                     delay(clickInterval)
+                } else {//这里多次每找到需要进行滑动
                 }
             } else if (en.isOpenCloneMenuTask.check()) {
                 if (position <= 2) {

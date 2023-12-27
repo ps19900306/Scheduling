@@ -24,6 +24,7 @@ class MasterControl(
 
     override fun start() {
         job = GlobalScope.launch(Dispatchers.IO) {
+            pressHomeBtn()
             dataBase.getUserDao().list().forEach {
                 if (it.isChecked && TimeUtils.isNewDay(it.lastCompletionTime, it.startGameTime)) {
                     performTask(it)
@@ -34,12 +35,15 @@ class MasterControl(
 
     fun startCirculate() {
         job = GlobalScope.launch(Dispatchers.IO) {
+            pressHomeBtn()
             var flag = true
+            L.d("启动循环")
             while (flag) {
                 dataBase.getUserDao().list().sortedBy { it.lastCompletionTime }.forEach {
                     if (it.isChecked) {
                         //如果时间不够就释放掉
                         if (!TimeUtils.isNewDay(it.lastCompletionTime, it.startGameTime)) {
+                            L.d(" 进行启动等待")
                             delay(TimeUtils.getDelayTime(it.lastCompletionTime, it.startGameTime))
                             val awakenExecuter = AwakenExecuter(acService)
                             awakenExecuter.optAwaken()
@@ -83,6 +87,7 @@ class MasterControl(
 
         list.add(UserFunction(userDb, dataBase, acService))
 
+
         if (vegetableDb != null && vegetableDb.isSwitch) {
             list.add(HarvestFunction(vegetableDb, userDb, dataBase, acService))
         }
@@ -97,15 +102,21 @@ class MasterControl(
 
         val mapList = list.groupBy { it.getBaseCloneLocation() }
 
+
+        val oldCloneLocation = userDb.baseCloneLocation
         //这里先集中执行克隆位置一样的
         mapList[userDb.baseCloneLocation]?.let {
-            it.forEach {
-                it.startFunction()
+            it.forEachIndexed { index, baseFunctionControl ->
+                baseFunctionControl.startFunction()
+                //这里是保证进入后增加一次菜时间
+                if (index == 0 && vegetableDb != null && vegetableDb.isSwitch && vegetableDb.baseCloneLocation != oldCloneLocation) {
+                    HarvestFunction(vegetableDb, userDb, dataBase, acService).checkAndTime()
+                }
             }
         }
 
 
-        val oldCloneLocation = userDb.baseCloneLocation
+
         mapList.forEach { (t, u) ->
             if (t != oldCloneLocation) {
                 //改变克隆时间需要有间隔 但是基地坐标不需要时间
@@ -124,7 +135,7 @@ class MasterControl(
         }
 
         //最后再增加一下收菜时间
-        if (vegetableDb != null && vegetableDb.isSwitch) {
+        if (vegetableDb != null && vegetableDb.isSwitch && vegetableDb.baseCloneLocation == oldCloneLocation) {
             HarvestFunction(vegetableDb, userDb, dataBase, acService).let {
                 it.checkAndTime()
                 it.exitGame()

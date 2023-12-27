@@ -26,7 +26,7 @@ class HarvestFunction(
 
 
     val TAG = "收菜"
-    override fun endGame(eroMsg: String?) {
+    override suspend fun endGame(eroMsg: String?) {
         if (TextUtils.isEmpty(eroMsg)) {
             vegetableDb.lastCompletionTime = System.currentTimeMillis()
         } else {
@@ -174,6 +174,8 @@ class HarvestFunction(
             vegetableDb.lastAddTime = System.currentTimeMillis()
             vegetableDb.lastCompletionTime = System.currentTimeMillis()
             dataBase.getVegetableDao().update(vegetableDb)
+            delay(jumpClickInterval*3)
+            theOutCheck()
             end()
         }
     }

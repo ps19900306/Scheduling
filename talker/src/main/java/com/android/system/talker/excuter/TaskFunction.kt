@@ -19,7 +19,7 @@ class TaskFunction(
 
     val TAG = "际遇任务"
 
-    override fun endGame(eroMsg: String?) {
+    override suspend fun endGame(eroMsg: String?) {
         if (TextUtils.isEmpty(eroMsg)) {
             taskDb.lastCompletionTime = System.currentTimeMillis()
         } else {
@@ -122,8 +122,8 @@ class TaskFunction(
             val nowTime = System.currentTimeMillis()
 
             if (TimeUtils.judgingTheInterval(nowTime, startTime, SetConstant.halfHour)) {
-                exitGame()
                 reportingError("执行游戏异常")
+                return
             }
 
             if (hasTopLockTart()) {//如果有锁定的目标则认为是正常的
@@ -167,6 +167,7 @@ class TaskFunction(
                     startTime = nowTime
                 } else if (TimeUtils.judgingTheInterval(nowTime, startTime, redundantWaitTime)) {
                     if (en.isCompleteAllTask.check()) {
+                        theOutCheck()
                         end()
                         flag = false
                     } else if (!TimeUtils.judgingTheInterval(
@@ -175,8 +176,8 @@ class TaskFunction(
                             SetConstant.halfHour
                         )
                     ) {
-                        L.d("过快原因没有任务 进入删除")
-                        end()
+
+                        reportingError("过快原因没有任务 进入删除")
                         flag = false
                     } else if (en.isCanRefreshTask.check()) {//这里需要等到能刷新再去启动游戏
                         lastNoTask = nowTime
@@ -240,9 +241,9 @@ class TaskFunction(
                 return false
             }
             if (en.isNojiYuTask.check()) {
-                return true
-            } else if (en.isBigNormalList.find { it.check() } != null) {
                 return false
+            } else if (en.isBigNormalList.find { it.check() } != null) {
+                return true
             }
             count--
         }

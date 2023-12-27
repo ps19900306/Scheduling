@@ -11,7 +11,7 @@ import kotlinx.coroutines.delay
 
 class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseController(acService) {
 
-     var result = false
+    var result = false
 
     val en = XiaoMiEnvironment
     suspend fun optCollectVoucher() {
@@ -23,8 +23,8 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
             if (!taskScreenV(screenshotIntervalF)) {
                 pressHomeBtn()
                 delay(jumpClickInterval)
-            }else{
-                if (en.isHomeGameCenterTask.check()||en.isHomeGameCenter2Task.check()) {
+            } else {
+                if (en.isHomeGameCenterTask.check() || en.isHomeGameCenter2Task.check()) {
                     flag = false
                 } else {
                     pressHomeBtn()
@@ -88,6 +88,9 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
         count = 15
         val clickSpeedControl1 = ClickSpeedControl()
         clickSpeedControl1.addUnit(en.isChangWankaTask, en.changWankaArea)
+        clickSpeedControl1.addUnit(en.isChangWanka2Task, en.isChangWanka2Area)
+        clickSpeedControl1.addUnit(en.isChangWanka3Task, en.isChangWanka3Area)
+        clickSpeedControl1.addUnit(en.isChangWanka4Task, en.isChangWanka4Area)
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenV(screenshotIntervalF)) {
                 return
@@ -114,13 +117,21 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
                 return
             }
             if (en.isOnceDailyTask.check()
-             //   && en.is3DiscountTask.copyOffset(en.isOnceDailyTask).check()
+            //   && en.is3DiscountTask.copyOffset(en.isOnceDailyTask).check()
             ) {
+                flag = false
                 L.d("领取成功")
                 en.is3DiscountArea.c(en.isOnceDailyTask)
                 result = true
                 delay(jumpClickInterval)
-            } else {
+            } else if(en.isOnceDaily2Task.check()){
+                flag = false
+                L.d("领取成功")
+                en.isOnceDaily2Area.c(en.isOnceDaily2Task)
+                result = true
+                delay(jumpClickInterval)
+            }
+            else {
                 SimpleClickUtils.optClickTasks(acService, 0, 0, en.bottomToTopCenter)
             }
             count--

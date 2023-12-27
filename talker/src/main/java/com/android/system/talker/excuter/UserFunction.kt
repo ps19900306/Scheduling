@@ -15,7 +15,7 @@ class UserFunction(
     dataBase: AppDataBase,
     acService: AccessibilityService
 ) : BaseFunctionControl(userDb, dataBase, acService) {
-    override fun endGame(eroMsg: String?) {
+    override suspend fun endGame(eroMsg: String?) {
         L.d("保存userDb信息")
         dataBase.getUserDao().update(userDb)
     }

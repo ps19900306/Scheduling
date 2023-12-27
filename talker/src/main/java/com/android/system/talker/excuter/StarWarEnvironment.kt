@@ -4581,7 +4581,7 @@ class StarWarEnvironment {
         val tag = "findLunchArea"
         val pr = PointRule(CoordinatePoint(2118, 749), ColorRuleRatioImpl.getSimple(198, 223, 220))
         // sequenceNumber:0 blockNumber: 0  positionType:0
-        val findArea = CoordinateArea(2115, 419, 7, 384)
+        val findArea = CoordinateArea(2115, 419, 7, 484)
         val pointList = mutableListOf<IPR>()
         pointList.add(
             PointRule(CoordinatePoint(2116, 756), ColorRuleRatioImpl.getSimple(218, 234, 231))

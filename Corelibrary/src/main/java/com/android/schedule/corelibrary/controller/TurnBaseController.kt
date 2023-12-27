@@ -234,12 +234,14 @@ abstract class TurnBaseController(
         click(this)
     }
 
-    suspend fun ClickSpeedControl.cc() {
+    suspend fun ClickSpeedControl.cc(): Boolean {
         screenBitmap?.let {
             this.checkImg(it)?.let {
                 optClickTask(it)
+                return true
             }
         }
+        return false
     }
 
     suspend fun TwoFingerArea.c() {

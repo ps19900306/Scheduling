@@ -13,7 +13,7 @@ class MinerFunction(
     dataBase: AppDataBase,
     acService: AccessibilityService
 ) : BaseFunctionControl(userDb, dataBase, acService) {
-    override fun endGame(eroMsg: String?) {
+    override suspend fun endGame(eroMsg: String?) {
         TODO("Not yet implemented")
     }
 
