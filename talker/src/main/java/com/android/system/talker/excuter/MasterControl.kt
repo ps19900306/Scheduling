@@ -56,10 +56,11 @@ class MasterControl(
                     }
                 }
             }
-
-
         }
     }
+
+
+
 
 
     override suspend fun end() {
@@ -108,6 +109,10 @@ class MasterControl(
         mapList[userDb.baseCloneLocation]?.let {
             it.forEachIndexed { index, baseFunctionControl ->
                 baseFunctionControl.startFunction()
+                if (!baseFunctionControl.optReuslt) {
+                    baseFunctionControl.exitGame()
+                    return
+                }
                 //这里是保证进入后增加一次菜时间
                 if (index == 0 && vegetableDb != null && vegetableDb.isSwitch && vegetableDb.baseCloneLocation != oldCloneLocation) {
                     HarvestFunction(vegetableDb, userDb, dataBase, acService).checkAndTime()
@@ -127,6 +132,10 @@ class MasterControl(
                 ) {
                     u.forEach {
                         it.startFunction()
+                        if (!it.optReuslt) {
+                            it.exitGame()
+                            return
+                        }
                     }
                 }
 

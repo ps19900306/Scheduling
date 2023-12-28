@@ -107,10 +107,18 @@ object TimeUtils {
         val lastCalendar = Calendar.getInstance();
         lastCalendar.timeInMillis = lastCompletionTime
         val lastMouth = lastCalendar.get(Calendar.MONTH)
+        val lastDay = lastCalendar.get(Calendar.DAY_OF_MONTH)
+
+        val lastMaxDay = getDays(lastCalendar.get(Calendar.YEAR), lastMouth)
+        val lastFlag = if (lastDay >= pickDay || lastDay>=lastMaxDay) {
+            lastMouth
+        } else {
+            lastMouth - 1
+        }
 
         val nowCalendar = Calendar.getInstance();
         val month = nowCalendar.get(Calendar.MONTH)
-        if (lastMouth == month)
+        if (lastFlag == month)
             return false
 
         val year = nowCalendar.get(Calendar.YEAR)

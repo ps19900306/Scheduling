@@ -39,7 +39,10 @@ class ClickArea(
         return toClickTask(delayTime, imgTask.getOffX(), imgTask.getOffY())
     }
 
+    var lastClickTime = 0L
+
     fun toClickTask(delayTime: Long = 0L, ofstX: Int = 0, ofstY: Int = 0): ClickTask {
+        lastClickTime = System.currentTimeMillis()
         if (constrainedArea != null) {//如果对点击区域有约束则生成新的约束
             return copyOffset(ofstX, ofstY).toClickTask(delayTime)
         }

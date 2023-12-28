@@ -79,6 +79,14 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
                 delay(jumpClickInterval)
                 result = true
                 return
+            } else if (en.is3DiscountFast2Task.check() && en.is3DiscountFast2VTask.copyOffset(en.is3DiscountFast2Task)
+                    .check()
+            ) {
+                L.d("快速领取成功")
+                en.is3DiscountFast2Area.c(en.is3DiscountFast2Task)
+                delay(jumpClickInterval)
+                result = true
+                return
             }
             count--
         }
@@ -126,14 +134,13 @@ class CollectVoucherExecuter(acService: AccessibilityService) : TurnBaseControll
                 en.is3DiscountArea.c(en.isOnceDailyTask)
                 result = true
                 delay(jumpClickInterval)
-            } else if(en.isOnceDaily2Task.check()){
+            } else if (en.isOnceDaily2Task.check()) {
                 flag = false
                 L.d("领取成功")
                 en.isOnceDaily2Area.c(en.isOnceDaily2Task)
                 result = true
                 delay(jumpClickInterval)
-            }
-            else {
+            } else {
                 SimpleClickUtils.optClickTasks(acService, 0, 0, en.bottomToTopCenter)
             }
             count--

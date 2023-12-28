@@ -13,6 +13,7 @@ import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
 import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
 import com.android.schedule.corelibrary.utils.L
+import com.android.schedule.corelibrary.utils.TimeUtils
 import kotlinx.coroutines.delay
 
 /**
@@ -229,6 +230,12 @@ abstract class TurnBaseController(
         return false
     }
 
+
+    suspend fun ClickArea.c(intervalTime: Long) {
+        if (TimeUtils.judgingTheInterval(System.currentTimeMillis(), lastClickTime, intervalTime)) {
+            click(this)
+        }
+    }
 
     suspend fun ClickArea.c() {
         click(this)

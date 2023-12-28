@@ -2,6 +2,7 @@ package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Bitmap
+import android.text.TextUtils
 import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
@@ -52,12 +53,14 @@ abstract class BaseFunctionControl(
 
     private var hasResult = true
 
-   suspend fun reportingError(string: String) {
+    var optReuslt = true
+    suspend fun reportingError(string: String) {
+        runSwitch = false
         if (hasResult) {
             L.d(string)
+            optReuslt = false
             endGame(string)
             hasResult = false
-            runSwitch = false
             onEnd?.onCallBack(false)
         }
     }
@@ -65,10 +68,10 @@ abstract class BaseFunctionControl(
     override suspend fun end() {
         theOutCheck()
         super.end()
+        runSwitch = false
         if (hasResult) {
             endGame("")
             hasResult = false
-            runSwitch = false
             onEnd?.onCallBack(true)
         }
     }
@@ -120,8 +123,7 @@ abstract class BaseFunctionControl(
 
 
     private suspend fun hasIntoGame(): Boolean {
-        return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()) &&
-                (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check())
+        return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()) && (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check())
     }
 
     protected suspend fun hasTaskDialogBox(): Boolean {
@@ -828,7 +830,7 @@ abstract class BaseFunctionControl(
                 } else if (en.isCloneCenterTask.check()) {
                     en.cloneCenterArea.c(en.isCloneCenterTask)
                     delay(clickInterval)
-                } else if(count%5==0){//这里多次每找到需要进行滑动
+                } else if (count % 5 == 0) {//这里多次每找到需要进行滑动
                     en.cloneCenterSlide.c()
                     delay(jumpClickInterval)
                 }
