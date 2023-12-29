@@ -3,6 +3,7 @@ package com.android.schedule.corelibrary.xiaomi
 import android.accessibilityservice.AccessibilityService
 import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.controller.TurnBaseController
+import com.android.schedule.corelibrary.utils.L
 
 class AwakenExecuter(acService: AccessibilityService) : TurnBaseController(acService) {
 
@@ -10,6 +11,7 @@ class AwakenExecuter(acService: AccessibilityService) : TurnBaseController(acSer
 
     val en = XiaoMiEnvironment
     suspend fun optAwaken() {
+        L.d("执行唤醒操作")
         var flag = true
         var count = 12
         taskScreenV(screenshotInterval)

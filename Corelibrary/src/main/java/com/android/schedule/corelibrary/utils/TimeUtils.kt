@@ -1,11 +1,9 @@
 package com.android.schedule.corelibrary.utils
 
 import com.android.schedule.corelibrary.SetConstant
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.delay
 import java.util.Calendar
 import java.util.Calendar.SUNDAY
-import java.util.Calendar.THURSDAY
-import java.util.Date
 import kotlin.math.abs
 
 object TimeUtils {
@@ -55,20 +53,40 @@ object TimeUtils {
         val lastCalendar = Calendar.getInstance();
         lastCalendar.timeInMillis = lastCompletionTime
         val lastHour = lastCalendar.get(Calendar.HOUR_OF_DAY)
-        val lastDay = lastCalendar.get(Calendar.DAY_OF_YEAR)
-
+        val lastDay = lastCalendar.get(Calendar.DAY_OF_MONTH)
+        val lastMouth= lastCalendar.get(Calendar.MONTH)
         val dayFlag = if (lastHour >= refreshHour) {
             lastDay
         } else {
             lastDay - 1
         }
 
-        val nowCalendar = Calendar.getInstance();
-        nowCalendar.set(lastCalendar.get(Calendar.YEAR),lastCalendar.get(Calendar.MONTH),dayFlag+1,8,0,10)
+        val maxDayOfMouth = getDays(lastCalendar.get(Calendar.YEAR), lastMouth)
 
-        return nowCalendar.timeInMillis - System.currentTimeMillis()
+        val nowCalendar = Calendar.getInstance();
+        if(dayFlag==maxDayOfMouth){
+            if(lastMouth==Calendar.DECEMBER){//这里是十二月
+                nowCalendar.set(nowCalendar.get(Calendar.YEAR)+1,Calendar.JANUARY,1,refreshHour,0,10)
+            }else{
+                nowCalendar.set(nowCalendar.get(Calendar.YEAR),lastMouth+1,1,refreshHour,0,10)
+            }
+        }else{
+            nowCalendar.set(nowCalendar.get(Calendar.YEAR),lastMouth,dayFlag+1,refreshHour,0,10)
+        }
+
+        L.d("time${nowCalendar.get(Calendar.YEAR)} getDelayTime ${nowCalendar.get(Calendar.MONTH)}${nowCalendar.get(Calendar.MONTH)}")
+        val time = nowCalendar.timeInMillis - System.currentTimeMillis()
+        L.d("time${time} getDelayTime ${convertMillis(time)}")
+        return time
     }
 
+
+    private fun convertMillis(n: Long): String? {
+        val a = n / (1000 * 60 * 60)
+        val b = (n / 60000)%60
+        val c = (n / 1000)%60
+        return "$a:$b:$c"
+    }
 
 
 

@@ -96,6 +96,8 @@ class TaskFunction(
         var count = 51
         var record = 100
         var recordErro = 0
+        //不管什么先点一下
+        en.topDeviceList[2].clickArea?.c()
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)

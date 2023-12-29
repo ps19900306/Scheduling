@@ -52,7 +52,10 @@ class MasterControl(
                                 return@launch
                             }
                         }
-                        performTask(it)
+                        if(!performTask(it)){//只要有一个失败就结束执行
+                            flag = false
+                            return@launch
+                        }
                     }
                 }
             }
@@ -67,7 +70,7 @@ class MasterControl(
         job?.cancel()
     }
 
-    private suspend fun performTask(userDb: UserDb) {
+    private suspend fun performTask(userDb: UserDb):Boolean {
         if (userDb.xiaomiDiscountSwitch && TimeUtils.isNewDay(userDb.xiaomiDiscountTime, 1)) {
             CollectVoucherExecuter(acService).let {
                 it.optCollectVoucher()
@@ -111,7 +114,7 @@ class MasterControl(
                 baseFunctionControl.startFunction()
                 if (!baseFunctionControl.optReuslt) {
                     baseFunctionControl.exitGame()
-                    return
+                    return false
                 }
                 //这里是保证进入后增加一次菜时间
                 if (index == 0 && vegetableDb != null && vegetableDb.isSwitch && vegetableDb.baseCloneLocation != oldCloneLocation) {
@@ -134,7 +137,7 @@ class MasterControl(
                         it.startFunction()
                         if (!it.optReuslt) {
                             it.exitGame()
-                            return
+                            return false
                         }
                     }
                 }
@@ -155,6 +158,7 @@ class MasterControl(
 
         userDb.lastCompletionTime = System.currentTimeMillis()
         dataBase.getUserDao().update(userDb)
+        return true
     }
 
 
