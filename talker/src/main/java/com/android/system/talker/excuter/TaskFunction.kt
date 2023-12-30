@@ -1,10 +1,14 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Bitmap
+import android.media.tv.TableRequest
 import android.text.TextUtils
 import android.text.format.Time
 import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.utils.L
+import com.android.schedule.corelibrary.utils.NwqCallBack
+import com.android.schedule.corelibrary.utils.NwqCallBackResult
 import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.TaskDb
@@ -73,7 +77,7 @@ class TaskFunction(
                 }
 
                 conditionStatus -> {
-                    conditionAiStatus()
+                    monitorAllStatuses()
                 }
 
                 restartGame -> {
@@ -92,205 +96,44 @@ class TaskFunction(
         L.d("开启AI")
         theOutCheck()
         outSpaceStation()
-        var flag = true
-        var count = 51
-        var record = 100
-        var recordErro = 0
-        //不管什么先点一下
         en.topDeviceList[2].clickArea?.c()
+    }
+
+
+    var hasCancle = false
+    private suspend fun restartGame() {
+        var flag = true
+        var count = 20 * 20
+        clickPositionMenu(taskDb.baseMenuLocation)
         while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(screenshotIntervalF)) {
+            if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return
             }
-            if (en.isOpenJiyuBigMenuTask.check()) {
-                L.d("际遇任务领取")
+            updateInfo()
+            //这个过程中只要有一个战斗因素判断成功就进入战斗
+            if (canLockRecorder.isOpenTrustThresholds() || topLockTartRecorder.isOpenTrustThresholds()
+                || bottomDeviceOpenRecorder.isOpenTrustThresholds()
+            ) {
+                nowStep = conditionStatus
+                return
+            }
+
+            //这个是返回逻辑的
+            if (en.isInSpaceStationT.check()) {
                 flag = false
-            } else if (isInSpace()) {
-                if (!en.isCloseAiTask.check() || hasBottomDeviceOpen()) {//开启成功
-                    L.d("isOpenAiTask")
-                    flag = false
-                } else if (hasTopLockTart()) {//顶部有锁定的
-                    if (recordErro < count) {
-                        L.d("startAi hasTopLockTart")
-                        recordErro = count
-                    }
-                    if (recordErro - count > 5) {
-                        clickPositionMenu(taskDb.baseMenuLocation)
-                        reportingError("hasTopLockTart")
-                        return
-                    }
-                } else if (isInSpace()) {
-                    if (record - count > 10) {
-                        L.d("进行点击")
-                        en.topDeviceList[2].clickArea?.c()
-                        record = count
-                    }
-                }
             }
             count--
         }
-        if (flag) {
-            nowStep = -10000
-            clickPositionMenu(taskDb.baseMenuLocation)
-            reportingError("startAi")
-            return
-        } else {
-            nowStep = conditionStatus
-        }
 
-    }
-
-    val ai_unkown = -1
-    val ai_nomarl = 0
-    val isOpenTaskManu = 2 //打开了际遇菜单
-    val ai_close = 3
-    val ai_open = 4
-
-    val ai_nomarl_erro = 11   //这个是Ai的识别异常
-
-    var aiStatus = ai_unkown
-    var lastNoTask = 0L
-
-
-    private suspend fun conditionAiStatus() {
-        L.d("conditionAiStatus")
-        var startTime = System.currentTimeMillis()
-        //这个是判断异常冗余时间
-        var redundantWaitTime = ((Math.random() * 3 + 2) * SetConstant.MINUTE).toLong()
-        aiStatus = ai_unkown
-        var flag = true
-        while (flag && runSwitch) {
-            if (!taskScreenL(screenshotInterval)) {
-                reportingError(ABNORMAL_SCREENO_ORIENTATION)
-                return
-            }
-            val nowTime = System.currentTimeMillis()
-            if (hasTopLockTart()) {//如果有锁定的目标则认为是正常的
-                //这一段if都是为了冗余容错 else段不是
-                if (!hasBottomDeviceOpen()) {
-                    if (aiStatus != ai_nomarl_erro) {
-                        startTime = nowTime
-                        aiStatus = ai_nomarl_erro
-                    } else if (TimeUtils.judgingTheInterval(
-                            nowTime,
-                            startTime,
-                            redundantWaitTime
-                        )
-                    ) {
-                        en.topDeviceList[2].clickArea?.c()
-                        clickPositionMenu(taskDb.baseMenuLocation)
-                        reportingError("ai_nomarl_erro")
-                        return
-                    }
-                } else {
-                    startTime = nowTime
-                    aiStatus = ai_nomarl
-                }
-            } else if (en.isCloseAiTask.check() && !hasBottomDeviceOpen()) {//这里ai是关闭的且没有目标
-                if (en.isCanLockTask.check()) { //这里表示已经可以锁定 则直接进行锁定
-                    en.topDeviceList[2].clickArea?.c(10000)
-                } else {
-                    if (aiStatus != ai_close) {
-                        startTime = nowTime
-                        aiStatus = ai_close
-                    } else if (TimeUtils.judgingTheInterval(
-                            nowTime,
-                            startTime,
-                            redundantWaitTime
-                        )
-                    ) {
-                        flag = false
-                        nowStep = startAi
-                    }
-                }
-            } else if (isInSpace()) {//进入这里坑定是ai不是关闭的状态
-                if (aiStatus != ai_open) {
-                    startTime = nowTime
-                    aiStatus = ai_open
-                } else if (TimeUtils.judgingTheInterval(
-                        nowTime,
-                        startTime,
-                        SetConstant.halfHour
-                    )
-                ) {
-                    nowStep = restartGame
-                    return
-                }
-            } else if (en.isOpenJiyuBigMenuTask.check()) {//这里是打开际遇的开关
-                if (aiStatus != isOpenTaskManu) {
-                    L.d("aiStatus == isOpenTaskManu")
-                    aiStatus = isOpenTaskManu
-                    startTime = nowTime
-                } else if (TimeUtils.judgingTheInterval(
-                        nowTime,
-                        startTime,
-                        redundantWaitTime
-                    )
-                ) {
-                    if (en.isCompleteAllTask.check()) {
-                        theOutCheck()
-                        end()
-                        flag = false
-                    } else if (!TimeUtils.judgingTheInterval(
-                            nowTime,
-                            lastNoTask,
-                            SetConstant.halfHour
-                        )
-                    ) {
-                        reportingError("过快原因没有任务 进入删除")
-                        flag = false
-                    } else if (en.isCanRefreshTask.check()) {//这里需要等到能刷新再去启动游戏
-                        lastNoTask = nowTime
-                        L.d("isCanRefreshTask")
-                        flag = false
-                        nowStep = startAi
-                    }
-                }
-            }
-        }
-    }
-
-
-    private suspend fun restartGame() {
-        L.d("restartGame")
-        var flag = true
-        var count = 20
-        while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(screenshotInterval)) {
-                reportingError(ABNORMAL_SCREENO_ORIENTATION)
-                return
-            }
-            if (hasTopLockTart()) {//有目標返回正常監控
-                nowStep = conditionStatus
-                return
-            } else if (en.isOpenJiyuBigMenuTask.check()) {
-                en.closeBigMenuArea.c()
-                delay(jumpClickInterval)
-            } else if (isInSpace()) {
-                if (hasBottomDeviceOpen()) {
-                    clickPositionMenu(taskDb.baseMenuLocation)
-                    reportingError("restart hasBottomDevice")
-                    return
-                } else if (!en.isCloseAiTask.check()) {
-                    flag = false
-                } else {
-                    en.topDeviceList[2].clickArea?.c()
-                }
-            } else {
-                theOutCheck()
-                reportingError("重启未知错误")
-                return
-            }
-        }
         //上面表示已经成功关闭了Ai
         if (flag) {
-            reportingError("重启未知错误")
+            reportingError("返回空间站失败了")
             return
         }
 
-        if (returnSpaceStation(taskDb.baseMenuLocation)) {
-            delay(jumpClickInterval)
+        delay(jumpClickInterval)
+        if (hasCancle) {
             if (exitGame()) {
                 delay(jumpClickInterval)
                 if (intoGame()) {
@@ -301,23 +144,13 @@ class TaskFunction(
                     reportingError("restartGame into")
                     return
                 }
-            } else {
-                reportingError("restartGame exit")
-                return
+            }else{
+                reportingError("restartGame exitGame")
             }
         } else {
-            reportingError("restartGame return")
-            return
+            cancelFirstTask()
+            nowStep = startAi
         }
-
-        if (taskScreenL(screenshotInterval)) {
-            if (!en.isCloseAiTask.check()) {
-                en.topDeviceList[2].clickArea?.c()
-            }
-        } else {
-            reportingError(ABNORMAL_SCREENO_ORIENTATION)
-        }
-
     }
 
 
@@ -361,5 +194,171 @@ class TaskFunction(
         return false
     }
 
+
+    private val topLockTartRecorder = StatusRecorder("hasTopLockTart", 2, 20) {
+        hasTopLockTart()
+    }
+
+    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 5, 20) {
+        hasBottomDeviceOpen()
+    }
+
+    //这里相信是关闭  但是关闭时候isCloseAiTask有可能也是失败
+    private val closeAiRecorder = StatusRecorder("closeAi", 5, 20 * 20) {
+        en.isCloseAiTask.check()
+    }
+
+    private val openPositionMenuRecorder = StatusRecorder("openPosition", 3, 60) {
+        en.isOpenPositionMenuT.check()
+    }
+
+    private val openJiyuBigMenuRecorder = StatusRecorder("openPosition", 10, 100) {
+        en.isOpenJiyuBigMenuTask.check()
+    }
+
+    private val canLockRecorder = StatusRecorder("canLock", 10, 60) {
+        en.isCanLockTask.check()
+    }
+
+
+    private suspend fun monitorAllStatuses() {
+        L.d("monitorAllStatuses")
+        while (runSwitch) {
+            if (!taskScreenL(screenshotInterval)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return
+            }
+            updateInfo()
+
+            //安全 这里锁定按钮和出现时间很长 且设备一直未能开启
+            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()) {
+                L.d("判断是否需要开启设备")
+                if (closeAiRecorder.isOpenTrustThresholds()) {
+                    L.d("closeAiRecorder开启设备")
+                    en.topDeviceList[2].clickArea?.c(10000)
+                } else if (bottomDeviceOpenRecorder.isCloseTrustThresholds()) {
+                    L.d("bottomDeviceOpen开启设备")
+                    en.topDeviceList[2].clickArea?.c(10000)
+                }
+            }
+
+            //安全 锁定无目标时间过长
+            if (canLockRecorder.isOpenErrorThresholds() && topLockTartRecorder.isCloseErrorThresholds()) {
+                clickPositionMenu(taskDb.baseMenuLocation)
+                if (closeAiRecorder.isOpenTrustThresholds()) {
+                    en.topDeviceList[2].clickArea?.c(10000)
+                } else if (bottomDeviceOpenRecorder.isCloseTrustThresholds()) {
+                    en.topDeviceList[2].clickArea?.c(10000)
+                }
+                L.d("锁定无目标时间过长")
+            }
+
+            // 这个是用于判断引力波导致的关闭
+            if (canLockRecorder.isCloseErrorThresholds()
+                && topLockTartRecorder.isCloseErrorThresholds()
+                && openPositionMenuRecorder.isCloseErrorThresholds()//这个是判断结束导航的
+            ) {
+                L.d("引力波导致的关闭")
+                if (closeAiRecorder.isOpenTrustThresholds()) {
+                    en.topDeviceList[2].clickArea?.c(10000)
+                } else if (bottomDeviceOpenRecorder.isCloseTrustThresholds()) {
+                    en.topDeviceList[2].clickArea?.c(10000)
+                }
+            }
+
+            //这个是用于判断无任务导致的关闭执行逻辑的
+            if (openJiyuBigMenuRecorder.isOpenErrorThresholds()) {
+                if (en.isCompleteAllTask.check()) {//这里已经全部执行完毕
+                    end()
+                    L.d("isCompleteAllTask")
+                    return
+                } else if (en.isCanRefreshTask.check()) {
+                    nowStep = startAi
+                    return
+                }
+            }
+
+            if (openJiyuBigMenuRecorder.isCloseErrorThresholds() && canLockRecorder.isCloseErrorThresholds()
+                && topLockTartRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
+                && closeAiRecorder.isCloseErrorThresholds()
+            ) { //20分钟没有一次验证Ai是关闭的
+                L.d("restartGame")
+                nowStep = restartGame
+                en.topDeviceList[2].clickArea?.c(10000)
+                return
+            }
+        }
+    }
+
+
+    private suspend fun updateInfo() {
+        topLockTartRecorder.updateInfo()
+        bottomDeviceOpenRecorder.updateInfo()
+        closeAiRecorder.updateInfo()
+        openPositionMenuRecorder.updateInfo()
+        openJiyuBigMenuRecorder.updateInfo()
+        canLockRecorder.updateInfo()
+    }
+}
+
+
+class StatusRecorder(
+    val tag: String,
+    val trustThresholds: Int,
+    val errorThreshold: Int,
+    val isOpen: suspend () -> Boolean
+) {
+    var lastTrueCount = 0
+    var lastfalseCount = 0
+
+    var lastStatus = false
+
+    fun isOpenTrustThresholds(): Boolean {
+        if (lastStatus) {
+            return lastTrueCount >= trustThresholds
+        }
+        return false
+    }
+
+    fun isCloseTrustThresholds(): Boolean {
+        if (!lastStatus) {
+            return lastfalseCount >= 3
+        }
+        return false
+    }
+
+    fun isOpenErrorThresholds(): Boolean {
+        if (lastStatus) {
+            return lastTrueCount >= errorThreshold
+        }
+        return false
+    }
+
+    fun isCloseErrorThresholds(): Boolean {
+        if (!lastStatus) {
+            return lastfalseCount >= errorThreshold
+        }
+        return false
+    }
+
+
+    suspend fun updateInfo() {
+        if (isOpen.invoke()) {
+            if (lastStatus) {
+                lastTrueCount++
+            } else {
+                lastStatus = true
+                lastTrueCount = 1
+            }
+        } else {
+            if (lastStatus) {
+                lastStatus = false
+                lastfalseCount = 1
+            } else {
+                lastStatus = true
+                lastfalseCount++
+            }
+        }
+    }
 
 }
