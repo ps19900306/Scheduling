@@ -97,6 +97,7 @@ class TaskFunction(
         theOutCheck()
         outSpaceStation()
         en.topDeviceList[2].clickArea?.c()
+        nowStep = conditionStatus
     }
 
 
@@ -199,7 +200,7 @@ class TaskFunction(
         hasTopLockTart()
     }
 
-    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 5, 20) {
+    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 5, 20 * 20) {
         hasBottomDeviceOpen()
     }
 
@@ -231,7 +232,8 @@ class TaskFunction(
             updateInfo()
 
             //安全 这里锁定按钮和出现时间很长 且设备一直未能开启
-            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()) {
+            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()
+                && openJiyuBigMenuRecorder.isCloseTrustThresholds() ) {
                 L.d("判断是否需要开启设备")
                 if (closeAiRecorder.isOpenTrustThresholds()) {
                     L.d("closeAiRecorder开启设备")
@@ -256,13 +258,14 @@ class TaskFunction(
             // 这个是用于判断引力波导致的关闭
             if (canLockRecorder.isCloseErrorThresholds()
                 && topLockTartRecorder.isCloseErrorThresholds()
+                && openJiyuBigMenuRecorder.isCloseTrustThresholds() //且没有打开际遇菜单
                 && openPositionMenuRecorder.isCloseErrorThresholds()//这个是判断结束导航的
             ) {
                 L.d("引力波导致的关闭")
                 if (closeAiRecorder.isOpenTrustThresholds()) {
-                    en.topDeviceList[2].clickArea?.c(10000)
+                    en.topDeviceList[2].clickArea?.c(60000)
                 } else if (bottomDeviceOpenRecorder.isCloseTrustThresholds()) {
-                    en.topDeviceList[2].clickArea?.c(10000)
+                    en.topDeviceList[2].clickArea?.c(60000)
                 }
             }
 
@@ -280,7 +283,8 @@ class TaskFunction(
 
             if (openJiyuBigMenuRecorder.isCloseErrorThresholds() && canLockRecorder.isCloseErrorThresholds()
                 && topLockTartRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
-                && closeAiRecorder.isCloseErrorThresholds()
+                && closeAiRecorder.isCloseErrorThresholds() && bottomDeviceOpenRecorder.isCloseErrorThresholds()
+                && openJiyuBigMenuRecorder.isCloseTrustThresholds()
             ) { //20分钟没有一次验证Ai是关闭的
                 L.d("restartGame")
                 nowStep = restartGame
@@ -314,36 +318,49 @@ class StatusRecorder(
     var lastStatus = false
 
     fun isOpenTrustThresholds(): Boolean {
-        if (lastStatus) {
+        val result = if (lastStatus) {
             return lastTrueCount >= trustThresholds
+        }else{
+            false
         }
-        return false
+        L.d("$tag isOpenTrustThresholds result:$result")
+        return result
     }
 
     fun isCloseTrustThresholds(): Boolean {
-        if (!lastStatus) {
-            return lastfalseCount >= 3
+        val result = if (!lastStatus) {
+            return lastfalseCount >= trustThresholds
+        }else{
+            false
         }
-        return false
+        L.d("$tag isCloseTrustThresholds result:$result")
+        return result
     }
 
     fun isOpenErrorThresholds(): Boolean {
-        if (lastStatus) {
+        val result = if (lastStatus) {
             return lastTrueCount >= errorThreshold
+        }else{
+            false
         }
-        return false
+        L.d("$tag isOpenTrustThresholds result:$result")
+        return result
     }
 
     fun isCloseErrorThresholds(): Boolean {
-        if (!lastStatus) {
+        val result = if (!lastStatus) {
             return lastfalseCount >= errorThreshold
+        }else{
+            false
         }
-        return false
+        L.d("$tag isCloseTrustThresholds result:$result")
+        return result
     }
 
 
     suspend fun updateInfo() {
         if (isOpen.invoke()) {
+           // L.d("$tag true")
             if (lastStatus) {
                 lastTrueCount++
             } else {
@@ -351,11 +368,11 @@ class StatusRecorder(
                 lastTrueCount = 1
             }
         } else {
+          //  L.d("$tag false")
             if (lastStatus) {
                 lastStatus = false
                 lastfalseCount = 1
             } else {
-                lastStatus = true
                 lastfalseCount++
             }
         }
