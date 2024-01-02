@@ -24,4 +24,8 @@ class MultiFindImgTask(val list: Array<FindImgTask>) : BasicImgTask() {
     override fun getOffsetY(): Int {
         return lastResult?.getOffY()?:0
     }
+
+    constructor(vararg imgTaskImpl1: FindImgTask) : this(mutableListOf<FindImgTask>().apply {
+        this.addAll(imgTaskImpl1)
+    }.toTypedArray())
 }

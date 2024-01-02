@@ -1,14 +1,9 @@
 package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
-import android.graphics.Bitmap
-import android.media.tv.TableRequest
 import android.text.TextUtils
-import android.text.format.Time
-import com.android.schedule.corelibrary.SetConstant
+import com.android.schedule.corelibrary.controller.StatusRecorder
 import com.android.schedule.corelibrary.utils.L
-import com.android.schedule.corelibrary.utils.NwqCallBack
-import com.android.schedule.corelibrary.utils.NwqCallBackResult
 import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.talker.database.AppDataBase
 import com.android.system.talker.database.TaskDb
@@ -306,76 +301,5 @@ class TaskFunction(
 }
 
 
-class StatusRecorder(
-    val tag: String,
-    val trustThresholds: Int,
-    val errorThreshold: Int,
-    val isOpen: suspend () -> Boolean
-) {
-    var lastTrueCount = 0
-    var lastfalseCount = 0
-
-    var lastStatus = false
-
-    fun isOpenTrustThresholds(): Boolean {
-        val result = if (lastStatus) {
-            return lastTrueCount >= trustThresholds
-        }else{
-            false
-        }
-        L.d("$tag isOpenTrustThresholds result:$result")
-        return result
-    }
-
-    fun isCloseTrustThresholds(): Boolean {
-        val result = if (!lastStatus) {
-            return lastfalseCount >= trustThresholds
-        }else{
-            false
-        }
-        L.d("$tag isCloseTrustThresholds result:$result")
-        return result
-    }
-
-    fun isOpenErrorThresholds(): Boolean {
-        val result = if (lastStatus) {
-            return lastTrueCount >= errorThreshold
-        }else{
-            false
-        }
-        L.d("$tag isOpenTrustThresholds result:$result")
-        return result
-    }
-
-    fun isCloseErrorThresholds(): Boolean {
-        val result = if (!lastStatus) {
-            return lastfalseCount >= errorThreshold
-        }else{
-            false
-        }
-        L.d("$tag isCloseTrustThresholds result:$result")
-        return result
-    }
 
 
-    suspend fun updateInfo() {
-        if (isOpen.invoke()) {
-           // L.d("$tag true")
-            if (lastStatus) {
-                lastTrueCount++
-            } else {
-                lastStatus = true
-                lastTrueCount = 1
-            }
-        } else {
-          //  L.d("$tag false")
-            if (lastStatus) {
-                lastStatus = false
-                lastfalseCount = 1
-            } else {
-                lastfalseCount++
-            }
-        }
-    }
-
-}

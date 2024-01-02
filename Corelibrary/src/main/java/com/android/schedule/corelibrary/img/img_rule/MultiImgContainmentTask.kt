@@ -26,6 +26,10 @@ class MultiImgContainmentTask(var list: Array<ImgTaskImpl1>?) : BasicImgTask() {
         }
     }
 
+    constructor(vararg imgTaskImpl1: ImgTaskImpl1) : this(mutableListOf<ImgTaskImpl1>().apply {
+        this.addAll(imgTaskImpl1)
+    }.toTypedArray())
+
 
     //根据偏差值构造新的找寻任务
     fun copyOffset(tag: String, offsetX: Int, offsetY: Int): MultiImgContainmentTask {

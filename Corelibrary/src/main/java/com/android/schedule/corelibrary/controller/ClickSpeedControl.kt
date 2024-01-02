@@ -18,7 +18,7 @@ class ClickSpeedControl {
 
     fun addUnit(task: MultiFindImgTask, area: ClickArea) {
         task.list.forEach {
-            list.add(ClickControlUnit(it, it.clickArea?:area))
+            list.add(ClickControlUnit(it, it.clickArea ?: area))
         }
     }
 
@@ -27,28 +27,31 @@ class ClickSpeedControl {
     private var count = maxCount
     private var lastTAG = ""
 
-    suspend fun checkImg(bitmap: Bitmap): ClickTask? {
-        var clickTask: ClickTask? = null
+    suspend fun checkImg(bitmap: Bitmap): ClickControlResult {
+        val result = ClickControlResult()
         list.find { it.task.verificationRule(bitmap) }?.let {
+            result.tag = it.task.tag
             if (lastTAG == it.task.tag) {
                 if (count <= 0) {
-                    L.d( it.task.tag)
+                    L.d(it.task.tag)
                     count = maxCount
-                    clickTask = it.area.toClickTask(it.task)
+                    result.clickTask = it.area.toClickTask(it.task)
                 } else {
                     count--
                 }
             } else {
-                L.d( it.task.tag)
+                L.d(it.task.tag)
                 lastTAG = it.task.tag
                 count = maxCount
-                clickTask = it.area.toClickTask(it.task)
+                result.clickTask = it.area.toClickTask(it.task)
             }
         }
-        return clickTask
+        return result
     }
 
 }
 
 
 class ClickControlUnit(val task: ImgTask, val area: ClickArea)
+
+class ClickControlResult(var tag: String? = null, var clickTask: ClickTask? = null)

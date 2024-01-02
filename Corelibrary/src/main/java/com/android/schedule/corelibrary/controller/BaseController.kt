@@ -9,6 +9,8 @@ import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.expand.isVertical
 import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
+import com.android.schedule.corelibrary.img.img_rule.MultiImgContainmentTask
 import kotlinx.coroutines.delay
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -28,6 +30,7 @@ abstract class BaseController(
     private val waitTaskTime = 5
     private val takeScreenIn = 4000L
 
+    protected val repeatedClickInterval= 10000L
 
     abstract fun start()
 
@@ -127,5 +130,43 @@ abstract class BaseController(
         acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
     }
 
+    suspend fun ImgTask.toStatusRecorder(
+        trustThresholds: Int = 3,
+        errorThreshold: Int = 4
+    ): StatusRecorder {
+        return StatusRecorder(this.tag, trustThresholds, errorThreshold) {
+            this.verificationRule(screenBitmap)
+        }
+    }
+
+
+    suspend fun MultiImgContainmentTask.toStatusRecorder(
+        trustThresholds: Int = 3,
+        errorThreshold: Int = 10
+    ): StatusRecorder {
+        return StatusRecorder(
+            this.list?.get(0)?.tag ?: "multiImgUnkown",
+            trustThresholds,
+            errorThreshold
+        ) {
+            this.verificationRule(screenBitmap)
+        }
+    }
+
+
+    suspend fun MultiFindImgTask.toStatusRecorder(
+        trustThresholds: Int = 3,
+        errorThreshold: Int = 4
+    ): StatusRecorder {
+        return StatusRecorder(this.list[0].tag, trustThresholds, errorThreshold) {
+            this.verificationRule(screenBitmap)
+        }
+    }
+
+    suspend fun updateStatusRecorder(vararg datas: StatusRecorder) {
+        datas.forEach {
+            it.updateInfo()
+        }
+    }
 
 }

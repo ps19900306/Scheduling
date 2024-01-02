@@ -20,6 +20,8 @@ object SetConstant {
     const val NO_CLONE_LOCATION = -1
     const val BASE_CLONE_LOCATION = 0
 
+
+
     //这里是点击的间隔
     val clickDuration get() = ((Math.random() * 2 + 1) * 40).toLong()
 

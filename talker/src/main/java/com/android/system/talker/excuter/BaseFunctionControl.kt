@@ -10,6 +10,7 @@ import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.click.SlidingArea
 import com.android.schedule.corelibrary.click.TwoFingerArea
 import com.android.schedule.corelibrary.controller.ClickSpeedControl
+import com.android.schedule.corelibrary.controller.StatusRecorder
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
@@ -84,6 +85,7 @@ abstract class BaseFunctionControl(
         var flag = true
         var count = 200
 
+
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.hasXiaoTipsTask, en.hasXiaoTipsTask.clickArea!!)
         clickSpeedControl.addUnit(en.isAnnouncementT, en.closeAnnouncementArea)
@@ -91,6 +93,8 @@ abstract class BaseFunctionControl(
         clickSpeedControl.addUnit(en.isStartGameT, en.isStartGameArea)
         clickSpeedControl.addUnit(en.isSelectRoleT, en.selectRoleArea)
         clickSpeedControl.addUnit(en.isOpenBigMenuT, en.closeBigMenuArea)
+        clickSpeedControl.addUnit(en.isXiaoVipTipsTask, en.isXiaoVipTipsArea)
+
         clickSpeedControl.maxCount = 10
 
         while (flag && count > 0 && runSwitch) {
@@ -142,48 +146,63 @@ abstract class BaseFunctionControl(
         )
     }
 
+
     suspend fun returnSpaceStation(position: Int): Boolean {
-        L.d("returnSpaceStation")
+        val isInSpace = en.isInSpaceStationT.toStatusRecorder(3)
+        val isOpenBigMenu = en.isOpenBigMenuT.toStatusRecorder(5)
+        val isClosePosition = en.isClosePositionMenuT.toStatusRecorder(5, 20)
+        val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3)
+        val isConfirmDialog = en.isConfirmDialogTask.toStatusRecorder(3)
+        val isOneClickClaim = en.isOneClickClaimTask.toStatusRecorder(3)//这个是收菜的
+        val isOnlyOpenPosition = en.isOnlyOpenPositionMenuTask.toStatusRecorder(5)//这里表表示并没有开始导航
+
+
         var flag = true
-        val maxCount = 10
-        var count = maxCount
-        var hasStart = false
+        var count = 20 * 10
+        var clickArea: ClickArea? = null
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotInterval)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
-            if (en.isInSpaceStationT.check()) {
+            updateStatusRecorder(
+                isInSpace,
+                isOpenBigMenu,
+                isClosePosition,
+                isHasEyeMenu,
+                isConfirmDialog
+            )
+            if (isInSpace.isOpenTrustThresholds()) {
                 return true
             }
 
-            if (en.isConfirmDialogTask.check()) {
-                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask)
-                count = maxCount
-            } else if (en.isSailingT.check()) {
-                count = maxCount
-            } else if (en.isOpenBigMenuT.check()) {
-                en.closeBigMenuArea.c()
-                count = maxCount
-            } else if (en.isClosePositionMenuT.check() && (en.isCloseEyeMenuT.check() || en.isOpenEyeMenuT.check())) {
-                //这个是防止一键收菜卡住
-                if (en.isOneClickClaimTask.check()) {
-                    en.closeOneClickArea.c(en.isOneClickClaimTask)
-                }
-                if (!hasStart || count == 2) {
-                    if (!clickPositionMenu(position)) {
-                        reportingError("${getTag()} returnSpaceStation clickPositionMenu")
-                        return false
-                    } else {
-                        count = maxCount
-                        hasStart = true
-                    }
-                } else {
-                    count--
-                }
+
+            if (isConfirmDialog.isOpenTrustThresholds()) {
+                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask, repeatedClickInterval)
             }
 
+            if (isOneClickClaim.isOpenTrustThresholds()) {
+                en.closeOneClickArea.c(en.isOneClickClaimTask, repeatedClickInterval)
+            }
+
+            if (isOpenBigMenu.isOpenTrustThresholds()) {
+                en.closeBigMenuArea.c(repeatedClickInterval)
+            }
+
+            if (isClosePosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
+                clickPositionMenu(position)
+            }
+
+
+            if (isOnlyOpenPosition.isOpenTrustThresholds() && isClosePosition.isCloseTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
+                if (clickArea == null) {
+                    clickArea = en.getPositionArea(position)
+                }
+                clickArea.c(SetConstant.MINUTE)
+            }
+            count--
         }
+
         if (flag) {
             reportingError("${getTag()} returnSpaceStation")
         }

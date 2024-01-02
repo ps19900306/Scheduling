@@ -241,14 +241,15 @@ abstract class TurnBaseController(
         click(this)
     }
 
-    suspend fun ClickSpeedControl.cc(): Boolean {
+    suspend fun ClickSpeedControl.cc(): String? {
+        var result: String? = null
         screenBitmap?.let {
-            this.checkImg(it)?.let {
-                optClickTask(it)
-                return true
+            this.checkImg(it).let {
+                it.clickTask?.let { clickTask -> optClickTask(clickTask) }
+                result = it.tag
             }
         }
-        return false
+        return result
     }
 
     suspend fun TwoFingerArea.c() {
@@ -259,9 +260,23 @@ abstract class TurnBaseController(
         click(task, this)
     }
 
+    suspend fun ClickArea.c(task: ImgTask, intervalTime: Long) {
+        if (TimeUtils.judgingTheInterval(System.currentTimeMillis(), lastClickTime, intervalTime)) {
+            click(task, this)
+        }
+    }
+
     suspend fun ClickArea.c(task: MultiFindImgTask) {
         task.lastResult?.let {
             click(it, this)
+        }
+    }
+
+    suspend fun ClickArea.c(task: MultiFindImgTask, intervalTime: Long) {
+        if (TimeUtils.judgingTheInterval(System.currentTimeMillis(), lastClickTime, intervalTime)) {
+            task.lastResult?.let {
+                click(it, this)
+            }
         }
     }
 
