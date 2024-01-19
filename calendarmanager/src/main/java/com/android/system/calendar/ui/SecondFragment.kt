@@ -1,4 +1,4 @@
-package com.android.system.calendar
+package com.android.system.calendar.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.android.system.calendar.R
 import com.android.system.calendar.databinding.FragmentSecondBinding
 
 /**

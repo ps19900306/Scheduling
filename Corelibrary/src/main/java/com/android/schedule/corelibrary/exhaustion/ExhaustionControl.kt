@@ -122,7 +122,7 @@ object ExhaustionControl : BasicExhaustion() {
                 (Math.random() * 2000 + 600).toLong()
             }
             OptDuration.SLOW_LARGE_RANDOM -> {
-                (Math.random() * 3000 + 1000).toLong()
+                (Math.random() * 2000 + 2000).toLong()
             }
             else -> {
                 (Math.random() * 600 + 600).toLong()

@@ -96,6 +96,8 @@ class MasterControl(
             list.add(HarvestFunction(vegetableDb, userDb, dataBase, acService))
         }
 
+
+
         if (taskDb != null && taskDb.isSwitch == 1) {
             list.add(TaskFunction(taskDb, userDb, dataBase, acService))
         }
@@ -117,7 +119,7 @@ class MasterControl(
                     return false
                 }
                 //这里是保证进入后增加一次菜时间
-                if (index == 0 && vegetableDb != null && vegetableDb.isSwitch && vegetableDb.baseCloneLocation != oldCloneLocation) {
+                if (index == 0 && vegetableDb != null && vegetableDb.baseCloneLocation != oldCloneLocation) {
                     HarvestFunction(vegetableDb, userDb, dataBase, acService).checkAndTime()
                 }
             }
@@ -147,7 +149,7 @@ class MasterControl(
         }
 
         //最后再增加一下收菜时间
-        if (vegetableDb != null && vegetableDb.isSwitch && vegetableDb.baseCloneLocation == oldCloneLocation) {
+        if (vegetableDb != null && vegetableDb.baseCloneLocation == oldCloneLocation) {
             HarvestFunction(vegetableDb, userDb, dataBase, acService).let {
                 it.checkAndTime()
                 it.exitGame()

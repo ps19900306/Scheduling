@@ -50,7 +50,7 @@ object GenerateCodeUtils {
         if(isText){
             stringBuilder.append("ImgTaskImpl1(pointList, tag, correctPositionModel).apply {\n nErrorTolerance=${(data.size/10)+1} }\n")
         }else{
-            stringBuilder.append("ImgTaskImpl1(pointList, tag, correctPositionModel)   \n")
+            stringBuilder.append("ImgTaskImpl1(pointList, tag, correctPositionModel).apply {\n nErrorTolerance=${(data.size/15)+1} }\n")
         }
 
 
@@ -106,7 +106,7 @@ object GenerateCodeUtils {
         if(isText){
             stringBuilder.append("FindImgTask(pr, findArea,pointList, tag).apply {\n nErrorTolerance=${(data.size/10)+1} }\n")
         }else{
-            stringBuilder.append("FindImgTask(pr, findArea,pointList, tag)  \n")
+            stringBuilder.append("FindImgTask(pr, findArea,pointList, tag).apply {\n nErrorTolerance=${(data.size/15)+1} }\n")
         }
 
         stringBuilder.append("}  \n")

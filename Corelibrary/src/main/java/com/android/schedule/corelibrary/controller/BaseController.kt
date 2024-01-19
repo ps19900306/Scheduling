@@ -2,7 +2,14 @@ package com.android.schedule.corelibrary.controller
 
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.PixelFormat
+import android.hardware.display.VirtualDisplay
+import android.media.Image
+import android.media.ImageReader
+import android.media.projection.MediaProjection
 import android.os.Build
+import android.util.Log
 import android.view.Display
 import androidx.annotation.RequiresApi
 import com.android.schedule.corelibrary.expand.isLandscape
@@ -11,9 +18,12 @@ import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
 import com.android.schedule.corelibrary.img.img_rule.MultiImgContainmentTask
+import com.android.schedule.corelibrary.utils.L
 import kotlinx.coroutines.delay
+import java.nio.ByteBuffer
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
 
 /**
 create by: 86136
@@ -30,7 +40,7 @@ abstract class BaseController(
     private val waitTaskTime = 5
     private val takeScreenIn = 4000L
 
-    protected val repeatedClickInterval= 10000L
+    protected val repeatedClickInterval = 10000L
 
     abstract fun start()
 
@@ -92,30 +102,35 @@ abstract class BaseController(
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.R)
+
     private suspend fun takeScreenShot(): Bitmap? = suspendCoroutine {
         screenBitmap?.recycle()
         screenBitmap = null
         //Timber.d("recycle takeScreen BaseController NWQ_ 2023/3/12");
-        acService.takeScreenshot(Display.DEFAULT_DISPLAY,
-            acService.mainExecutor,
-            object : AccessibilityService.TakeScreenshotCallback {
-                override fun onSuccess(screenshotResult: AccessibilityService.ScreenshotResult) {
-                    val bitmap = Bitmap.wrapHardwareBuffer(
-                        screenshotResult.hardwareBuffer, screenshotResult.colorSpace
-                    )
-                    screenBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
-                    bitmap?.recycle()
-                    screenshotResult.hardwareBuffer.close()
-                    it.resume(screenBitmap)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            acService.takeScreenshot(Display.DEFAULT_DISPLAY,
+                acService.mainExecutor,
+                object : AccessibilityService.TakeScreenshotCallback {
+                    override fun onSuccess(screenshotResult: AccessibilityService.ScreenshotResult) {
+                        val bitmap = Bitmap.wrapHardwareBuffer(
+                            screenshotResult.hardwareBuffer, screenshotResult.colorSpace
+                        )
+                        screenBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
+                        bitmap?.recycle()
+                        screenshotResult.hardwareBuffer.close()
+                        it.resume(screenBitmap)
 
-                }
+                    }
 
-                override fun onFailure(i: Int) {
-                    it.resume(null)
+                    override fun onFailure(i: Int) {
+                        it.resume(null)
 
-                }
-            })
+                    }
+                })
+        }else{
+            screenBitmap=takeScreenShotOld()
+            it.resume(screenBitmap)
+        }
     }
 
     suspend fun BasicImgTask.check(): Boolean {
@@ -130,9 +145,9 @@ abstract class BaseController(
         acService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
     }
 
-    suspend fun ImgTask.toStatusRecorder(
+    fun ImgTask.toStatusRecorder(
         trustThresholds: Int = 3,
-        errorThreshold: Int = 4
+        errorThreshold: Int = trustThresholds * 3
     ): StatusRecorder {
         return StatusRecorder(this.tag, trustThresholds, errorThreshold) {
             this.verificationRule(screenBitmap)
@@ -140,9 +155,9 @@ abstract class BaseController(
     }
 
 
-    suspend fun MultiImgContainmentTask.toStatusRecorder(
+    fun MultiImgContainmentTask.toStatusRecorder(
         trustThresholds: Int = 3,
-        errorThreshold: Int = 10
+        errorThreshold: Int = trustThresholds * 3
     ): StatusRecorder {
         return StatusRecorder(
             this.list?.get(0)?.tag ?: "multiImgUnkown",
@@ -156,7 +171,7 @@ abstract class BaseController(
 
     suspend fun MultiFindImgTask.toStatusRecorder(
         trustThresholds: Int = 3,
-        errorThreshold: Int = 4
+        errorThreshold: Int = trustThresholds * 3
     ): StatusRecorder {
         return StatusRecorder(this.list[0].tag, trustThresholds, errorThreshold) {
             this.verificationRule(screenBitmap)
@@ -169,4 +184,37 @@ abstract class BaseController(
         }
     }
 
+
+    private fun takeScreenShotOld(): Bitmap? {
+        var bitmap: Bitmap? = null
+        ImageTakeUtils.acquireNextImage()?.let { image ->
+            if(image==null){
+                L.t("img为空")
+            }else{
+                L.t("获取到最新图片")
+                val buffer: ByteBuffer = image.planes[0].getBuffer()
+                val width = image.width
+                val height = image.height
+                Log.e("whh0914", "image width=$width, height=$height")
+                val pixelStride: Int = image.planes[0].pixelStride
+                val rowStride: Int = image.planes[0].rowStride
+                val rowPadding = rowStride - pixelStride * width
+                var bitmap = Bitmap.createBitmap(
+                    width + rowPadding / pixelStride,
+                    height,
+                    Bitmap.Config.ARGB_8888
+                )
+                bitmap!!.copyPixelsFromBuffer(buffer)
+                bitmap = Bitmap.createScaledBitmap(bitmap!!, bitmap!!.width, bitmap!!.height, false)
+                if (bitmap != null) {
+                    L.t( "屏幕截图成功!")
+                    return bitmap
+                }else{
+                    L.t( "屏幕截图失败!")
+                }
+                image.close()
+            }
+        }
+        return bitmap
+    }
 }

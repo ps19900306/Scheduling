@@ -4,10 +4,15 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.projection.MediaProjectionManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -20,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
+import com.android.schedule.corelibrary.controller.ImageTakeUtils
 import com.android.schedule.corelibrary.expand.runOnUI
 import com.android.schedule.corelibrary.expand.singleClick
 import com.android.schedule.corelibrary.utils.ContextUtil
@@ -38,6 +44,7 @@ import com.nwq.function.autocodeapp.data.FunctionItemInfo
 import com.nwq.function.autocodeapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.nio.ByteBuffer
 
 
 class MainActivity() : AppCompatActivity() {
@@ -55,7 +62,9 @@ class MainActivity() : AppCompatActivity() {
     private val functionList by lazy {
         mutableListOf(
             FunctionItemInfo(R.string.full_screen, BUTTON_TYPE),
-            FunctionItemInfo(R.string.select_picture, BUTTON_TYPE),
+         // FunctionItemInfo(R.string.select_picture, BUTTON_TYPE),
+            FunctionItemInfo(R.string.start_screen, BUTTON_TYPE),
+
             FunctionItemInfo(R.string.select_critical_area, BUTTON_TYPE),
             FunctionItemInfo(R.string.find_image_area, BUTTON_TYPE),
 
@@ -75,7 +84,7 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
 
 
-            FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
+      //      FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
 
             FunctionItemInfo(R.string.take_img, BUTTON_TYPE),
             FunctionItemInfo(R.string.replace_img, BUTTON_TYPE),
@@ -187,11 +196,24 @@ class MainActivity() : AppCompatActivity() {
                 FeatureKeyAdapter(viewModel.featureKeyList, viewModel.colorMaps)
             bind.colorRecycler.adapter = mFeatureKeyAdapter
         }
-
-
     }
 
 
+    private val requestDataLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.let {
+                    ImageTakeUtils.startRecord(
+                        mMediaProjectionManager!!, result.resultCode, it,
+                        Handler(Looper.getMainLooper()), resources.displayMetrics
+                    )
+                }
+            }
+        }
+
+
+    private var mMediaProjectionManager: MediaProjectionManager? = null
+    private val REQUEST_MEDIA_PROJECTION = 124
     private fun initIndex(controller: WindowInsetsControllerCompat) {
         val spanCount = 3
         val sd = GridSpacingItemDecoration(spanCount, 8, true)
@@ -229,6 +251,14 @@ class MainActivity() : AppCompatActivity() {
 
                             override fun onCancel() {}
                         })
+                }
+
+                R.string.start_screen -> {
+                    mMediaProjectionManager =
+                        getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager?;
+                    mMediaProjectionManager?.createScreenCaptureIntent()?.let {
+                        requestDataLauncher.launch(it)
+                    }
                 }
 
                 R.string.select_critical_area -> {//这里选择关键区域
@@ -490,10 +520,10 @@ class MainActivity() : AppCompatActivity() {
 //                                    bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
 //                                }
 //                            }
-//                            L.i("找到图片 ${task.tag} offsetX$offsetX  offsetY$offsetY")
+//                            L.t("找到图片 ${task.tag} offsetX$offsetX  offsetY$offsetY")
 //                        }
 //                    }else{
-//                        L.i("验证失败 ${task.tag}")
+//                        L.t("验证失败 ${task.tag}")
 //                    }
 //                }
 
@@ -520,16 +550,14 @@ class MainActivity() : AppCompatActivity() {
                                 bind.previewView.addDot(CoordinatePoint(xI + offsetX, yI + offsetY))
                             }
                         }
-                        L.i("找到图片 offsetX$offsetX  offsetY$offsetY")
+                        L.t("找到图片 offsetX$offsetX  offsetY$offsetY")
                         task.clickArea?.let {
                             bind.previewView.addArea(it.copyOffset(offsetX, offsetY))
                         }
                     }
                 } else {
-                    L.i("验证失败")
+                    L.t("验证失败")
                 }
-
-
             }
         }
     }
@@ -541,10 +569,10 @@ class MainActivity() : AppCompatActivity() {
             list.forEachIndexed { index, bitmap ->
                 val task = en.isCloseAiTask
                 if (!task.verificationRule(bitmap)) {
-                    L.i("index  验证失败")
+                    L.t("index  验证失败")
                     faildIndex = faildIndex
                 } else {
-                    L.i("index  验证通过")
+                    L.t("index  验证通过")
                 }
             }
             if (faildIndex >= 0) {
@@ -555,7 +583,7 @@ class MainActivity() : AppCompatActivity() {
                     }
                 }
             } else {
-                L.i("index  验证通过")
+                L.t("index  验证通过")
             }
         }
     }
@@ -563,23 +591,26 @@ class MainActivity() : AppCompatActivity() {
 
     private val onTakeIng =
         NwqCallBack<Bitmap?> { t ->
-            L.d("截图成功")
-            viewModel.srcBitmap = t
+            L.t("截图成功")
+            if (t == null) {
+                L.t("图片为空")
+            } else {
+               // viewModel.srcBitmap?.recycle()
+                viewModel.srcBitmap = t
+            }
         }
-
 
 
     private fun issueInstructionsImg() {
         ImgOpt.getbitmap = onTakeIng
         if (ImgOpt.takeBitmap != null) {
-            L.d("发布截图指令")
+            L.t("发布截图指令")
             ImgOpt.takeBitmap?.onCallBack(true)
         } else {
-            L.d("发布截图指令 ImgOpt.takeBitmap==null")
+            L.t("发布截图指令 ImgOpt.takeBitmap==null")
         }
 
     }
-
 
 }
 

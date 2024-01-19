@@ -48,6 +48,9 @@ class MainViewModel : ViewModel() {
     private var differenceKey: FeaturePointKey = FeaturePointKey(0, 0, 0)
     private var darkestKey: FeaturePointKey = FeaturePointKey(255, 255, 255)
 
+    //这个如果图标变小需要调整位置
+    private val minStep = 4
+    private val obtainDistance = 4
     lateinit var manager: ClipboardManager
 
     //选择区域
@@ -174,8 +177,8 @@ class MainViewModel : ViewModel() {
             colorMaps.forEach { it ->
                 if (it.key.isChecked) {
                     markBoundaryInternal(it.value)
-                    val list = getPointBlockList(it.value, 5, true)
-                    result.addAll(obtainFeatureImg(list, 8, true))
+                    val list = getPointBlockList(it.value, minStep, true)
+                    result.addAll(obtainFeatureImg(list, obtainDistance, true))
                     Log.i(TAG, "自动处理图片完成")
                 }
             }
@@ -567,14 +570,14 @@ class MainViewModel : ViewModel() {
         block.boundaryList.find { it.sequenceNumber == 0 }?.let {
             result.add(it)
         }
-
+        val jian= distance+1/2
         //这里添加中间点
         if (block.perimeter > distance) {
             for (i in distance..block.perimeter - distance step distance) {
                 block.boundaryList.filter { it.sequenceNumber == i }.forEach { point ->
                     //如果附近的点已经添加则不进行添加
-                    if (keyPointList.find { abs(it.x - point.x) < 4 && abs(it.y - point.y) < 4 } == null
-                        && result.find { abs(it.x - point.x) < 4 && abs(it.y - point.y) < 4 } == null
+                    if (keyPointList.find { abs(it.x - point.x) < jian && abs(it.y - point.y) < jian } == null
+                        && result.find { abs(it.x - point.x) < jian && abs(it.y - point.y) < jian } == null
                     ) {
                         result.add(point)
                     }

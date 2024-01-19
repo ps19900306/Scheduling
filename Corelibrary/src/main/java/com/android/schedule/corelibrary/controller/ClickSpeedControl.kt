@@ -9,11 +9,15 @@ import com.android.schedule.corelibrary.utils.L
 
 class ClickSpeedControl {
 
-    val list = mutableListOf<ClickControlUnit>()
+    val list = mutableListOf<ClickControlImpl>()
 
 
     fun addUnit(task: ImgTask, area: ClickArea) {
         list.add(ClickControlUnit(task, area))
+    }
+
+    fun addUnit(task: ImgTask, clickList: List<ClickArea>) {
+        list.add(ClickControlUnitV2(task, clickList))
     }
 
     fun addUnit(task: MultiFindImgTask, area: ClickArea) {
@@ -35,7 +39,7 @@ class ClickSpeedControl {
                 if (count <= 0) {
                     L.d(it.task.tag)
                     count = maxCount
-                    result.clickTask = it.area.toClickTask(it.task)
+                    result.clickTask = it.getClickArea().toClickTask(it.task)
                 } else {
                     count--
                 }
@@ -43,15 +47,31 @@ class ClickSpeedControl {
                 L.d(it.task.tag)
                 lastTAG = it.task.tag
                 count = maxCount
-                result.clickTask = it.area.toClickTask(it.task)
+                result.clickTask = it.getClickArea().toClickTask(it.task)
             }
         }
         return result
     }
 
+
+
 }
 
+abstract class ClickControlImpl(val task: ImgTask) {
 
-class ClickControlUnit(val task: ImgTask, val area: ClickArea)
+    abstract fun getClickArea(): ClickArea
+}
+
+class ClickControlUnit(task: ImgTask, val area: ClickArea) : ClickControlImpl(task) {
+    override fun getClickArea(): ClickArea {
+        return area
+    }
+}
+
+class ClickControlUnitV2(task: ImgTask, val areas: List<ClickArea>) : ClickControlImpl(task) {
+    override fun getClickArea(): ClickArea {
+        return areas.getOrNull((Math.random() * areas.size).toInt()) ?: areas[0]
+    }
+}
 
 class ClickControlResult(var tag: String? = null, var clickTask: ClickTask? = null)

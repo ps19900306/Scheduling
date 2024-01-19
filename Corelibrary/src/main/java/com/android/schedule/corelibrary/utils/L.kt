@@ -11,4 +11,8 @@ object L {
     fun d(msg: String){
      //Log.i("nwq_",msg)
     }
+
+    fun t(msg: String){
+       Log.i("nwq_",msg)
+    }
 }

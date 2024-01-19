@@ -13,10 +13,16 @@ class StatusRecorder(
 
     var lastStatus = false
 
+    private fun clearUp() {
+        lastTrueCount = 0
+        lastfalseCount = 0
+    }
+
+
     fun isOpenTrustThresholds(): Boolean {
         val result = if (lastStatus) {
             return lastTrueCount >= trustThresholds
-        }else{
+        } else {
             false
         }
         L.d("$tag isOpenTrustThresholds result:$result")
@@ -26,7 +32,7 @@ class StatusRecorder(
     fun isCloseTrustThresholds(): Boolean {
         val result = if (!lastStatus) {
             return lastfalseCount >= trustThresholds
-        }else{
+        } else {
             false
         }
         L.d("$tag isCloseTrustThresholds result:$result")
@@ -36,7 +42,7 @@ class StatusRecorder(
     fun isOpenErrorThresholds(): Boolean {
         val result = if (lastStatus) {
             return lastTrueCount >= errorThreshold
-        }else{
+        } else {
             false
         }
         L.d("$tag isOpenTrustThresholds result:$result")
@@ -46,7 +52,7 @@ class StatusRecorder(
     fun isCloseErrorThresholds(): Boolean {
         val result = if (!lastStatus) {
             return lastfalseCount >= errorThreshold
-        }else{
+        } else {
             false
         }
         L.d("$tag isCloseTrustThresholds result:$result")

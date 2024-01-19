@@ -2,12 +2,14 @@ package com.android.schedule.corelibrary.controller
 
 import android.accessibilityservice.AccessibilityService
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.ClickTask
 import com.android.schedule.corelibrary.click.SimpleClickUtils
 import com.android.schedule.corelibrary.click.SlidingArea
 import com.android.schedule.corelibrary.click.TwoFingerArea
 import com.android.schedule.corelibrary.exhaustion.*
+import com.android.schedule.corelibrary.exhaustion.OptDuration.Companion.SLOW_LARGE_RANDOM
 import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
@@ -27,6 +29,10 @@ abstract class TurnBaseController(
 
     val STANDARD_CLICK_INTERVAL = 2000
 
+
+
+    val fastClickInterval
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.2 + 0.2)).toLong()
 
     //这个是不需要跳转的点击间隔 但是非连续点击
     val clickInterval
@@ -79,6 +85,15 @@ abstract class TurnBaseController(
     ) {
         optClickTask(clickArea.toClickTask(0, offsetX, offsetY))
     }
+
+    suspend fun swipClick(clickArea: List<ClickArea>){
+        val coordinates = mutableListOf<CoordinatePoint>()
+        clickArea.forEach {
+            coordinates.add(it.getRandomPoint())
+        }
+        optClickTask(ClickTask(coordinates,0L,ExhaustionControl.getSwipDuration(SLOW_LARGE_RANDOM)))
+    }
+
 
     protected suspend fun click(
         listArea: List<ClickArea>?,
@@ -271,6 +286,10 @@ abstract class TurnBaseController(
             click(it, this)
         }
     }
+
+
+
+
 
     suspend fun ClickArea.c(task: MultiFindImgTask, intervalTime: Long) {
         if (TimeUtils.judgingTheInterval(System.currentTimeMillis(), lastClickTime, intervalTime)) {

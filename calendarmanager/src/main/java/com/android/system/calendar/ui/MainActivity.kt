@@ -1,4 +1,4 @@
-package com.android.system.calendar
+package com.android.system.calendar.ui
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -9,7 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
+import com.android.system.calendar.R
 import com.android.system.calendar.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

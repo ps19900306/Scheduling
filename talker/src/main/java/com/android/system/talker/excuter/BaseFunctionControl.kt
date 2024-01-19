@@ -151,6 +151,7 @@ abstract class BaseFunctionControl(
         val isInSpace = en.isInSpaceStationT.toStatusRecorder(3)
         val isOpenBigMenu = en.isOpenBigMenuT.toStatusRecorder(5)
         val isClosePosition = en.isClosePositionMenuT.toStatusRecorder(5, 20)
+        val isOpenPosition = en.isOpenPositionMenuT.toStatusRecorder(40)
         val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3)
         val isConfirmDialog = en.isConfirmDialogTask.toStatusRecorder(3)
         val isOneClickClaim = en.isOneClickClaimTask.toStatusRecorder(3)//这个是收菜的
@@ -170,7 +171,8 @@ abstract class BaseFunctionControl(
                 isOpenBigMenu,
                 isClosePosition,
                 isHasEyeMenu,
-                isConfirmDialog
+                isConfirmDialog,
+                isOpenPosition
             )
             if (isInSpace.isOpenTrustThresholds()) {
                 return true
@@ -191,6 +193,7 @@ abstract class BaseFunctionControl(
 
             if (isClosePosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
                 clickPositionMenu(position)
+                
             }
 
 
@@ -200,6 +203,11 @@ abstract class BaseFunctionControl(
                 }
                 clickArea.c(SetConstant.MINUTE)
             }
+
+            if(isOpenPosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds() ){
+
+            }
+
             count--
         }
 
