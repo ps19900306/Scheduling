@@ -2,12 +2,13 @@ package com.android.schedule.corelibrary.process_control
 
 import android.graphics.Bitmap
 import com.android.schedule.corelibrary.area.CoordinatePoint
+import com.android.schedule.corelibrary.utils.L
 
 class StuckPointMonitoring(
     val keyNumber: Int,
     val preconditions: suspend () -> Boolean,
     val pointList: List<StuckJudePoint>,
-    var trustThreshold: Int = 5
+    var trustThreshold: Int = 3
 ) {
 
 
@@ -22,12 +23,17 @@ class StuckPointMonitoring(
                 } else {
                     it.lastColor = colorInt
                 }
-                if (pointList.size != count) {
-                    recordNoChange++
-                } else {
-                    recordNoChange = 0
-                }
-                return recordNoChange > trustThreshold
+            }
+            if (pointList.size == count) {
+                L.d("检测点无变化")
+                recordNoChange++
+            } else {
+                L.d("检测点有变化")
+                recordNoChange = 0
+            }
+            if(recordNoChange > trustThreshold){
+                recordNoChange = 0
+                return true
             }
         }
         return false

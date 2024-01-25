@@ -32,25 +32,32 @@ abstract class SequentialProcessBaseController(
     //一步一步的流程
     val screenshotIntervalV2
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.5 + 1)).toLong()
-
-    protected suspend fun startTheProcess() {
+    protected var nowStep = 0
+    suspend fun startTheProcess() {
+        L.d("开始流程")
+        delay(10000)
         var flag = true
         val clickSpeedControl = getClickSpeedControl()
         val stuckList = getStuckPointMonitoring()
         val keyframeStepList =getKeyframeStepList()
+
+        keyframeStepList.forEachIndexed { index, keyframeStep ->
+            if(keyframeStep.isStart){
+                nowStep = index
+            }
+        }
+
         while (flag && runSwitch) {
             if (!taskScreenL(screenshotIntervalV2)) {
                 runSwitch = false
                 return
             }
-            stuckList.find { it.gameIsStuck(screenBitmap!!) }?.let {
-                onGameStuck(it.keyNumber)
-            }
-            if (isAutoOpt()) {
-                L.d("正在自动操作中")
-            } else if(verifyKeyframeStep(keyframeStepList)){//这里是关键帧
+            if(verifyKeyframeStep(keyframeStepList)){//这里是关键帧
                 L.d("一个关键帧流程 $nowStep" )
-            } else {
+            }else{
+                stuckList.find {!isAutoOpt() && it.gameIsStuck(screenBitmap!!) }?.let {
+                    onGameStuck(it.keyNumber)
+                }
                 clickSpeedControl?.cc()
             }
         }
@@ -73,7 +80,7 @@ abstract class SequentialProcessBaseController(
 
 
 
-    protected var nowStep = 0
+
     private suspend fun verifyKeyframeStep(list: List<KeyframeStep>):Boolean {
         // 这里表示流程已经跑完，或者没有
         if (list.size == 0 || nowStep >= list.size) {

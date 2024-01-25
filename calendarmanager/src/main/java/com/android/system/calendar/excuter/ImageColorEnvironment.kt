@@ -12,6 +12,7 @@ import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRule
 import com.android.schedule.corelibrary.img.point_rule.TwoPointRule
 
+//K30的弃用
 class ImageColorEnvironment {
 
     val skipPlotFlowArea by lazy {

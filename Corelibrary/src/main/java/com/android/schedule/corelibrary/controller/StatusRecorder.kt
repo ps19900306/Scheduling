@@ -13,7 +13,7 @@ class StatusRecorder(
 
     var lastStatus = false
 
-    private fun clearUp() {
+     fun clearUp() {
         lastTrueCount = 0
         lastfalseCount = 0
     }

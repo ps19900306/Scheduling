@@ -12,12 +12,12 @@ class ClickSpeedControl {
     val list = mutableListOf<ClickControlImpl>()
 
 
-    fun addUnit(task: ImgTask, area: ClickArea) {
-        list.add(ClickControlUnit(task, area))
+    fun addUnit(task: ImgTask, area: ClickArea,singleFlag: Boolean = false) {
+        list.add(ClickControlUnit(task, area,singleFlag))
     }
 
-    fun addUnit(task: ImgTask, clickList: List<ClickArea>) {
-        list.add(ClickControlUnitV2(task, clickList))
+    fun addUnit(task: ImgTask, clickList: List<ClickArea>,singleFlag: Boolean = false) {
+        list.add(ClickControlUnitV2(task, clickList,singleFlag))
     }
 
     fun addUnit(task: MultiFindImgTask, area: ClickArea) {
@@ -31,13 +31,26 @@ class ClickSpeedControl {
     private var count = maxCount
     private var lastTAG = ""
 
+    fun clearTag(){
+        lastTAG = ""
+    }
+    private var isSingleUseLapse: ClickControlImpl? = null
+
     suspend fun checkImg(bitmap: Bitmap): ClickControlResult {
         val result = ClickControlResult()
         list.find { it.task.verificationRule(bitmap) }?.let {
             result.tag = it.task.tag
+            //这里是单次使用的
+            if (isSingleUseLapse != null && isSingleUseLapse!!.task.tag != it.task.tag) {
+                isSingleUseLapse = null
+                list.remove(isSingleUseLapse)
+            }
             if (lastTAG == it.task.tag) {
                 if (count <= 0) {
                     L.d(it.task.tag)
+                    if(it.isSingleUse()){
+                        isSingleUseLapse=it
+                    }
                     count = maxCount
                     result.clickTask = it.getClickArea().toClickTask(it.task)
                 } else {
@@ -45,14 +58,18 @@ class ClickSpeedControl {
                 }
             } else {
                 L.d(it.task.tag)
+                if(it.isSingleUse()){
+                    isSingleUseLapse=it
+                }
                 lastTAG = it.task.tag
                 count = maxCount
                 result.clickTask = it.getClickArea().toClickTask(it.task)
             }
+        } ?: let {
+            lastTAG = ""
         }
         return result
     }
-
 
 
 }
@@ -60,17 +77,32 @@ class ClickSpeedControl {
 abstract class ClickControlImpl(val task: ImgTask) {
 
     abstract fun getClickArea(): ClickArea
+
+    abstract fun isSingleUse(): Boolean
 }
 
-class ClickControlUnit(task: ImgTask, val area: ClickArea) : ClickControlImpl(task) {
+class ClickControlUnit(task: ImgTask, val area: ClickArea, val singleFlag: Boolean = false) :
+    ClickControlImpl(task) {
     override fun getClickArea(): ClickArea {
         return area
     }
+
+    override fun isSingleUse(): Boolean {
+        return singleFlag
+    }
 }
 
-class ClickControlUnitV2(task: ImgTask, val areas: List<ClickArea>) : ClickControlImpl(task) {
+class ClickControlUnitV2(
+    task: ImgTask,
+    val areas: List<ClickArea>,
+    val singleFlag: Boolean = false
+) : ClickControlImpl(task) {
     override fun getClickArea(): ClickArea {
         return areas.getOrNull((Math.random() * areas.size).toInt()) ?: areas[0]
+    }
+
+    override fun isSingleUse(): Boolean {
+        return singleFlag
     }
 }
 

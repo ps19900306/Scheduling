@@ -51,24 +51,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/functionRecycler" />
 
+    <EditText
+        android:id="@+id/taskNameEdit"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/btnOk"
+        app:layout_constraintEnd_toStartOf="@+id/btnOk"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible"/>
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/functionGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        app:constraint_referenced_ids="bgView,functionRecycler,colorRecycler"
+        app:constraint_referenced_ids="taskNameEdit,bgView,functionRecycler,colorRecycler"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
 
 
-    <Button
+    <TextView
         android:id="@+id/btnOk"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
+        android:padding="5dp"
         android:text="@string/ok"
+        android:textColor="@color/black"
+        android:gravity="center"
         android:alpha="0.3"
         android:layout_height="wrap_content"
         android:visibility="visible" />
@@ -83,13 +95,16 @@
         android:layout_marginEnd="8dp"
         android:visibility="visible"/>
 
-    <Button
+    <TextView
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="@+id/btnOk"
         app:layout_constraintStart_toEndOf="@+id/btnOk"
         android:text="@string/add"
+        android:textColor="@color/black"
+        android:padding="5dp"
         android:layout_marginStart="8dp"
         android:alpha="0.3"
         android:visibility="visible"/>

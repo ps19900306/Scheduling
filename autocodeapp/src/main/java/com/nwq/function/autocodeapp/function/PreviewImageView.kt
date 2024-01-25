@@ -32,6 +32,10 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
     var areaList = mutableListOf<CoordinateArea>()
     var lineList = mutableListOf<CoordinateLine>()
 
+    //这个是用于查看选中的
+    private val watchDotList = mutableListOf<CoordinatePoint>()
+
+
     //单区域预览
     var oblongArea: CoordinateArea? = null
 
@@ -129,6 +133,12 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         invalidate()
     }
 
+    fun setWatchDotList(list: List<CoordinatePoint>) {
+        watchDotList.clear()
+        watchDotList.addAll(list)
+        invalidate()
+    }
+
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -138,6 +148,10 @@ class PreviewImageView(context: Context, attrs: AttributeSet?) : View(context, a
         dotList.forEach {
             canvas.drawCircle(it.xF, it.yF, dotSize, mDotPaint)
         }
+        watchDotList.forEach {
+            canvas.drawCircle(it.xF, it.yF, dotSize, mDotPaint)
+        }
+
         areaList.forEach {
             if (it.isRound) {
                 canvas.drawCircle(

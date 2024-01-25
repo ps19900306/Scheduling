@@ -5,7 +5,8 @@ package com.android.schedule.corelibrary.process_control
 class KeyframeStep(
     number: Int,
     val foundCheck: suspend () -> Boolean,
-    val nextOpt: suspend () -> Unit
+    val nextOpt: suspend () -> Unit,
+    val isStart: Boolean = false
 ) {
 
 }

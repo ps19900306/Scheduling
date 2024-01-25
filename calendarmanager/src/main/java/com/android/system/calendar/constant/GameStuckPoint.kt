@@ -10,8 +10,6 @@ import java.lang.annotation.RetentionPolicy
 annotation class GameStuckPoint() {
     companion object {
         const val HOME_SCREEN_REMAIN = 1
-
-
     }
 }
 

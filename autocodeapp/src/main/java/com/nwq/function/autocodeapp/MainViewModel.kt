@@ -3,7 +3,6 @@ package com.nwq.function.autocodeapp
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.graphics.Bitmap
-import android.text.style.BackgroundColorSpan
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
-import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.expand.runOnUI
+import com.android.schedule.corelibrary.utils.L
 import com.nwq.function.autocodeapp.data.FeatureCoordinatePoint
 import com.nwq.function.autocodeapp.data.FeaturePointBlock
 import com.nwq.function.autocodeapp.data.FeaturePointKey
@@ -168,8 +167,43 @@ class MainViewModel : ViewModel() {
         }
     }
 
+
+    fun allFeatureExtraction(previewView: PreviewImageView,isText:Boolean,taskName:String?=null){
+        val result = mutableListOf<FeatureCoordinatePoint>()
+        colorMaps.forEach { t, u ->
+            if(t.isChecked){
+                result.addAll(u)
+            }
+        }
+
+        val str=  GenerateCodeUtils.autoImgCode(
+            taskName=taskName,
+            sx = coordinateArea?.x ?: 0,
+            sy = coordinateArea?.y ?: 0,
+            data = result,
+            isText = isText
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            str?.let { resultStr ->
+                val clipData = ClipData.newPlainText("autoCode", resultStr)
+                manager.setPrimaryClip(clipData)
+                runOnUI {
+                    result.forEach {
+                        previewView.addDot(
+                            CoordinatePoint(
+                                (coordinateArea?.x ?: 0) + it.x,
+                                (coordinateArea?.y ?: 0) + it.y
+                            )
+                        )
+                    }
+                }
+                Log.i(TAG, "自动代码生成完成")
+            }
+        }
+    }
+
     //生成普通图片特征值
-    fun autoCodeNormalImg(previewView: PreviewImageView, isText: Boolean = false) {
+    fun autoCodeNormalImg(previewView: PreviewImageView, isText: Boolean = false,taskName:String?=null) {
         previewView.clearPoint()
         viewModelScope.launch(Dispatchers.IO) {
             val result = mutableListOf<FeatureCoordinatePoint>()
@@ -184,6 +218,7 @@ class MainViewModel : ViewModel() {
             }
             val str = if (findArea != null) {
                 GenerateCodeUtils.autoImgCodeArea(
+                    taskName=taskName,
                     coordinateArea?.x ?: 0,
                     coordinateArea?.y ?: 0,
                     result,
@@ -192,6 +227,7 @@ class MainViewModel : ViewModel() {
                 )
             } else {
                 GenerateCodeUtils.autoImgCode(
+                    taskName=taskName,
                     sx = coordinateArea?.x ?: 0,
                     sy = coordinateArea?.y ?: 0,
                     data = result,
@@ -217,7 +253,8 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun autoCodeNormalRichImg(previewView: PreviewImageView) {
+    //這個富顔色不知道什麽意思了
+    fun autoCodeNormalRichImg(previewView: PreviewImageView,taskName:String?=null) {
         previewView.clearPoint()
         viewModelScope.launch(Dispatchers.IO) {
             val result = mutableListOf<FeatureCoordinatePoint>()
@@ -250,6 +287,7 @@ class MainViewModel : ViewModel() {
 
             val str = if (findArea != null) {
                 GenerateCodeUtils.autoImgCodeArea(
+                    taskName,
                     coordinateArea?.x ?: 0,
                     coordinateArea?.y ?: 0,
                     result,
@@ -257,6 +295,7 @@ class MainViewModel : ViewModel() {
                 )
             } else {
                 GenerateCodeUtils.autoImgCode(
+                    taskName,
                     coordinateArea?.x ?: 0,
                     coordinateArea?.y ?: 0,
                     result
@@ -553,7 +592,34 @@ class MainViewModel : ViewModel() {
         list.forEach {
             obtainBoundaryPoint(it, distance, keyPointList, addBackgroundCount)
         }
-        return keyPointList
+        return  filterNearPoints(keyPointList)
+    }
+
+
+    private fun filterNearPoints(list: MutableList<FeatureCoordinatePoint>):MutableList<FeatureCoordinatePoint> {
+        val oldList = list.filter { it.mDirectorPoint == null }
+        val newList = mutableListOf<FeatureCoordinatePoint>()
+        oldList.forEach { point->
+            if(newList.find { abs(it.x - point.x) + abs(it.y - point.y) <= 3} == null){
+                //L.d("添加点")
+                newList.add(point)
+            }else{
+                //L.d("过滤点")
+            }
+        }
+
+        val oldList1 = list.filter { it.mDirectorPoint != null }
+        val newList1= mutableListOf<FeatureCoordinatePoint>()
+        oldList1.forEach { point->
+            if(newList1.find { abs(it.x - point.x) + abs(it.y - point.y) <= 3} == null){
+                //L.d("添加w")
+                newList1.add(point)
+            }else{
+                //L.d("过滤点")
+            }
+        }
+        newList.addAll(newList1)
+        return newList
     }
 
 
@@ -602,7 +668,6 @@ class MainViewModel : ViewModel() {
                 ).filter { it.mFeaturePointKey == point.mFeaturePointKey && it.blockNumber == point.blockNumber }
                     .sortedByDescending { it.positionType }
                 list.getOrNull(0)?.let {
-
                     it.sequenceNumber = point.sequenceNumber
                     result1.add(it)
                 }

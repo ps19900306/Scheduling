@@ -1,6 +1,7 @@
 package com.nwq.function.autocodeapp
 
 import android.content.ClipData
+import android.text.TextUtils
 import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
@@ -12,6 +13,7 @@ object GenerateCodeUtils {
 
 
     fun autoImgCode(
+        taskName:String?=null,
         sx: Int,
         sy: Int,
         data: List<FeatureCoordinatePoint>,
@@ -27,11 +29,11 @@ object GenerateCodeUtils {
         val datums = data.subList(0, 1)
         val points = data.subList(1, data.size)
 
-
+        val  typeName =   if(TextUtils.isEmpty(taskName)) "isOpen" else taskName
         //这里进行代码生成
         val stringBuilder = StringBuilder()
-        stringBuilder.append("val isOpenTask by lazy {  \n")
-        stringBuilder.append("val tag = \"isOpen\" \n")
+        stringBuilder.append("val ${typeName}Task by lazy {  \n")
+        stringBuilder.append("val tag = \"$typeName\" \n")
         if (isText) {
             stringBuilder.append(allMaxRange(data.filter { it.mDirectorPoint == null }))
         }
@@ -60,6 +62,7 @@ object GenerateCodeUtils {
 
 
     fun autoImgCodeArea(
+        taskName:String?=null,
         sx: Int,
         sy: Int,
         data: List<FeatureCoordinatePoint>,
@@ -82,10 +85,11 @@ object GenerateCodeUtils {
             findArea.x = datum.x + sx - 3
             findArea.width = 7
         }
+        val  typeName =   if(TextUtils.isEmpty(taskName)) "isOpen" else taskName
         //这里进行代码生成
         val stringBuilder = StringBuilder()
-        stringBuilder.append("val isOpenTask by lazy {  \n")
-        stringBuilder.append("val tag = \"isOpen\" \n")
+        stringBuilder.append("val ${typeName}Task by lazy {  \n")
+        stringBuilder.append("val tag = \"$typeName\" \n")
 
         if (isText) {
             stringBuilder.append(allMaxRange(data.filter { it.mDirectorPoint == null }))

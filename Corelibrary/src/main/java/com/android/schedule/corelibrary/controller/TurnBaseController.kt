@@ -31,6 +31,9 @@ abstract class TurnBaseController(
 
 
 
+    val fastClickInterval2
+        get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.05+ 0.05)).toLong()
+
     val fastClickInterval
         get() = (STANDARD_CLICK_INTERVAL * (Math.random() * 0.2 + 0.2)).toLong()
 
@@ -62,7 +65,7 @@ abstract class TurnBaseController(
     }
 
     override suspend fun end() {
-
+          runSwitch = false
     }
 
     override fun onPause() {

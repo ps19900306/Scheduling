@@ -62,17 +62,20 @@ class MainActivity() : AppCompatActivity() {
     private val functionList by lazy {
         mutableListOf(
             FunctionItemInfo(R.string.full_screen, BUTTON_TYPE),
-         // FunctionItemInfo(R.string.select_picture, BUTTON_TYPE),
+            // FunctionItemInfo(R.string.select_picture, BUTTON_TYPE),
             FunctionItemInfo(R.string.start_screen, BUTTON_TYPE),
 
             FunctionItemInfo(R.string.select_critical_area, BUTTON_TYPE),
             FunctionItemInfo(R.string.find_image_area, BUTTON_TYPE),
 
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
+            FunctionItemInfo(R.string.preview1, BUTTON_TYPE),
+
 
             FunctionItemInfo(R.string.merge, BUTTON_TYPE),
             FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.characters_feature_extraction, BUTTON_TYPE),
+            FunctionItemInfo(R.string.all_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.shadow_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.rich_color_image_recognition, BUTTON_TYPE),
             FunctionItemInfo(R.string.calculate_space, BUTTON_TYPE),
@@ -84,7 +87,7 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
 
 
-      //      FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
+            //      FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
 
             FunctionItemInfo(R.string.take_img, BUTTON_TYPE),
             FunctionItemInfo(R.string.replace_img, BUTTON_TYPE),
@@ -137,14 +140,29 @@ class MainActivity() : AppCompatActivity() {
                     nowMode = NORMAL_MODE
                 }
 
+                R.string.preview1 -> {
+                    bind.functionGroup.isVisible = true
+                    bind.optGroup.isVisible = false
+                    nowMode = NORMAL_MODE
+                }
+
                 R.string.calculate_space -> {
                     bind.functionGroup.isVisible = true
                     bind.optGroup.isVisible = false
                     nowMode = NORMAL_MODE
-                    viewModel.builderClickArea(
-                        bind.previewView.oblongArea,
-                        bind.previewView.lineList
-                    )
+
+                    if (bind.previewView.oblongArea == null && bind.previewView.lineList.isEmpty() && bind.previewView.oblongLine != null) {
+                        bind.previewView.oblongLine!!.distance = 1
+                        viewModel.builderClickArea(
+                            bind.previewView.oblongArea,
+                            listOf(bind.previewView.oblongLine!!)
+                        )
+                    } else {
+                        viewModel.builderClickArea(
+                            bind.previewView.oblongArea,
+                            bind.previewView.lineList
+                        )
+                    }
                 }
 
                 R.string.add_rectangle_click_are -> {
@@ -274,10 +292,27 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.preview -> {
+                    bind.previewView.setWatchDotList(listOf())
                     bind.functionGroup.isVisible = false
                     bind.btnOk.isVisible = true
                     bind.previewView.invalidate()
                     nowMode = R.string.preview
+                }
+
+                R.string.preview1 -> {
+                    bind.functionGroup.isVisible = false
+                    bind.btnOk.isVisible = true
+                    val list = mutableListOf<CoordinatePoint>()
+                    viewModel.colorMaps.forEach { t, u ->
+                        if (t.isChecked) {
+                            u.forEach {
+                                list.add(CoordinatePoint(it.x, it.y))
+                            }
+                        }
+                    }
+                    bind.previewView.setWatchDotList(list)
+                    bind.previewView.invalidate()
+                    nowMode = R.string.preview1
                 }
 
                 R.string.merge -> {
@@ -285,11 +320,18 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.image_feature_extraction -> {
-                    viewModel.autoCodeNormalImg(bind.previewView)
+                    viewModel.autoCodeNormalImg(bind.previewView, false, bind.taskNameEdit.text.toString())
+                    bind.taskNameEdit.setText("")
                 }
 
                 R.string.characters_feature_extraction -> {
-                    viewModel.autoCodeNormalImg(bind.previewView, true)
+                    viewModel.autoCodeNormalImg(bind.previewView, true, bind.taskNameEdit.text.toString())
+                    bind.taskNameEdit.setText("")
+                }
+
+                R.string.all_feature_extraction -> {
+                    viewModel.allFeatureExtraction(bind.previewView, true, bind.taskNameEdit.text.toString())
+                    bind.taskNameEdit.setText("")
                 }
 
                 R.string.shadow_feature_extraction -> {
@@ -595,7 +637,7 @@ class MainActivity() : AppCompatActivity() {
             if (t == null) {
                 L.t("图片为空")
             } else {
-               // viewModel.srcBitmap?.recycle()
+                // viewModel.srcBitmap?.recycle()
                 viewModel.srcBitmap = t
             }
         }
@@ -609,7 +651,6 @@ class MainActivity() : AppCompatActivity() {
         } else {
             L.t("发布截图指令 ImgOpt.takeBitmap==null")
         }
-
     }
 
 }

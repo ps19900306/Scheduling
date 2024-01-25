@@ -10,6 +10,7 @@
     <string name="auto_exc">全自动</string>
     <string name="auto_code">代码</string>
     <string name="preview">预览</string>
+    <string name="preview1">预览区域</string>
     <string name="attribute">属性</string>
 
     <string name="select_picture">选择图片</string>
@@ -17,8 +18,9 @@
 
     <string name="image_feature_extraction">图片特征提取</string>
     <string name="characters_feature_extraction">文字识别</string>
+    <string name="all_feature_extraction">全点特征提取</string>
     <string name="shadow_feature_extraction">阴影识别</string>
-    <string name="rich_color_image_recognition">富颜色图片识别</string>
+    <string name="rich_color_image_recognition">富颜色识别</string>
     <string name="calculate_space">测距</string>
 
     <string name="merge">合并</string>
@@ -28,7 +30,7 @@
     <string name="test_pick_up_points1">测试代码多图</string>
 
 
-    <string name="add_rectangle_click_are">点击方形状区域</string>
+    <string name="add_rectangle_click_are">点击方形区域</string>
     <string name="add_circular_click_are">点击圆形区域</string>
     <string name="inverse_value">底色取反</string>
     <string name="find_the_image_area">找图区域</string>
