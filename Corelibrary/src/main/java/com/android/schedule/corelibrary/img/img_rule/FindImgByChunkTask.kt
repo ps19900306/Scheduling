@@ -3,6 +3,7 @@ package com.android.schedule.corelibrary.img.img_rule
 import android.graphics.Bitmap
 import com.android.schedule.corelibrary.area.ChunkCoordinateArea
 import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRule
 import kotlin.math.abs
@@ -17,8 +18,11 @@ class FindImgByChunkTask(
     var rows = 1
     var columns = 1
 
+    var isNearest = true  //
+    var notRepeatCount = 5
     private var lastChunkArea: ChunkCoordinateArea? = null
-    var isNearest = true
+    private val recordPointList = mutableListOf<CoordinatePoint>()
+
 
     private val areaList by lazy {
         val list = mutableListOf<ChunkCoordinateArea>()
@@ -88,7 +92,31 @@ class FindImgByChunkTask(
                     )
                 }
             }
-            null != areaList.find { findImgByColor(bitmap, it) }
+            val result = areaList.find { findImgByColor(bitmap, it) }
+            if (notRepeatCount > 0 && (result != lastChunkArea || recordPointList.size >= notRepeatCount)) {
+                recordPointList.clear()
+            }
+            lastChunkArea = result
+            lastChunkArea != null
         }
     }
+
+    override fun setImgKeyPoint(coordinatePoint: CoordinatePoint) {
+        findImgPoint = coordinatePoint
+        if (notRepeatCount > 0)
+            recordPointList.add(coordinatePoint)
+    }
+
+    //
+    protected override fun needIgnoredPoint(coordinatePoint: CoordinatePoint): Boolean {
+        return if (notRepeatCount > 0) {
+            recordPointList.find {
+                5 < abs(it.xI - coordinatePoint.xI) + abs(coordinatePoint.yI - it.yI)
+            } == null
+        } else {
+            false
+        }
+    }
+
+
 }

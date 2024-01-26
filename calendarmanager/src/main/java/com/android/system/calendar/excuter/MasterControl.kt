@@ -2,13 +2,14 @@ package com.android.system.calendar.excuter
 
 import android.accessibilityservice.AccessibilityService
 import com.android.schedule.corelibrary.controller.TurnBaseController
-import com.android.schedule.corelibrary.utils.TimeUtils
 import com.android.system.calendar.constant.DungeonOrdinaryType
+import com.android.system.calendar.excuter.nomarl.BangMerchantFunction
 import com.android.system.calendar.excuter.nomarl.BangTaskFunction
 import com.android.system.calendar.excuter.nomarl.DungeonOrdinaryFunction
 import com.android.system.calendar.excuter.nomarl.ImageEnvironment
 import com.android.system.calendar.excuter.nomarl.MountainsRiversPaintingFunction
 import com.android.system.calendar.excuter.nomarl.ShiMenFunction
+import com.android.system.calendar.excuter.nomarl.TransportTreasureFunction
 import com.android.system.calendar.excuter.nomarl.TreasureMapFunction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -54,6 +55,7 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
             BangTaskFunction(acService, en).startFunction()
             MountainsRiversPaintingFunction(acService, en).startFunction()
             TreasureMapFunction(acService, en).startFunction()
+            BangMerchantFunction(acService, en).startFunction()
         }
     }
 
@@ -69,11 +71,18 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
         job = GlobalScope.launch(Dispatchers.IO) {
             DungeonOrdinaryFunction(
                 acService, en, mutableListOf(
+                    DungeonOrdinaryType.QIN_HUAI,
+                    DungeonOrdinaryType.MAN_TUO_SHAN,
                     DungeonOrdinaryType.TIAN_NING_SHI,
-                    DungeonOrdinaryType.YAN_ZI_WU,
-                    DungeonOrdinaryType.MAN_TUO_SHAN
                 )
             ).startFunction()
+        }
+    }
+
+    fun startTransport(){
+        job?.cancel()
+        job = GlobalScope.launch(Dispatchers.IO) {
+            TransportTreasureFunction(acService, en).startFunction()
         }
     }
 

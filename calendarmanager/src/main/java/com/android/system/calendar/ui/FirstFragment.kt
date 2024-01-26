@@ -82,6 +82,10 @@ class FirstFragment : Fragment() {
             CalendarAccessibilityService.instance?.startShiMen()
         }
 
+        binding.startTransport.singleClick {
+            CalendarAccessibilityService.instance?.startTransport()
+        }
+
     }
 
     override fun onDestroyView() {

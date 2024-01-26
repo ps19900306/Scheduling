@@ -36,6 +36,7 @@
     <string name="find_the_image_area">找图区域</string>
     <string name="take_point_interval">总取点数</string>
     <string name="find_image_area">找图区域</string>
+    <string name="clear_find_image_area">清除找图区域</string>
     <string name="start_screen">开启录屏</string>
 
     <string name="accessibility_service_label">autoTake</string>

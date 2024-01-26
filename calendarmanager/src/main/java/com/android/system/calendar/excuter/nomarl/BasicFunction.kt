@@ -10,7 +10,7 @@ abstract class BasicFunction(
 
     protected val ABNORMAL_SCREENO_ORIENTATION = ""
     protected suspend fun reportingError(s: String) {
-
+        runSwitch = false
     }
 
     //打开活动任务必做
@@ -30,9 +30,9 @@ abstract class BasicFunction(
                 } else {
                     flag = false
                 }
-            }else if(en.findCloseBtnTask.check()){
-                en.closeBtnArea.c(en.findCloseBtnTask,jumpClickInterval)
-            }else{
+            } else if (en.findCloseBtnTask.check()) {
+                en.closeBtnArea.c(en.findCloseBtnTask, jumpClickInterval)
+            } else {
                 pressBackBtn()
             }
             count--
@@ -58,9 +58,9 @@ abstract class BasicFunction(
                 } else {
                     flag = false
                 }
-            }else if(en.findCloseBtnTask.check()){
-                en.closeBtnArea.c(en.findCloseBtnTask,jumpClickInterval)
-            }else{
+            } else if (en.findCloseBtnTask.check()) {
+                en.closeBtnArea.c(en.findCloseBtnTask, jumpClickInterval)
+            } else {
                 pressBackBtn()
             }
             count--
@@ -85,9 +85,9 @@ abstract class BasicFunction(
                 } else {
                     flag = false
                 }
-            }else if(en.findCloseBtnTask.check()){
-                en.closeBtnArea.c(en.findCloseBtnTask,jumpClickInterval)
-            }else{
+            } else if (en.findCloseBtnTask.check()) {
+                en.closeBtnArea.c(en.findCloseBtnTask, jumpClickInterval)
+            } else {
                 pressBackBtn()
             }
             count--
@@ -95,10 +95,11 @@ abstract class BasicFunction(
         return !flag
     }
 
-    protected  fun getNormalClickSpeedControl():ClickSpeedControl{
+    protected fun getNormalClickSpeedControl(): ClickSpeedControl {
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.isSkipPlotFlowTask, en.skipPlotFlowArea)
         clickSpeedControl.addUnit(en.isClickUseTask, en.clickUseArea)
+        clickSpeedControl.addUnit(en.isClickUse2Task, en.clickUseArea)
         clickSpeedControl.addUnit(en.isClickEquipTask, en.clickUseArea)
         clickSpeedControl.addUnit(en.isTipsDetermineTask, en.tipsDetermineArea)
         clickSpeedControl.addUnit(en.isHuodongDiloagTask, en.huodongDiloag2Area)
@@ -106,8 +107,15 @@ abstract class BasicFunction(
         clickSpeedControl.addUnit(en.isANewFriendshipTask, en.closeFriendshipArea)
         clickSpeedControl.addUnit(en.isEnableNewFeaturesTask, en.isEnableNewFeaturesArea)
 
-        clickSpeedControl.addUnit(en.isChamberCommerceTask, en.chamberCommerceArea)
+        clickSpeedControl.addUnit(en.isTaskGoShopTask, en.taskGoShopArea)
+
+
+        // clickSpeedControl.addUnit(en.isPurchaseItem2Task, en.closePurchaseItem2Area)
         clickSpeedControl.addUnit(en.isPurchaseItem2Task, en.isPurchaseItem2Area)
+
+        clickSpeedControl.addUnit(en.isPlayShopMenuTask, en.closePlayShopMenuArea)
+
+
         clickSpeedControl.addUnit(en.isSubmitItemsTask, en.submitItemArea)
         clickSpeedControl.addUnit(
             en.hasDialogueSelectionBoxTask,
@@ -116,10 +124,6 @@ abstract class BasicFunction(
         clickSpeedControl.addUnit(en.isTradeMenuTask, en.closeTradeMenuArea)
         return clickSpeedControl
     }
-
-
-
-
 
 
     abstract suspend fun startFunction()

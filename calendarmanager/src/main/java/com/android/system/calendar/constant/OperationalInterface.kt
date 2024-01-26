@@ -14,4 +14,5 @@ interface OperationalInterface {
     fun startDungeon()
 
     fun startShiMen()
+    fun startTransport()
 }

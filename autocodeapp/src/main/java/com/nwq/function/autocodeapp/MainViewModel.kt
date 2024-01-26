@@ -56,7 +56,7 @@ class MainViewModel : ViewModel() {
     fun preprocessData() {
         featureKeyList.clear()
         colorMaps.clear()
-        findArea = null
+
 
         val are = coordinateArea ?: return
         val bitmap = srcBitmap ?: return
@@ -118,16 +118,17 @@ class MainViewModel : ViewModel() {
         }.toMutableMap()
         featureKeyList.clear()
         featureKeyList.addAll(colorMaps.keys.sortedByDescending { it.pointCount })
-        colorMaps.forEach {
-            brightestKey = brightestKey.getBrightest(it.key)
-            differenceKey = differenceKey.getDifference(it.key)
-            darkestKey = darkestKey.getDarkest(it.key)
-        }
-        brightestKey.isKeyMember = true
-        brightestKey.isChecked = true
-        differenceKey.isKeyMember = true
-        differenceKey.isChecked = true
-        darkestKey.isKeyMember = true
+        //不再自动筛选颜色
+//        colorMaps.forEach {
+//            brightestKey = brightestKey.getBrightest(it.key)
+//            differenceKey = differenceKey.getDifference(it.key)
+//            darkestKey = darkestKey.getDarkest(it.key)
+//        }
+//        brightestKey.isKeyMember = true
+//        brightestKey.isChecked = true
+//        differenceKey.isKeyMember = true
+//        differenceKey.isChecked = true
+//        darkestKey.isKeyMember = true
     }
 
 

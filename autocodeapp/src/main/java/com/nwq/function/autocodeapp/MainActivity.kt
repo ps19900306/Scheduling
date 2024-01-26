@@ -67,6 +67,8 @@ class MainActivity() : AppCompatActivity() {
 
             FunctionItemInfo(R.string.select_critical_area, BUTTON_TYPE),
             FunctionItemInfo(R.string.find_image_area, BUTTON_TYPE),
+            FunctionItemInfo(R.string.clear_find_image_area, BUTTON_TYPE),
+
 
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
             FunctionItemInfo(R.string.preview1, BUTTON_TYPE),
@@ -291,6 +293,10 @@ class MainActivity() : AppCompatActivity() {
                     nowMode = R.string.find_image_area
                 }
 
+                R.string.clear_find_image_area -> {
+                    viewModel.findArea = null
+                }
+
                 R.string.preview -> {
                     bind.previewView.setWatchDotList(listOf())
                     bind.functionGroup.isVisible = false
@@ -320,17 +326,29 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.image_feature_extraction -> {
-                    viewModel.autoCodeNormalImg(bind.previewView, false, bind.taskNameEdit.text.toString())
+                    viewModel.autoCodeNormalImg(
+                        bind.previewView,
+                        false,
+                        bind.taskNameEdit.text.toString()
+                    )
                     bind.taskNameEdit.setText("")
                 }
 
                 R.string.characters_feature_extraction -> {
-                    viewModel.autoCodeNormalImg(bind.previewView, true, bind.taskNameEdit.text.toString())
+                    viewModel.autoCodeNormalImg(
+                        bind.previewView,
+                        true,
+                        bind.taskNameEdit.text.toString()
+                    )
                     bind.taskNameEdit.setText("")
                 }
 
                 R.string.all_feature_extraction -> {
-                    viewModel.allFeatureExtraction(bind.previewView, true, bind.taskNameEdit.text.toString())
+                    viewModel.allFeatureExtraction(
+                        bind.previewView,
+                        true,
+                        bind.taskNameEdit.text.toString()
+                    )
                     bind.taskNameEdit.setText("")
                 }
 

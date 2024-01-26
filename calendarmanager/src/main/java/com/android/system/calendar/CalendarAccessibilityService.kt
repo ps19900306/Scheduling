@@ -32,6 +32,8 @@ class CalendarAccessibilityService : AccessibilityService(), OperationalInterfac
 
 
     override fun onInterrupt() {
+        masterControl?.stop()
+        masterControl=null
         L.i("onInterrupt $TAG NWQ_ ${TimeUtils.getNowTime()}");
     }
 
@@ -74,5 +76,10 @@ class CalendarAccessibilityService : AccessibilityService(), OperationalInterfac
         masterControl?.startShiMen()
     }
 
-
+    override fun startTransport() {
+        masterControl?.stop()
+        masterControl=null
+        masterControl = MasterControl(this)
+        masterControl?.startTransport()
+    }
 }

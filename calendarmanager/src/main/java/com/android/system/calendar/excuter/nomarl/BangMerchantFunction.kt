@@ -12,71 +12,101 @@ class BangMerchantFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
     var mCount = 3;
+
     private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
+    private val minitiateDialogRecorder = en.findInitiateDialogueBtnTask.toStatusRecorder(2, 20)
+    private val mFindMerchantDestination=FindMerchantDestination()
     override suspend fun startFunction() {
         while (mCount > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
-                pickTask()
+            } else {
+                if (pickTask()) {
+                    processListening()
+                } else {
+                    L.d("pickTask Faild")
+                    runSwitch = false
+                }
             }
         }
 
     }
 
-    private suspend fun pickTask() {
-        if (mCount == 3) {
+    private suspend fun pickTask(): Boolean {
+        L.d("pickTask")
+        return if (mCount == 3) {
             openByActivity()
         } else {
-            openByTaker()
+            if (!openByTaker()) {
+                openByActivity()
+            } else {
+                true
+            }
         }
     }
 
 
-    private suspend fun openByTaker() {
+    private suspend fun openByTaker(): Boolean {
         var flag = true
-        var count = 40
-        while (flag && count > 0 && runSwitch) {
+        var count = 30
+        while (mCount>-2 && flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
-            if (en.findDivisionTaskTask.check()) {
-                en.startDivisionArea.c(en.findDivisionTaskTask, repeatedClickInterval)
-            } else if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
-                en.huodongDiloag1Area.c()
-                flag = false
-            } else if (en.isSkipPlotFlowTask.check()) {
-                en.skipPlotFlowArea.c()
-            } else if (en.isTipsDetermineTask.check()) {
-                en.tipsDetermineArea.c()
-            }
-            count--
-        }
-    }
-
-    private suspend fun openByActivity() {
-        if (openActivityNeed()) {
-            var flag = true
-            var count = 40
-            while (flag && count > 0 && runSwitch) {
-                if (!taskScreenL(screenshotIntervalF)) {
-                    reportingError(ABNORMAL_SCREENO_ORIENTATION)
+            if (en.isTotalCombatPowerTask.check()) {
+                if (en.findInitiateDialogueBtnTask.check()) {
+                    en.initiateDialogueBtnArea.c(
+                        en.findInitiateDialogueBtnTask,
+                        repeatedClickInterval
+                    )
+                } else {
+                    count -= 10
                 }
-                if (en.findDivisionTaskTask.check()) {
-                    en.startDivisionArea.c(en.findDivisionTaskTask, repeatedClickInterval)
-                } else if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
+            } else {
+                if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
                     en.huodongDiloag1Area.c()
-                    flag = false
+                    mCount--
                 } else if (en.isSkipPlotFlowTask.check()) {
                     en.skipPlotFlowArea.c()
                 } else if (en.isTipsDetermineTask.check()) {
+                    flag = false
+                    en.tipsDetermineArea.c()
+                } else if (en.findCloseBtnTask.check()) {
+                    en.closeBtnArea.c(en.findCloseBtnTask)
+                }
+            }
+        }
+        return !flag
+    }
+
+    private suspend fun openByActivity(): Boolean {
+        if (openActivityXianXia()) {
+            var flag = true
+            var count = 40
+            while (mCount>-2 && flag && count > 0 && runSwitch) {
+                if (!taskScreenL(screenshotIntervalF)) {
+                    reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                }
+                if (en.findBangShangTaskTask.check()) {
+                    en.startBangShangTaskArea.c(
+                        en.findBangShangTaskTask,
+                        repeatedClickInterval
+                    )
+                } else if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
+                    en.huodongDiloag1Area.c()
+                    mCount--
+                } else if (en.isSkipPlotFlowTask.check()) {
+                    en.skipPlotFlowArea.c()
+                } else if (en.isTipsDetermineTask.check()) {
+                    flag = false
                     en.tipsDetermineArea.c()
                 }
                 count--
             }
+            return !flag
         }
+        return false
     }
-
-
 
 
     suspend fun processListening() {
@@ -89,7 +119,10 @@ class BangMerchantFunction(
             ), 5
         )
 
+        var hasByGood = false
         val clickSpeedControl = getNormalClickSpeedControl()
+        clickSpeedControl.removeUnit(en.isPurchaseItem2Task.tag)
+        clickSpeedControl.removeUnit(en.isPurchaseItemTask.tag)
         while (runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -97,38 +130,81 @@ class BangMerchantFunction(
             if (en.isTotalCombatPowerTask.check()) {//正在主界面
                 L.d("正在主界面")
                 clickSpeedControl.clearTag()
-
+                minitiateDialogRecorder.updateInfo()
                 mAutoPathfindingRecorder.updateInfo()
+
+                if (hasByGood) {
+                    clickTransportTreasureTask()
+                    hasByGood =false
+                    continue
+                }
+                //对话框出来次数够了就进行下一个
+                if (minitiateDialogRecorder.isOpenTrustThresholds()) {
+                    en.initiateDialogueBtnArea.c(en.findInitiateDialogueBtnTask)
+                    continue
+                }
+
                 if (mAutoPathfindingRecorder.isCloseErrorThresholds()) {
-                    mainStuckPoint.trustThreshold = 4
+                    mainStuckPoint.trustThreshold = 3
                 } else if (mAutoPathfindingRecorder.isCloseTrustThresholds()) {
-                    mainStuckPoint.trustThreshold = 6
+                    mainStuckPoint.trustThreshold = 5
                 } else {
                     mainStuckPoint.recordNoChange = 0
                 }
                 if (mainStuckPoint.gameIsStuck(screenBitmap!!)) { //如果卡点
-                    if(!clickMerchantTypeTask())
+                    if (clickTransportTreasureTask())
                         return
                 }
+            } else if (en.isHuodongDiloagTask.check()) {
+                if (en.isHuodongDiloagTopTask.check()) {//这里表示又进入跑商任务了
+                    en.huodongDiloag1Area.c()
+                    mCount--
+                } else {
+                    en.huodongDiloag2Area.c()
+                }
+            } else if (en.isMerchantShopTask.check()) {//跑商商店
+                if (en.isMerchantSellAllTask.check()) {
+                    en.merchantSellAllArea.c()
+                } else {
+                    val rand = Math.random()
+                    if (rand > 0.7) {
+                        en.clickArea12.c()
+                    } else if (rand > 0.05) {
+                        en.clickArea21.c()
+                    } else {
+                        en.clickArea11.c()
+                    }
+                }
+            } else if (en.isListOfAcquisitionsTask.check()) {
+                en.maxBuyNumberArea.c()
+                delay(clickInterval)
+                en.buyGodArea.c()
+                delay(clickInterval)
+                en.closeMerchantShop.c()
+                delay(clickInterval)
+                hasByGood = true
+            } else if(en.isMerchantMapTask.check()){
+                if(mFindMerchantDestination.verificationRule(screenBitmap)){
+                    mFindMerchantDestination.resultMerchantLocation?.clickArea?.c(repeatedClickInterval)
+                }
+            } else if(en.isMerchantQianWangTask.check()){
+                en.merchantQianWangArea.c()
             } else {
                 L.d("不在主界面")
                 mainStuckPoint.recordNoChange = 0
                 mAutoPathfindingRecorder.clearUp()
-
-                if (en.isPurchaseItemTask.check()) {
-                    en.isPurchaseItemArea.c()
-                    delay(jumpClickInterval)
-                    if(!clickMerchantTypeTask())
-                    return
-                } else {
-                    clickSpeedControl.cc()
-                }
+                minitiateDialogRecorder.clearUp()
+                clickSpeedControl.cc()
             }
         }
     }
 
-    //这里如果没有师门任务就会 点击失败
-    private suspend fun clickMerchantTypeTask():Boolean {
+
+
+
+
+    //如果没有运镖任务就默认这一次完成
+    private suspend fun clickTransportTreasureTask(): Boolean {
         var flag = true
         var count = 5
         while (flag && count > 0 && runSwitch) {
@@ -147,10 +223,7 @@ class BangMerchantFunction(
                 flag = false
             }
         }
-        if (flag) {
-            mCount--
-        }
-        return !flag
+        return flag
     }
 
 }

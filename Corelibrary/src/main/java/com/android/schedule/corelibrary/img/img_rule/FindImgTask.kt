@@ -26,15 +26,13 @@ open class FindImgTask(
 ) : ImgTask(iprList, tag) {
 
     private var correctArea = false
-    private var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
+    protected var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
 
 
-
-
-    override fun logColor(bitmap: Bitmap){
-        val  pX = pr.point.xI
-        val  pY = pr.point.yI
-        val  intColor = bitmap.getPixel(pX,pY)
+    override fun logColor(bitmap: Bitmap) {
+        val pX = pr.point.xI
+        val pY = pr.point.yI
+        val intColor = bitmap.getPixel(pX, pY)
         L.d("frist x:$pX y:$pY alpha:${intColor.alpha}  red:${intColor.red} green:${intColor.green} blue:${intColor.blue}")
         super.logColor(bitmap)
     }
@@ -83,8 +81,7 @@ open class FindImgTask(
     }
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
-        if(bitmap == null)
-        {
+        if (bitmap == null) {
             return false
         }
 
@@ -109,8 +106,13 @@ open class FindImgTask(
         pixels.forEachIndexed { offset, colorInt ->
             if (pr.rule.optInt(colorInt)) {
                 findPoint(area, offset).let {
-                    if (checkImgTask(bitmap, it.xI - pr.point.xI, it.yI - pr.point.yI)) {
-                        findImgPoint = it
+                    if (!needIgnoredPoint(it) && checkImgTask(
+                            bitmap,
+                            it.xI - pr.point.xI,
+                            it.yI - pr.point.yI
+                        )
+                    ) {
+                        setImgKeyPoint(it)
                         return true
                     }
                 }
@@ -119,12 +121,13 @@ open class FindImgTask(
         return false
     }
 
-    override fun getOffsetX():Int{
-       return (findImgPoint?.xI?:pr.point.xI)  - pr.point.xI
+
+    override fun getOffsetX(): Int {
+        return (findImgPoint?.xI ?: pr.point.xI) - pr.point.xI
     }
 
-    override fun getOffsetY():Int{
-        return (findImgPoint?.yI?:pr.point.yI)  - pr.point.yI
+    override fun getOffsetY(): Int {
+        return (findImgPoint?.yI ?: pr.point.yI) - pr.point.yI
     }
 
     private fun findPoint(area: CoordinateArea, offset: Int): CoordinatePoint {
@@ -146,6 +149,12 @@ open class FindImgTask(
     }
 
 
+    protected open fun needIgnoredPoint(coordinatePoint: CoordinatePoint): Boolean {
+        return false
+    }
 
+    protected open fun setImgKeyPoint(coordinatePoint: CoordinatePoint) {
+        findImgPoint = coordinatePoint
+    }
 
 }

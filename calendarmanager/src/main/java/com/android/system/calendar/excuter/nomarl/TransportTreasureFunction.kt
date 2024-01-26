@@ -15,15 +15,17 @@ class TransportTreasureFunction(
     var mCount = 3;
 
     private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
-    private val minitiateDialogRecorder = en.findInitiateDialogueBtnTask.toStatusRecorder(3, 20)
+    private val minitiateDialogRecorder = en.findInitiateDialogueBtnTask.toStatusRecorder(2, 20)
 
     override suspend fun startFunction() {
         while (mCount > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
+            }else{
                 if (pickTask()) {
                     processListening()
                 } else {
+                    L.d("pickTask Faild")
                     runSwitch = false
                 }
             }
@@ -32,6 +34,7 @@ class TransportTreasureFunction(
     }
 
     private suspend fun pickTask(): Boolean {
+        L.d("pickTask")
         return if (mCount == 3) {
             openByActivity()
         } else {
@@ -47,7 +50,7 @@ class TransportTreasureFunction(
     private suspend fun openByTaker(): Boolean {
         var flag = true
         var count = 30
-        while (flag && count > 0 && runSwitch) {
+        while (mCount>-2 && flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
@@ -63,6 +66,7 @@ class TransportTreasureFunction(
             } else {
                 if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
                     en.huodongDiloag1Area.c()
+                    mCount--
                 } else if (en.isTransportTreasureMenuTask.check()) {
                     flag = false
                     en.refreshTransportTreasureArea.c()
@@ -84,7 +88,7 @@ class TransportTreasureFunction(
         if (openActivityTiaoZhan()) {
             var flag = true
             var count = 40
-            while (flag && count > 0 && runSwitch) {
+            while (mCount>-2 && flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
                     reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 }
@@ -95,6 +99,7 @@ class TransportTreasureFunction(
                     )
                 } else if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
                     en.huodongDiloag1Area.c()
+                    mCount--
                 } else if (en.isTransportTreasureMenuTask.check()) {
                     flag = false
                     en.refreshTransportTreasureArea.c()
@@ -181,10 +186,6 @@ class TransportTreasureFunction(
             } else {
                 flag = false
             }
-        }
-        //没有找到数据
-        if (flag) {
-            mCount--
         }
         return flag
     }

@@ -75,10 +75,10 @@ class DungeonOrdinaryFunction(
                             }
                         }
 
-                        DungeonOrdinaryType.YAN_ZI_WU -> {
-                            if (en.findDungeonYanZiWuTask.check()) {
-                                en.dungeonYanZiWuArea.c(
-                                    en.findDungeonYanZiWuTask,
+                        DungeonOrdinaryType.QIN_HUAI -> {
+                            if (en.findQinHuaiTask.check()) {
+                                en.qinHuaiArea.c(
+                                    en.findQinHuaiTask,
                                     repeatedClickInterval
                                 )
                                 hasSelect = true
@@ -104,6 +104,7 @@ class DungeonOrdinaryFunction(
             count--
         }
         if (!flag) {
+            typeList.remove(dungeonType)
             dungeonMoniter(dungeonType)
         }
     }
@@ -120,7 +121,6 @@ class DungeonOrdinaryFunction(
             if (en.isTotalCombatPowerTask.check()) {
                 exitRecord.updateInfo()
                 if (exitRecord.isCloseTrustThresholds()) {
-                    typeList.remove(dungeonType)
                     flag = false
                 }
             } else {

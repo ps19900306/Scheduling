@@ -67,5 +67,15 @@
         app:layout_constraintStart_toStartOf="@+id/startOriginBtn"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
+    <Button
+        android:id="@+id/startTransport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="运镖"
+        app:layout_constraintBottom_toBottomOf="@+id/startShiMenBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/startShiMenBtn" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
