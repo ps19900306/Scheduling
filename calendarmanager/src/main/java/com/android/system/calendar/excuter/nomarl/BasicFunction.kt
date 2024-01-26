@@ -17,10 +17,6 @@ abstract class BasicFunction(
     protected suspend fun openActivityNeed(): Boolean {
         var flag = true
         var count = 20
-        val clickSpeedControl = ClickSpeedControl()
-        clickSpeedControl.addUnit(en.isActivityMenuBtnTask, en.activityMenuBtnArea)
-        clickSpeedControl.addUnit(en.isActivityNeedTask, en.activityNeedArea)
-
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -45,6 +41,60 @@ abstract class BasicFunction(
     }
 
 
+    //打开活动任务必做
+    protected suspend fun openActivityXianXia(): Boolean {
+        var flag = true
+        var count = 20
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return false
+            }
+            if (en.isActivityMenuBtnTask.check()) {
+                en.activityMenuBtnArea.c(jumpClickInterval)
+            } else if (en.isOpenActivityMenuTask.check()) {
+                if (en.isActivityXianXiaTask.check()) {
+                    en.activityXianXiaArea.c(jumpClickInterval)
+                } else {
+                    flag = false
+                }
+            }else if(en.findCloseBtnTask.check()){
+                en.closeBtnArea.c(en.findCloseBtnTask,jumpClickInterval)
+            }else{
+                pressBackBtn()
+            }
+            count--
+        }
+        return !flag
+    }
+
+
+    protected suspend fun openActivityTiaoZhan(): Boolean {
+        var flag = true
+        var count = 20
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return false
+            }
+            if (en.isActivityMenuBtnTask.check()) {
+                en.activityMenuBtnArea.c(jumpClickInterval)
+            } else if (en.isOpenActivityMenuTask.check()) {
+                if (en.isActivityChallengeTask.check()) {
+                    en.activityChallengeBtnArea.c(jumpClickInterval)
+                } else {
+                    flag = false
+                }
+            }else if(en.findCloseBtnTask.check()){
+                en.closeBtnArea.c(en.findCloseBtnTask,jumpClickInterval)
+            }else{
+                pressBackBtn()
+            }
+            count--
+        }
+        return !flag
+    }
+
     protected  fun getNormalClickSpeedControl():ClickSpeedControl{
         val clickSpeedControl = ClickSpeedControl()
         clickSpeedControl.addUnit(en.isSkipPlotFlowTask, en.skipPlotFlowArea)
@@ -66,6 +116,10 @@ abstract class BasicFunction(
         clickSpeedControl.addUnit(en.isTradeMenuTask, en.closeTradeMenuArea)
         return clickSpeedControl
     }
+
+
+
+
 
 
     abstract suspend fun startFunction()

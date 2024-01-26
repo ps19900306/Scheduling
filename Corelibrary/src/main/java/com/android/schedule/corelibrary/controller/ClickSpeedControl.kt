@@ -12,12 +12,12 @@ class ClickSpeedControl {
     val list = mutableListOf<ClickControlImpl>()
 
 
-    fun addUnit(task: ImgTask, area: ClickArea,singleFlag: Boolean = false) {
-        list.add(ClickControlUnit(task, area,singleFlag))
+    fun addUnit(task: ImgTask, area: ClickArea, singleFlag: Boolean = false) {
+        list.add(ClickControlUnit(task, area, singleFlag))
     }
 
-    fun addUnit(task: ImgTask, clickList: List<ClickArea>,singleFlag: Boolean = false) {
-        list.add(ClickControlUnitV2(task, clickList,singleFlag))
+    fun addUnit(task: ImgTask, clickList: List<ClickArea>, singleFlag: Boolean = false) {
+        list.add(ClickControlUnitV2(task, clickList, singleFlag))
     }
 
     fun addUnit(task: MultiFindImgTask, area: ClickArea) {
@@ -26,14 +26,16 @@ class ClickSpeedControl {
         }
     }
 
+
     var maxCount = 3
 
     private var count = maxCount
     private var lastTAG = ""
 
-    fun clearTag(){
+    fun clearTag() {
         lastTAG = ""
     }
+
     private var isSingleUseLapse: ClickControlImpl? = null
 
     suspend fun checkImg(bitmap: Bitmap): ClickControlResult {
@@ -48,8 +50,8 @@ class ClickSpeedControl {
             if (lastTAG == it.task.tag) {
                 if (count <= 0) {
                     L.d(it.task.tag)
-                    if(it.isSingleUse()){
-                        isSingleUseLapse=it
+                    if (it.isSingleUse()) {
+                        isSingleUseLapse = it
                     }
                     count = maxCount
                     result.clickTask = it.getClickArea().toClickTask(it.task)
@@ -58,8 +60,8 @@ class ClickSpeedControl {
                 }
             } else {
                 L.d(it.task.tag)
-                if(it.isSingleUse()){
-                    isSingleUseLapse=it
+                if (it.isSingleUse()) {
+                    isSingleUseLapse = it
                 }
                 lastTAG = it.task.tag
                 count = maxCount
@@ -71,6 +73,10 @@ class ClickSpeedControl {
         return result
     }
 
+     fun removeUnit(tag: String) {
+        val unit = list.find { it.task.tag == tag }
+        list.remove(unit)
+    }
 
 }
 

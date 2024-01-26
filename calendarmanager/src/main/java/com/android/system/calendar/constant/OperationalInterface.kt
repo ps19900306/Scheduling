@@ -12,4 +12,6 @@ interface OperationalInterface {
     fun startDaily()
 
     fun startDungeon()
+
+    fun startShiMen()
 }

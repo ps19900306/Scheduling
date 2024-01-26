@@ -67,5 +67,12 @@ class CalendarAccessibilityService : AccessibilityService(), OperationalInterfac
         masterControl?.startDungeon()
     }
 
+    override fun startShiMen() {
+        masterControl?.stop()
+        masterControl=null
+        masterControl = MasterControl(this)
+        masterControl?.startShiMen()
+    }
+
 
 }

@@ -7,99 +7,65 @@ import com.android.schedule.corelibrary.utils.L
 import com.android.system.calendar.constant.GameStuckPoint
 import kotlinx.coroutines.delay
 
-// 跑標 完成待测试
-class TransportTreasureFunction(
+//帮会跑商
+class BangMerchantFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
-
     var mCount = 3;
-
     private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
-    private val minitiateDialogRecorder = en.findInitiateDialogueBtnTask.toStatusRecorder(3, 20)
-
     override suspend fun startFunction() {
         while (mCount > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
-                if (pickTask()) {
-                    processListening()
-                } else {
-                    runSwitch = false
-                }
+                pickTask()
             }
         }
 
     }
 
-    private suspend fun pickTask(): Boolean {
-        return if (mCount == 3) {
+    private suspend fun pickTask() {
+        if (mCount == 3) {
             openByActivity()
         } else {
-            if (!openByTaker()) {
-                openByActivity()
-            } else {
-                true
-            }
+            openByTaker()
         }
     }
 
 
-    private suspend fun openByTaker(): Boolean {
+    private suspend fun openByTaker() {
         var flag = true
-        var count = 30
+        var count = 40
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
-            if (en.isTotalCombatPowerTask.check()) {
-                if (en.findInitiateDialogueBtnTask.check()) {
-                    en.initiateDialogueBtnArea.c(
-                        en.findInitiateDialogueBtnTask,
-                        repeatedClickInterval
-                    )
-                } else {
-                    count -= 10
-                }
-            } else {
-                if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
-                    en.huodongDiloag1Area.c()
-                } else if (en.isTransportTreasureMenuTask.check()) {
-                    flag = false
-                    en.refreshTransportTreasureArea.c()
-                    delay(clickInterval)
-                    en.startTransportTreasureArea.c()
-                } else if (en.isSkipPlotFlowTask.check()) {
-                    en.skipPlotFlowArea.c()
-                } else if (en.isTipsDetermineTask.check()) {
-                    en.tipsDetermineArea.c()
-                } else if (en.findCloseBtnTask.check()) {
-                    en.closeBtnArea.c(en.findCloseBtnTask)
-                }
+            if (en.findDivisionTaskTask.check()) {
+                en.startDivisionArea.c(en.findDivisionTaskTask, repeatedClickInterval)
+            } else if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
+                en.huodongDiloag1Area.c()
+                flag = false
+            } else if (en.isSkipPlotFlowTask.check()) {
+                en.skipPlotFlowArea.c()
+            } else if (en.isTipsDetermineTask.check()) {
+                en.tipsDetermineArea.c()
             }
+            count--
         }
-        return !flag
     }
 
-    private suspend fun openByActivity(): Boolean {
-        if (openActivityTiaoZhan()) {
+    private suspend fun openByActivity() {
+        if (openActivityNeed()) {
             var flag = true
             var count = 40
             while (flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
                     reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 }
-                if (en.findTransportTreasureTaskTask.check()) {
-                    en.startTransportTreasureTaskArea.c(
-                        en.findTransportTreasureTaskTask,
-                        repeatedClickInterval
-                    )
+                if (en.findDivisionTaskTask.check()) {
+                    en.startDivisionArea.c(en.findDivisionTaskTask, repeatedClickInterval)
                 } else if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
                     en.huodongDiloag1Area.c()
-                } else if (en.isTransportTreasureMenuTask.check()) {
                     flag = false
-                    en.refreshTransportTreasureArea.c()
-                    delay(clickInterval)
-                    en.startTransportTreasureArea.c()
                 } else if (en.isSkipPlotFlowTask.check()) {
                     en.skipPlotFlowArea.c()
                 } else if (en.isTipsDetermineTask.check()) {
@@ -107,10 +73,10 @@ class TransportTreasureFunction(
                 }
                 count--
             }
-            return !flag
         }
-        return false
     }
+
+
 
 
     suspend fun processListening() {
@@ -124,7 +90,6 @@ class TransportTreasureFunction(
         )
 
         val clickSpeedControl = getNormalClickSpeedControl()
-        clickSpeedControl.removeUnit(en.isHuodongDiloagTask.tag)
         while (runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -132,38 +97,38 @@ class TransportTreasureFunction(
             if (en.isTotalCombatPowerTask.check()) {//正在主界面
                 L.d("正在主界面")
                 clickSpeedControl.clearTag()
-                minitiateDialogRecorder.updateInfo()
+
                 mAutoPathfindingRecorder.updateInfo()
-
-                //对话框出来次数够了就进行下一个
-                if (minitiateDialogRecorder.isOpenTrustThresholds()) {
-                    if (clickTransportTreasureTask())
-                        return
-                }
-
                 if (mAutoPathfindingRecorder.isCloseErrorThresholds()) {
-                    mainStuckPoint.trustThreshold = 3
+                    mainStuckPoint.trustThreshold = 4
                 } else if (mAutoPathfindingRecorder.isCloseTrustThresholds()) {
-                    mainStuckPoint.trustThreshold = 5
+                    mainStuckPoint.trustThreshold = 6
                 } else {
                     mainStuckPoint.recordNoChange = 0
                 }
                 if (mainStuckPoint.gameIsStuck(screenBitmap!!)) { //如果卡点
-                    if (clickTransportTreasureTask())
+                    if(!clickMerchantTypeTask())
                         return
                 }
             } else {
                 L.d("不在主界面")
                 mainStuckPoint.recordNoChange = 0
                 mAutoPathfindingRecorder.clearUp()
-                minitiateDialogRecorder.clearUp()
-                clickSpeedControl.cc()
+
+                if (en.isPurchaseItemTask.check()) {
+                    en.isPurchaseItemArea.c()
+                    delay(jumpClickInterval)
+                    if(!clickMerchantTypeTask())
+                    return
+                } else {
+                    clickSpeedControl.cc()
+                }
             }
         }
     }
 
-    //如果没有运镖任务就默认这一次完成
-    private suspend fun clickTransportTreasureTask(): Boolean {
+    //这里如果没有师门任务就会 点击失败
+    private suspend fun clickMerchantTypeTask():Boolean {
         var flag = true
         var count = 5
         while (flag && count > 0 && runSwitch) {
@@ -171,8 +136,8 @@ class TransportTreasureFunction(
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
             if (en.isTotalCombatPowerTask.check()) {
-                if (en.isTransportTreasureTypeTask.check()) {
-                    en.transportTreasureTypeArea.c(en.isTransportTreasureTypeTask)
+                if (en.isMerchantTypeTask.check()) {
+                    en.startMerchantTypeArea.c(en.isMerchantTypeTask)
                     flag = false
                 } else {
                     delay(clickInterval)
@@ -182,12 +147,10 @@ class TransportTreasureFunction(
                 flag = false
             }
         }
-        //没有找到数据
         if (flag) {
             mCount--
         }
-        return flag
+        return !flag
     }
-
 
 }

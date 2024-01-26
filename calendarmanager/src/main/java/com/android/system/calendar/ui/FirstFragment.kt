@@ -77,6 +77,11 @@ class FirstFragment : Fragment() {
             CalendarAccessibilityService.instance?.startDungeon()
         }
 
+
+        binding.startShiMenBtn.singleClick {
+            CalendarAccessibilityService.instance?.startShiMen()
+        }
+
     }
 
     override fun onDestroyView() {

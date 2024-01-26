@@ -51,10 +51,16 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startDaily() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            ShiMenFunction(acService, en).startFunction()
             BangTaskFunction(acService, en).startFunction()
             MountainsRiversPaintingFunction(acService, en).startFunction()
             TreasureMapFunction(acService, en).startFunction()
+        }
+    }
+
+    fun startShiMen() {
+        job?.cancel()
+        job = GlobalScope.launch(Dispatchers.IO) {
+            ShiMenFunction(acService, en).startFunction()
         }
     }
 
