@@ -26,8 +26,10 @@ open class FindImgTask(
 ) : ImgTask(iprList, tag) {
 
     private var correctArea = false
-
     private var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
+
+
+
 
     override fun logColor(bitmap: Bitmap){
         val  pX = pr.point.xI
@@ -90,7 +92,7 @@ open class FindImgTask(
     }
 
 
-    private fun findImgByColor(bitmap: Bitmap, area: CoordinateArea): Boolean {
+    protected fun findImgByColor(bitmap: Bitmap, area: CoordinateArea): Boolean {
         //这里修正图片是为了保证不月觉
 //        if(!correctArea)
 //            correctArea(bitmap.width,bitmap.height)
