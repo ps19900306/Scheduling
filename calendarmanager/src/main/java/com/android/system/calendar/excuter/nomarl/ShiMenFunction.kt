@@ -76,34 +76,7 @@ class ShiMenFunction(
             ), 5
         )
 
-        val clickSpeedControl = ClickSpeedControl()
-        clickSpeedControl.addUnit(en.isSkipPlotFlowTask, en.skipPlotFlowArea)
-        clickSpeedControl.addUnit(en.isClickUseTask, en.clickUseArea)
-        clickSpeedControl.addUnit(en.isClickEquipTask, en.clickUseArea)
-        clickSpeedControl.addUnit(en.isTipsDetermineTask, en.tipsDetermineArea)
-        clickSpeedControl.addUnit(en.isHuodongDiloagTask, en.huodongDiloag2Area)
-        clickSpeedControl.addUnit(en.isItemsInDemandTask, en.itemsInDemandArea)
-        clickSpeedControl.addUnit(en.isANewFriendshipTask, en.closeFriendshipArea)
-        clickSpeedControl.addUnit(en.isEnableNewFeaturesTask, en.isEnableNewFeaturesArea)
-
-        clickSpeedControl.addUnit(
-            en.hasDialogueSelectionBoxTask,
-            listOf(en.dialogueSelectionBox1Area, en.dialogueSelectionBox2Area)
-        )
-
-        //帮会任务接取的
-//        clickSpeedControl.addUnit(
-//            en.isBangTaskMenuTask,
-//            listOf(en.pickUpBangTask1Area, en.pickUpBangTask2Area, en.pickUpBangTask2Area)
-//        )
-
-        //购买
-//        clickSpeedControl.addUnit(en.isPurchaseItemTask, en.isPurchaseItemArea)
-
-        clickSpeedControl.addUnit(en.isSubmitItemsTask, en.submitItemArea)
-
-
-
+        val clickSpeedControl = getNormalClickSpeedControl()
         while (runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)

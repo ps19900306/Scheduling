@@ -37,12 +37,34 @@ class CalendarAccessibilityService : AccessibilityService(), OperationalInterfac
 
     override fun startAuto() {
         masterControl?.stop()
+        masterControl=null
         masterControl = MasterControl(this)
         masterControl?.start()
     }
 
     override fun stopAuto() {
         masterControl?.stop()
+    }
+
+    override fun startOrigin() {
+        masterControl?.stop()
+        masterControl=null
+        masterControl = MasterControl(this)
+        masterControl?.startOrigin()
+    }
+
+    override fun startDaily() {
+        masterControl?.stop()
+        masterControl=null
+        masterControl = MasterControl(this)
+        masterControl?.startDaily()
+    }
+
+    override fun startDungeon() {
+        masterControl?.stop()
+        masterControl=null
+        masterControl = MasterControl(this)
+        masterControl?.startDungeon()
     }
 
 

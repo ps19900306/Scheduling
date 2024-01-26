@@ -31,7 +31,7 @@ class OriginFunction(acService: AccessibilityService) : SequentialProcessBaseCon
     //监听卡点部分
     //一步一步的流程
     override suspend fun getKeyframeStepList(): List<KeyframeStep> {
-        var count = 1
+        var count = 0
         val list = mutableListOf<KeyframeStep>()
         list.add(KeyframeStep(++count, { en.isChooseFashionTask.check() }, {
             L.d(en.isChooseFashionTask.tag)
@@ -66,6 +66,7 @@ class OriginFunction(acService: AccessibilityService) : SequentialProcessBaseCon
                     }
                     if (hasInto && en.isTotalCombatPowerTask.check()) {
                         flag = false
+                        en.clickUseArea.c()
                     } else if (en.isWeaponGuideMenuTask.check()) {
                         en.openWeaponGuideMenuArea.c()
                         delay(jumpClickInterval)
@@ -76,6 +77,7 @@ class OriginFunction(acService: AccessibilityService) : SequentialProcessBaseCon
                         en.receiveDivineWeapon5Area.c()
                         delay(clickInterval)
                         en.closeWeaponGuideTask.c()
+                        delay(jumpClickInterval)
                     }
                 }
             })
@@ -1231,7 +1233,7 @@ class OriginFunction(acService: AccessibilityService) : SequentialProcessBaseCon
                         }
                     }
                 }
-            }, true)
+            })
         )
 
         //这个是武道突破

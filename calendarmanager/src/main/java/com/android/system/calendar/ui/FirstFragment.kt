@@ -56,10 +56,7 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonFirst.singleClick {
-            //findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-            CalendarAccessibilityService.instance?.startAuto()
-        }
+
         binding.button.singleClick {
             mMediaProjectionManager =
                activity?.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager?;
@@ -67,6 +64,19 @@ class FirstFragment : Fragment() {
                 requestDataLauncher.launch(it)
             }
         }
+
+        binding.startOriginBtn.singleClick {
+            CalendarAccessibilityService.instance?.startOrigin()
+        }
+
+        binding.startDailyBtn.singleClick {
+            CalendarAccessibilityService.instance?.startDaily()
+        }
+
+        binding.startDungeonBtn.singleClick {
+            CalendarAccessibilityService.instance?.startDungeon()
+        }
+
     }
 
     override fun onDestroyView() {

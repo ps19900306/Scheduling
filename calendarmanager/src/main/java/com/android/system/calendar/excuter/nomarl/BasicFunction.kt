@@ -45,5 +45,28 @@ abstract class BasicFunction(
     }
 
 
+    protected  fun getNormalClickSpeedControl():ClickSpeedControl{
+        val clickSpeedControl = ClickSpeedControl()
+        clickSpeedControl.addUnit(en.isSkipPlotFlowTask, en.skipPlotFlowArea)
+        clickSpeedControl.addUnit(en.isClickUseTask, en.clickUseArea)
+        clickSpeedControl.addUnit(en.isClickEquipTask, en.clickUseArea)
+        clickSpeedControl.addUnit(en.isTipsDetermineTask, en.tipsDetermineArea)
+        clickSpeedControl.addUnit(en.isHuodongDiloagTask, en.huodongDiloag2Area)
+        clickSpeedControl.addUnit(en.isItemsInDemandTask, en.itemsInDemandArea)
+        clickSpeedControl.addUnit(en.isANewFriendshipTask, en.closeFriendshipArea)
+        clickSpeedControl.addUnit(en.isEnableNewFeaturesTask, en.isEnableNewFeaturesArea)
+
+        clickSpeedControl.addUnit(en.isChamberCommerceTask, en.chamberCommerceArea)
+        clickSpeedControl.addUnit(en.isPurchaseItem2Task, en.isPurchaseItem2Area)
+        clickSpeedControl.addUnit(en.isSubmitItemsTask, en.submitItemArea)
+        clickSpeedControl.addUnit(
+            en.hasDialogueSelectionBoxTask,
+            listOf(en.dialogueSelectionBox1Area, en.dialogueSelectionBox2Area)
+        )
+        clickSpeedControl.addUnit(en.isTradeMenuTask, en.closeTradeMenuArea)
+        return clickSpeedControl
+    }
+
+
     abstract suspend fun startFunction()
 }
