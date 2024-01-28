@@ -28,6 +28,9 @@ open class FindImgTask(
     private var correctArea = false
     protected var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
 
+    fun getFindPoint():CoordinatePoint?{
+        return findImgPoint
+    }
 
     override fun logColor(bitmap: Bitmap) {
         val pX = pr.point.xI

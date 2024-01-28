@@ -14,8 +14,7 @@ class DungeonOrdinaryFunction(
     acService: AccessibilityService, en: ImageEnvironment,
     val typeList: MutableList<Int>,
 ) : BasicFunction(acService, en) {
-    private val mAutoFightingRecorder = en.isAutoFightingTask.toStatusRecorder(5, 30)
-    private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 30)
+
     override suspend fun startFunction() {
         while (runSwitch && typeList.isNotEmpty()) {
             startDungeon(typeList.getOrNull(0) ?: 0)

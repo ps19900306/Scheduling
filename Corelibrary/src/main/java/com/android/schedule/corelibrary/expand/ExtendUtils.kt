@@ -3,6 +3,8 @@ package com.android.schedule.corelibrary.expand
 import android.graphics.Bitmap
 import android.view.View
 import android.widget.Checkable
+import com.android.schedule.corelibrary.area.CoordinateArea
+import com.android.schedule.corelibrary.area.CoordinatePoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -59,4 +61,9 @@ fun CoroutineScope.runOnUI(doInUI: suspend CoroutineScope.() -> Unit): Job {
 
 fun CoroutineScope.runOnIO(doInIO: suspend CoroutineScope.() -> Unit): Job {
     return launch(Dispatchers.IO) { doInIO() }
+}
+
+fun CoordinatePoint.inArea(coordinateArea: CoordinateArea): Boolean {
+    return xI in coordinateArea.xI..(coordinateArea.xI + coordinateArea.width) &&
+            yI in coordinateArea.yI..(coordinateArea.yI + coordinateArea.height)
 }

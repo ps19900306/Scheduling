@@ -13,9 +13,7 @@ class TransportTreasureFunction(
 ) : BasicFunction(acService, en) {
 
     var mCount = 3;
-
-    private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
-    private val minitiateDialogRecorder = en.findInitiateDialogueBtnTask.toStatusRecorder(2, 20)
+    private val minitiateDialogRecorder = en.findInitiateDialogueBtnTask.toStatusRecorder(2, 5)
 
     override suspend fun startFunction() {
         while (mCount > 0 && runSwitch) {

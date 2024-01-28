@@ -189,13 +189,13 @@ abstract class BaseController(
         var bitmap: Bitmap? = null
         ImageTakeUtils.acquireNextImage()?.let { image ->
             if(image==null){
-                L.t("img为空")
+                //L.t("img为空")
             }else{
-                L.t("获取到最新图片")
+                //L.t("获取到最新图片")
                 val buffer: ByteBuffer = image.planes[0].getBuffer()
                 val width = image.width
                 val height = image.height
-                Log.e("whh0914", "image width=$width, height=$height")
+                L.t("whh0914 image width=$width, height=$height")
                 val pixelStride: Int = image.planes[0].pixelStride
                 val rowStride: Int = image.planes[0].rowStride
                 val rowPadding = rowStride - pixelStride * width
@@ -207,10 +207,10 @@ abstract class BaseController(
                 bitmap!!.copyPixelsFromBuffer(buffer)
                 bitmap = Bitmap.createScaledBitmap(bitmap!!, bitmap!!.width, bitmap!!.height, false)
                 if (bitmap != null) {
-                    L.t( "屏幕截图成功!")
+                    //L.t( "屏幕截图成功!")
                     return bitmap
                 }else{
-                    L.t( "屏幕截图失败!")
+                    //L.t( "屏幕截图失败!")
                 }
                 image.close()
             }

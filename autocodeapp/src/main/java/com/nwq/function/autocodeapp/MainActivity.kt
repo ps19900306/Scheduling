@@ -309,10 +309,15 @@ class MainActivity() : AppCompatActivity() {
                     bind.functionGroup.isVisible = false
                     bind.btnOk.isVisible = true
                     val list = mutableListOf<CoordinatePoint>()
+                    val sx = viewModel.coordinateArea?.x ?: 0
+                    val sy = viewModel.coordinateArea?.y ?: 0
                     viewModel.colorMaps.forEach { t, u ->
+
                         if (t.isChecked) {
                             u.forEach {
-                                list.add(CoordinatePoint(it.x, it.y))
+                                list.add(
+                                    CoordinatePoint(sx + it.x,sy+ it.y)
+                                )
                             }
                         }
                     }

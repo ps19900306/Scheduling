@@ -13,8 +13,7 @@ class ShiMenFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
 
-    private val mAutoFightingRecorder = en.isAutoFightingTask.toStatusRecorder(5, 20)
-    private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
+
     override suspend fun startFunction() {
         if (openActivityNeed()) {
             var flag = true
@@ -28,8 +27,11 @@ class ShiMenFunction(
                 } else if (en.isHuodongDiloagTask.check()) {
                     en.huodongDiloag2Area.c()
                     flag = false
-                }else if( en.isSkipPlotFlowTask.check()){
+                } else if (en.isSkipPlotFlowTask.check()) {
                     en.skipPlotFlowArea.c()
+                    flag = false
+                } else if (en.isShiMenTypeTask.check()) {
+                    en.clickShiMenTypeArea.c(en.isShiMenTypeTask)
                     flag = false
                 }
                 count--
@@ -81,20 +83,27 @@ class ShiMenFunction(
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
+
+
             if (en.isTotalCombatPowerTask.check()) {//正在主界面
                 L.d("正在主界面")
-                clickSpeedControl.clearTag()
+                if (en.isShiMenBuyTask.check()) {
+                    en.shiMenBuyArea.c(en.isShiMenBuyTask)
+                    L.d("點擊商會購買")
+                    continue
+                }
                 mAutoFightingRecorder.updateInfo()
                 mAutoPathfindingRecorder.updateInfo()
                 if (mAutoFightingRecorder.isCloseErrorThresholds() && mAutoFightingRecorder.isCloseErrorThresholds()) {
-                    mainStuckPoint.trustThreshold = 4
+                    mainStuckPoint.trustThreshold = 3
                 } else if (mAutoFightingRecorder.isCloseTrustThresholds() && mAutoFightingRecorder.isCloseTrustThresholds()) {
-                    mainStuckPoint.trustThreshold = 6
+                    mainStuckPoint.trustThreshold = 5
                 } else {
                     mainStuckPoint.recordNoChange = 0
                 }
                 if (mainStuckPoint.gameIsStuck(screenBitmap!!)) { //如果卡点
                     clickShiMenTypeTask()
+                    continue
                 }
             } else {
                 L.d("不在主界面")
@@ -102,14 +111,15 @@ class ShiMenFunction(
                 mAutoFightingRecorder.clearUp()
                 mAutoPathfindingRecorder.clearUp()
 
-                if(en.isPurchaseItemTask.check()){
+                if (en.isPurchaseItemTask.check()) {
                     en.isPurchaseItemArea.c()
                     delay(jumpClickInterval)
                     clickShiMenTypeTask()
-                }else{
-                    clickSpeedControl.cc()
+                    continue
                 }
             }
+
+            clickSpeedControl.cc()
         }
     }
 

@@ -13,9 +13,9 @@ class BangMerchantFunction(
 ) : BasicFunction(acService, en) {
     var mCount = 3;
 
-    private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
+
     private val minitiateDialogRecorder = en.findInitiateDialogueBtnTask.toStatusRecorder(2, 20)
-    private val mFindMerchantDestination=FindMerchantDestination()
+    private val mFindMerchantDestination = FindMerchantDestination(en.isFindMerchantMapLocationTask)
     override suspend fun startFunction() {
         while (mCount > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
@@ -49,7 +49,7 @@ class BangMerchantFunction(
     private suspend fun openByTaker(): Boolean {
         var flag = true
         var count = 30
-        while (mCount>-2 && flag && count > 0 && runSwitch) {
+        while (mCount > -1 && flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
@@ -83,7 +83,7 @@ class BangMerchantFunction(
         if (openActivityXianXia()) {
             var flag = true
             var count = 40
-            while (mCount>-2 && flag && count > 0 && runSwitch) {
+            while (mCount > -1 && flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
                     reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 }
@@ -127,15 +127,14 @@ class BangMerchantFunction(
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
-            if (en.isTotalCombatPowerTask.check()) {//正在主界面
+            if (mCount > -1 && en.isTotalCombatPowerTask.check()) {//正在主界面
                 L.d("正在主界面")
-                clickSpeedControl.clearTag()
                 minitiateDialogRecorder.updateInfo()
                 mAutoPathfindingRecorder.updateInfo()
 
                 if (hasByGood) {
                     clickTransportTreasureTask()
-                    hasByGood =false
+                    hasByGood = false
                     continue
                 }
                 //对话框出来次数够了就进行下一个
@@ -159,11 +158,15 @@ class BangMerchantFunction(
                 if (en.isHuodongDiloagTopTask.check()) {//这里表示又进入跑商任务了
                     en.huodongDiloag1Area.c()
                     mCount--
+                    continue
                 } else {
                     en.huodongDiloag2Area.c()
+                    continue
                 }
             } else if (en.isMerchantShopTask.check()) {//跑商商店
-                if (en.isMerchantSellAllTask.check()) {
+                if (en.isMerchantNoSellGoodTask.check()) {
+                    en.swtitchMerchantBuyArea.c()
+                } else if (en.isMerchantSellAllTask.check()) {
                     en.merchantSellAllArea.c()
                 } else {
                     val rand = Math.random()
@@ -183,24 +186,23 @@ class BangMerchantFunction(
                 en.closeMerchantShop.c()
                 delay(clickInterval)
                 hasByGood = true
-            } else if(en.isMerchantMapTask.check()){
-                if(mFindMerchantDestination.verificationRule(screenBitmap)){
-                    mFindMerchantDestination.resultMerchantLocation?.clickArea?.c(repeatedClickInterval)
+            } else if (en.isMerchantMapTask.check()) {
+                if (mFindMerchantDestination.verificationRule(screenBitmap)) {
+                    mFindMerchantDestination.resultMerchantLocation?.clickArea?.c(
+                        repeatedClickInterval
+                    )
                 }
-            } else if(en.isMerchantQianWangTask.check()){
+            } else if (en.isMerchantQianWangTask.check()) {
                 en.merchantQianWangArea.c()
             } else {
                 L.d("不在主界面")
                 mainStuckPoint.recordNoChange = 0
                 mAutoPathfindingRecorder.clearUp()
                 minitiateDialogRecorder.clearUp()
-                clickSpeedControl.cc()
             }
+            clickSpeedControl.cc()
         }
     }
-
-
-
 
 
     //如果没有运镖任务就默认这一次完成

@@ -13,8 +13,7 @@ class BangTaskFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
 
-    private val mAutoFightingRecorder = en.isAutoFightingTask.toStatusRecorder(5, 20)
-    private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
+
     override suspend fun startFunction() {
         if (openActivityNeed()) {
             var flag = true
@@ -41,29 +40,7 @@ class BangTaskFunction(
     }
 
 
-    //这里如果没有师门任务就会 点击失败
-//    private suspend fun clickShiMenTypeTask() {
-//        var flag = true
-//        var count = 5
-//        while (flag && count > 0 && runSwitch) {
-//            if (!taskScreenL(screenshotIntervalF)) {
-//                reportingError(ABNORMAL_SCREENO_ORIENTATION)
-//            }
-//            if (en.isTotalCombatPowerTask.check()) {
-//                if (en.isShiMenTypeTask.check()) {
-//                    en.clickShiMenTypeArea.c(en.isShiMenTypeTask)
-//                    flag = false
-//                } else {
-//                    delay(clickInterval)
-//                }
-//                count--
-//            } else {
-//                flag = false
-//            }
-//        }
-//        //这里如果没有任务就会结束
-//        runSwitch = !flag
-//    }
+
 
     //执行过程监听
     private suspend fun processListening() {
@@ -84,8 +61,6 @@ class BangTaskFunction(
         clickSpeedControl.addUnit(en.isPurchaseItemTask, en.isPurchaseItemArea)
 
 
-
-
         while (runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -96,9 +71,9 @@ class BangTaskFunction(
                 mAutoFightingRecorder.updateInfo()
                 mAutoPathfindingRecorder.updateInfo()
                 if (mAutoFightingRecorder.isCloseErrorThresholds() && mAutoFightingRecorder.isCloseErrorThresholds()) {
-                    mainStuckPoint.trustThreshold = 5
+                    mainStuckPoint.trustThreshold = 3
                 } else if (mAutoFightingRecorder.isCloseTrustThresholds() && mAutoFightingRecorder.isCloseTrustThresholds()) {
-                    mainStuckPoint.trustThreshold = 10
+                    mainStuckPoint.trustThreshold = 5
                 } else {
                     mainStuckPoint.recordNoChange = 0
                 }
@@ -111,16 +86,8 @@ class BangTaskFunction(
                 mainStuckPoint.recordNoChange = 0
                 mAutoFightingRecorder.clearUp()
                 mAutoPathfindingRecorder.clearUp()
-
-                clickSpeedControl.cc()
-//                if(en.isPurchaseItemTask.check()){
-//                    en.isPurchaseItemArea.c()
-//                    delay(jumpClickInterval)
-//                    clickShiMenTypeTask()
-//                }else{
-//                    clickSpeedControl.cc()
-//                }
             }
+            clickSpeedControl.cc()
         }
 
     }

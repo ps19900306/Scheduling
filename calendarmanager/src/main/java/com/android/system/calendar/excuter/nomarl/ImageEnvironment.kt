@@ -15,7 +15,9 @@ import com.android.schedule.corelibrary.img.point_rule.TwoPointRule
 //这个是用于
 class ImageEnvironment {
 
-
+    val switchAutoFightArea by lazy {
+        ClickArea(700, 542, 99, 33, false)
+    }
     val activityMenuBtnArea by lazy {
         ClickArea(835, 21, 42, 44, true)
     }
@@ -11198,6 +11200,136 @@ class ImageEnvironment {
     }
 
 
+    val swtitchMerchantBuyArea by lazy {
+        ClickArea(220,136,98,28,false)}
+    val isMerchantNoSellGoodTask by lazy {
+        val tag = "isMerchantNoSellGood"
+        val colorRule1=ColorRuleRatioImpl.getSimple(81,70,63,54,25,21,1.365F,1.17F,3.4125F,2.925F,2.625F, 2.25F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(675, 497), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(675, 505), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 0  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(675, 510), colorRule1)
+            //red78,green60,blue24 sequenceNumber:15 blockNumber: 0  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(696, 497), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(693, 503), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(696, 509), colorRule1)
+            //red78,green60,blue24 sequenceNumber:14 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(630, 498), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 3  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(627, 499), colorRule1)
+            //red78,green60,blue24 sequenceNumber:4 blockNumber: 3  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(626, 503), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 3  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(624, 509), colorRule1)
+            //red78,green60,blue24 sequenceNumber:14 blockNumber: 3  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(654, 499), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(655, 505), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(655, 509), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(654, 514), colorRule1)
+            //red78,green60,blue24 sequenceNumber:16 blockNumber: 4  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(643, 500), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 5  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(703, 500), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(701, 506), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 6  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(681, 501), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(670, 502), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 8  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(650, 503), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 10  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(646, 504), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 11  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(628, 506), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 14  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(634, 513), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 14  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(637, 511), colorRule1)
+            //red78,green60,blue24 sequenceNumber:16 blockNumber: 14  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(681, 509), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 16  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(682, 512), colorRule1)
+            //red78,green60,blue24 sequenceNumber:5 blockNumber: 16  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(670, 510), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 17  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(704, 511), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 18  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(695, 512), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 19  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(675, 505),CoordinatePoint(673, 504), CompareDifferenceRuleImpl.getSimple(-30,-30,-40)) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(693, 503),CoordinatePoint(692, 502), CompareDifferenceRuleImpl.getSimple(-30,-30,-40)) // sequenceNumber:8sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(626, 503),CoordinatePoint(624, 503), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:8sequenceNumber blockNumber: $3  positionType:$3
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(655, 505),CoordinatePoint(653, 505), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:8sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(646, 500),CoordinatePoint(646, 498), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:5sequenceNumber blockNumber: $5  positionType:$5
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(702, 502),CoordinatePoint(700, 502), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(681, 503),CoordinatePoint(680, 502), CompareDifferenceRuleImpl.getSimple(-30,-30,-40)) // sequenceNumber:4sequenceNumber blockNumber: $7  positionType:$7
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(670, 504),CoordinatePoint(668, 504), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $8  positionType:$8
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(650, 505),CoordinatePoint(649, 505), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $10  positionType:$10
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(646, 506),CoordinatePoint(644, 506), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $11  positionType:$11
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(634, 513),CoordinatePoint(634, 512), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:12sequenceNumber blockNumber: $14  positionType:$14
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(682, 512),CoordinatePoint(684, 512), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:5sequenceNumber blockNumber: $16  positionType:$16
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(670, 513),CoordinatePoint(668, 512), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $17  positionType:$17
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(704, 513),CoordinatePoint(702, 513), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:5sequenceNumber blockNumber: $18  positionType:$18
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(696, 514),CoordinatePoint(694, 514), CompareDifferenceRuleImpl.getSimple(-30,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $19  positionType:$19
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance=3 }
+    }
+
+
     val merchantSellAllArea by lazy {
         ClickArea(958, 603, 102, 32, false)
     }
@@ -11949,5 +12081,1953 @@ class ImageEnvironment {
             nErrorTolerance = 3
         }
     }
+
+
+    val isFindMerchantMapLocationTask by lazy {
+        val tag = "isFindMerchantMapLocation"
+        val pr  =  PointRule(CoordinatePoint(983, 478), ColorRuleRatioImpl.getSimple(188,255,107))
+        // sequenceNumber:0 blockNumber: 1  positionType:1
+        val findArea = CoordinateArea(291,80,825,507)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(972, 468), ColorRuleRatioImpl.getSimple(171,255,113))
+            // sequenceNumber:8 blockNumber: 1  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(976, 474), ColorRuleRatioImpl.getSimple(170,238,102))
+            // sequenceNumber:12 blockNumber: 1  positionType:3
+        )
+        pointList.add(PointRule(CoordinatePoint(980, 474), ColorRuleRatioImpl.getSimple(175,242,107))
+            // sequenceNumber:16 blockNumber: 1  positionType:2
+        )
+        pointList.add(PointRule(CoordinatePoint(978, 477), ColorRuleRatioImpl.getSimple(186,249,105))
+            // sequenceNumber:16 blockNumber: 1  positionType:2
+        )
+        pointList.add(PointRule(CoordinatePoint(988, 472), ColorRuleRatioImpl.getSimple(178,244,110))
+            // sequenceNumber:32 blockNumber: 1  positionType:2
+        )
+        pointList.add(PointRule(CoordinatePoint(992, 466), ColorRuleRatioImpl.getSimple(170,238,102))
+            // sequenceNumber:24 blockNumber: 1  positionType:1
+        )
+
+        pointList.add(PointRule(CoordinatePoint(986, 474), ColorRuleRatioImpl.getSimple(178,244,110))
+            // sequenceNumber:28 blockNumber: 1  positionType:3
+        )
+        FindImgTask(pr, findArea,pointList, tag).apply {
+            nErrorTolerance=1 }
+    }
+
+    val closeShenDianMoShiArea by lazy {
+        ClickArea(494, 216, 274, 160, false)
+    }
+    val isShenDianMoShiTask by lazy {
+        val tag = "isShenDianMoShi"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            255,
+            226,
+            255,
+            225,
+            229,
+            194,
+            1.0583004F,
+            0.9035714F,
+            1.2249999F,
+            1.0479451F,
+            1.2201389F,
+            1.039726F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(578, 266), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(579, 272), colorRule1)
+            //red255,green253,blue219 sequenceNumber:8 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(576, 276), colorRule1)
+            //red255,green253,blue219 sequenceNumber:12 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(577, 283), colorRule1)
+            //red255,green253,blue219 sequenceNumber:16 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(584, 283), colorRule1)
+            //red255,green253,blue219 sequenceNumber:24 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(584, 275), colorRule1)
+            //red255,green253,blue219 sequenceNumber:28 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(601, 266), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(603, 271), colorRule1)
+            //red255,green253,blue219 sequenceNumber:4 blockNumber: 1  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(602, 276), colorRule1)
+            //red255,green253,blue219 sequenceNumber:12 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(602, 280), colorRule1)
+            //red255,green253,blue219 sequenceNumber:16 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(605, 283), colorRule1)
+            //red255,green253,blue219 sequenceNumber:20 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(612, 282), colorRule1)
+            //red255,green253,blue219 sequenceNumber:24 blockNumber: 1  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(621, 266), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(622, 275), colorRule1)
+            //red255,green253,blue219 sequenceNumber:8 blockNumber: 2  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(621, 282), colorRule1)
+            //red255,green253,blue219 sequenceNumber:18 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(632, 266), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 3  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(634, 268), colorRule1)
+            //red255,green253,blue219 sequenceNumber:5 blockNumber: 3  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(651, 267), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 4  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(650, 272), colorRule1)
+            //red255,green253,blue219 sequenceNumber:8 blockNumber: 4  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(653, 276), colorRule1)
+            //red255,green253,blue219 sequenceNumber:12 blockNumber: 4  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(658, 283), colorRule1)
+            //red255,green253,blue219 sequenceNumber:16 blockNumber: 4  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(675, 266), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(675, 271), colorRule1)
+            //red255,green253,blue219 sequenceNumber:4 blockNumber: 5  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(676, 276), colorRule1)
+            //red255,green253,blue219 sequenceNumber:12 blockNumber: 5  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(681, 274), colorRule1)
+            //red255,green253,blue219 sequenceNumber:12 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(675, 280), colorRule1)
+            //red255,green253,blue219 sequenceNumber:16 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(608, 271), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 10  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(607, 276), colorRule1)
+            //red255,green253,blue219 sequenceNumber:8 blockNumber: 10  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(633, 271), colorRule1)
+            //red253,green252,blue217 sequenceNumber:0 blockNumber: 11  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(627, 275), colorRule1)
+            //red255,green253,blue219 sequenceNumber:8 blockNumber: 11  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(629, 280), colorRule1)
+            //red255,green253,blue219 sequenceNumber:12 blockNumber: 11  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(635, 283), colorRule1)
+            //red255,green253,blue219 sequenceNumber:16 blockNumber: 11  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(596, 272), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 12  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(598, 276), colorRule1)
+            //red255,green253,blue219 sequenceNumber:6 blockNumber: 12  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(669, 272), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 13  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(670, 275), colorRule1)
+            //red255,green253,blue219 sequenceNumber:5 blockNumber: 13  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(649, 276), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 16  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(647, 278), colorRule1)
+            //red252,green251,blue216 sequenceNumber:4 blockNumber: 16  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(643, 282), colorRule1)
+            //red255,green253,blue219 sequenceNumber:9 blockNumber: 16  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(633, 278), colorRule1)
+            //red255,green253,blue219 sequenceNumber:0 blockNumber: 18  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(577, 283),
+                CoordinatePoint(575, 282),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:16sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(602, 280),
+                CoordinatePoint(600, 280),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:16sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(622, 275),
+                CoordinatePoint(624, 273),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $2  positionType:$2
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(634, 268),
+                CoordinatePoint(634, 270),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $3  positionType:$3
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(653, 276),
+                CoordinatePoint(652, 277),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(676, 276),
+                CoordinatePoint(678, 274),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $5  positionType:$5
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(609, 272),
+                CoordinatePoint(609, 269),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $10  positionType:$10
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(629, 280),
+                CoordinatePoint(633, 280),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $11  positionType:$11
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(598, 276),
+                CoordinatePoint(596, 276),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:6sequenceNumber blockNumber: $12  positionType:$12
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(670, 275),
+                CoordinatePoint(668, 275),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $13  positionType:$13
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(647, 278),
+                CoordinatePoint(645, 278),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $16  positionType:$16
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(635, 278),
+                CoordinatePoint(635, 276),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $18  positionType:$18
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply { nErrorTolerance = 2 }
+    }
+
+
+    val shiMenBuyArea by lazy {
+        ClickArea(416, 414, 223, 29, false)
+    }
+
+    val isShiMenBuyTask by lazy {
+        val tag = "isOpen"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            255,
+            194,
+            242,
+            180,
+            180,
+            135,
+            1.1286345F,
+            0.9631579F,
+            1.5204545F,
+            1.2957832F,
+            1.4181818F,
+            1.2060001F
+        )
+        val pr = PointRule(CoordinatePoint(607, 420), colorRule1)
+        //red239,green223,blue166 sequenceNumber:0 blockNumber: 1  positionType:0
+        val findArea = CoordinateArea(604, 368, 7, 175)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(616, 422), colorRule1)
+            //red223,green208,blue154 sequenceNumber:8 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(615, 427), colorRule1)
+            //red248,green231,blue172 sequenceNumber:12 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(615, 434), colorRule1)
+            //red248,green231,blue172 sequenceNumber:19 blockNumber: 1  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(627, 420), colorRule1)
+            //red244,green227,blue169 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(626, 428), colorRule1)
+            //red244,green227,blue169 sequenceNumber:8 blockNumber: 2  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(626, 433), colorRule1)
+            //red248,green231,blue172 sequenceNumber:15 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(633, 424), colorRule1)
+            //red240,green224,blue166 sequenceNumber:0 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(633, 428), colorRule1)
+            //red248,green231,blue172 sequenceNumber:4 blockNumber: 5  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(637, 432), colorRule1)
+            //red248,green231,blue172 sequenceNumber:13 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(608, 425), colorRule1)
+            //red216,green201,blue150 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(609, 433), colorRule1)
+            //red248,green231,blue172 sequenceNumber:9 blockNumber: 6  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(605, 426), colorRule1)
+            //red234,green218,blue162 sequenceNumber:0 blockNumber: 7  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(606, 430), colorRule1)
+            //red244,green228,blue169 sequenceNumber:4 blockNumber: 7  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(612, 426), colorRule1)
+            //red248,green231,blue172 sequenceNumber:0 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(617, 422),
+                CoordinatePoint(617, 421),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 30)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(626, 428),
+                CoordinatePoint(628, 428),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $2  positionType:$2
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(633, 430),
+                CoordinatePoint(631, 430),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $5  positionType:$5
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(609, 427),
+                CoordinatePoint(611, 428),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(606, 430),
+                CoordinatePoint(607, 429),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $7  positionType:$7
+        )
+        FindImgTask(pr, findArea, pointList, tag).apply {
+            nErrorTolerance = 3
+        }
+    }
+
+
+    val knapsackBtnArea by lazy {
+        ClickArea(1135, 221, 48, 69, false)
+    }
+
+    //背包按钮
+    val isKnapsackBtnTask by lazy {
+        val tag = "isKnapsackBtn"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            255,
+            207,
+            255,
+            203,
+            240,
+            188,
+            1.0756097F,
+            0.9181451F,
+            1.1639152F,
+            0.99159294F,
+            1.1391509F,
+            0.9710527F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(1147, 266), colorRule1)
+            //red235,green230,blue212 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(1148, 272), colorRule1)
+            //red253,green248,blue229 sequenceNumber:8 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1149, 276), colorRule1)
+            //red244,green239,blue221 sequenceNumber:12 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1149, 282), colorRule1)
+            //red253,green248,blue229 sequenceNumber:17 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1163, 266), colorRule1)
+            //red253,green248,blue229 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1162, 269), colorRule1)
+            //red252,green246,blue228 sequenceNumber:5 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1144, 267), colorRule1)
+            //red249,green244,blue226 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1139, 273), colorRule1)
+            //red231,green226,blue209 sequenceNumber:9 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1169, 270), colorRule1)
+            //red253,green248,blue229 sequenceNumber:0 blockNumber: 4  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1169, 274), colorRule1)
+            //red253,green248,blue229 sequenceNumber:8 blockNumber: 4  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1160, 273), colorRule1)
+            //red233,green228,blue211 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1161, 279), colorRule1)
+            //red253,green248,blue229 sequenceNumber:8 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1165, 281), colorRule1)
+            //red234,green229,blue212 sequenceNumber:12 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1173, 280), colorRule1)
+            //red253,green248,blue229 sequenceNumber:19 blockNumber: 6  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1143, 275), colorRule1)
+            //red248,green243,blue225 sequenceNumber:0 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1143, 280), colorRule1)
+            //red253,green248,blue229 sequenceNumber:7 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1148, 272),
+                CoordinatePoint(1146, 272),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1162, 269),
+                CoordinatePoint(1161, 268),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1139, 273),
+                CoordinatePoint(1140, 271),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:9sequenceNumber blockNumber: $2  positionType:$2
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1169, 271),
+                CoordinatePoint(1168, 272),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1165, 281),
+                CoordinatePoint(1165, 280),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1143, 277),
+                CoordinatePoint(1142, 277),
+                CompareDifferenceRuleImpl.getSimple(50, 50, 50)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $8  positionType:$8
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance = 2
+        }
+    }
+
+
+    //打开背包按钮
+    val isOpenKnapsackMenuTask by lazy {
+        val tag = "isOpenKnapsackMenu"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            81,
+            70,
+            63,
+            54,
+            25,
+            21,
+            1.365F,
+            1.17F,
+            3.4125F,
+            2.925F,
+            2.625F,
+            2.25F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(38, 21), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 0  positionType:1
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(42, 22), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(40, 26), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(40, 30), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(47, 27), colorRule1)
+            //red78,green60,blue24 sequenceNumber:16 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(40, 37), colorRule1)
+            //red78,green60,blue24 sequenceNumber:16 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(44, 43), colorRule1)
+            //red78,green60,blue24 sequenceNumber:24 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(36, 47), colorRule1)
+            //red78,green60,blue24 sequenceNumber:180 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(43, 29), colorRule1)
+            //red78,green60,blue24 sequenceNumber:32 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(28, 49), colorRule1)
+            //red78,green60,blue24 sequenceNumber:36 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(29, 40), colorRule1)
+            //red78,green60,blue24 sequenceNumber:44 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(47, 42), colorRule1)
+            //red78,green60,blue24 sequenceNumber:48 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(34, 35), colorRule1)
+            //red78,green60,blue24 sequenceNumber:48 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(53, 41), colorRule1)
+            //red78,green60,blue24 sequenceNumber:52 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(24, 33), colorRule1)
+            //red78,green60,blue24 sequenceNumber:52 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(25, 29), colorRule1)
+            //red78,green60,blue24 sequenceNumber:56 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(59, 42), colorRule1)
+            //red78,green60,blue24 sequenceNumber:60 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(26, 26), colorRule1)
+            //red78,green60,blue24 sequenceNumber:60 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(23, 24), colorRule1)
+            //red78,green60,blue24 sequenceNumber:68 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(20, 33), colorRule1)
+            //red78,green60,blue24 sequenceNumber:76 blockNumber: 0  positionType:4
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(45, 48), colorRule1)
+            //red78,green60,blue24 sequenceNumber:80 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(15, 32), colorRule1)
+            //red78,green60,blue24 sequenceNumber:84 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(44, 52), colorRule1)
+            //red78,green60,blue24 sequenceNumber:84 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(43, 56), colorRule1)
+            //red78,green60,blue24 sequenceNumber:88 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(18, 36), colorRule1)
+            //red78,green60,blue24 sequenceNumber:88 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(44, 64), colorRule1)
+            //red78,green60,blue24 sequenceNumber:96 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(15, 47), colorRule1)
+            //red78,green60,blue24 sequenceNumber:96 blockNumber: 0  positionType:4
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(45, 70), colorRule1)
+            //red78,green60,blue24 sequenceNumber:100 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(46, 74), colorRule1)
+            //red78,green60,blue24 sequenceNumber:148 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(14, 50), colorRule1)
+            //red78,green60,blue24 sequenceNumber:104 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(47, 80), colorRule1)
+            //red78,green60,blue24 sequenceNumber:108 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(49, 82), colorRule1)
+            //red78,green60,blue24 sequenceNumber:112 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(20, 47), colorRule1)
+            //red78,green60,blue24 sequenceNumber:116 blockNumber: 0  positionType:4
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(44, 82), colorRule1)
+            //red78,green60,blue24 sequenceNumber:124 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(26, 53), colorRule1)
+            //red78,green60,blue24 sequenceNumber:124 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(36, 82), colorRule1)
+            //red78,green60,blue24 sequenceNumber:128 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(25, 59), colorRule1)
+            //red78,green60,blue24 sequenceNumber:132 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(33, 80), colorRule1)
+            //red78,green60,blue24 sequenceNumber:132 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(25, 63), colorRule1)
+            //red78,green60,blue24 sequenceNumber:136 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(28, 72), colorRule1)
+            //red78,green60,blue24 sequenceNumber:140 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(34, 72), colorRule1)
+            //red78,green60,blue24 sequenceNumber:140 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(23, 67), colorRule1)
+            //red78,green60,blue24 sequenceNumber:140 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(37, 68), colorRule1)
+            //red78,green60,blue24 sequenceNumber:144 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(23, 71), colorRule1)
+            //red78,green60,blue24 sequenceNumber:144 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(24, 76), colorRule1)
+            //red78,green60,blue24 sequenceNumber:148 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(33, 65), colorRule1)
+            //red78,green60,blue24 sequenceNumber:152 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(36, 58), colorRule1)
+            //red78,green60,blue24 sequenceNumber:156 blockNumber: 0  positionType:3
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(32, 57), colorRule1)
+            //red78,green60,blue24 sequenceNumber:160 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(27, 66), colorRule1)
+            //red78,green60,blue24 sequenceNumber:168 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(34, 49), colorRule1)
+            //red78,green60,blue24 sequenceNumber:176 blockNumber: 0  positionType:2
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(38, 21),
+                CoordinatePoint(38, 19),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -20)
+            ) // sequenceNumber:0sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(53, 42),
+                CoordinatePoint(53, 38),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:68sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(25, 59),
+                CoordinatePoint(22, 59),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:132sequenceNumber blockNumber: $0  positionType:$0
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance = 3
+        }
+    }
+
+
+
+    val isKnapsackAllTask by lazy {
+        val tag = "isKnapsackAll"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            117,
+            92,
+            111,
+            87,
+            100,
+            78,
+            1.1149485F,
+            0.9509434F,
+            1.2431035F,
+            1.05F,
+            1.1706897F,
+            0.99375F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(1233, 116), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 122), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 122), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1241, 124), colorRule1)
+            //red103,green97,blue87 sequenceNumber:11 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1232, 125), colorRule1)
+            //red112,green106,blue96 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1234, 129), colorRule1)
+            //red103,green97,blue87 sequenceNumber:4 blockNumber: 2  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1240, 132), colorRule1)
+            //red103,green97,blue87 sequenceNumber:14 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1243, 143), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 5  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1237, 143), colorRule1)
+            //red110,green104,blue94 sequenceNumber:0 blockNumber: 7  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 149), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 7  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 153), colorRule1)
+            //red103,green97,blue87 sequenceNumber:12 blockNumber: 7  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 158), colorRule1)
+            //red103,green97,blue87 sequenceNumber:17 blockNumber: 7  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1243, 150), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 13  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1233, 151), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 14  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1227, 152), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 15  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1230, 122),
+                CoordinatePoint(1230, 120),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1234, 131),
+                CoordinatePoint(1232, 131),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $2  positionType:$2
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1242, 144),
+                CoordinatePoint(1241, 144),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $5  positionType:$5
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1238, 153),
+                CoordinatePoint(1236, 153),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $7  positionType:$7
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1243, 153),
+                CoordinatePoint(1246, 153),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $13  positionType:$13
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1233, 153),
+                CoordinatePoint(1231, 153),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $14  positionType:$14
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1228, 154),
+                CoordinatePoint(1227, 154),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $15  positionType:$15
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance = 3
+        }
+    }
+
+
+    val knapsackEquipArea by lazy {
+        ClickArea(1222, 257, 29, 85, false)
+    }
+    val isKnapsackEquipTask by lazy {
+        val tag = "isKnapsackEquipTask"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            108,
+            92,
+            101,
+            87,
+            91,
+            78,
+            1.1149485F,
+            0.9556701F,
+            1.2431035F,
+            1.0655173F,
+            1.1706897F,
+            1.0034482F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(1231, 274), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(1231, 280), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1237, 274), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1237, 278), colorRule1)
+            //red103,green97,blue87 sequenceNumber:6 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1232, 285), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1232, 291), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 289), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1241, 290), colorRule1)
+            //red103,green97,blue87 sequenceNumber:5 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1232, 298), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 9  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1231, 301), colorRule1)
+            //red103,green97,blue87 sequenceNumber:5 blockNumber: 9  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1236, 300), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 10  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1233, 305), colorRule1)
+            //red103,green97,blue87 sequenceNumber:7 blockNumber: 10  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1236, 306), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 11  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1242, 309), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 11  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1237, 309), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 13  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 315), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 13  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1233, 310), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 14  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1229, 311), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 15  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1231, 276),
+                CoordinatePoint(1230, 276),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1237, 278),
+                CoordinatePoint(1239, 278),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:6sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1231, 287),
+                CoordinatePoint(1230, 286),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1241, 290),
+                CoordinatePoint(1241, 288),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $8  positionType:$8
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1231, 301),
+                CoordinatePoint(1229, 301),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $9  positionType:$9
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1236, 302),
+                CoordinatePoint(1234, 302),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $10  positionType:$10
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1238, 307),
+                CoordinatePoint(1238, 305),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $11  positionType:$11
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1238, 311),
+                CoordinatePoint(1236, 311),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $13  positionType:$13
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1233, 313),
+                CoordinatePoint(1232, 314),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $14  positionType:$14
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1229, 314),
+                CoordinatePoint(1228, 314),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $15  positionType:$15
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance = 3
+        }
+    }
+
+    val knapsackMaterialArea by lazy {
+        ClickArea(1219, 414, 33, 78, false)
+    }
+
+    //背包材料按钮
+    val isKnapsackMaterialTask by lazy {
+        val tag = "isKnapsackMaterial"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            117,
+            92,
+            111,
+            87,
+            100,
+            78,
+            1.1149485F,
+            0.9509434F,
+            1.2431035F,
+            1.05F,
+            1.1706897F,
+            0.99375F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(1239, 431), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(1240, 438), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 441), colorRule1)
+            //red103,green97,blue87 sequenceNumber:12 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1240, 449), colorRule1)
+            //red103,green97,blue87 sequenceNumber:20 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 432), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 438), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 1  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1228, 442), colorRule1)
+            //red103,green97,blue87 sequenceNumber:12 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1229, 448), colorRule1)
+            //red110,green104,blue94 sequenceNumber:18 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1239, 455), colorRule1)
+            //red104,green98,blue88 sequenceNumber:0 blockNumber: 4  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1240, 465), colorRule1)
+            //red103,green97,blue87 sequenceNumber:12 blockNumber: 4  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1239, 471), colorRule1)
+            //red112,green106,blue96 sequenceNumber:18 blockNumber: 4  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 456), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 465), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 5  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1228, 468), colorRule1)
+            //red103,green97,blue87 sequenceNumber:14 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 472), colorRule1)
+            //red103,green97,blue87 sequenceNumber:5 blockNumber: 11  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1238, 441),
+                CoordinatePoint(1237, 440),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1230, 438),
+                CoordinatePoint(1228, 437),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1240, 465),
+                CoordinatePoint(1238, 464),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1230, 465),
+                CoordinatePoint(1232, 465),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $5  positionType:$5
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1230, 472),
+                CoordinatePoint(1228, 472),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:5sequenceNumber blockNumber: $11  positionType:$11
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance = 3
+        }
+    }
+
+    val knapsackOtherArea by lazy {
+        ClickArea(1219, 566, 35, 90, false)
+    }
+
+    //背包其他
+    val isKnapsackOtherTask by lazy {
+        val tag = "isKnapsackOther"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            137,
+            92,
+            131,
+            87,
+            119,
+            78,
+            1.1149485F,
+            0.93749994F,
+            1.2431035F,
+            1.0321101F,
+            1.1706897F,
+            0.9868421F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(1236, 589), colorRule1)
+            //red117,green111,blue101 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(1238, 593), colorRule1)
+            //red103,green97,blue87 sequenceNumber:4 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1237, 599), colorRule1)
+            //red103,green97,blue87 sequenceNumber:12 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1242, 602), colorRule1)
+            //red103,green97,blue87 sequenceNumber:18 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 591), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1231, 594), colorRule1)
+            //red103,green97,blue87 sequenceNumber:4 blockNumber: 1  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1228, 603), colorRule1)
+            //red131,green125,blue114 sequenceNumber:14 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1231, 605), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1237, 605), colorRule1)
+            //red123,green117,blue106 sequenceNumber:0 blockNumber: 3  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1235, 614), colorRule1)
+            //red125,green120,blue109 sequenceNumber:0 blockNumber: 4  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1237, 620), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 4  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1241, 619), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 4  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1240, 623), colorRule1)
+            //red103,green97,blue87 sequenceNumber:14 blockNumber: 4  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1230, 616), colorRule1)
+            //red103,green97,blue87 sequenceNumber:0 blockNumber: 5  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1227, 621), colorRule1)
+            //red108,green102,blue92 sequenceNumber:8 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1229, 625), colorRule1)
+            //red103,green97,blue87 sequenceNumber:12 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1228, 629), colorRule1)
+            //red104,green98,blue88 sequenceNumber:16 blockNumber: 5  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1232, 620), colorRule1)
+            //red125,green120,blue109 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1234, 629), colorRule1)
+            //red103,green97,blue87 sequenceNumber:8 blockNumber: 6  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1243, 629), colorRule1)
+            //red103,green97,blue87 sequenceNumber:16 blockNumber: 6  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(1244, 626), colorRule1)
+            //red124,green119,blue108 sequenceNumber:19 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1237, 595),
+                CoordinatePoint(1236, 595),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1231, 597),
+                CoordinatePoint(1230, 597),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1230, 607),
+                CoordinatePoint(1229, 606),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $2  positionType:$2
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1239, 606),
+                CoordinatePoint(1239, 604),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $3  positionType:$3
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1237, 620),
+                CoordinatePoint(1235, 620),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1227, 621),
+                CoordinatePoint(1226, 621),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $5  positionType:$5
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(1236, 629),
+                CoordinatePoint(1236, 628),
+                CompareDifferenceRuleImpl.getSimple(-30, -30, -30)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $6  positionType:$6
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance = 3
+        }
+    }
+
+
+
+    val treasureChestsList by lazy {
+        listOf<ClickArea>(
+            ClickArea(417, 193, 80, 75, false),
+            ClickArea(417 + 123, 193, 80, 75, false),
+            ClickArea(417 + 123 * 2, 193, 80, 75, false),
+            ClickArea(417 + 123 * 3, 193, 80, 75, false),
+            ClickArea(417, 313, 76, 81, false),
+            ClickArea(417 + 123, 313, 76, 81, false),
+            ClickArea(417 + 123 * 2, 313, 76, 81, false),
+            ClickArea(417 + 123 * 3, 313, 76, 81, false),
+        )
+    }
+    val closeTreasureChestsArea by lazy {
+        ClickArea(584,641,113,34,false)}
+
+    val isOpenTreasureChestsTask by lazy {
+        val tag = "isOpenTreasureChests"
+        val colorRule1 = ColorRuleRatioImpl.getSimple(
+            255,
+            217,
+            255,
+            216,
+            255,
+            216,
+            1.0543569F,
+            0.9F,
+            1.05875F,
+            0.9F,
+            1.054375F,
+            0.9F
+        )
+        val list = mutableListOf<PointRule>()
+        list.add(
+            PointRule(CoordinatePoint(545, 429), colorRule1)
+            //red242,green242,blue241 sequenceNumber:0 blockNumber: 0  positionType:0
+        )
+        val correctPositionModel = CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(
+            PointRule(CoordinatePoint(546, 435), colorRule1)
+            //red255,green255,blue255 sequenceNumber:8 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(542, 438), colorRule1)
+            //red243,green242,blue241 sequenceNumber:12 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(546, 440), colorRule1)
+            //red255,green255,blue255 sequenceNumber:12 blockNumber: 0  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(545, 443), colorRule1)
+            //red248,green248,blue248 sequenceNumber:16 blockNumber: 0  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(531, 430), colorRule1)
+            //red255,green255,blue255 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(533, 435), colorRule1)
+            //red255,green255,blue254 sequenceNumber:8 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(534, 439), colorRule1)
+            //red242,green241,blue241 sequenceNumber:12 blockNumber: 1  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(534, 444), colorRule1)
+            //red255,green255,blue255 sequenceNumber:17 blockNumber: 1  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(566, 430), colorRule1)
+            //red255,green255,blue255 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(564, 435), colorRule1)
+            //red253,green252,blue252 sequenceNumber:7 blockNumber: 2  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(588, 430), colorRule1)
+            //red251,green251,blue251 sequenceNumber:0 blockNumber: 3  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(553, 431), colorRule1)
+            //red254,green254,blue254 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(551, 433), colorRule1)
+            //red255,green255,blue255 sequenceNumber:4 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(551, 437), colorRule1)
+            //red242,green241,blue240 sequenceNumber:8 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(552, 441), colorRule1)
+            //red245,green244,blue244 sequenceNumber:12 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(558, 441), colorRule1)
+            //red254,green254,blue254 sequenceNumber:18 blockNumber: 6  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(592, 431), colorRule1)
+            //red255,green255,blue255 sequenceNumber:0 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(592, 437), colorRule1)
+            //red255,green255,blue255 sequenceNumber:8 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(596, 440), colorRule1)
+            //red254,green254,blue254 sequenceNumber:13 blockNumber: 8  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(570, 432), colorRule1)
+            //red254,green254,blue254 sequenceNumber:0 blockNumber: 9  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(571, 438), colorRule1)
+            //red248,green248,blue248 sequenceNumber:8 blockNumber: 9  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(570, 441), colorRule1)
+            //red255,green255,blue255 sequenceNumber:11 blockNumber: 9  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(576, 437), colorRule1)
+            //red255,green255,blue255 sequenceNumber:8 blockNumber: 10  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(575, 444), colorRule1)
+            //red255,green255,blue255 sequenceNumber:15 blockNumber: 10  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(528, 436), colorRule1)
+            //red251,green250,blue250 sequenceNumber:0 blockNumber: 15  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(528, 442), colorRule1)
+            //red254,green254,blue254 sequenceNumber:8 blockNumber: 15  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(566, 438), colorRule1)
+            //red253,green252,blue252 sequenceNumber:4 blockNumber: 16  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(565, 443), colorRule1)
+            //red255,green255,blue255 sequenceNumber:8 blockNumber: 16  positionType:1
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(585, 437), colorRule1)
+            //red244,green244,blue243 sequenceNumber:0 blockNumber: 17  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(584, 440), colorRule1)
+            //red255,green255,blue255 sequenceNumber:8 blockNumber: 17  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(588, 442), colorRule1)
+            //red252,green252,blue252 sequenceNumber:8 blockNumber: 17  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(594, 444), colorRule1)
+            //red253,green253,blue253 sequenceNumber:14 blockNumber: 17  positionType:0
+        )
+        pointList.add(
+            PointRule(CoordinatePoint(525, 439), colorRule1)
+            //red252,green252,blue252 sequenceNumber:0 blockNumber: 20  positionType:0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(542, 438),
+                CoordinatePoint(542, 440),
+                CompareDifferenceRuleImpl.getSimple(30, 40, 40)
+            ) // sequenceNumber:12sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(533, 435),
+                CoordinatePoint(533, 439),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 50)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(551, 437),
+                CoordinatePoint(553, 440),
+                CompareDifferenceRuleImpl.getSimple(30, 40, 40)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(592, 437),
+                CoordinatePoint(594, 439),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 50)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $8  positionType:$8
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(571, 438),
+                CoordinatePoint(572, 440),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 40)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $9  positionType:$9
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(575, 444),
+                CoordinatePoint(574, 442),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 50)
+            ) // sequenceNumber:15sequenceNumber blockNumber: $10  positionType:$10
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(529, 438),
+                CoordinatePoint(527, 439),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 50)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $15  positionType:$15
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(566, 438),
+                CoordinatePoint(567, 440),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 50)
+            ) // sequenceNumber:4sequenceNumber blockNumber: $16  positionType:$16
+        )
+        pointList.add(
+            TwoPointRule(
+                CoordinatePoint(588, 442),
+                CoordinatePoint(589, 441),
+                CompareDifferenceRuleImpl.getSimple(40, 40, 50)
+            ) // sequenceNumber:8sequenceNumber blockNumber: $17  positionType:$17
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance = 3
+        }
+    }
+
+
+    val xunLongFenJinArea by lazy {
+        ClickArea(1035,509,108,34,false)}
+    val isXunLongFenJinTask by lazy {
+        val tag = "isXunLongFenJin"
+        val colorRule1=ColorRuleRatioImpl.getSimple(84,70,65,54,29,21,1.365F,1.1612903F,3.4125F,2.5714285F,2.625F, 1.9928571F)
+        val pr  = PointRule(CoordinatePoint(1121, 313), colorRule1)
+        //red78,green60,blue24 sequenceNumber:0 blockNumber: 0  positionType:0
+        val findArea = CoordinateArea(35,310,1200,7)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(1118, 319), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 0  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1055, 315), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 1  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1053, 320), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1052, 324), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1052, 332), colorRule1)
+            //red78,green60,blue24 sequenceNumber:19 blockNumber: 1  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1072, 314), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1072, 320), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1071, 324), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1069, 327), colorRule1)
+            //red78,green60,blue24 sequenceNumber:15 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1095, 317), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1093, 321), colorRule1)
+            //red78,green60,blue24 sequenceNumber:6 blockNumber: 6  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1100, 317), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1105, 322), colorRule1)
+            //red78,green60,blue24 sequenceNumber:7 blockNumber: 7  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1124, 317), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 8  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1126, 319), colorRule1)
+            //red78,green60,blue24 sequenceNumber:4 blockNumber: 8  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1130, 321), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 8  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1123, 321), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 11  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1121, 325), colorRule1)
+            //red78,green60,blue24 sequenceNumber:4 blockNumber: 11  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1118, 331), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 11  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1079, 322), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 13  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1074, 328), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 13  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1077, 331), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 13  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1084, 329), colorRule1)
+            //red78,green60,blue24 sequenceNumber:18 blockNumber: 13  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1099, 323), colorRule1)
+            //red80,green62,blue28 sequenceNumber:0 blockNumber: 15  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1100, 329), colorRule1)
+            //red78,green60,blue24 sequenceNumber:10 blockNumber: 15  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1094, 324), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 17  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1094, 328), colorRule1)
+            //red78,green60,blue24 sequenceNumber:7 blockNumber: 17  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1121, 315),CoordinatePoint(1119, 315), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1052, 324),CoordinatePoint(1051, 325), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:12sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1072, 320),CoordinatePoint(1071, 318), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:8sequenceNumber blockNumber: $2  positionType:$2
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1093, 321),CoordinatePoint(1092, 320), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:6sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1105, 322),CoordinatePoint(1105, 319), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:7sequenceNumber blockNumber: $7  positionType:$7
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1126, 319),CoordinatePoint(1126, 317), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:4sequenceNumber blockNumber: $8  positionType:$8
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1121, 327),CoordinatePoint(1120, 327), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:8sequenceNumber blockNumber: $11  positionType:$11
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1074, 328),CoordinatePoint(1073, 327), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:8sequenceNumber blockNumber: $13  positionType:$13
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1100, 329),CoordinatePoint(1099, 328), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:10sequenceNumber blockNumber: $15  positionType:$15
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1094, 328),CoordinatePoint(1094, 326), CompareDifferenceRuleImpl.getSimple(-40,-40,-40)) // sequenceNumber:7sequenceNumber blockNumber: $17  positionType:$17
+        )
+        FindImgTask(pr, findArea,pointList, tag).apply {
+            nErrorTolerance=2 }
+    }
+
+
+    val baoMinCaiQuanBtnArea by lazy {
+        ClickArea(122,385,80,28,false)}
+
+    val isBaoMinCaiQuanTask by lazy {
+        val tag = "isBaoMinCaiQuan"
+        val colorRule1=ColorRuleRatioImpl.getSimple(91,70,72,54,35,21,1.365F,1.1283582F,3.4125F,2.3029413F,2.625F, 1.8264706F)
+        val pr  = PointRule(CoordinatePoint(150, 392), colorRule1)
+        //red80,green62,blue27 sequenceNumber:0 blockNumber: 0  positionType:0
+        val findArea = CoordinateArea(35,310,1200,7)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(149, 395), colorRule1)
+            //red78,green60,blue24 sequenceNumber:5 blockNumber: 0  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(126, 393), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(126, 399), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(126, 403), colorRule1)
+            //red78,green60,blue24 sequenceNumber:12 blockNumber: 2  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(173, 393), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 3  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(190, 393), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(188, 398), colorRule1)
+            //red78,green60,blue24 sequenceNumber:7 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(154, 394), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(148, 403), colorRule1)
+            //red78,green60,blue24 sequenceNumber:11 blockNumber: 6  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(168, 394), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(166, 396), colorRule1)
+            //red78,green60,blue24 sequenceNumber:4 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(167, 400), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(167, 405), colorRule1)
+            //red78,green60,blue24 sequenceNumber:13 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(130, 395), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 9  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(130, 401), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 9  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(130, 406), colorRule1)
+            //red78,green60,blue24 sequenceNumber:13 blockNumber: 9  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(193, 399), colorRule1)
+            //red84,green67,blue32 sequenceNumber:0 blockNumber: 14  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(195, 401), colorRule1)
+            //red78,green60,blue24 sequenceNumber:4 blockNumber: 14  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(134, 400), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 15  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(136, 406), colorRule1)
+            //red78,green60,blue24 sequenceNumber:9 blockNumber: 15  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(175, 400), colorRule1)
+            //red84,green67,blue32 sequenceNumber:0 blockNumber: 16  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(176, 406), colorRule1)
+            //red78,green60,blue24 sequenceNumber:8 blockNumber: 16  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(171, 401), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 17  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(171, 405), colorRule1)
+            //red78,green60,blue24 sequenceNumber:6 blockNumber: 17  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(154, 402), colorRule1)
+            //red87,green69,blue34 sequenceNumber:0 blockNumber: 19  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(191, 404), colorRule1)
+            //red78,green60,blue24 sequenceNumber:0 blockNumber: 21  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(149, 395),CoordinatePoint(149, 393), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)) // sequenceNumber:5sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(126, 399),CoordinatePoint(125, 399), CompareDifferenceRuleImpl.getSimple(-40,-30,-30)) // sequenceNumber:8sequenceNumber blockNumber: $2  positionType:$2
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(173, 396),CoordinatePoint(172, 396), CompareDifferenceRuleImpl.getSimple(-40,-30,-30)) // sequenceNumber:5sequenceNumber blockNumber: $3  positionType:$3
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(189, 395),CoordinatePoint(188, 395), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)) // sequenceNumber:4sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(148, 403),CoordinatePoint(148, 400), CompareDifferenceRuleImpl.getSimple(-40,-40,-30)) // sequenceNumber:11sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(167, 400),CoordinatePoint(165, 400), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)) // sequenceNumber:8sequenceNumber blockNumber: $7  positionType:$7
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(130, 401),CoordinatePoint(129, 401), CompareDifferenceRuleImpl.getSimple(-40,-30,-30)) // sequenceNumber:8sequenceNumber blockNumber: $9  positionType:$9
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(195, 401),CoordinatePoint(195, 399), CompareDifferenceRuleImpl.getSimple(-40,-40,-30)) // sequenceNumber:4sequenceNumber blockNumber: $14  positionType:$14
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(135, 402),CoordinatePoint(136, 402), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)) // sequenceNumber:4sequenceNumber blockNumber: $15  positionType:$15
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(176, 402),CoordinatePoint(178, 402), CompareDifferenceRuleImpl.getSimple(-40,-40,-30)) // sequenceNumber:4sequenceNumber blockNumber: $16  positionType:$16
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(171, 405),CoordinatePoint(170, 405), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)) // sequenceNumber:6sequenceNumber blockNumber: $17  positionType:$17
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(155, 404),CoordinatePoint(154, 404), CompareDifferenceRuleImpl.getSimple(-40,-30,-30)) // sequenceNumber:4sequenceNumber blockNumber: $19  positionType:$19
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(193, 404),CoordinatePoint(193, 403), CompareDifferenceRuleImpl.getSimple(-30,-30,-30)) // sequenceNumber:4sequenceNumber blockNumber: $21  positionType:$21
+        )
+        FindImgTask(pr, findArea,pointList, tag).apply {
+            nErrorTolerance=3 }
+    }
+
+
+    val clickArea by lazy {
+        ClickArea(1061,618,39,58,true)}
+    val isSystemBtnTask by lazy {
+        val tag = "isSystemBtn"
+        val colorRule1=ColorRuleRatioImpl.getSimple(255,207,255,203,240,188,1.0756097F,0.9181451F,1.1635135F,0.9904109F,1.1398649F, 0.96986294F)
+        val list = mutableListOf<PointRule>()
+        list.add(PointRule(CoordinatePoint(1074, 671), colorRule1)
+            //red253,green248,blue229 sequenceNumber:0 blockNumber: 0  positionType:1
+        )
+        val correctPositionModel =CorrectPositionModel(list, tag, 3, 3, false)
+        val pointList = mutableListOf<IPR>()
+        pointList.add(PointRule(CoordinatePoint(1070, 671), colorRule1)
+            //red241,green236,blue219 sequenceNumber:4 blockNumber: 0  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1071, 674), colorRule1)
+            //red234,green229,blue212 sequenceNumber:7 blockNumber: 0  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1091, 670), colorRule1)
+            //red231,green226,blue209 sequenceNumber:0 blockNumber: 1  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1089, 673), colorRule1)
+            //red250,green245,blue226 sequenceNumber:4 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1093, 675), colorRule1)
+            //red232,green227,blue210 sequenceNumber:7 blockNumber: 4  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1065, 676), colorRule1)
+            //red249,green244,blue226 sequenceNumber:0 blockNumber: 5  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1066, 682), colorRule1)
+            //red249,green244,blue225 sequenceNumber:4 blockNumber: 5  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1073, 677), colorRule1)
+            //red253,green247,blue229 sequenceNumber:0 blockNumber: 6  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1070, 679), colorRule1)
+            //red244,green239,blue221 sequenceNumber:4 blockNumber: 6  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1075, 684), colorRule1)
+            //red253,green248,blue229 sequenceNumber:8 blockNumber: 6  positionType:1
+        )
+        pointList.add(PointRule(CoordinatePoint(1089, 677), colorRule1)
+            //red252,green246,blue228 sequenceNumber:0 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1087, 679), colorRule1)
+            //red240,green235,blue217 sequenceNumber:4 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1093, 680), colorRule1)
+            //red253,green248,blue229 sequenceNumber:8 blockNumber: 7  positionType:0
+        )
+        pointList.add(PointRule(CoordinatePoint(1096, 684), colorRule1)
+            //red246,green241,blue222 sequenceNumber:13 blockNumber: 7  positionType:0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1074, 672),CoordinatePoint(1075, 673), CompareDifferenceRuleImpl.getSimple(50,50,50)) // sequenceNumber:4sequenceNumber blockNumber: $0  positionType:$0
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1092, 671),CoordinatePoint(1093, 671), CompareDifferenceRuleImpl.getSimple(50,50,50)) // sequenceNumber:6sequenceNumber blockNumber: $1  positionType:$1
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1089, 673),CoordinatePoint(1090, 672), CompareDifferenceRuleImpl.getSimple(50,50,50)) // sequenceNumber:4sequenceNumber blockNumber: $4  positionType:$4
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1066, 682),CoordinatePoint(1067, 680), CompareDifferenceRuleImpl.getSimple(50,50,50)) // sequenceNumber:4sequenceNumber blockNumber: $5  positionType:$5
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1075, 684),CoordinatePoint(1075, 681), CompareDifferenceRuleImpl.getSimple(50,50,50)) // sequenceNumber:8sequenceNumber blockNumber: $6  positionType:$6
+        )
+        pointList.add(TwoPointRule(CoordinatePoint(1093, 680),CoordinatePoint(1095, 679), CompareDifferenceRuleImpl.getSimple(50,50,50)) // sequenceNumber:8sequenceNumber blockNumber: $7  positionType:$7
+        )
+        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
+            nErrorTolerance=3 }
+    }
+
+
+    val isOpenTask by lazy {
+        val tag = "isOpen"
+
+    }
+
 
 }

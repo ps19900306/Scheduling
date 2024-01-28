@@ -12,8 +12,7 @@ class TreasureMapFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
 
-    private val mAutoFightingRecorder = en.isAutoFightingTask.toStatusRecorder(5, 20)
-    private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
+
     override suspend fun startFunction() {
         if (openActivityNeed()) {
             var flag = true

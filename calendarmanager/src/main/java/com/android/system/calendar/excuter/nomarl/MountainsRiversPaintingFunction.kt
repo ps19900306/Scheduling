@@ -13,8 +13,7 @@ class MountainsRiversPaintingFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
 
-    private val mAutoFightingRecorder = en.isAutoFightingTask.toStatusRecorder(5, 20)
-    private val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(5, 20)
+
     override suspend fun startFunction() {
         if (openActivityNeed()) {
             var flag = true
@@ -102,9 +101,9 @@ class MountainsRiversPaintingFunction(
                     }
                 }
                 if (mAutoFightingRecorder.isCloseErrorThresholds() && mAutoFightingRecorder.isCloseErrorThresholds()) {
-                    mainStuckPoint.trustThreshold = 5
+                    mainStuckPoint.trustThreshold = 3
                 } else if (mAutoFightingRecorder.isCloseTrustThresholds() && mAutoFightingRecorder.isCloseTrustThresholds()) {
-                    mainStuckPoint.trustThreshold = 10
+                    mainStuckPoint.trustThreshold = 5
                 } else {
                     mainStuckPoint.recordNoChange = 0
                 }

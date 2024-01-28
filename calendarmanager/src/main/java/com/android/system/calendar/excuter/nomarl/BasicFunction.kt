@@ -8,6 +8,10 @@ abstract class BasicFunction(
     acService: AccessibilityService, val en: ImageEnvironment
 ) : TurnBaseController(acService) {
 
+
+
+    protected val mAutoFightingRecorder = en.isAutoFightingTask.toStatusRecorder(3, 10)
+    protected val mAutoPathfindingRecorder = en.isAutomaticPathfindingTask.toStatusRecorder(3, 10)
     protected val ABNORMAL_SCREENO_ORIENTATION = ""
     protected suspend fun reportingError(s: String) {
         runSwitch = false
@@ -108,7 +112,7 @@ abstract class BasicFunction(
         clickSpeedControl.addUnit(en.isEnableNewFeaturesTask, en.isEnableNewFeaturesArea)
 
         clickSpeedControl.addUnit(en.isTaskGoShopTask, en.taskGoShopArea)
-
+        clickSpeedControl.addUnit(en.isShenDianMoShiTask, en.closeShenDianMoShiArea)
 
         // clickSpeedControl.addUnit(en.isPurchaseItem2Task, en.closePurchaseItem2Area)
         clickSpeedControl.addUnit(en.isPurchaseItem2Task, en.isPurchaseItem2Area)
@@ -123,6 +127,11 @@ abstract class BasicFunction(
         )
         clickSpeedControl.addUnit(en.isTradeMenuTask, en.closeTradeMenuArea)
         return clickSpeedControl
+    }
+
+
+    fun switchRole(){
+
     }
 
 

@@ -11,6 +11,7 @@ import com.android.system.calendar.excuter.nomarl.MountainsRiversPaintingFunctio
 import com.android.system.calendar.excuter.nomarl.ShiMenFunction
 import com.android.system.calendar.excuter.nomarl.TransportTreasureFunction
 import com.android.system.calendar.excuter.nomarl.TreasureMapFunction
+import com.android.system.calendar.excuter.nomarl.XunLongFenJinFunction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -52,17 +53,18 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startDaily() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
+            BangMerchantFunction(acService, en).startFunction()
             BangTaskFunction(acService, en).startFunction()
             MountainsRiversPaintingFunction(acService, en).startFunction()
             TreasureMapFunction(acService, en).startFunction()
-            BangMerchantFunction(acService, en).startFunction()
+            XunLongFenJinFunction(acService, en).startFunction()
         }
     }
 
     fun startShiMen() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            ShiMenFunction(acService, en).startFunction()
+            BangMerchantFunction(acService, en).startFunction()
         }
     }
 
