@@ -71,13 +71,7 @@ class MountainsRiversPaintingFunction(
     //执行过程监听
     private suspend fun processListening() {
         L.d("执行监听")
-        val mainStuckPoint = StuckPointMonitoring(
-            GameStuckPoint.HOME_SCREEN_REMAIN, { true }, listOf(
-                StuckJudePoint(1152, 34),
-                StuckJudePoint(1256, 28),
-                StuckJudePoint(1150, 83),
-            ), 5
-        )
+        val mainStuckPoint = getMainStuckPointMonitoring()
 
         val clickSpeedControl = getNormalClickSpeedControl()
 
@@ -100,9 +94,9 @@ class MountainsRiversPaintingFunction(
                         runSwitch = false
                     }
                 }
-                if (mAutoFightingRecorder.isCloseErrorThresholds() && mAutoFightingRecorder.isCloseErrorThresholds()) {
+                if (mAutoFightingRecorder.isCloseErrorThresholds() && mAutoPathfindingRecorder.isCloseErrorThresholds()) {
                     mainStuckPoint.trustThreshold = 3
-                } else if (mAutoFightingRecorder.isCloseTrustThresholds() && mAutoFightingRecorder.isCloseTrustThresholds()) {
+                } else if (mAutoFightingRecorder.isCloseTrustThresholds() && mAutoPathfindingRecorder.isCloseTrustThresholds()) {
                     mainStuckPoint.trustThreshold = 5
                 } else {
                     mainStuckPoint.recordNoChange = 0
@@ -125,9 +119,9 @@ class MountainsRiversPaintingFunction(
                     if(hasOpt &&           en.findCloseBtnTask.check()){
                        en.closeBtnArea.c(en.findCloseBtnTask)
                     }
-                    clickSpeedControl.cc()
                 }
             }
+            clickSpeedControl.cc()
         }
 
     }

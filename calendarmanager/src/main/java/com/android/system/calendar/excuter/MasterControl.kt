@@ -2,7 +2,9 @@ package com.android.system.calendar.excuter
 
 import android.accessibilityservice.AccessibilityService
 import com.android.schedule.corelibrary.controller.TurnBaseController
+import com.android.system.calendar.constant.BaiYeType
 import com.android.system.calendar.constant.DungeonOrdinaryType
+import com.android.system.calendar.excuter.nomarl.BaiYeFunction
 import com.android.system.calendar.excuter.nomarl.BangMerchantFunction
 import com.android.system.calendar.excuter.nomarl.BangTaskFunction
 import com.android.system.calendar.excuter.nomarl.DungeonOrdinaryFunction
@@ -53,18 +55,27 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startDaily() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            BangMerchantFunction(acService, en).startFunction()
-            BangTaskFunction(acService, en).startFunction()
-            MountainsRiversPaintingFunction(acService, en).startFunction()
-            TreasureMapFunction(acService, en).startFunction()
-            XunLongFenJinFunction(acService, en).startFunction()
+            for(i in 2..3){
+                if(i!=2){
+                    BangMerchantFunction(acService, en).let {
+                        it.switchRole(i)
+                        it.startFunction()
+                    }
+                }else{
+                    BangMerchantFunction(acService, en).startFunction()
+                }
+                BangTaskFunction(acService, en).startFunction()
+                MountainsRiversPaintingFunction(acService, en).startFunction()
+                TreasureMapFunction(acService, en).startFunction()
+                XunLongFenJinFunction(acService, en).startFunction()
+            }
         }
     }
 
     fun startShiMen() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            BangMerchantFunction(acService, en).startFunction()
+            BaiYeFunction(BaiYeType.CAI_JIN,1,0,  acService, en).startFunction()
         }
     }
 
@@ -81,10 +92,21 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
         }
     }
 
+
     fun startTransport(){
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            TransportTreasureFunction(acService, en).startFunction()
+            for(i in 1..3){
+                if(i!=1){
+                    TransportTreasureFunction(acService, en).let {
+                        it.switchRole(i)
+                        it.startFunction()
+                    }
+                }else{
+                    TransportTreasureFunction(acService, en).startFunction()
+                }
+            }
+
         }
     }
 

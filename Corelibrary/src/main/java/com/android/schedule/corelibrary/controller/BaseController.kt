@@ -40,7 +40,7 @@ abstract class BaseController(
     private val waitTaskTime = 5
     private val takeScreenIn = 4000L
 
-    protected val repeatedClickInterval = 10000L
+    protected val repeatedClickInterval = 8000L
 
     abstract fun start()
 

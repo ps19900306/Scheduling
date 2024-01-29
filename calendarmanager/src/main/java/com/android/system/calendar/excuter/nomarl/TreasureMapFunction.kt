@@ -6,6 +6,7 @@ import com.android.schedule.corelibrary.process_control.StuckJudePoint
 import com.android.schedule.corelibrary.process_control.StuckPointMonitoring
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.calendar.constant.GameStuckPoint
+import kotlinx.coroutines.delay
 
 //打图任务
 class TreasureMapFunction(
@@ -42,13 +43,7 @@ class TreasureMapFunction(
     //执行过程监听
     private suspend fun processListening() {
         L.d("执行监听")
-        val mainStuckPoint = StuckPointMonitoring(
-            GameStuckPoint.HOME_SCREEN_REMAIN, { true }, listOf(
-                StuckJudePoint(1152, 34),
-                StuckJudePoint(1256, 28),
-                StuckJudePoint(1150, 83),
-            ), 5
-        )
+        val mainStuckPoint = getMainStuckPointMonitoring()
 
         val clickSpeedControl = getNormalClickSpeedControl()
 
@@ -61,16 +56,16 @@ class TreasureMapFunction(
                 clickSpeedControl.clearTag()
                 mAutoFightingRecorder.updateInfo()
                 mAutoPathfindingRecorder.updateInfo()
-                if (mAutoFightingRecorder.isCloseErrorThresholds() && mAutoFightingRecorder.isCloseErrorThresholds()) {
+                if (mAutoFightingRecorder.isCloseErrorThresholds() && mAutoPathfindingRecorder.isCloseErrorThresholds()) {
                     mainStuckPoint.trustThreshold = 5
-                } else if (mAutoFightingRecorder.isCloseTrustThresholds() && mAutoFightingRecorder.isCloseTrustThresholds()) {
+                } else if (mAutoFightingRecorder.isCloseTrustThresholds() && mAutoPathfindingRecorder.isCloseTrustThresholds()) {
                     mainStuckPoint.trustThreshold = 10
                 } else {
                     mainStuckPoint.recordNoChange = 0
                 }
                 if (mainStuckPoint.gameIsStuck(screenBitmap!!)) { //如果卡点
                     //結束打图任务
-                    runSwitch = false
+                    clickShiMenTypeTask()
                 }
             } else {
                 L.d("不在主界面")
@@ -80,7 +75,29 @@ class TreasureMapFunction(
                 clickSpeedControl.cc()
             }
         }
+    }
 
+    private suspend fun clickShiMenTypeTask() {
+        var flag = true
+        var count = 5
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+            }
+            if (en.isTotalCombatPowerTask.check()) {
+                if (en.isTreasureMapTypeTask.check()) {
+                    en.startTreasureMapTypeArea.c(en.isShiMenTypeTask)
+                    flag = false
+                } else {
+                    delay(clickInterval)
+                }
+                count--
+            } else {
+                flag = false
+            }
+        }
+        //这里如果没有任务就会结束
+        runSwitch = !flag
     }
 
 

@@ -48,7 +48,7 @@ class TransportTreasureFunction(
     private suspend fun openByTaker(): Boolean {
         var flag = true
         var count = 30
-        while (mCount>-2 && flag && count > 0 && runSwitch) {
+        while (mCount>-1 && flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
@@ -86,7 +86,7 @@ class TransportTreasureFunction(
         if (openActivityTiaoZhan()) {
             var flag = true
             var count = 40
-            while (mCount>-2 && flag && count > 0 && runSwitch) {
+            while (mCount>-1 && flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
                     reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 }
@@ -118,13 +118,7 @@ class TransportTreasureFunction(
 
     suspend fun processListening() {
         L.d("执行监听")
-        val mainStuckPoint = StuckPointMonitoring(
-            GameStuckPoint.HOME_SCREEN_REMAIN, { true }, listOf(
-                StuckJudePoint(1152, 34),
-                StuckJudePoint(1256, 28),
-                StuckJudePoint(1150, 83),
-            ), 5
-        )
+        val mainStuckPoint = getMainStuckPointMonitoring()
 
         val clickSpeedControl = getNormalClickSpeedControl()
         clickSpeedControl.removeUnit(en.isHuodongDiloagTask.tag)

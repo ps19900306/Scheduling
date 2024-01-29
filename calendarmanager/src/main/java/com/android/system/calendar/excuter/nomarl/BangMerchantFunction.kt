@@ -111,23 +111,17 @@ class BangMerchantFunction(
 
     suspend fun processListening() {
         L.d("执行监听")
-        val mainStuckPoint = StuckPointMonitoring(
-            GameStuckPoint.HOME_SCREEN_REMAIN, { true }, listOf(
-                StuckJudePoint(1152, 34),
-                StuckJudePoint(1256, 28),
-                StuckJudePoint(1150, 83),
-            ), 5
-        )
+        val mainStuckPoint = getMainStuckPointMonitoring()
 
         var hasByGood = false
         val clickSpeedControl = getNormalClickSpeedControl()
         clickSpeedControl.removeUnit(en.isPurchaseItem2Task.tag)
         clickSpeedControl.removeUnit(en.isPurchaseItemTask.tag)
-        while (runSwitch) {
+        while (mCount > -1 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
-            if (mCount > -1 && en.isTotalCombatPowerTask.check()) {//正在主界面
+            if (en.isTotalCombatPowerTask.check()) {//正在主界面
                 L.d("正在主界面")
                 minitiateDialogRecorder.updateInfo()
                 mAutoPathfindingRecorder.updateInfo()

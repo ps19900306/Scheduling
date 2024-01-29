@@ -76,7 +76,7 @@ abstract class ImgTask(
                     if (backgroundErrorCount > bE) {
                         return false
                     }
-                } else {
+                }  else {
                     return false
                 }
             } else {
