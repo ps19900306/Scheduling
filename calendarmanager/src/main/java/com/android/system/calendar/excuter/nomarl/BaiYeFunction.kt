@@ -67,7 +67,7 @@ class BaiYeFunction(
                         if (en.finBaiYeLongResourceTask.check()) {
                             L.d("finBaiYeLongResourceTask")
                             en.baiYeLongResourceArea.c(
-                                en.finBaiYeDiaoResourceTask,
+                                en.finBaiYeLongResourceTask,
                                 repeatedClickInterval
                             )
                             hasClick = true
@@ -78,7 +78,7 @@ class BaiYeFunction(
                         if (en.finBaiYeMuResourceTask.check()) {
                             L.d("finBaiYeMuResourceTask")
                             en.baiYeMuResourceArea.c(
-                                en.finBaiYeDiaoResourceTask,
+                                en.finBaiYeMuResourceTask,
                                 repeatedClickInterval
                             )
                             hasClick = true
@@ -100,7 +100,7 @@ class BaiYeFunction(
                         if (en.finBaiYeJinResourceTask.check()) {
                             L.d("finBaiYeJinResourceTask")
                             en.baiYeJinResourceArea.c(
-                                en.finBaiYeDiaoResourceTask,
+                                en.finBaiYeJinResourceTask,
                                 repeatedClickInterval
                             )
                             hasClick = true

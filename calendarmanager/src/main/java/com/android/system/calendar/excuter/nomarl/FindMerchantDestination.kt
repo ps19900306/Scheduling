@@ -151,7 +151,7 @@ class FindMerchantDestination(val findImgTask: FindImgTask) : BasicImgTask() {
 
                     val nowLocationUnit = if (tempLocationUnit == null) {
                         list.sortBy {
-                            abs(it.coordinatePoint.xI - nowLocationPoint.xI) + abs(it.coordinatePoint.yI - nowLocationPoint.yI)
+                            abs(it.clickArea.getCenterPoint().xI - nowLocationPoint.xI) + abs(it.clickArea.getCenterPoint().yI - nowLocationPoint.yI)
                         }
                         list[0]
                     } else {

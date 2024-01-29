@@ -35,6 +35,10 @@ open class CoordinateArea(
     }
 
 
+    fun getCenterPoint(): CoordinatePoint {
+        return CoordinatePoint(xI + 0.5 * width, yI + 0.5 * height)
+    }
+
     val xD by lazy {
         (SetConstant.uiAdaptation?.getWidthRadio() ?: 1.0) * x
     }

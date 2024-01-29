@@ -7,6 +7,7 @@ import com.android.system.calendar.constant.DungeonOrdinaryType
 import com.android.system.calendar.excuter.nomarl.BaiYeFunction
 import com.android.system.calendar.excuter.nomarl.BangMerchantFunction
 import com.android.system.calendar.excuter.nomarl.BangTaskFunction
+import com.android.system.calendar.excuter.nomarl.DailyGiftFunction
 import com.android.system.calendar.excuter.nomarl.DungeonOrdinaryFunction
 import com.android.system.calendar.excuter.nomarl.ImageEnvironment
 import com.android.system.calendar.excuter.nomarl.MountainsRiversPaintingFunction
@@ -72,10 +73,15 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
         }
     }
 
+    //YAO pass
+    //Mu Fail
+    //DIAO pass
+    //JINpass
     fun startShiMen() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            BaiYeFunction(BaiYeType.CAI_JIN,1,0,  acService, en).startFunction()
+            DailyGiftFunction(acService, en).startFunction()
+           // BaiYeFunction(BaiYeType.MU_KE,0,0,  acService, en).startFunction()
         }
     }
 

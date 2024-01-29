@@ -378,6 +378,8 @@ class MainViewModel : ViewModel() {
     suspend fun markBoundaryInternal(
         originalList: MutableList<FeatureCoordinatePoint>
     ) {
+
+
         //先标记出来外部点
         originalList.forEach { point ->
             if (getPointSurround(point, 1, false, false).find {
@@ -411,6 +413,7 @@ class MainViewModel : ViewModel() {
     private fun getPointBlockList(
         allList: MutableList<FeatureCoordinatePoint>, minStep: Int = 5, hasInternal: Boolean = false
     ): MutableList<FeaturePointBlock> {
+
 
         val result = mutableListOf<FeaturePointBlock>()
         //将所有位置置为空
@@ -631,16 +634,29 @@ class MainViewModel : ViewModel() {
         keyPointList: MutableList<FeatureCoordinatePoint>,
         addBackgroundCount: Int = 0
     ) {
-
+        L.d("length  ${block.boundaryList.size}")
+        val correctDistance =if(block.boundaryList.size>400){
+            distance*2
+        }else if(block.boundaryList.size>300){
+            (distance*1.8).toInt()
+        }else if(block.boundaryList.size>200){
+            (distance*1.5).toInt()
+        }else if(block.boundaryList.size>100){
+            (distance*1.3).toInt()
+        }else if(block.boundaryList.size>50){
+            distance+1
+        }else{
+            distance
+        }
         val result = mutableListOf<FeatureCoordinatePoint>()
         //先添加首点
         block.boundaryList.find { it.sequenceNumber == 0 }?.let {
             result.add(it)
         }
-        val jian= distance+1/2
+        val jian= (correctDistance+1) /2
         //这里添加中间点
-        if (block.perimeter > distance) {
-            for (i in distance..block.perimeter - distance step distance) {
+        if (block.perimeter > correctDistance) {
+            for (i in correctDistance..block.perimeter - correctDistance step correctDistance) {
                 block.boundaryList.filter { it.sequenceNumber == i }.forEach { point ->
                     //如果附近的点已经添加则不进行添加
                     if (keyPointList.find { abs(it.x - point.x) < jian && abs(it.y - point.y) < jian } == null
@@ -692,6 +708,7 @@ class MainViewModel : ViewModel() {
         }
 
     }
+
 
 
 }
