@@ -160,6 +160,16 @@ class MasterControl(
 
         userDb.lastCompletionTime = System.currentTimeMillis()
         dataBase.getUserDao().update(userDb)
+
+        if (userDb.xiaomiDiscountSwitch && TimeUtils.isNewDay(userDb.xiaomiDiscountTime, 1)) {
+            CollectVoucherExecuter(acService).let {
+                it.optCollectVoucher()
+                if (it.result) {
+                    userDb.xiaomiDiscountTime = System.currentTimeMillis()
+                    dataBase.getUserDao().update(userDb)
+                }
+            }
+        }
         return true
     }
 

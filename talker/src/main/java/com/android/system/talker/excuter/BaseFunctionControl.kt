@@ -181,33 +181,18 @@ abstract class BaseFunctionControl(
 
             if (isConfirmDialog.isOpenTrustThresholds()) {
                 en.confirmDialogEnsureArea.c(en.isConfirmDialogTask, repeatedClickInterval)
-            }
-
-            if (isOneClickClaim.isOpenTrustThresholds()) {
+            } else if (isOneClickClaim.isOpenTrustThresholds()) {
                 en.closeOneClickArea.c(en.isOneClickClaimTask, repeatedClickInterval)
-            }
-
-            if (isOpenBigMenu.isOpenTrustThresholds()) {
+            } else if (isOpenBigMenu.isOpenTrustThresholds()) {
                 en.closeBigMenuArea.c(repeatedClickInterval)
-            }
-
-            if (isClosePosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
+            } else if (isClosePosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
                 clickPositionMenu(position)
-                
-            }
-
-
-            if (isOnlyOpenPosition.isOpenTrustThresholds() && isClosePosition.isCloseTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
+            } else if (isOnlyOpenPosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
                 if (clickArea == null) {
                     clickArea = en.getPositionArea(position)
                 }
                 clickArea.c(SetConstant.MINUTE)
             }
-
-            if(isOpenPosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds() ){
-
-            }
-
             count--
         }
 
