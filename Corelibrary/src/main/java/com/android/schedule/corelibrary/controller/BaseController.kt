@@ -16,6 +16,7 @@ import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.expand.isVertical
 import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
 import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
 import com.android.schedule.corelibrary.img.img_rule.MultiImgContainmentTask
 import com.android.schedule.corelibrary.utils.L
@@ -102,7 +103,6 @@ abstract class BaseController(
     }
 
 
-
     private suspend fun takeScreenShot(): Bitmap? = suspendCoroutine {
         screenBitmap?.recycle()
         screenBitmap = null
@@ -127,14 +127,18 @@ abstract class BaseController(
 
                     }
                 })
-        }else{
-            screenBitmap=takeScreenShotOld()
+        } else {
+            screenBitmap = takeScreenShotOld()
             it.resume(screenBitmap)
         }
     }
 
     suspend fun BasicImgTask.check(): Boolean {
         return this.verificationRule(screenBitmap)
+    }
+
+    suspend fun ImgTaskImpl1.check(other: BasicImgTask): Boolean {
+        return this.copyOffset(other).verificationRule(screenBitmap)
     }
 
     fun pressBackBtn() {
@@ -188,9 +192,9 @@ abstract class BaseController(
     private fun takeScreenShotOld(): Bitmap? {
         var bitmap: Bitmap? = null
         ImageTakeUtils.acquireNextImage()?.let { image ->
-            if(image==null){
+            if (image == null) {
                 //L.t("img为空")
-            }else{
+            } else {
                 //L.t("获取到最新图片")
                 val buffer: ByteBuffer = image.planes[0].getBuffer()
                 val width = image.width
@@ -209,7 +213,7 @@ abstract class BaseController(
                 if (bitmap != null) {
                     //L.t( "屏幕截图成功!")
                     return bitmap
-                }else{
+                } else {
                     //L.t( "屏幕截图失败!")
                 }
                 image.close()

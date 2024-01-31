@@ -8,7 +8,7 @@ import com.android.schedule.corelibrary.process_control.StuckPointMonitoring
 import com.android.schedule.corelibrary.utils.L
 import com.android.system.calendar.constant.GameStuckPoint
 import kotlinx.coroutines.delay
-
+//师门任务
 class ShiMenFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {

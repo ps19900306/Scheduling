@@ -9,6 +9,7 @@ import com.android.schedule.corelibrary.utils.L
 import com.android.system.calendar.constant.GameStuckPoint
 import kotlinx.coroutines.delay
 
+//帮派环任务
 class BangTaskFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
@@ -30,6 +31,10 @@ class BangTaskFunction(
                 }else if( en.isSkipPlotFlowTask.check()){
                     en.skipPlotFlowArea.c()
                     flag = false
+                }else if(en.isOneClickAddBangTask.check()){
+                    en.oneClickAddBangArea.c(repeatedClickInterval)
+                }else if(en.findCloseBtnTask.check()){
+                    en.closeBtnArea.c(repeatedClickInterval)
                 }
                 count--
             }

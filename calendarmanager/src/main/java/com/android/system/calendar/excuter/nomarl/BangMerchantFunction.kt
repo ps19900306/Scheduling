@@ -54,7 +54,13 @@ class BangMerchantFunction(
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
             }
             if (en.isTotalCombatPowerTask.check()) {
-                if (en.findInitiateDialogueBtnTask.check()) {
+                if (en.isMerchantTypeTask.check()) {
+                    en.startMerchantTypeArea.c(en.isMerchantTypeTask)
+                    if (mCount == 3) {
+                        mCount = 2
+                    }
+                    flag = false
+                } else if (en.findInitiateDialogueBtnTask.check()) {
                     en.initiateDialogueBtnArea.c(
                         en.findInitiateDialogueBtnTask,
                         repeatedClickInterval
@@ -80,9 +86,17 @@ class BangMerchantFunction(
     }
 
     private suspend fun openByActivity(): Boolean {
+        if (en.isMerchantTypeTask.check()) {
+            en.startMerchantTypeArea.c(en.isMerchantTypeTask)
+            if (mCount == 3) {
+                mCount = 2
+            }
+            return true
+        }
         if (openActivityXianXia()) {
             var flag = true
             var count = 40
+            var hasClick = false
             while (mCount > -1 && flag && count > 0 && runSwitch) {
                 if (!taskScreenL(screenshotIntervalF)) {
                     reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -94,12 +108,19 @@ class BangMerchantFunction(
                     )
                 } else if (en.isHuodongDiloagTask.check() && en.isHuodongDiloagTopTask.check()) {
                     en.huodongDiloag1Area.c()
+                    hasClick = true
                     mCount--
                 } else if (en.isSkipPlotFlowTask.check()) {
                     en.skipPlotFlowArea.c()
                 } else if (en.isTipsDetermineTask.check()) {
-                    flag = false
+                    if(hasClick){
+                        flag = false
+                    }
                     en.tipsDetermineArea.c()
+                } else if (en.isOneClickAddBangTask.check()) {
+                    en.oneClickAddBangArea.c(repeatedClickInterval)
+                } else if (en.findCloseBtnTask.check()) {
+                    en.closeBtnArea.c(repeatedClickInterval)
                 }
                 count--
             }

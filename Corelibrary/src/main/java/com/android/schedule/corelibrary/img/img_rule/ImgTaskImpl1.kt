@@ -98,7 +98,7 @@ open class ImgTaskImpl1(
         }
     }
 
-    fun copyOffset(task: FindImgTask?): ImgTaskImpl1 {
+    fun copyOffset(task: BasicImgTask): ImgTaskImpl1 {
         return copyOffset(tag,task?.getOffsetX()?:0,task?.getOffsetY()?:0)
     }
 }

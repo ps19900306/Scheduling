@@ -31,16 +31,6 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
             OriginFunction(acService).startTheProcess()
-
-//            DungeonOrdinaryFunction(acService,en, mutableListOf(
-//                DungeonOrdinaryType.TIAN_NING_SHI,
-//                DungeonOrdinaryType.YAN_ZI_WU,
-//                DungeonOrdinaryType.MAN_TUO_SHAN)
-//            ).startFunction()
-//            ShiMenFunction(acService,en).startFunction()
-//            BangTaskFunction(acService,en).startFunction()
-//            MountainsRiversPaintingFunction(acService,en).startFunction()
-//            TreasureMapFunction(acService,en).startFunction()
         }
     }
 
@@ -48,7 +38,8 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startOrigin() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            OriginFunction(acService).startTheProcess()
+            DailyGiftFunction(acService, en).startFunction()
+           // OriginFunction(acService).startTheProcess()
         }
     }
 
@@ -56,20 +47,12 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startDaily() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            for(i in 2..3){
-                if(i!=2){
-                    BangMerchantFunction(acService, en).let {
-                        it.switchRole(i)
-                        it.startFunction()
-                    }
-                }else{
-                    BangMerchantFunction(acService, en).startFunction()
-                }
-                BangTaskFunction(acService, en).startFunction()
-                MountainsRiversPaintingFunction(acService, en).startFunction()
-                TreasureMapFunction(acService, en).startFunction()
-                XunLongFenJinFunction(acService, en).startFunction()
-            }
+         //   DailyGiftFunction(acService, en).startFunction()
+            MountainsRiversPaintingFunction(acService, en).startFunction()
+            BangMerchantFunction(acService, en).startFunction()
+            BangTaskFunction(acService, en).startFunction()
+            TreasureMapFunction(acService, en).startFunction()
+            XunLongFenJinFunction(acService, en).startFunction()
         }
     }
 
@@ -80,8 +63,7 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startShiMen() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            DailyGiftFunction(acService, en).startFunction()
-           // BaiYeFunction(BaiYeType.MU_KE,0,0,  acService, en).startFunction()
+            ShiMenFunction(acService, en).startFunction()
         }
     }
 
@@ -99,20 +81,10 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     }
 
 
-    fun startTransport(){
+    fun startTransport() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-            for(i in 1..3){
-                if(i!=1){
-                    TransportTreasureFunction(acService, en).let {
-                        it.switchRole(i)
-                        it.startFunction()
-                    }
-                }else{
-                    TransportTreasureFunction(acService, en).startFunction()
-                }
-            }
-
+            TransportTreasureFunction(acService, en).startFunction()
         }
     }
 

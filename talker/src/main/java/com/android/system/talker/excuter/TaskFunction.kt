@@ -140,7 +140,7 @@ class TaskFunction(
                     reportingError("restartGame into")
                     return
                 }
-            }else{
+            } else {
                 reportingError("restartGame exitGame")
             }
         } else {
@@ -191,28 +191,24 @@ class TaskFunction(
     }
 
 
-    private val topLockTartRecorder = StatusRecorder("hasTopLockTart", 2, 20) {
+    private val topLockTartRecorder = StatusRecorder("hasTopLockTart", 5, 30) {
         hasTopLockTart()
     }
 
-    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 5, 20 * 20) {
+    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 5, 60 * 20) {
         hasBottomDeviceOpen()
     }
 
-    //这里相信是关闭  但是关闭时候isCloseAiTask有可能也是失败
-    private val closeAiRecorder = StatusRecorder("closeAi", 5, 20 * 20) {
-        en.isCloseAiTask.check()
-    }
 
     private val openPositionMenuRecorder = StatusRecorder("openPosition", 3, 60) {
         en.isOpenPositionMenuT.check()
     }
 
-    private val openJiyuBigMenuRecorder = StatusRecorder("openPosition", 10, 100) {
+    private val openJiyuBigMenuRecorder = StatusRecorder("openPosition", 10, 60) {
         en.isOpenJiyuBigMenuTask.check()
     }
 
-    private val canLockRecorder = StatusRecorder("canLock", 10, 60) {
+    private val canLockRecorder = StatusRecorder("canLock", 5, 60) {
         en.isCanLockTask.check()
     }
 
@@ -227,40 +223,21 @@ class TaskFunction(
             updateInfo()
 
             //安全 这里锁定按钮和出现时间很长 且设备一直未能开启
-            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()
-                && openJiyuBigMenuRecorder.isCloseTrustThresholds() ) {
-                L.d("判断是否需要开启设备")
-                if (closeAiRecorder.isOpenTrustThresholds()) {
-                    L.d("closeAiRecorder开启设备")
-                    en.topDeviceList[2].clickArea?.c(10000)
-                } else if (bottomDeviceOpenRecorder.isCloseTrustThresholds()) {
-                    L.d("bottomDeviceOpen开启设备")
-                    en.topDeviceList[2].clickArea?.c(10000)
-                }
-            }
+//            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()) {
+//                    en.topDeviceList[2].clickArea?.c(repeatedClickInterval)
+//            }
 
-            //安全 锁定无目标时间过长
-            if (canLockRecorder.isOpenErrorThresholds() && topLockTartRecorder.isCloseErrorThresholds()) {
-                clickPositionMenu(taskDb.baseMenuLocation)
-                if (closeAiRecorder.isOpenTrustThresholds()) {
-                    en.topDeviceList[2].clickArea?.c(10000)
-                } else if (bottomDeviceOpenRecorder.isCloseTrustThresholds()) {
-                    en.topDeviceList[2].clickArea?.c(10000)
-                }
-                L.d("锁定无目标时间过长")
-            }
-
-            // 这个是用于判断引力波导致的关闭
+            // 這個用用于判断游戏进不去的
             if (canLockRecorder.isCloseErrorThresholds()
                 && topLockTartRecorder.isCloseErrorThresholds()
                 && openJiyuBigMenuRecorder.isCloseTrustThresholds() //且没有打开际遇菜单
                 && openPositionMenuRecorder.isCloseErrorThresholds()//这个是判断结束导航的
             ) {
-                L.d("引力波导致的关闭")
-                if (closeAiRecorder.isOpenTrustThresholds()) {
-                    en.topDeviceList[2].clickArea?.c(60000)
-                } else if (bottomDeviceOpenRecorder.isCloseTrustThresholds()) {
-                    en.topDeviceList[2].clickArea?.c(60000)
+                canLockRecorder.clearUp()
+                if (openJiyuBigMenuRecorder.isCloseErrorThresholds() && bottomDeviceOpenRecorder.isCloseErrorThresholds()) {
+                    reportingError("执行任务卡住了")
+                } else {            // 这个是用于判断引力波导致的关闭
+                    en.topDeviceList[2].clickArea?.c()
                 }
             }
 
@@ -276,16 +253,7 @@ class TaskFunction(
                 }
             }
 
-            if (openJiyuBigMenuRecorder.isCloseErrorThresholds() && canLockRecorder.isCloseErrorThresholds()
-                && topLockTartRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
-                && closeAiRecorder.isCloseErrorThresholds() && bottomDeviceOpenRecorder.isCloseErrorThresholds()
-                && openJiyuBigMenuRecorder.isCloseTrustThresholds()
-            ) { //20分钟没有一次验证Ai是关闭的
-                L.d("restartGame")
-                nowStep = restartGame
-                en.topDeviceList[2].clickArea?.c(10000)
-                return
-            }
+
         }
     }
 
@@ -293,7 +261,6 @@ class TaskFunction(
     private suspend fun updateInfo() {
         topLockTartRecorder.updateInfo()
         bottomDeviceOpenRecorder.updateInfo()
-        closeAiRecorder.updateInfo()
         openPositionMenuRecorder.updateInfo()
         openJiyuBigMenuRecorder.updateInfo()
         canLockRecorder.updateInfo()

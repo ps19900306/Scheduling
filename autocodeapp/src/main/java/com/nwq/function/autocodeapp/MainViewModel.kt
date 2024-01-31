@@ -637,13 +637,15 @@ class MainViewModel : ViewModel() {
         L.d("length  ${block.boundaryList.size}")
         val correctDistance =if(block.boundaryList.size>400){
             distance*2
-        }else if(block.boundaryList.size>300){
-            (distance*1.8).toInt()
         }else if(block.boundaryList.size>200){
-            (distance*1.5).toInt()
+            distance*3
         }else if(block.boundaryList.size>100){
-            (distance*1.3).toInt()
-        }else if(block.boundaryList.size>50){
+            distance*2
+        }else if(block.boundaryList.size>80){
+            distance+3
+        }else if(block.boundaryList.size>40){
+            distance+2
+        }else if(block.boundaryList.size>20){
             distance+1
         }else{
             distance

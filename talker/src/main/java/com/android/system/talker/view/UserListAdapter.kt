@@ -71,7 +71,7 @@ class UserListAdapter(
         }
     }
 
-
     class UserViewHolder(val bind: ItemUserListBinding) : RecyclerView.ViewHolder(bind.root)
+
 
 }

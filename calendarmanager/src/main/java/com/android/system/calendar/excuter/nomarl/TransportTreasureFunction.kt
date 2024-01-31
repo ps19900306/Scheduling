@@ -7,7 +7,7 @@ import com.android.schedule.corelibrary.utils.L
 import com.android.system.calendar.constant.GameStuckPoint
 import kotlinx.coroutines.delay
 
-// 跑標 完成待测试
+// 跑標
 class TransportTreasureFunction(
     acService: AccessibilityService, en: ImageEnvironment
 ) : BasicFunction(acService, en) {
