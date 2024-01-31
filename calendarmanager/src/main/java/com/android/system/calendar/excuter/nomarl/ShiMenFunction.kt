@@ -15,6 +15,11 @@ class ShiMenFunction(
 
 
     override suspend fun startFunction() {
+        if (en.isShiMenTypeTask.check()) {
+            en.clickShiMenTypeArea.c(en.isShiMenTypeTask)
+            processListening()
+            return
+        }
         if (openActivityNeed()) {
             var flag = true
             var count = 40
@@ -29,9 +34,6 @@ class ShiMenFunction(
                     flag = false
                 } else if (en.isSkipPlotFlowTask.check()) {
                     en.skipPlotFlowArea.c()
-                    flag = false
-                } else if (en.isShiMenTypeTask.check()) {
-                    en.clickShiMenTypeArea.c(en.isShiMenTypeTask)
                     flag = false
                 }
                 count--

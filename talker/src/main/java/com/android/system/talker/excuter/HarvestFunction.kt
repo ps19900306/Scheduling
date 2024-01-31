@@ -29,7 +29,7 @@ class HarvestFunction(
     override suspend fun endGame(eroMsg: String?) {
         if (TextUtils.isEmpty(eroMsg)) {
             vegetableDb.lastCompletionTime = System.currentTimeMillis()
-            vegetableDb.errorStr =""
+            vegetableDb.errorStr = ""
         } else {
             vegetableDb.errorStr = TimeUtils.getNowTime() + eroMsg
         }
@@ -175,7 +175,7 @@ class HarvestFunction(
             vegetableDb.lastAddTime = System.currentTimeMillis()
             vegetableDb.lastCompletionTime = System.currentTimeMillis()
             dataBase.getVegetableDao().update(vegetableDb)
-            delay(jumpClickInterval*3)
+            delay(jumpClickInterval * 3)
             theOutCheck()
             end()
         }
@@ -221,14 +221,18 @@ class HarvestFunction(
         //这里领取超时了 需要去下一个
         if (flag) {
             nowCelestialCount++
-            ensureOpenBigMenuArea(vegetableDb.menuType)
-            selectEntryItem(nowCelestialCount, jumpClickInterval)
-            delay(jumpClickInterval)
-            en.setTargetArea.c()
-            theOutCheck()
-            delay(jumpClickInterval)
-            en.eraseWarningArea.c()
-            nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
+            if (nowCelestialCount < vegetableDb.numberCount) {
+                ensureOpenBigMenuArea(vegetableDb.menuType)
+                selectEntryItem(nowCelestialCount, jumpClickInterval)
+                delay(jumpClickInterval)
+                en.setTargetArea.c()
+                theOutCheck()
+                delay(jumpClickInterval)
+                en.eraseWarningArea.c()
+                nowStep = GO_TO_COLLECT_NAVIGATION_MONITORING
+            } else {
+                nowStep = MONITORING_RETURN_STATUS
+            }
         }
         return !flag
     }
@@ -279,6 +283,11 @@ class HarvestFunction(
             optClickTask(en.celestialSwipeArea(delayTime).toClickTask())
             delay(delayTime)
             en.celestialClick6Area.c()
+            delay(clickInterval)
+            taskScreenL(screenshotInterval)
+            if(!en.isShowAddCelestialTask.check()){
+                en.getCelestialClickArea(4).c()
+            }
         }
     }
 

@@ -4567,6 +4567,7 @@ class StarWarEnvironment {
         FindImgTask(pr, findArea, pointList, tag)
     }
 
+    val celestialClick6Area = ClickArea(129, 1010, 428, 70)
 
     fun getCelestialClickArea(offset: Int): ClickArea {
         return if (offset <= 3) {
@@ -4591,7 +4592,7 @@ class StarWarEnvironment {
         )
     }
 
-    val celestialClick6Area = ClickArea(129, 1010, 428, 70)
+
 
 
     val addCelestialArea = ClickArea(2100, 158, 102, 95, true)

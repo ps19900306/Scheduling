@@ -151,8 +151,8 @@ abstract class BaseFunctionControl(
         val isInSpace = en.isInSpaceStationT.toStatusRecorder(3)
         val isOpenBigMenu = en.isOpenBigMenuT.toStatusRecorder(5)
         val isClosePosition = en.isClosePositionMenuT.toStatusRecorder(5, 20)
-        val isOpenPosition = en.isOpenPositionMenuT.toStatusRecorder(40)
-        val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3)
+        val isOpenPosition = en.isOpenPositionMenuT.toStatusRecorder(30,80)
+        val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3,60)
         val isConfirmDialog = en.isConfirmDialogTask.toStatusRecorder(3)
         val isOneClickClaim = en.isOneClickClaimTask.toStatusRecorder(3)//这个是收菜的
         val isOnlyOpenPosition = en.isOnlyOpenPositionMenuTask.toStatusRecorder(5)//这里表表示并没有开始导航
@@ -191,6 +191,12 @@ abstract class BaseFunctionControl(
                 if (clickArea == null) {
                     clickArea = en.getPositionArea(position)
                 }
+                clickArea.c(SetConstant.MINUTE)
+            }else if(isOpenPosition.isOpenErrorThresholds() && isHasEyeMenu.isOpenErrorThresholds()){
+                if (clickArea == null) {
+                    clickArea = en.getPositionArea(position)
+                }
+                isOpenPosition.clearUp()
                 clickArea.c(SetConstant.MINUTE)
             }
             count--

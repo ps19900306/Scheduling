@@ -39,7 +39,8 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
             DailyGiftFunction(acService, en).startFunction()
-           // OriginFunction(acService).startTheProcess()
+            MountainsRiversPaintingFunction(acService, en).startFunction()
+            // OriginFunction(acService).startTheProcess()
         }
     }
 
@@ -48,7 +49,7 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
          //   DailyGiftFunction(acService, en).startFunction()
-            MountainsRiversPaintingFunction(acService, en).startFunction()
+         //
             BangMerchantFunction(acService, en).startFunction()
             BangTaskFunction(acService, en).startFunction()
             TreasureMapFunction(acService, en).startFunction()

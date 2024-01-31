@@ -73,7 +73,6 @@ class RoleListAdapter(
                 )
             )
         }
-
         holder.bind.cb.isChecked = data.isChecked
         holder.bind.modifyBtn.singleClick {
             data.id.let { onModifyClick.invoke(it) }

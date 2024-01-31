@@ -16,7 +16,7 @@ class DailyGiftFunction(
         lingQuFuLi()
         linQuQianKunDai()
         linQuChengjiu()
-        linQuEmail()
+      //  linQuEmail()
     }
 
     private suspend fun linQuEmail() {

@@ -2,6 +2,8 @@ package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
 import android.text.TextUtils
+import androidx.constraintlayout.widget.ConstraintSet.Constraint
+import com.android.schedule.corelibrary.SetConstant
 import com.android.schedule.corelibrary.controller.StatusRecorder
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.TimeUtils
@@ -91,7 +93,7 @@ class TaskFunction(
         L.d("开启AI")
         theOutCheck()
         outSpaceStation()
-        en.topDeviceList[2].clickArea?.c()
+        en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
         nowStep = conditionStatus
     }
 
@@ -222,10 +224,10 @@ class TaskFunction(
             }
             updateInfo()
 
-            //安全 这里锁定按钮和出现时间很长 且设备一直未能开启
-//            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()) {
-//                    en.topDeviceList[2].clickArea?.c(repeatedClickInterval)
-//            }
+            // 安全 这里锁定按钮和出现时间很长 且设备一直未能开启
+            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()) {
+                    en.topDeviceList[2].clickArea?.c(repeatedClickInterval*3)
+            }
 
             // 這個用用于判断游戏进不去的
             if (canLockRecorder.isCloseErrorThresholds()
@@ -237,12 +239,13 @@ class TaskFunction(
                 if (openJiyuBigMenuRecorder.isCloseErrorThresholds() && bottomDeviceOpenRecorder.isCloseErrorThresholds()) {
                     reportingError("执行任务卡住了")
                 } else {            // 这个是用于判断引力波导致的关闭
-                    en.topDeviceList[2].clickArea?.c()
+                    en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
                 }
             }
 
             //这个是用于判断无任务导致的关闭执行逻辑的
             if (openJiyuBigMenuRecorder.isOpenErrorThresholds()) {
+                canLockRecorder.clearUp()
                 if (en.isCompleteAllTask.check()) {//这里已经全部执行完毕
                     end()
                     L.d("isCompleteAllTask")
