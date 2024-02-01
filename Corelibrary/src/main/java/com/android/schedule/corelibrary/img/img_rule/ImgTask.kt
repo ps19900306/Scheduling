@@ -1,6 +1,7 @@
 package com.android.schedule.corelibrary.img.img_rule
 
 import android.graphics.Bitmap
+import android.text.TextUtils
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
@@ -15,6 +16,7 @@ import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRules
 import com.android.schedule.corelibrary.img.point_rule.TwoPointRule
 import com.android.schedule.corelibrary.utils.L
+import java.lang.StringBuilder
 
 /**
  * 不能实列化
@@ -113,6 +115,8 @@ abstract class ImgTask(
     fun getOffY(): Int {
         return correctModel?.offsetY ?: 0
     }
+
+
 
 
 }

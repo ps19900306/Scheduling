@@ -89,7 +89,7 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
 
 
-            //      FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
+            FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
 
             FunctionItemInfo(R.string.take_img, BUTTON_TYPE),
             FunctionItemInfo(R.string.replace_img, BUTTON_TYPE),
@@ -316,7 +316,7 @@ class MainActivity() : AppCompatActivity() {
                         if (t.isChecked) {
                             u.forEach {
                                 list.add(
-                                    CoordinatePoint(sx + it.x,sy+ it.y)
+                                    CoordinatePoint(sx + it.x, sy + it.y)
                                 )
                             }
                         }
@@ -413,25 +413,27 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.string.test_pick_up_points1 -> {
-                    PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
-                        .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
-                            override fun onResult(result: ArrayList<LocalMedia?>?) {
-                                val list = mutableListOf<Bitmap>()
-                                result?.forEach {
-                                    it?.let {
-                                        val opts = BitmapFactory.Options()
-                                        opts.outConfig = Bitmap.Config.ARGB_8888
-                                        opts.inMutable = true
-                                        BitmapFactory.decodeFile(it.realPath, opts)?.let {
-                                            list.add(it)
-                                        }
-                                    }
-                                }
-                                checkCodeMulImg(list)
-                            }
-
-                            override fun onCancel() {}
-                        })
+                    testCodeCount= 10
+                    issueInstructionsImg()
+//                    PictureSelector.create(this).openSystemGallery(SelectMimeType.ofImage())
+//                        .forSystemResult(object : OnResultCallbackListener<LocalMedia?> {
+//                            override fun onResult(result: ArrayList<LocalMedia?>?) {
+//                                val list = mutableListOf<Bitmap>()
+//                                result?.forEach {
+//                                    it?.let {
+//                                        val opts = BitmapFactory.Options()
+//                                        opts.outConfig = Bitmap.Config.ARGB_8888
+//                                        opts.inMutable = true
+//                                        BitmapFactory.decodeFile(it.realPath, opts)?.let {
+//                                            list.add(it)
+//                                        }
+//                                    }
+//                                }
+//                                checkCodeMulImg(list)
+//                            }
+//
+//                            override fun onCancel() {}
+//                        })
                 }
 
             }
@@ -571,6 +573,13 @@ class MainActivity() : AppCompatActivity() {
 
     private fun checkCode() {
         val en = StarWarEnvironment()
+//        viewModel.fiterImgTask(en.isTestOpenTask)
+//
+//        en.isTestOpenV2Task.iprList.forEach {
+//            it.getCoordinatePoint().apply {
+//                bind.previewView.addDot(CoordinatePoint(xI , yI ))
+//            }
+//        }
         viewModel.srcBitmap?.let {
             lifecycleScope.launch(Dispatchers.IO) {
 //                en.isVegetableShipList.forEach { task->
@@ -601,9 +610,9 @@ class MainActivity() : AppCompatActivity() {
 //                }
 
 
-                val task = XiaoMiEnvironment.isChangWankaTask
+                val task = en.isTestOpenV2Task
                 task.logColor(it)
-                task.clickArea = XiaoMiEnvironment.homeGameCenterArea
+                task.clickArea = null
                 if (task.verificationRule(it)) {
                     runOnUI {
                         bind.previewView.clearPoint()
@@ -653,6 +662,7 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
+    var testCodeCount = 0
 
     private val onTakeIng =
         NwqCallBack<Bitmap?> { t ->
@@ -662,6 +672,11 @@ class MainActivity() : AppCompatActivity() {
             } else {
                 // viewModel.srcBitmap?.recycle()
                 viewModel.srcBitmap = t
+                if (testCodeCount > 0) {
+                    checkCode()
+                    testCodeCount--
+                    issueInstructionsImg()
+                }
             }
         }
 

@@ -45,7 +45,7 @@ class StatusRecorder(
         } else {
             false
         }
-        L.d("$tag isOpenTrustThresholds result:$result")
+        L.d("$tag isOpenErrorThresholds result:$result")
         return result
     }
 
@@ -55,7 +55,7 @@ class StatusRecorder(
         } else {
             false
         }
-        L.d("$tag isCloseTrustThresholds result:$result")
+        L.d("$tag isCloseErrorThresholds result:$result")
         return result
     }
 

@@ -1,6 +1,7 @@
 package com.android.schedule.corelibrary.img.img_rule
 
 import android.graphics.Bitmap
+import com.android.schedule.corelibrary.controller.StatusRecorder
 
 /**
 create by: 86136
@@ -39,6 +40,7 @@ class MultiImgContainmentTask(var list: Array<ImgTaskImpl1>?) : BasicImgTask() {
         }
         return MultiImgContainmentTask(newImgTaskImpl1.toTypedArray())
     }
+
 
 
 }

@@ -31,6 +31,8 @@ class UserFunction(
         if (!result) return
         L.d("$TAG 进入游戏成功")
         var isInSpaceStation = false
+
+
         //这个是每日活动的
         if (userDb.activeGiftSwitch && TimeUtils.isNewMouth(userDb.activeGiftTime)) {
             L.d("$TAG 进入活动礼物领取")
@@ -48,7 +50,6 @@ class UserFunction(
             }
             theOutCheck()
         }
-
         //这个是协议任务的
         if (userDb.agreementGiftSwitch && TimeUtils.isNewWeek(userDb.agreementGiftTime)) {
             if (!isInSpaceStation && !returnSpaceStation(userDb.baseMenuLocation)) {//这里保证返回空间站的

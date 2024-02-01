@@ -37,7 +37,7 @@ class ClickArea(
     private val minimumDiameter = Math.min(height, width) / 2 //最小半径
 
     fun toClickTask(imgTask: ImgTask, delayTime: Long = 0L): ClickTask {
-        return toClickTask(delayTime, imgTask.getOffX(), imgTask.getOffY())
+        return toClickTask(delayTime, imgTask.getOffsetX(), imgTask.getOffsetY())
     }
 
     var lastClickTime = 0L

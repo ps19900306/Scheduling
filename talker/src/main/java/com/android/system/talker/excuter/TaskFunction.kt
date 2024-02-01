@@ -78,7 +78,7 @@ class TaskFunction(
                 }
 
                 restartGame -> {
-                    restartGame()
+                   // restartGame()
                 }
 
                 end -> {
@@ -93,6 +93,7 @@ class TaskFunction(
         L.d("开启AI")
         theOutCheck()
         outSpaceStation()
+        linQuLianLuo()
         en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
         nowStep = conditionStatus
     }
@@ -197,55 +198,65 @@ class TaskFunction(
         hasTopLockTart()
     }
 
-    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 5, 60 * 20) {
+
+    private val isOpenAiRecorder = en.isOpenAiTask.toStatusRecorder(10, 60 * 30)
+
+    private val isHasEysMenu = StatusRecorder("hasEysMenu", 5, 60 * 30) {
+        en.isCloseEyeMenuT.check() || en.isOpenEyeMenuT.check()
+    }
+
+    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 10, 20) {
         hasBottomDeviceOpen()
     }
 
+    private val openPositionMenuRecorder = en.isOpenPositionMenuT.toStatusRecorder(3, 30)
 
-    private val openPositionMenuRecorder = StatusRecorder("openPosition", 3, 60) {
-        en.isOpenPositionMenuT.check()
-    }
+    private val openJiyuBigMenuRecorder = en.isOpenJiyuBigMenuTask.toStatusRecorder(10, 60)
 
-    private val openJiyuBigMenuRecorder = StatusRecorder("openPosition", 10, 60) {
-        en.isOpenJiyuBigMenuTask.check()
-    }
-
-    private val canLockRecorder = StatusRecorder("canLock", 5, 60) {
-        en.isCanLockTask.check()
-    }
+    private val canLockRecorder = en.isCanLockTask.toStatusRecorder(5, 10)
 
 
     private suspend fun monitorAllStatuses() {
         L.d("monitorAllStatuses")
         while (runSwitch) {
-            if (!taskScreenL(screenshotInterval)) {
+            if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return
             }
             updateInfo()
 
-            // 安全 这里锁定按钮和出现时间很长 且设备一直未能开启
-            if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()) {
-                    en.topDeviceList[2].clickArea?.c(repeatedClickInterval*3)
-            }
+            if (isHasEysMenu.isOpenTrustThresholds()) {//表示在外太空
+                if (isOpenAiRecorder.isOpenErrorThresholds() && openJiyuBigMenuRecorder.isCloseErrorThresholds()
+                    && canLockRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
+                    && isHasEysMenu.isOpenErrorThresholds() && bottomDeviceOpenRecorder.isCloseErrorThresholds()
+                ) {
+                    reportingError("卡住了")
+                    return
+                }
 
-            // 這個用用于判断游戏进不去的
-            if (canLockRecorder.isCloseErrorThresholds()
-                && topLockTartRecorder.isCloseErrorThresholds()
-                && openJiyuBigMenuRecorder.isCloseTrustThresholds() //且没有打开际遇菜单
-                && openPositionMenuRecorder.isCloseErrorThresholds()//这个是判断结束导航的
-            ) {
-                canLockRecorder.clearUp()
-                if (openJiyuBigMenuRecorder.isCloseErrorThresholds() && bottomDeviceOpenRecorder.isCloseErrorThresholds()) {
-                    reportingError("执行任务卡住了")
-                } else {            // 这个是用于判断引力波导致的关闭
+
+                //这个为了保证安全
+                if (canLockRecorder.isOpenTrustThresholds() && topLockTartRecorder.isCloseTrustThresholds()
+                    && isOpenAiRecorder.isCloseTrustThresholds() && openPositionMenuRecorder.isCloseTrustThresholds()
+                    && openJiyuBigMenuRecorder.isCloseTrustThresholds()
+                ) {
+                    isOpenAiRecorder.clearUp()
+                    en.topDeviceList[2].clickArea?.c(repeatedClickInterval * 2)
+                }
+
+                //这个是引力波
+                if (canLockRecorder.isCloseErrorThresholds() && topLockTartRecorder.isCloseErrorThresholds()
+                    && isOpenAiRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
+                    && openJiyuBigMenuRecorder.isCloseTrustThresholds() && bottomDeviceOpenRecorder.isCloseTrustThresholds()
+                ) {
+                    isOpenAiRecorder.clearUp()
                     en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
                 }
-            }
 
-            //这个是用于判断无任务导致的关闭执行逻辑的
-            if (openJiyuBigMenuRecorder.isOpenErrorThresholds()) {
-                canLockRecorder.clearUp()
+
+            } else if (openJiyuBigMenuRecorder.isOpenErrorThresholds()) {//在接取界面
+                //这个是用于判断无任务导致的关闭执行逻辑的
+                isOpenAiRecorder.clearUp()
                 if (en.isCompleteAllTask.check()) {//这里已经全部执行完毕
                     end()
                     L.d("isCompleteAllTask")
@@ -255,8 +266,6 @@ class TaskFunction(
                     return
                 }
             }
-
-
         }
     }
 
@@ -267,6 +276,8 @@ class TaskFunction(
         openPositionMenuRecorder.updateInfo()
         openJiyuBigMenuRecorder.updateInfo()
         canLockRecorder.updateInfo()
+        isOpenAiRecorder.updateInfo()
+        isHasEysMenu.updateInfo()
     }
 }
 

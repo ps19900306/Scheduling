@@ -54,8 +54,6 @@ object GenerateCodeUtils {
         }else{
             stringBuilder.append("ImgTaskImpl1(pointList, tag, correctPositionModel).apply {\n nErrorTolerance=${(data.size/15)+1} }\n")
         }
-
-
         stringBuilder.append("}  \n")
         return stringBuilder.toString()
     }

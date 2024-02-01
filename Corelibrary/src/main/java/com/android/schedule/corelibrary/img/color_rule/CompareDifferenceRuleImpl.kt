@@ -36,7 +36,7 @@ class CompareDifferenceRuleImpl(
             blue: Int,
         ): CompareDifferenceRuleImpl {
             return list.find {
-                it.redDifference == red && it.greenDifference == green && it.blueDifference == blue
+                it.redDifference == abs(red) && it.greenDifference ==  abs(green) && it.blueDifference ==  abs(blue)
             } ?: CompareDifferenceRuleImpl(
                 Math.abs(red),
                 Math.abs(green),

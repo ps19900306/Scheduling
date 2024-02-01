@@ -11,6 +11,11 @@ import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.area.CoordinateLine
 import com.android.schedule.corelibrary.area.CoordinatePoint
 import com.android.schedule.corelibrary.expand.runOnUI
+import com.android.schedule.corelibrary.img.color_rule.ColorRuleRatioImpl
+import com.android.schedule.corelibrary.img.img_rule.ImgTask
+import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
+import com.android.schedule.corelibrary.img.point_rule.IPR
+import com.android.schedule.corelibrary.img.point_rule.PointRule
 import com.android.schedule.corelibrary.utils.L
 import com.nwq.function.autocodeapp.data.FeatureCoordinatePoint
 import com.nwq.function.autocodeapp.data.FeaturePointBlock
@@ -18,6 +23,7 @@ import com.nwq.function.autocodeapp.data.FeaturePointKey
 import com.nwq.function.autocodeapp.function.PreviewImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.StringBuilder
 import kotlin.math.abs
 
 
@@ -169,16 +175,20 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun allFeatureExtraction(previewView: PreviewImageView,isText:Boolean,taskName:String?=null){
+    fun allFeatureExtraction(
+        previewView: PreviewImageView,
+        isText: Boolean,
+        taskName: String? = null
+    ) {
         val result = mutableListOf<FeatureCoordinatePoint>()
         colorMaps.forEach { t, u ->
-            if(t.isChecked){
+            if (t.isChecked) {
                 result.addAll(u)
             }
         }
 
-        val str=  GenerateCodeUtils.autoImgCode(
-            taskName=taskName,
+        val str = GenerateCodeUtils.autoImgCode(
+            taskName = taskName,
             sx = coordinateArea?.x ?: 0,
             sy = coordinateArea?.y ?: 0,
             data = result,
@@ -204,7 +214,11 @@ class MainViewModel : ViewModel() {
     }
 
     //生成普通图片特征值
-    fun autoCodeNormalImg(previewView: PreviewImageView, isText: Boolean = false,taskName:String?=null) {
+    fun autoCodeNormalImg(
+        previewView: PreviewImageView,
+        isText: Boolean = false,
+        taskName: String? = null
+    ) {
         previewView.clearPoint()
         viewModelScope.launch(Dispatchers.IO) {
             val result = mutableListOf<FeatureCoordinatePoint>()
@@ -219,7 +233,7 @@ class MainViewModel : ViewModel() {
             }
             val str = if (findArea != null) {
                 GenerateCodeUtils.autoImgCodeArea(
-                    taskName=taskName,
+                    taskName = taskName,
                     coordinateArea?.x ?: 0,
                     coordinateArea?.y ?: 0,
                     result,
@@ -228,7 +242,7 @@ class MainViewModel : ViewModel() {
                 )
             } else {
                 GenerateCodeUtils.autoImgCode(
-                    taskName=taskName,
+                    taskName = taskName,
                     sx = coordinateArea?.x ?: 0,
                     sy = coordinateArea?.y ?: 0,
                     data = result,
@@ -255,7 +269,7 @@ class MainViewModel : ViewModel() {
 
 
     //這個富顔色不知道什麽意思了
-    fun autoCodeNormalRichImg(previewView: PreviewImageView,taskName:String?=null) {
+    fun autoCodeNormalRichImg(previewView: PreviewImageView, taskName: String? = null) {
         previewView.clearPoint()
         viewModelScope.launch(Dispatchers.IO) {
             val result = mutableListOf<FeatureCoordinatePoint>()
@@ -596,29 +610,29 @@ class MainViewModel : ViewModel() {
         list.forEach {
             obtainBoundaryPoint(it, distance, keyPointList, addBackgroundCount)
         }
-        return  filterNearPoints(keyPointList)
+        return filterNearPoints(keyPointList)
     }
 
 
-    private fun filterNearPoints(list: MutableList<FeatureCoordinatePoint>):MutableList<FeatureCoordinatePoint> {
+    private fun filterNearPoints(list: MutableList<FeatureCoordinatePoint>): MutableList<FeatureCoordinatePoint> {
         val oldList = list.filter { it.mDirectorPoint == null }
         val newList = mutableListOf<FeatureCoordinatePoint>()
-        oldList.forEach { point->
-            if(newList.find { abs(it.x - point.x) + abs(it.y - point.y) <= 3} == null){
+        oldList.forEach { point ->
+            if (newList.find { abs(it.x - point.x) + abs(it.y - point.y) <= 3 } == null) {
                 //L.d("添加点")
                 newList.add(point)
-            }else{
+            } else {
                 //L.d("过滤点")
             }
         }
 
         val oldList1 = list.filter { it.mDirectorPoint != null }
-        val newList1= mutableListOf<FeatureCoordinatePoint>()
-        oldList1.forEach { point->
-            if(newList1.find { abs(it.x - point.x) + abs(it.y - point.y) <= 3} == null){
+        val newList1 = mutableListOf<FeatureCoordinatePoint>()
+        oldList1.forEach { point ->
+            if (newList1.find { abs(it.x - point.x) + abs(it.y - point.y) <= 3 } == null) {
                 //L.d("添加w")
                 newList1.add(point)
-            }else{
+            } else {
                 //L.d("过滤点")
             }
         }
@@ -635,19 +649,19 @@ class MainViewModel : ViewModel() {
         addBackgroundCount: Int = 0
     ) {
         L.d("length  ${block.boundaryList.size}")
-        val correctDistance =if(block.boundaryList.size>400){
-            distance*2
-        }else if(block.boundaryList.size>200){
-            distance*3
-        }else if(block.boundaryList.size>100){
-            distance*2
-        }else if(block.boundaryList.size>80){
-            distance+3
-        }else if(block.boundaryList.size>40){
-            distance+2
-        }else if(block.boundaryList.size>20){
-            distance+1
-        }else{
+        val correctDistance = if (block.boundaryList.size > 400) {
+            distance * 2
+        } else if (block.boundaryList.size > 200) {
+            distance * 3
+        } else if (block.boundaryList.size > 100) {
+            distance * 2
+        } else if (block.boundaryList.size > 80) {
+            distance + 3
+        } else if (block.boundaryList.size > 40) {
+            distance + 2
+        } else if (block.boundaryList.size > 20) {
+            distance + 1
+        } else {
             distance
         }
         val result = mutableListOf<FeatureCoordinatePoint>()
@@ -655,7 +669,7 @@ class MainViewModel : ViewModel() {
         block.boundaryList.find { it.sequenceNumber == 0 }?.let {
             result.add(it)
         }
-        val jian= (correctDistance+1) /2
+        val jian = (correctDistance + 1) / 2
         //这里添加中间点
         if (block.perimeter > correctDistance) {
             for (i in correctDistance..block.perimeter - correctDistance step correctDistance) {
@@ -709,6 +723,29 @@ class MainViewModel : ViewModel() {
             keyPointList.add(it)
         }
 
+    }
+
+
+    fun fiterImgTask(imgTask: ImgTaskImpl1) {
+        val newIprList = mutableListOf<IPR>()
+        imgTask.iprList.forEach { resourIpr ->
+            if (newIprList.find { newIpr ->
+                    val nco = newIpr.getCoordinatePoint()
+                    val oco = resourIpr.getCoordinatePoint()
+                    abs(oco.xI - nco.xI) < 3 && abs(oco.xI - nco.xI) < 3
+                } == null) {
+                newIprList.add(resourIpr)
+            }
+        }
+        val stringBuilder = StringBuilder()
+        newIprList.forEach {
+            stringBuilder.append("pointList.add(PointRule(CoordinatePoint(${it.getCoordinatePoint().xI},${it.getCoordinatePoint().yI}),RadioRule1))\n")
+        }
+
+        stringBuilder.toString().let { resultStr ->
+            val clipData = ClipData.newPlainText("autoCode", resultStr)
+            manager.setPrimaryClip(clipData)
+        }
     }
 
 

@@ -126,7 +126,7 @@ abstract class BaseFunctionControl(
     }
 
 
-    private suspend fun hasIntoGame(): Boolean {
+    protected suspend fun hasIntoGame(): Boolean {
         return (en.isClosePositionMenuT.check() || en.isOpenPositionMenuT.check()) && (en.isInSpaceStationT.check() || en.isOpenEyeMenuT.check() || en.isCloseEyeMenuT.check())
     }
 
@@ -151,8 +151,8 @@ abstract class BaseFunctionControl(
         val isInSpace = en.isInSpaceStationT.toStatusRecorder(3)
         val isOpenBigMenu = en.isOpenBigMenuT.toStatusRecorder(5)
         val isClosePosition = en.isClosePositionMenuT.toStatusRecorder(5, 20)
-        val isOpenPosition = en.isOpenPositionMenuT.toStatusRecorder(30,80)
-        val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3,60)
+        val isOpenPosition = en.isOpenPositionMenuT.toStatusRecorder(30, 80)
+        val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3, 60)
         val isConfirmDialog = en.isConfirmDialogTask.toStatusRecorder(3)
         val isOneClickClaim = en.isOneClickClaimTask.toStatusRecorder(3)//这个是收菜的
         val isOnlyOpenPosition = en.isOnlyOpenPositionMenuTask.toStatusRecorder(5)//这里表表示并没有开始导航
@@ -192,7 +192,7 @@ abstract class BaseFunctionControl(
                     clickArea = en.getPositionArea(position)
                 }
                 clickArea.c(SetConstant.MINUTE)
-            }else if(isOpenPosition.isOpenErrorThresholds() && isHasEyeMenu.isOpenErrorThresholds()){
+            } else if (isOpenPosition.isOpenErrorThresholds() && isHasEyeMenu.isOpenErrorThresholds()) {
                 if (clickArea == null) {
                     clickArea = en.getPositionArea(position)
                 }
@@ -566,6 +566,13 @@ abstract class BaseFunctionControl(
                         return true
                     }
                 }
+
+                ActivityType.CHENG_NIAN_LI -> {
+                    if (en.isOpenChenNianLiMenuTask.check()) {
+                        L.d("成年里")
+                        return true
+                    }
+                }
             }
 
             //找到菜单的点击位置
@@ -576,6 +583,16 @@ abstract class BaseFunctionControl(
                         hasFind = true
                         count = 4
                         en.supplyMaterialsArea.c(en.isSupplyMaterialsTask)
+                        delay(jumpClickInterval)
+                    }
+                }
+
+                ActivityType.CHENG_NIAN_LI -> {
+                    if (en.isChenNianLiTask.check()) {
+                        L.d("成年里位置")
+                        hasFind = true
+                        count = 4
+                        en.ChenNianLiBtnArea.c(en.isChenNianLiTask)
                         delay(jumpClickInterval)
                     }
                 }
@@ -911,5 +928,65 @@ abstract class BaseFunctionControl(
         return null != en.bottomDeviceList.find { it.check() }
     }
 
+
+    var lastLianLuoTime = 0L;
+
+    //水龙年的l
+    suspend fun linQuLianLuo() {
+        if (System.currentTimeMillis() - lastLianLuoTime < SetConstant.Hour) {
+            return
+        }
+        lastLianLuoTime = System.currentTimeMillis()
+        var flag = true
+        var count = 20
+        val clickSpeedControl = ClickSpeedControl()
+        clickSpeedControl.maxCount = 1
+        clickSpeedControl.addUnit(en.isJieShouTask, en.jieShouArea)
+        clickSpeedControl.addUnit(en.isShowLeftDialogBox, en.leftDialogArea)
+        clickSpeedControl.addUnit(en.isShowRightDialogBox, en.rightDialogArea)
+        clickSpeedControl.addUnit(en.isConfirmDialogTask, en.confirmDialogCancelArea)
+        clickSpeedControl.addUnit(en.findLianLuoAnBtnTask, en.lianLuoAnBtnArea)
+        clickSpeedControl.addUnit(en.isOpenJiyuBigMenuTask, en.closeBigMenuArea)
+        clickSpeedControl.addUnit(en.isJieShouHuoDongTask, en.jieShouHuoDongArea)
+
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+            }
+            if (hasIntoGame()) {
+                if (en.isHasGiftBtnTask.check()) {
+                    if (ensureOpenActivityType(ActivityType.CHENG_NIAN_LI)) {
+                        if (en.findLianLuoAnBtnTask.check()) {
+                            en.lianLuoAnBtnArea.c(en.findLianLuoAnBtnTask)
+                            delay(clickInterval)
+                            count = 40
+                        } else {
+                            flag = false
+                        }
+                    }
+                } else {
+                    en.leftDialogArea.c()
+                }
+            } else if (en.isHuoBigDialogTask.check() && !en.isOpenJiyuBigMenuTask.check()) {
+                L.t("活动对话中")
+                count = 40
+                if (en.isJieShouHuoDongTask.check()) {
+                    en.jieShouHuoDongArea.c()
+                } else {
+                    if (Math.random() > 0.6) {
+                        en.huoDongSelect2Area.c()
+                    } else {
+                        en.huoDongSelect1Area.c()
+                    }
+                }
+            } else {
+                clickSpeedControl.cc()
+            }
+            count--
+        }
+
+        theOutCheck()
+        return
+    }
 
 }

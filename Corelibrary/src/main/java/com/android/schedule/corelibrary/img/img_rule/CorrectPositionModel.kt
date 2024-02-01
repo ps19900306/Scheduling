@@ -71,9 +71,32 @@ open class CorrectPositionModel(
             next(getOffsetXSupple(), getOffsetYSupple(), true)
         } else {
             //如果上次有对应的位置，则这里修正位置
-            if(hasCorrect && next(getOffsetXSupple(), getOffsetYSupple(), false)){
-                    return
+            if (hasCorrect && next(getOffsetXSupple(), getOffsetYSupple(), false)) {
+                return
             }
+
+            if (pointList.isEmpty()) {
+                val width = if (xRange > 0) {
+                    xRange * 2 + 1
+                } else {
+                    1
+                }
+                val height = if (yRange > 0) {
+                    yRange * 2 + 1
+                } else {
+                    1
+                }
+                for (xd in -xRange..xRange) {
+                    for (yd in -yRange..yRange) {
+                       if( next.invoke(xd + supplementalValueX, yd + supplementalValueY, false))
+                        return
+                    }
+                }
+                next.invoke(0 + supplementalValueX, 0 + supplementalValueY, true)
+                return
+            }
+
+
             if (xRange > 0 || yRange > 0) {
                 val width = if (xRange > 0) {
                     xRange * 2 + 1
@@ -90,7 +113,13 @@ open class CorrectPositionModel(
                 val startY = pointList[0].getCoordinatePoint().yI - yRange
                 val pixels = IntArray(size)
                 bitmap.getPixels(
-                    pixels, 0, width, startX+supplementalValueX, startY+supplementalValueY, width, height
+                    pixels,
+                    0,
+                    width,
+                    startX + supplementalValueX,
+                    startY + supplementalValueY,
+                    width,
+                    height
                 )
                 var hasFind = false
                 pixels.forEachIndexed { index, colorInt ->
@@ -107,31 +136,42 @@ open class CorrectPositionModel(
                             ofsX = 0
                             ofsY = startY + index - pointList[0].getCoordinatePoint().yI
                         }
-
-
                         if (pointList.size > 1) {//这个是说标准掉有多个
                             //找不符合规则的点 只要有则去除
                             val hasFailedPoint = pointList.find {
                                 val colorInt =
-                                    bitmap.getPixel(it.point.xI + ofsX+supplementalValueX, it.point.yI + ofsY+supplementalValueY)
+                                    bitmap.getPixel(
+                                        it.point.xI + ofsX + supplementalValueX,
+                                        it.point.yI + ofsY + supplementalValueY
+                                    )
                                 !it.rule.optInt(colorInt)
                             }
                             if (hasFailedPoint == null) {
-                                if (next.invoke(ofsX+supplementalValueX, ofsY+supplementalValueY, false)) {
+                                if (next.invoke(
+                                        ofsX + supplementalValueX,
+                                        ofsY + supplementalValueY,
+                                        false
+                                    )
+                                ) {
                                     hasFind = true
-                                 //correctCoordinate(ofsX, ofsY) //只在全部点都验证过的清空下才进行修正
+                                    //correctCoordinate(ofsX, ofsY) //只在全部点都验证过的清空下才进行修正
                                     return
                                 }
                             }
                         } else {
-                            if (next.invoke(ofsX+supplementalValueX, ofsY+supplementalValueY, false)) {
+                            if (next.invoke(
+                                    ofsX + supplementalValueX,
+                                    ofsY + supplementalValueY,
+                                    false
+                                )
+                            ) {
                                 //correctCoordinate(ofsX, ofsY)//只在全部点都验证过的清空下才进行修正
                                 return
                             }
                         }
                     }
                 }
-                next.invoke(0+supplementalValueX, 0+supplementalValueY, true)
+                next.invoke(0 + supplementalValueX, 0 + supplementalValueY, true)
             }
         }
     }

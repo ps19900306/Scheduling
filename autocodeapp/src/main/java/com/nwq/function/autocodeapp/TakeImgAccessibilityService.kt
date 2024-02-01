@@ -85,7 +85,7 @@ class TakeImgAccessibilityService : AccessibilityService() {
         GlobalScope.launch {
             delay(5000)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-
+                delay(5000)
                 takeScreenshot(
                     Display.DEFAULT_DISPLAY,
                     mainExecutor,
