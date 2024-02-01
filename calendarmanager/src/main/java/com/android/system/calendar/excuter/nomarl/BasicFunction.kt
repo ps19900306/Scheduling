@@ -146,7 +146,7 @@ abstract class BasicFunction(
                 if (hasSelect)
                     return true
                 if (en.isSystemSetBtnTask.check()) {
-                    en.systemSetBtnArea.c(repeatedClickInterval)
+                    en.systemSetBtnArea.c(en.isSystemSetBtnTask,repeatedClickInterval)
                 } else {
                     en.switchMainMenuBtnArea.c(repeatedClickInterval)
                 }

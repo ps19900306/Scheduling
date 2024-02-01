@@ -8178,7 +8178,7 @@ class StarWarEnvironment {
         pointList.add(PointRule(CoordinatePoint(1939, 850), colorRule1))
         pointList.add(PointRule(CoordinatePoint(1894, 833), colorRule1))
         ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            nErrorTolerance = pointList.size / 2
+            nErrorTolerance = pointList.size/2
         }
     }
 

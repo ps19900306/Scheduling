@@ -38,8 +38,12 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startOrigin() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
+            BangMerchantFunction(acService, en).startFunction()
             DailyGiftFunction(acService, en).startFunction()
             MountainsRiversPaintingFunction(acService, en).startFunction()
+            BangTaskFunction(acService, en).startFunction()
+            TreasureMapFunction(acService, en).startFunction()
+            XunLongFenJinFunction(acService, en).startFunction()
             // OriginFunction(acService).startTheProcess()
         }
     }
@@ -48,12 +52,21 @@ class MasterControl(acService: AccessibilityService) : TurnBaseController(acServ
     fun startDaily() {
         job?.cancel()
         job = GlobalScope.launch(Dispatchers.IO) {
-         //   DailyGiftFunction(acService, en).startFunction()
-         //
-            BangMerchantFunction(acService, en).startFunction()
-            BangTaskFunction(acService, en).startFunction()
-            TreasureMapFunction(acService, en).startFunction()
-            XunLongFenJinFunction(acService, en).startFunction()
+            for (i in 1..3) {
+                if (i != 1) {
+                    BangMerchantFunction(acService, en).let {
+                        it.switchRole(i)
+                        it.startFunction()
+                    }
+                } else {
+                    BangMerchantFunction(acService, en).startFunction()
+                    DailyGiftFunction(acService, en).startFunction()
+                    MountainsRiversPaintingFunction(acService, en).startFunction()
+                    BangTaskFunction(acService, en).startFunction()
+                    TreasureMapFunction(acService, en).startFunction()
+                    XunLongFenJinFunction(acService, en).startFunction()
+                }
+            }
         }
     }
 

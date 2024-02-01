@@ -21,7 +21,7 @@ class StatusRecorder(
 
     fun isOpenTrustThresholds(): Boolean {
         val result = if (lastStatus) {
-            return lastTrueCount >= trustThresholds
+             lastTrueCount >= trustThresholds
         } else {
             false
         }
@@ -31,7 +31,7 @@ class StatusRecorder(
 
     fun isCloseTrustThresholds(): Boolean {
         val result = if (!lastStatus) {
-            return lastfalseCount >= trustThresholds
+             lastfalseCount >= trustThresholds
         } else {
             false
         }
@@ -41,7 +41,7 @@ class StatusRecorder(
 
     fun isOpenErrorThresholds(): Boolean {
         val result = if (lastStatus) {
-            return lastTrueCount >= errorThreshold
+             lastTrueCount >= errorThreshold
         } else {
             false
         }
@@ -51,7 +51,7 @@ class StatusRecorder(
 
     fun isCloseErrorThresholds(): Boolean {
         val result = if (!lastStatus) {
-            return lastfalseCount >= errorThreshold
+             lastfalseCount >= errorThreshold
         } else {
             false
         }

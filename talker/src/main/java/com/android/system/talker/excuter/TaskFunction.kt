@@ -65,7 +65,7 @@ class TaskFunction(
     private val conditionStatus = 2
     private val restartGame = 4
     private val end = 8
-    private var nowStep = startAi
+    private var nowStep = conditionStatus
     private suspend fun conditionMonitoring() {
         while (runSwitch) {
             when (nowStep) {
@@ -112,7 +112,6 @@ class TaskFunction(
             updateInfo()
             //这个过程中只要有一个战斗因素判断成功就进入战斗
             if (canLockRecorder.isOpenTrustThresholds() || topLockTartRecorder.isOpenTrustThresholds()
-                || bottomDeviceOpenRecorder.isOpenTrustThresholds()
             ) {
                 nowStep = conditionStatus
                 return
@@ -199,21 +198,21 @@ class TaskFunction(
     }
 
 
-    private val isOpenAiRecorder = en.isOpenAiTask.toStatusRecorder(10, 60 * 30)
+    private val isOpenAiRecorder = en.isOpenAiTask.toStatusRecorder(10, 60)
 
+    //这里的Error用来判断卡主的
     private val isHasEysMenu = StatusRecorder("hasEysMenu", 5, 60 * 30) {
         en.isCloseEyeMenuT.check() || en.isOpenEyeMenuT.check()
     }
 
-    private val bottomDeviceOpenRecorder = StatusRecorder("bottomDevice", 10, 20) {
-        hasBottomDeviceOpen()
-    }
+
 
     private val openPositionMenuRecorder = en.isOpenPositionMenuT.toStatusRecorder(3, 30)
 
     private val openJiyuBigMenuRecorder = en.isOpenJiyuBigMenuTask.toStatusRecorder(10, 60)
 
     private val canLockRecorder = en.isCanLockTask.toStatusRecorder(5, 10)
+
 
 
     private suspend fun monitorAllStatuses() {
@@ -228,7 +227,7 @@ class TaskFunction(
             if (isHasEysMenu.isOpenTrustThresholds()) {//表示在外太空
                 if (isOpenAiRecorder.isOpenErrorThresholds() && openJiyuBigMenuRecorder.isCloseErrorThresholds()
                     && canLockRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
-                    && isHasEysMenu.isOpenErrorThresholds() && bottomDeviceOpenRecorder.isCloseErrorThresholds()
+                    && isHasEysMenu.isOpenErrorThresholds()
                 ) {
                     reportingError("卡住了")
                     return
@@ -247,7 +246,7 @@ class TaskFunction(
                 //这个是引力波
                 if (canLockRecorder.isCloseErrorThresholds() && topLockTartRecorder.isCloseErrorThresholds()
                     && isOpenAiRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
-                    && openJiyuBigMenuRecorder.isCloseTrustThresholds() && bottomDeviceOpenRecorder.isCloseTrustThresholds()
+                    && openJiyuBigMenuRecorder.isCloseTrustThresholds()
                 ) {
                     isOpenAiRecorder.clearUp()
                     en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
@@ -272,7 +271,6 @@ class TaskFunction(
 
     private suspend fun updateInfo() {
         topLockTartRecorder.updateInfo()
-        bottomDeviceOpenRecorder.updateInfo()
         openPositionMenuRecorder.updateInfo()
         openJiyuBigMenuRecorder.updateInfo()
         canLockRecorder.updateInfo()
