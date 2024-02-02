@@ -213,12 +213,12 @@ abstract class BaseFunctionControl(
     protected suspend fun openPositionMenu(): Boolean {
         if (en.isOpenPositionMenuT.check()) return true
         theOutCheck()
-        val result= optTaskOperation(
+        val result = optTaskOperation(
             pTask = en.isClosePositionMenuT,
             clickArea = en.openPositionArea,
             eTask = en.isOpenPositionMenuT
         )
-        if(result){
+        if (result) {
             delay(jumpClickInterval)
         }
         return result
@@ -946,14 +946,14 @@ abstract class BaseFunctionControl(
                             delay(clickInterval)
                             count = 40
                         } else {
-                            flag = false
+                            count = 3
                         }
                     }
                 } else {
                     en.leftDialogArea.c()
                 }
-            } else if (en.isHuoBigDialogTask.check() && !en.isOpenJiyuBigMenuTask.check() ) {
-                L.t("活动对话中")
+            } else if (en.isHuoBigDialogTask.check() && !en.isOpenChenNianLiMenuTask.check() && !en.isOpenJiyuBigMenuTask.check() && !en.isShowLeftDialogBox.check()) {
+                L.d("活动对话中")
                 count = 40
                 if (en.isJieShouHuoDongTask.check()) {
                     en.jieShouHuoDongArea.c()

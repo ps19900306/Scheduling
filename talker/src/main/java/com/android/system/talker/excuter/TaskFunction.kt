@@ -36,7 +36,7 @@ class TaskFunction(
 
 
     override suspend fun startFunction() {
-        L.i("$TAG startFunction")
+        L.d("$TAG startFunction")
         //先判断是不是新的一天需要做任务
         if (TimeUtils.isNewDay(taskDb.lastCompletionTime)) {
             var result = intoGame()
@@ -65,7 +65,7 @@ class TaskFunction(
     private val conditionStatus = 2
     private val restartGame = 4
     private val end = 8
-    private var nowStep = conditionStatus
+    private var nowStep =startAi
     private suspend fun conditionMonitoring() {
         while (runSwitch) {
             when (nowStep) {
@@ -94,8 +94,7 @@ class TaskFunction(
         theOutCheck()
         outSpaceStation()
         linQuLianLuo()
-        if(!en.isOpenAiTask.check())
-        {
+        if (!en.isOpenAiTask.check()) {
             en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
         }
         nowStep = conditionStatus
@@ -250,6 +249,7 @@ class TaskFunction(
                     && isOpenAiRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
                     && openJiyuBigMenuRecorder.isCloseTrustThresholds()
                 ) {
+                    linQuLianLuo()
                     isOpenAiRecorder.clearUp()
                     en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
                 }
@@ -288,16 +288,17 @@ class TaskFunction(
     private suspend fun updateByScan() {
         if (en.isScanTipBtnTask.check()) {
             en.scanTipArea.c(repeatedClickInterval)
-        }
-        if (en.isScanCompleteTask.check()) {
-            en.closeScanCompleteArea.c(en.isScanCompleteTask, repeatedClickInterval)
             lastCompleteScanTime = System.currentTimeMillis()
         }
-        if (topLockTartRecorder.isOpenTrustThresholds() && (System.currentTimeMillis() - lastCompleteScanTime < SetConstant.MINUTE)) {
+        if ((System.currentTimeMillis() - lastCompleteScanTime < SetConstant.MINUTE) && en.isScanCompleteTask.check()) {
+            en.closeScanCompleteArea.c(en.isScanCompleteTask, repeatedClickInterval)
+
+        }
+        if ((System.currentTimeMillis() - lastCompleteScanTime < 3 * SetConstant.MINUTE) && topLockTartRecorder.isOpenTrustThresholds()) {
             if (en.isShowLeftDialogBox.check()) {
-                en.leftDialogArea
+                en.leftDialogArea.c()
             } else if (en.isShowRightDialogBox.check()) {
-                en.rightDialogArea
+                en.rightDialogArea.c()
             }
         }
     }

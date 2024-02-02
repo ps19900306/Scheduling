@@ -14,14 +14,9 @@ class MultiImgTask(var list: Array<ImgTaskImpl1>?, var everyRevalidation: Boolea
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
         return if (everyRevalidation || containmentTask == null) {
             containmentTask = list?.find { it.verificationRule(bitmap) }
-            if (containmentTask != null) {
-                list = null
-                return true
-            } else {
-                return false
-            }
+            return containmentTask != null
         } else {
-            containmentTask!!.verificationRule(bitmap)
+            containmentTask?.verificationRule(bitmap)?:false
         }
     }
 

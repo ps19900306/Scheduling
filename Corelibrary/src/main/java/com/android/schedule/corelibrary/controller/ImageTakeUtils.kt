@@ -34,7 +34,7 @@ object ImageTakeUtils {
         if (width == 0 || height == 0)
             return null
         if (count >= maxImages) {
-            L.t("count >= maxImages")
+            L.d("count >= maxImages")
             mImageReader?.close()
             mVirtualDisplay?.release()
             createNewImageReader()

@@ -198,7 +198,7 @@ abstract class BaseController(
                 val buffer: ByteBuffer = image.planes[0].getBuffer()
                 val width = image.width
                 val height = image.height
-                L.t("whh0914 image width=$width, height=$height")
+                L.d("whh0914 image width=$width, height=$height")
                 val pixelStride: Int = image.planes[0].pixelStride
                 val rowStride: Int = image.planes[0].rowStride
                 val rowPadding = rowStride - pixelStride * width
