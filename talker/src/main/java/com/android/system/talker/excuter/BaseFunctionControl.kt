@@ -2,21 +2,11 @@ package com.android.system.talker.excuter
 
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Bitmap
-import android.text.TextUtils
 import com.android.schedule.corelibrary.SetConstant
-import com.android.schedule.corelibrary.area.CoordinateArea
 import com.android.schedule.corelibrary.click.ClickArea
-import com.android.schedule.corelibrary.click.SimpleClickUtils
-import com.android.schedule.corelibrary.click.SlidingArea
-import com.android.schedule.corelibrary.click.TwoFingerArea
 import com.android.schedule.corelibrary.controller.ClickSpeedControl
-import com.android.schedule.corelibrary.controller.StatusRecorder
 import com.android.schedule.corelibrary.controller.TurnBaseController
 import com.android.schedule.corelibrary.expand.isLandscape
-import com.android.schedule.corelibrary.img.img_rule.ImgTask
-import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
-import com.android.schedule.corelibrary.utils.ContextUtil
-import com.android.schedule.corelibrary.utils.FileUtils
 import com.android.schedule.corelibrary.utils.L
 import com.android.schedule.corelibrary.utils.NwqCallBack
 import com.android.schedule.corelibrary.utils.TimeUtils
@@ -28,7 +18,6 @@ import com.android.system.talker.enums.MenuType
 import com.android.system.talker.enums.ShipType
 import com.android.system.talker.enums.WarehouseType
 import kotlinx.coroutines.delay
-import kotlin.math.abs
 
 abstract class BaseFunctionControl(
     val userDb: UserDb,
@@ -172,7 +161,9 @@ abstract class BaseFunctionControl(
                 isClosePosition,
                 isHasEyeMenu,
                 isConfirmDialog,
-                isOpenPosition
+                isOneClickClaim,
+                isOpenPosition,
+                isOnlyOpenPosition
             )
             if (isInSpace.isOpenTrustThresholds()) {
                 return true
@@ -222,12 +213,15 @@ abstract class BaseFunctionControl(
     protected suspend fun openPositionMenu(): Boolean {
         if (en.isOpenPositionMenuT.check()) return true
         theOutCheck()
-        return optTaskOperation(
+        val result= optTaskOperation(
             pTask = en.isClosePositionMenuT,
             clickArea = en.openPositionArea,
             eTask = en.isOpenPositionMenuT
         )
-
+        if(result){
+            delay(jumpClickInterval)
+        }
+        return result
     }
 
     protected suspend fun theOutCheck(): Boolean {
@@ -239,7 +233,7 @@ abstract class BaseFunctionControl(
         clickSpeedControl.addUnit(en.isConfirmDialogTask, en.confirmDialogCancelArea)
         clickSpeedControl.addUnit(en.isCanCollectGiftT, en.closeCollectGiftArea)
         clickSpeedControl.addUnit(en.isOneClickClaimTask, en.closeOneClickArea)
-
+        clickSpeedControl.addUnit(en.isOpenHuodongBigMenuTask, en.closeBigMenuArea)
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -406,42 +400,33 @@ abstract class BaseFunctionControl(
                 when (index) {
                     MenuType.WAREHOUSE -> {
                         en.openWarehouseMenuArea.c()
-                        delay(jumpClickInterval)
                     }
 
                     MenuType.TASK -> {
                         en.openTaskMenuArea.c()
-                        delay(jumpClickInterval)
                     }
 
                     MenuType.PLANETARY_MINE -> {
                         en.openPlanetaryMenuArea.c()
-                        delay(jumpClickInterval)
                     }
 
                     MenuType.AGREEMENT -> {
                         en.openAgreementMenuArea.c()
-                        delay(jumpClickInterval)
                     }
 
                     MenuType.GAME_ACTIVITY -> {
                         en.openActivityMenuArea.c()
-                        delay(jumpClickInterval)
                     }
                 }
             } else {
                 if (userDb.shortcutMenu1 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(0).c()
-                    delay(jumpClickInterval)
                 } else if (userDb.shortcutMenu2 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(1).c()
-                    delay(jumpClickInterval)
                 } else if (userDb.shortcutMenu3 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(2).c()
-                    delay(jumpClickInterval)
                 } else if (userDb.shortcutMenu4 == index && hasPositionMenu()) {
                     en.getQuickMenuArea(3).c()
-                    delay(jumpClickInterval)
                 } else {
                     en.openMenuMenuArea.c()
                 }
@@ -553,7 +538,7 @@ abstract class BaseFunctionControl(
         var flag = true
         var count = 6
         while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(screenshotInterval)) {
+            if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
                 return false
             }
@@ -967,7 +952,7 @@ abstract class BaseFunctionControl(
                 } else {
                     en.leftDialogArea.c()
                 }
-            } else if (en.isHuoBigDialogTask.check() && !en.isOpenJiyuBigMenuTask.check()) {
+            } else if (en.isHuoBigDialogTask.check() && !en.isOpenJiyuBigMenuTask.check() ) {
                 L.t("活动对话中")
                 count = 40
                 if (en.isJieShouHuoDongTask.check()) {

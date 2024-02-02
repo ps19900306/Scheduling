@@ -9,16 +9,15 @@ import android.media.Image
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.os.Build
-import android.util.Log
+
 import android.view.Display
-import androidx.annotation.RequiresApi
 import com.android.schedule.corelibrary.expand.isLandscape
 import com.android.schedule.corelibrary.expand.isVertical
 import com.android.schedule.corelibrary.img.img_rule.BasicImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTaskImpl1
 import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
-import com.android.schedule.corelibrary.img.img_rule.MultiImgContainmentTask
+import com.android.schedule.corelibrary.img.img_rule.MultiImgTask
 import com.android.schedule.corelibrary.utils.L
 import kotlinx.coroutines.delay
 import java.nio.ByteBuffer
@@ -159,7 +158,7 @@ abstract class BaseController(
     }
 
 
-    fun MultiImgContainmentTask.toStatusRecorder(
+    fun MultiImgTask.toStatusRecorder(
         trustThresholds: Int = 3,
         errorThreshold: Int = trustThresholds * 3
     ): StatusRecorder {

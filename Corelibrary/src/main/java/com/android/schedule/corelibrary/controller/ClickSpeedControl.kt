@@ -5,7 +5,7 @@ import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.click.ClickTask
 import com.android.schedule.corelibrary.img.img_rule.ImgTask
 import com.android.schedule.corelibrary.img.img_rule.MultiFindImgTask
-import com.android.schedule.corelibrary.img.img_rule.MultiImgContainmentTask
+import com.android.schedule.corelibrary.img.img_rule.MultiImgTask
 import com.android.schedule.corelibrary.utils.L
 
 class ClickSpeedControl {
@@ -17,7 +17,7 @@ class ClickSpeedControl {
         list.add(ClickControlUnit(task, area, singleFlag))
     }
 
-    fun addUnit(tasks: MultiImgContainmentTask, area: ClickArea, singleFlag: Boolean = false) {
+    fun addUnit(tasks: MultiImgTask, area: ClickArea, singleFlag: Boolean = false) {
         tasks.list?.forEach { task->
             list.add(ClickControlUnit(task, area, singleFlag))
         }

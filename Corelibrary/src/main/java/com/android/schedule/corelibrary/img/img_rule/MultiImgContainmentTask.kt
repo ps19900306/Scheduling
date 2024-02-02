@@ -9,12 +9,13 @@ create time: 2023/7/4 11:07
 Function description:
 这里主要是对文字识别，不同的可能不一样，但是确定后又不会变，这样减少一些不必要的
  */
-class MultiImgContainmentTask(var list: Array<ImgTaskImpl1>?) : BasicImgTask() {
+@Deprecated("请用MultiImgTask")
+class MultiImgContainmentTask(var list: Array<ImgTaskImpl1>?, var everyRevalidation:Boolean =true) : BasicImgTask() {
 
     var containmentTask: ImgTask? = null
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
-        return if (containmentTask == null) {
+        return if (everyRevalidation || containmentTask == null) {
             containmentTask = list?.find { it.verificationRule(bitmap) }
             if (containmentTask != null) {
                 list = null

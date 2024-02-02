@@ -78,7 +78,7 @@ class TaskFunction(
                 }
 
                 restartGame -> {
-                   // restartGame()
+                    // restartGame()
                 }
 
                 end -> {
@@ -94,7 +94,10 @@ class TaskFunction(
         theOutCheck()
         outSpaceStation()
         linQuLianLuo()
-        en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
+        if(!en.isOpenAiTask.check())
+        {
+            en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
+        }
         nowStep = conditionStatus
     }
 
@@ -193,7 +196,7 @@ class TaskFunction(
     }
 
 
-    private val topLockTartRecorder = StatusRecorder("hasTopLockTart", 5, 30) {
+    private val topLockTartRecorder = StatusRecorder("hasTopLockTart", 3, 30) {
         hasTopLockTart()
     }
 
@@ -206,13 +209,11 @@ class TaskFunction(
     }
 
 
-
     private val openPositionMenuRecorder = en.isOpenPositionMenuT.toStatusRecorder(3, 30)
 
     private val openJiyuBigMenuRecorder = en.isOpenJiyuBigMenuTask.toStatusRecorder(10, 60)
 
     private val canLockRecorder = en.isCanLockTask.toStatusRecorder(5, 10)
-
 
 
     private suspend fun monitorAllStatuses() {
@@ -223,6 +224,7 @@ class TaskFunction(
                 return
             }
             updateInfo()
+            updateByScan()
 
             if (isHasEysMenu.isOpenTrustThresholds()) {//表示在外太空
                 if (isOpenAiRecorder.isOpenErrorThresholds() && openJiyuBigMenuRecorder.isCloseErrorThresholds()
@@ -253,7 +255,8 @@ class TaskFunction(
                 }
 
 
-            } else if (openJiyuBigMenuRecorder.isOpenErrorThresholds()) {//在接取界面
+            } else if (openJiyuBigMenuRecorder.isOpenTrustThresholds()) {//在接取界面
+                L.d("接取界面超時")
                 //这个是用于判断无任务导致的关闭执行逻辑的
                 isOpenAiRecorder.clearUp()
                 if (en.isCompleteAllTask.check()) {//这里已经全部执行完毕
@@ -264,6 +267,8 @@ class TaskFunction(
                     nowStep = startAi
                     return
                 }
+            } else if (isHasEysMenu.isCloseErrorThresholds() && openJiyuBigMenuRecorder.isCloseTrustThresholds()) {
+                theOutCheck()
             }
         }
     }
@@ -276,6 +281,25 @@ class TaskFunction(
         canLockRecorder.updateInfo()
         isOpenAiRecorder.updateInfo()
         isHasEysMenu.updateInfo()
+    }
+
+
+    var lastCompleteScanTime = 0L
+    private suspend fun updateByScan() {
+        if (en.isScanTipBtnTask.check()) {
+            en.scanTipArea.c(repeatedClickInterval)
+        }
+        if (en.isScanCompleteTask.check()) {
+            en.closeScanCompleteArea.c(en.isScanCompleteTask, repeatedClickInterval)
+            lastCompleteScanTime = System.currentTimeMillis()
+        }
+        if (topLockTartRecorder.isOpenTrustThresholds() && (System.currentTimeMillis() - lastCompleteScanTime < SetConstant.MINUTE)) {
+            if (en.isShowLeftDialogBox.check()) {
+                en.leftDialogArea
+            } else if (en.isShowRightDialogBox.check()) {
+                en.rightDialogArea
+            }
+        }
     }
 }
 
