@@ -93,7 +93,6 @@ class TaskFunction(
         L.d("开启AI")
         theOutCheck()
         outSpaceStation()
-        linQuLianLuo()
         if (!en.isOpenAiTask.check()) {
             en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
         }
@@ -223,7 +222,7 @@ class TaskFunction(
                 return
             }
             updateInfo()
-            updateByScan()
+         //   updateByScan()
 
             if (isHasEysMenu.isOpenTrustThresholds()) {//表示在外太空
                 if (isOpenAiRecorder.isOpenErrorThresholds() && openJiyuBigMenuRecorder.isCloseErrorThresholds()
@@ -249,7 +248,6 @@ class TaskFunction(
                     && isOpenAiRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
                     && openJiyuBigMenuRecorder.isCloseTrustThresholds()
                 ) {
-                    linQuLianLuo()
                     isOpenAiRecorder.clearUp()
                     en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
                 }
@@ -284,24 +282,24 @@ class TaskFunction(
     }
 
 
-    var lastCompleteScanTime = 0L
-    private suspend fun updateByScan() {
-        if (en.isScanTipBtnTask.check()) {
-            en.scanTipArea.c(repeatedClickInterval)
-            lastCompleteScanTime = System.currentTimeMillis()
-        }
-        if ((System.currentTimeMillis() - lastCompleteScanTime < SetConstant.MINUTE) && en.isScanCompleteTask.check()) {
-            en.closeScanCompleteArea.c(en.isScanCompleteTask, repeatedClickInterval)
-
-        }
-        if ((System.currentTimeMillis() - lastCompleteScanTime < 3 * SetConstant.MINUTE) && topLockTartRecorder.isOpenTrustThresholds()) {
-            if (en.isShowLeftDialogBox.check()) {
-                en.leftDialogArea.c()
-            } else if (en.isShowRightDialogBox.check()) {
-                en.rightDialogArea.c()
-            }
-        }
-    }
+//    var lastCompleteScanTime = 0L
+//    private suspend fun updateByScan() {
+//        if (en.isScanTipBtnTask.check()) {
+//            en.scanTipArea.c(repeatedClickInterval)
+//            lastCompleteScanTime = System.currentTimeMillis()
+//        }
+//        if ((System.currentTimeMillis() - lastCompleteScanTime < SetConstant.MINUTE) && en.isScanCompleteTask.check()) {
+//            en.closeScanCompleteArea.c(en.isScanCompleteTask, repeatedClickInterval)
+//            lastCompleteScanTime = System.currentTimeMillis()
+//        }
+//        if ((System.currentTimeMillis() - lastCompleteScanTime < SetConstant.MINUTE) && topLockTartRecorder.isOpenTrustThresholds()) {
+//            if (en.isShowLeftDialogBox.check()) {
+//                en.leftDialogArea.c()
+//            } else if (en.isShowRightDialogBox.check()) {
+//                en.rightDialogArea.c()
+//            }
+//        }
+//    }
 }
 
 

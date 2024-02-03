@@ -78,7 +78,7 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.characters_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.all_feature_extraction, BUTTON_TYPE),
-            FunctionItemInfo(R.string.shadow_feature_extraction, BUTTON_TYPE),
+           // FunctionItemInfo(R.string.shadow_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.rich_color_image_recognition, BUTTON_TYPE),
             FunctionItemInfo(R.string.calculate_space, BUTTON_TYPE),
 
@@ -97,10 +97,11 @@ class MainActivity() : AppCompatActivity() {
             )
     }
 
+    lateinit var controller:WindowInsetsControllerCompat
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
         controller.hide(WindowInsetsCompat.Type.navigationBars())
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -231,6 +232,13 @@ class MainActivity() : AppCompatActivity() {
             }
         }
 
+
+
+    override fun onResume() {
+        super.onResume()
+        controller.hide(WindowInsetsCompat.Type.statusBars()) // 状态栏隐藏
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
+    }
 
     private var mMediaProjectionManager: MediaProjectionManager? = null
     private val REQUEST_MEDIA_PROJECTION = 124
@@ -690,6 +698,8 @@ class MainActivity() : AppCompatActivity() {
             L.t("发布截图指令 ImgOpt.takeBitmap==null")
         }
     }
+
+
 
 }
 

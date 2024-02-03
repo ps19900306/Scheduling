@@ -9266,7 +9266,7 @@ class StarWarEnvironment {
         list.add(PointRule(CoordinatePoint(1220, 395), ColorRuleRatioImpl.getSimple(129,152,148))
             // sequenceNumber:0 blockNumber: 0  positionType:1
         )
-        val correctPositionModel =CorrectPositionModel(list, tag, 50, 50, true)
+        val correctPositionModel =CorrectPositionModel(list, tag, 100, 100, true)
         val pointList = mutableListOf<IPR>()
         pointList.add(PointRule(CoordinatePoint(1217, 398), ColorRuleRatioImpl.getSimple(132,160,155))
             // sequenceNumber:5 blockNumber: 0  positionType:1

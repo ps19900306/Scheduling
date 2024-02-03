@@ -144,7 +144,7 @@ abstract class BaseFunctionControl(
         val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3, 60)
         val isConfirmDialog = en.isConfirmDialogTask.toStatusRecorder(3)
         val isOneClickClaim = en.isOneClickClaimTask.toStatusRecorder(3)//这个是收菜的
-        val isOnlyOpenPosition = en.isOnlyOpenPositionMenuTask.toStatusRecorder(5)//这里表表示并没有开始导航
+        val isOnlyOpenPosition = en.isOnlyOpenPositionMenuTask.toStatusRecorder(30)//这里表表示并没有开始导航
 
 
         var flag = true
@@ -179,6 +179,7 @@ abstract class BaseFunctionControl(
             } else if (isClosePosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
                 clickPositionMenu(position)
             } else if (isOnlyOpenPosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
+                isOnlyOpenPosition.clearUp()
                 if (clickArea == null) {
                     clickArea = en.getPositionArea(position)
                 }
