@@ -11,6 +11,7 @@ import com.android.schedule.corelibrary.click.ClickArea
 import com.android.schedule.corelibrary.img.point_rule.IPR
 import com.android.schedule.corelibrary.img.point_rule.PointRule
 import com.android.schedule.corelibrary.utils.L
+import kotlin.math.abs
 
 
 /**
@@ -28,7 +29,7 @@ open class FindImgTask(
     private var correctArea = false
     protected var findImgPoint: CoordinatePoint? = null //找到图片后的点 这个坐标是基于整个图片的
 
-    fun getFindPoint():CoordinatePoint?{
+    fun getFindPoint(): CoordinatePoint? {
         return findImgPoint
     }
 
@@ -42,45 +43,60 @@ open class FindImgTask(
 
     //这里是为了修正寻找的区域防止下标越界
     fun correctArea(imgWidth: Int, imgHeight: Int) {
-        if (!correctArea) {
-            correctArea = true
-            var maxX = 0
-            var maxY = 0
-            var minX = Int.MAX_VALUE
-            var minY = Int.MAX_VALUE
-            var firstX = iprList[0].getCoordinatePoint().xI
-            var firstY = iprList[0].getCoordinatePoint().yI
-            iprList.forEach {
-                if (it.getCoordinatePoint().xI > maxX) {
-                    maxX = it.getCoordinatePoint().xI
-                }
-                if (it.getCoordinatePoint().xI < minX) {
-                    minX = it.getCoordinatePoint().xI
-                }
-                if (it.getCoordinatePoint().yI > maxY) {
-                    maxY = it.getCoordinatePoint().yI
-                }
-                if (it.getCoordinatePoint().yI < minY) {
-                    minY = it.getCoordinatePoint().yI
-                }
+        correctArea = true
+        var maxX = 0
+        var maxY = 0
+        var minX = Int.MAX_VALUE
+        var minY = Int.MAX_VALUE
+        var firstX = pr.getCoordinatePoint().xI
+        var firstY = pr.getCoordinatePoint().yI
+        iprList.forEach {
+            if (it.getCoordinatePoint().xI > maxX) {
+                maxX = it.getCoordinatePoint().xI
             }
-            val minOfx = findArea.x - (firstX - minX)
-            if (minOfx < 0) {
-                findArea.x -= minOfx
+            if (it.getCoordinatePoint().xI < minX) {
+                minX = it.getCoordinatePoint().xI
             }
-            val maxOfx = findArea.x + findArea.width + (maxX - firstX)
-            if (maxOfx > imgWidth) {
-                findArea.width -= maxOfx - imgWidth
+            if (it.getCoordinatePoint().yI > maxY) {
+                maxY = it.getCoordinatePoint().yI
             }
-            val minOfy = findArea.y - (firstY - minY)
-            if (minOfy < 0) {
-                findArea.y -= minOfy
-            }
-            val maxOfy = findArea.y + findArea.height + (maxY - firstY)
-            if (maxOfy > imgHeight) {
-                findArea.height -= maxOfy - imgHeight
+            if (it.getCoordinatePoint().yI < minY) {
+                minY = it.getCoordinatePoint().yI
             }
         }
+        val minOfx = minX + (findArea.x - firstX)
+
+        val decreaseX = if (minOfx < 0) {
+            abs(minOfx)
+        } else {
+            0
+        }
+
+        val maxOfx = maxX + (findArea.x + findArea.width - firstX)
+        val decreaseWith = if (maxOfx > imgWidth) {
+            maxOfx - imgWidth
+        } else {
+            0
+        }
+
+        val minOfy = minY + (findArea.y - firstY)
+        val decreaseY = if (minOfy < 0) {
+            abs(minOfy)
+        } else {
+            0
+        }
+
+        val maxOfy = maxY + (findArea.y + findArea.height - firstY)
+        val decreaseHeight = if (maxOfy > imgHeight) {
+            maxOfy - imgHeight
+        } else {
+            0
+        }
+
+        findArea.x = findArea.x + decreaseX
+        findArea.width = findArea.width - decreaseX - decreaseWith
+        findArea.y = findArea.y - decreaseY
+        findArea.height = findArea.height - decreaseY - decreaseHeight
     }
 
     override suspend fun verificationRule(bitmap: Bitmap?): Boolean {
@@ -94,8 +110,8 @@ open class FindImgTask(
 
     protected fun findImgByColor(bitmap: Bitmap, area: CoordinateArea): Boolean {
         //这里修正图片是为了保证不月觉
-//        if(!correctArea)
-//            correctArea(bitmap.width,bitmap.height)
+        if (!correctArea)
+            correctArea(bitmap.width, bitmap.height)
         val pixels = IntArray(area.width * area.height)
         bitmap.getPixels(
             pixels,

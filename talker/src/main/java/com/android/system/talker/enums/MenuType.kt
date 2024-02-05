@@ -9,6 +9,7 @@ import androidx.annotation.IntDef
     MenuType.PLANETARY_MINE,
     MenuType.AGREEMENT,
     MenuType.GAME_ACTIVITY,
+    MenuType.SHOPPING_CENTRE,
 )
 annotation class MenuType {
 
@@ -19,5 +20,6 @@ annotation class MenuType {
         const val PLANETARY_MINE = 2 //  行星矿
         const val AGREEMENT = 3 //合作协议
         const val GAME_ACTIVITY = 4 //游戏活动
+        const val SHOPPING_CENTRE = 5 //游戏活动
     }
 }

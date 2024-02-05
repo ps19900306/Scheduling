@@ -32,7 +32,6 @@ class UserFunction(
         L.d("$TAG 进入游戏成功")
         var isInSpaceStation = false
 
-
         //这个是每日活动的
         if (userDb.activeGiftSwitch && TimeUtils.isNewMouth(userDb.activeGiftTime)) {
             L.d("$TAG 进入活动礼物领取")
@@ -63,7 +62,15 @@ class UserFunction(
                 userDb.agreementGiftTime = System.currentTimeMillis()
             }
             theOutCheck()
+
+            //这里每周买紫水晶
+            if (ensureOpenBigMenuArea(MenuType.SHOPPING_CENTRE)) {
+                buyZiShuiJing()
+                L.d("购买紫水晶")
+            }
+            theOutCheck()
         }
+
 
         if (en.isClosePositionMenuT.check() && userDb.dailyGiftSwitch && TimeUtils.isNewDay(userDb.dailyGiftTime)) {
             L.d("$TAG 进入每日特惠礼物领取")
@@ -73,6 +80,76 @@ class UserFunction(
         }
 
         end()
+    }
+
+    private suspend fun buyZiShuiJing() {
+        //打開熱賣組合
+        var result = optTaskOperation(
+            clickArea = en.reMaiZuHeArea, eTask = en.isReMaiZuHeTask
+        )
+        if (!result) {
+            L.d("打開熱賣組合失败")
+            return
+        }
+        //大開推薦
+        result = optTaskOperation(  pTask = en.isTuiJianGoodTask,
+            clickArea = en.tuiJianGoodArea, eTask = en.isOpenTuiJianMenuTask
+        )
+        if (!result) {
+            L.d("打開推薦失败")
+            return
+        }
+
+        var flag = true
+        var count = 40
+        var hasClick = false
+        while (flag && count > 0 && runSwitch) {
+            if (!taskScreenL(screenshotIntervalF)) {
+                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+                return
+            }
+            if (en.isOpenShopCenterTask.check()) {
+                L.d("isOpenShopCenterTask")
+                if (en.isGetAlreadyBoughtGoodTask.check()) {
+                    L.d("isGetAlreadyBoughtGoodTask")
+                    en.getAlreadyBoughtGoodArea.c()
+                    delay(clickInterval)
+                    en.getAlreadyBoughtGood2Area.c()
+                    delay(clickInterval)
+                    en.getAlreadyBoughtGood2Area.c()
+                    continue
+                }
+                if (!hasClick) {
+                    L.d("!hasClick")
+                    if (en.isZiJinDuiItemTask.check()) {
+                        L.d("isZiJinDuiItemTask")
+                        en.ziJinDuiItemArea.c(en.isZiJinDuiItemTask, repeatedClickInterval)
+                    } else if (count % 3 == 0) {
+                        L.d("count % 3 == 0")
+                        en.ziJinDuiItemSlidingArea.c()
+                    }
+                } else {
+                    en.closeBigMenuArea.c()
+                    flag = false
+                }
+            } else if (en.isGoodContentMenuTask.check()) {
+                count = count.coerceAtMost(8)
+                en.setGoodNumberArea.c(repeatedClickInterval)
+            } else if (en.isBuySetNumberMenuTask.check()) {
+                count = count.coerceAtMost(4)
+                en.buySetNumberMaxArea.c()
+                delay(clickInterval)
+                en.buySetNumberEnsureArea.c()
+                delay(clickInterval)
+                en.buyCostIskArea.c()
+                delay(clickInterval)
+                en.confirmDialogEnsureArea.c()
+                hasClick = true
+                delay(jumpClickInterval)
+            }
+            count--
+        }
+
     }
 
 

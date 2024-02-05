@@ -137,14 +137,15 @@ abstract class BaseFunctionControl(
 
 
     suspend fun returnSpaceStation(position: Int): Boolean {
-        val isInSpace = en.isInSpaceStationT.toStatusRecorder(3)
+        val isInSpace = en.isInSpaceStationT.toStatusRecorder(1, 5)
         val isOpenBigMenu = en.isOpenBigMenuT.toStatusRecorder(5)
         val isClosePosition = en.isClosePositionMenuT.toStatusRecorder(5, 20)
-        val isOpenPosition = en.isOpenPositionMenuT.toStatusRecorder(30, 80)
-        val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(3, 60)
+        val isOpenPosition = en.isOpenPositionMenuT.toStatusRecorder(1)
+        val isHasEyeMenu = en.isHasEyeMenuMT.toStatusRecorder(1, 3)
         val isConfirmDialog = en.isConfirmDialogTask.toStatusRecorder(3)
         val isOneClickClaim = en.isOneClickClaimTask.toStatusRecorder(3)//这个是收菜的
         val isOnlyOpenPosition = en.isOnlyOpenPositionMenuTask.toStatusRecorder(30)//这里表表示并没有开始导航
+        val isSailing = en.isSailingT.toStatusRecorder(1, 100)
 
 
         var flag = true
@@ -163,11 +164,47 @@ abstract class BaseFunctionControl(
                 isConfirmDialog,
                 isOneClickClaim,
                 isOpenPosition,
-                isOnlyOpenPosition
+                isOnlyOpenPosition,
+                isSailing
             )
+
+
             if (isInSpace.isOpenTrustThresholds()) {
-                return true
+                if (isInSpace.isOpenErrorThresholds()) {
+                    return true
+                }
+            } else if (isHasEyeMenu.isOpenTrustThresholds()) {
+                if (isOpenPosition.isOpenTrustThresholds()) {
+                    if (isSailing.isOpenTrustThresholds()) {
+                        //正在。。。
+                    } else if (isOnlyOpenPosition.isOpenTrustThresholds()) {//打开了菜单但是没有进行导航
+                        isOnlyOpenPosition.clearUp()
+                        if (en.isOpenRolePositionMenuTask.check()) {
+                            if (clickArea == null) {
+                                clickArea = en.getPositionArea(position)
+                            }
+                            clickArea.c(SetConstant.MINUTE)
+                        } else {
+                            en.openPositionArea.c(SetConstant.MINUTE)
+                        }
+                    }
+                } else if (isClosePosition.isOpenTrustThresholds()) {
+                    clickPositionMenu(position)
+                    isClosePosition.clearUp()
+                }
+            } else if (isConfirmDialog.isOpenTrustThresholds()) {
+                isConfirmDialog.clearUp()
+                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask, repeatedClickInterval)
+            } else if (isOneClickClaim.isOpenTrustThresholds()) {
+                isOneClickClaim.clearUp()
+                en.closeOneClickArea.c(en.isOneClickClaimTask, repeatedClickInterval)
+            } else if (isOpenBigMenu.isOpenTrustThresholds()) {
+                isOpenBigMenu.clearUp()
+                en.closeBigMenuArea.c()
             }
+            count--
+
+
 
 
             if (isConfirmDialog.isOpenTrustThresholds()) {
@@ -191,7 +228,7 @@ abstract class BaseFunctionControl(
                 isOpenPosition.clearUp()
                 clickArea.c(SetConstant.MINUTE)
             }
-            count--
+
         }
 
         if (flag) {
@@ -221,7 +258,11 @@ abstract class BaseFunctionControl(
         )
         if (result) {
             delay(jumpClickInterval)
+        } else {
+            return false
         }
+
+
         return result
     }
 
@@ -235,6 +276,8 @@ abstract class BaseFunctionControl(
         clickSpeedControl.addUnit(en.isCanCollectGiftT, en.closeCollectGiftArea)
         clickSpeedControl.addUnit(en.isOneClickClaimTask, en.closeOneClickArea)
         clickSpeedControl.addUnit(en.isOpenHuodongBigMenuTask, en.closeBigMenuArea)
+        clickSpeedControl.addUnit(en.isGoodContentMenuTask, en.closeGoodNumberArea)
+
         while (flag && count > 0 && runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -396,6 +439,14 @@ abstract class BaseFunctionControl(
                         }
                     }
 
+                    MenuType.SHOPPING_CENTRE -> {
+                        if (en.isOpenShopCenterTask.check()) {
+                            flag = false
+                        } else {
+                            en.closeBigMenuArea.c()
+                        }
+                    }
+
                 }
             } else if (en.isOpenMenuMenu.check()) {//这里点开了打菜单
                 when (index) {
@@ -417,6 +468,10 @@ abstract class BaseFunctionControl(
 
                     MenuType.GAME_ACTIVITY -> {
                         en.openActivityMenuArea.c()
+                    }
+
+                    MenuType.SHOPPING_CENTRE -> {
+                        en.openShopCenterMenuArea.c()
                     }
                 }
             } else {

@@ -20,13 +20,8 @@ class PointRule(val point: CoordinatePoint, val rule: ColorIdentificationRule) :
 
 
     override fun checkIpr(bitmap: Bitmap, offsetX: Int, offsetY: Int): Boolean {
-//        if (point.xI + offsetX < bitmap.width || point.yI + offsetY < bitmap.height) {
-//            L.d("圖片不合規")
-//            return false
-//        }
         val intColor = bitmap.getPixel(point.xI + offsetX, point.yI + offsetY)
-        //    Timber.d("x:${point.xI} y:${point.yI}  offsetX:$offsetX  offsetY:$offsetY red:${intColor.red} green:${intColor.green}  blue:${intColor.blue}");
-        return rule.optInt(intColor)
+       return rule.optInt(intColor)
     }
 
 }
