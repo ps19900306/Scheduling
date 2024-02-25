@@ -946,8 +946,7 @@ class StarWarEnvironment {
         pointList.add(PointRule(CoordinatePoint(139, 305), ColorRuleRatioImpl.getSimple(163,180,174))
             // sequenceNumber:23 blockNumber: 1  positionType:1
         )
-        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            nErrorTolerance=1 }
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
     val isOnlyOpenPositionMenuTask by lazy {
@@ -987,8 +986,7 @@ class StarWarEnvironment {
         )
         pointList.add(TwoPointRule(CoordinatePoint(143, 285),CoordinatePoint(143, 282), CompareDifferenceRuleImpl.getSimple(20,30,30)) // sequenceNumber:21sequenceNumber blockNumber: $0  positionType:$0
         )
-        ImgTaskImpl1(pointList, tag, correctPositionModel).apply {
-            nErrorTolerance=1 }
+        ImgTaskImpl1(pointList, tag, correctPositionModel)
     }
 
 

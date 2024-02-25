@@ -213,7 +213,7 @@ class TaskFunction(
 
     private val canLockRecorder = en.isCanLockTask.toStatusRecorder(5, 10)
 
-
+    private val inSpaceStation = en.isInSpaceStationT.toStatusRecorder(5, 10)
     private suspend fun monitorAllStatuses() {
         L.d("monitorAllStatuses")
         while (runSwitch) {
@@ -251,9 +251,7 @@ class TaskFunction(
                     isOpenAiRecorder.clearUp()
                     en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
                 }
-
-
-            } else if (openJiyuBigMenuRecorder.isOpenTrustThresholds()) {//在接取界面
+            } else if (openJiyuBigMenuRecorder.isOpenErrorThresholds()) {//在接取界面
                 L.d("接取界面超時")
                 //这个是用于判断无任务导致的关闭执行逻辑的
                 isOpenAiRecorder.clearUp()
@@ -267,6 +265,9 @@ class TaskFunction(
                 }
             } else if (isHasEysMenu.isCloseErrorThresholds() && openJiyuBigMenuRecorder.isCloseTrustThresholds()) {
                 theOutCheck()
+            }else if(inSpaceStation.isOpenErrorThresholds()){
+                nowStep = startAi
+                return
             }
         }
     }
@@ -279,6 +280,7 @@ class TaskFunction(
         canLockRecorder.updateInfo()
         isOpenAiRecorder.updateInfo()
         isHasEysMenu.updateInfo()
+        inSpaceStation.updateInfo()
     }
 
 

@@ -203,32 +203,6 @@ abstract class BaseFunctionControl(
                 en.closeBigMenuArea.c()
             }
             count--
-
-
-
-
-            if (isConfirmDialog.isOpenTrustThresholds()) {
-                en.confirmDialogEnsureArea.c(en.isConfirmDialogTask, repeatedClickInterval)
-            } else if (isOneClickClaim.isOpenTrustThresholds()) {
-                en.closeOneClickArea.c(en.isOneClickClaimTask, repeatedClickInterval)
-            } else if (isOpenBigMenu.isOpenTrustThresholds()) {
-                en.closeBigMenuArea.c(repeatedClickInterval)
-            } else if (isClosePosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
-                clickPositionMenu(position)
-            } else if (isOnlyOpenPosition.isOpenTrustThresholds() && isHasEyeMenu.isOpenTrustThresholds()) {
-                isOnlyOpenPosition.clearUp()
-                if (clickArea == null) {
-                    clickArea = en.getPositionArea(position)
-                }
-                clickArea.c(SetConstant.MINUTE)
-            } else if (isOpenPosition.isOpenErrorThresholds() && isHasEyeMenu.isOpenErrorThresholds()) {
-                if (clickArea == null) {
-                    clickArea = en.getPositionArea(position)
-                }
-                isOpenPosition.clearUp()
-                clickArea.c(SetConstant.MINUTE)
-            }
-
         }
 
         if (flag) {
@@ -840,6 +814,7 @@ abstract class BaseFunctionControl(
                 runSwitch = false
                 return false
             }
+
             if (en.isInSpaceStationT.check()) {
                 if (hasClickExplosion) {
                     flag = false
@@ -847,6 +822,8 @@ abstract class BaseFunctionControl(
                     en.outSpaceArea.c()
                     delay(tripleClickInterval)
                 }
+            } else if(en.isOpenBigMenuT.check()){
+                en.closeBigMenuArea.c(repeatedClickInterval)
             } else if (isInSpace()) {//这里判断是在太空中
                 if (!hasOpenShipVolume) {
                     hasOpenShipVolume = true
@@ -910,6 +887,8 @@ abstract class BaseFunctionControl(
                     en.cloneCenterSlide.c()
                     delay(jumpClickInterval)
                 }
+            }else if(hasClickClone && en.isOpenBigMenuT.check()){
+                en.closeBigMenuArea.c(repeatedClickInterval)
             } else if (en.isOpenCloneMenuTask.check()) {
                 if (position <= 2) {
                     en.getCloneClickArea(position).c()
@@ -970,64 +949,64 @@ abstract class BaseFunctionControl(
     }
 
 
-    var lastLianLuoTime = 0L;
-
-    //水龙年的l
-    suspend fun linQuLianLuo() {
-        if (System.currentTimeMillis() - lastLianLuoTime < SetConstant.Hour) {
-            return
-        }
-        lastLianLuoTime = System.currentTimeMillis()
-        var flag = true
-        var count = 20
-        val clickSpeedControl = ClickSpeedControl()
-        clickSpeedControl.maxCount = 1
-        clickSpeedControl.addUnit(en.isJieShouTask, en.jieShouArea)
-        clickSpeedControl.addUnit(en.isShowLeftDialogBox, en.leftDialogArea)
-        clickSpeedControl.addUnit(en.isShowRightDialogBox, en.rightDialogArea)
-        clickSpeedControl.addUnit(en.isConfirmDialogTask, en.confirmDialogCancelArea)
-        clickSpeedControl.addUnit(en.findLianLuoAnBtnTask, en.lianLuoAnBtnArea)
-        clickSpeedControl.addUnit(en.isOpenJiyuBigMenuTask, en.closeBigMenuArea)
-        clickSpeedControl.addUnit(en.isJieShouHuoDongTask, en.jieShouHuoDongArea)
-
-        while (flag && count > 0 && runSwitch) {
-            if (!taskScreenL(screenshotIntervalF)) {
-                reportingError(ABNORMAL_SCREENO_ORIENTATION)
-            }
-            if (hasIntoGame()) {
-                if (en.isHasGiftBtnTask.check()) {
-                    if (ensureOpenActivityType(ActivityType.CHENG_NIAN_LI)) {
-                        if (en.findLianLuoAnBtnTask.check()) {
-                            en.lianLuoAnBtnArea.c(en.findLianLuoAnBtnTask)
-                            delay(clickInterval)
-                            count = 40
-                        } else {
-                            count = 3
-                        }
-                    }
-                } else {
-                    en.leftDialogArea.c()
-                }
-            } else if (en.isHuoBigDialogTask.check() && !en.isOpenChenNianLiMenuTask.check() && !en.isOpenJiyuBigMenuTask.check() && !en.isShowLeftDialogBox.check()) {
-                L.d("活动对话中")
-                count = 40
-                if (en.isJieShouHuoDongTask.check()) {
-                    en.jieShouHuoDongArea.c()
-                } else {
-                    if (Math.random() > 0.6) {
-                        en.huoDongSelect2Area.c()
-                    } else {
-                        en.huoDongSelect1Area.c()
-                    }
-                }
-            } else {
-                clickSpeedControl.cc()
-            }
-            count--
-        }
-
-        theOutCheck()
-        return
-    }
+//    var lastLianLuoTime = 0L;
+//
+//    //水龙年的l
+//    suspend fun linQuLianLuo() {
+//        if (System.currentTimeMillis() - lastLianLuoTime < SetConstant.Hour) {
+//            return
+//        }
+//        lastLianLuoTime = System.currentTimeMillis()
+//        var flag = true
+//        var count = 20
+//        val clickSpeedControl = ClickSpeedControl()
+//        clickSpeedControl.maxCount = 1
+//        clickSpeedControl.addUnit(en.isJieShouTask, en.jieShouArea)
+//        clickSpeedControl.addUnit(en.isShowLeftDialogBox, en.leftDialogArea)
+//        clickSpeedControl.addUnit(en.isShowRightDialogBox, en.rightDialogArea)
+//        clickSpeedControl.addUnit(en.isConfirmDialogTask, en.confirmDialogCancelArea)
+//        clickSpeedControl.addUnit(en.findLianLuoAnBtnTask, en.lianLuoAnBtnArea)
+//        clickSpeedControl.addUnit(en.isOpenJiyuBigMenuTask, en.closeBigMenuArea)
+//        clickSpeedControl.addUnit(en.isJieShouHuoDongTask, en.jieShouHuoDongArea)
+//
+//        while (flag && count > 0 && runSwitch) {
+//            if (!taskScreenL(screenshotIntervalF)) {
+//                reportingError(ABNORMAL_SCREENO_ORIENTATION)
+//            }
+//            if (hasIntoGame()) {
+//                if (en.isHasGiftBtnTask.check()) {
+//                    if (ensureOpenActivityType(ActivityType.CHENG_NIAN_LI)) {
+//                        if (en.findLianLuoAnBtnTask.check()) {
+//                            en.lianLuoAnBtnArea.c(en.findLianLuoAnBtnTask)
+//                            delay(clickInterval)
+//                            count = 40
+//                        } else {
+//                            count = 3
+//                        }
+//                    }
+//                } else {
+//                    en.leftDialogArea.c()
+//                }
+//            } else if (en.isHuoBigDialogTask.check() && !en.isOpenChenNianLiMenuTask.check() && !en.isOpenJiyuBigMenuTask.check() && !en.isShowLeftDialogBox.check()) {
+//                L.d("活动对话中")
+//                count = 40
+//                if (en.isJieShouHuoDongTask.check()) {
+//                    en.jieShouHuoDongArea.c()
+//                } else {
+//                    if (Math.random() > 0.6) {
+//                        en.huoDongSelect2Area.c()
+//                    } else {
+//                        en.huoDongSelect1Area.c()
+//                    }
+//                }
+//            } else {
+//                clickSpeedControl.cc()
+//            }
+//            count--
+//        }
+//
+//        theOutCheck()
+//        return
+//    }
 
 }
