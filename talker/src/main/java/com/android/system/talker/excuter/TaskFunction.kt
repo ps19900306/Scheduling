@@ -211,7 +211,7 @@ class TaskFunction(
 
     private val openJiyuBigMenuRecorder = en.isOpenJiyuBigMenuTask.toStatusRecorder(10, 60)
 
-    private val canLockRecorder = en.isCanLockTask.toStatusRecorder(5, 10)
+    private val canLockRecorder = en.isCanLockTask.toStatusRecorder(10, 20)
 
     private val inSpaceStation = en.isInSpaceStationT.toStatusRecorder(5, 10)
     private suspend fun monitorAllStatuses() {
