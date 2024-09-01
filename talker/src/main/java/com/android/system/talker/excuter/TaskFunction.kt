@@ -194,7 +194,7 @@ class TaskFunction(
     }
 
 
-    private val topLockTartRecorder = StatusRecorder("hasTopLockTart", 3, 30) {
+    private val topLockTartRecorder = StatusRecorder("hasTopLockTart", 3, 60) {
         hasTopLockTart()
     }
 
@@ -202,7 +202,7 @@ class TaskFunction(
     private val isOpenAiRecorder = en.isOpenAiTask.toStatusRecorder(10, 60)
 
     //这里的Error用来判断卡主的
-    private val isHasEysMenu = StatusRecorder("hasEysMenu", 5, 60 * 30) {
+    private val isHasEysMenu = StatusRecorder("hasEysMenu", 5, 5 * 30) {
         en.isCloseEyeMenuT.check() || en.isOpenEyeMenuT.check()
     }
 
@@ -214,8 +214,12 @@ class TaskFunction(
     private val canLockRecorder = en.isCanLockTask.toStatusRecorder(10, 20)
 
     private val inSpaceStation = en.isInSpaceStationT.toStatusRecorder(5, 10)
+
+    private val isShipStopStation = en.isShipStopTask.toStatusRecorder(30*2, 30*5)
+
     private suspend fun monitorAllStatuses() {
         L.d("monitorAllStatuses")
+
         while (runSwitch) {
             if (!taskScreenL(screenshotIntervalF)) {
                 reportingError(ABNORMAL_SCREENO_ORIENTATION)
@@ -223,14 +227,19 @@ class TaskFunction(
             }
             updateInfo()
          //   updateByScan()
-
             if (isHasEysMenu.isOpenTrustThresholds()) {//表示在外太空
                 if (isOpenAiRecorder.isOpenErrorThresholds() && openJiyuBigMenuRecorder.isCloseErrorThresholds()
                     && canLockRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
-                    && isHasEysMenu.isOpenErrorThresholds()
+                    && isHasEysMenu.isOpenErrorThresholds()  && topLockTartRecorder.isCloseErrorThresholds()
                 ) {
                     reportingError("卡住了")
                     return
+                }
+
+                if(isOpenAiRecorder.isOpenTrustThresholds() && isShipStopStation.isOpenTrustThresholds()){
+                    isShipStopStation.clearUp()
+                    en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
+                    // 这里卡住了
                 }
 
 
@@ -248,9 +257,16 @@ class TaskFunction(
                     && isOpenAiRecorder.isCloseErrorThresholds() && openPositionMenuRecorder.isCloseErrorThresholds()
                     && openJiyuBigMenuRecorder.isCloseTrustThresholds()
                 ) {
+                    if(en.isAiTimeOutTask.check()){
+                        reportingError("Ai时间已经消耗")
+                        return
+                    }
                     isOpenAiRecorder.clearUp()
                     en.topDeviceList[2].clickArea?.c(SetConstant.MINUTE)
                 }
+
+
+
             } else if (openJiyuBigMenuRecorder.isOpenErrorThresholds()) {//在接取界面
                 L.d("接取界面超時")
                 //这个是用于判断无任务导致的关闭执行逻辑的
@@ -281,6 +297,7 @@ class TaskFunction(
         isOpenAiRecorder.updateInfo()
         isHasEysMenu.updateInfo()
         inSpaceStation.updateInfo()
+        isShipStopStation.updateInfo()
     }
 
 

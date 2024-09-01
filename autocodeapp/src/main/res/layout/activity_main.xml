@@ -60,14 +60,7 @@
         android:layout_marginEnd="8dp"
         android:visibility="visible"/>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/functionGroup"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
-        app:constraint_referenced_ids="taskNameEdit,bgView,functionRecycler,colorRecycler"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+
 
 
 
@@ -110,6 +103,16 @@
         android:layout_marginStart="8dp"
         android:alpha="0.3"
         android:visibility="visible"/>
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/functionGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:constraint_referenced_ids="taskNameEdit,bgView,functionRecycler,colorRecycler"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/optGroup"

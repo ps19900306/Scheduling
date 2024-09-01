@@ -64,16 +64,11 @@ class MainActivity() : AppCompatActivity() {
             FunctionItemInfo(R.string.full_screen, BUTTON_TYPE),
             // FunctionItemInfo(R.string.select_picture, BUTTON_TYPE),
             FunctionItemInfo(R.string.start_screen, BUTTON_TYPE),
-
             FunctionItemInfo(R.string.select_critical_area, BUTTON_TYPE),
             FunctionItemInfo(R.string.find_image_area, BUTTON_TYPE),
             FunctionItemInfo(R.string.clear_find_image_area, BUTTON_TYPE),
-
-
             FunctionItemInfo(R.string.preview, BUTTON_TYPE),
             FunctionItemInfo(R.string.preview1, BUTTON_TYPE),
-
-
             FunctionItemInfo(R.string.merge, BUTTON_TYPE),
             FunctionItemInfo(R.string.image_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.characters_feature_extraction, BUTTON_TYPE),
@@ -81,19 +76,13 @@ class MainActivity() : AppCompatActivity() {
            // FunctionItemInfo(R.string.shadow_feature_extraction, BUTTON_TYPE),
             FunctionItemInfo(R.string.rich_color_image_recognition, BUTTON_TYPE),
             FunctionItemInfo(R.string.calculate_space, BUTTON_TYPE),
-
-
             FunctionItemInfo(R.string.add_rectangle_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.add_circular_click_are, BUTTON_TYPE),
             FunctionItemInfo(R.string.background, BUTTON_TYPE),
             FunctionItemInfo(R.string.test_pick_up_points, BUTTON_TYPE),
-
-
             FunctionItemInfo(R.string.test_pick_up_points1, BUTTON_TYPE),
-
             FunctionItemInfo(R.string.take_img, BUTTON_TYPE),
             FunctionItemInfo(R.string.replace_img, BUTTON_TYPE),
-
             )
     }
 
@@ -247,7 +236,6 @@ class MainActivity() : AppCompatActivity() {
         val sd = GridSpacingItemDecoration(spanCount, 8, true)
         //统一处理二个显示的数据
         bind.functionRecycler.layoutManager = GridLayoutManager(this, spanCount)
-
         mFunctionItemAdapter = FunctionItemAdapter(functionList)
         bind.functionRecycler.adapter = mFunctionItemAdapter
 
